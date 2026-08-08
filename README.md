@@ -37,16 +37,21 @@
 - [SceneLedger 方法设计](docs/02_sceneledger_idea.md)
 - [无标注数据与 WildMix-Cap 基准](docs/03_data_and_benchmark.md)
 - [实验、消融、资源与投稿路线](docs/04_experiments_and_roadmap.md)
+- [开源底座选择与实现蓝图](docs/05_base_and_implementation.md)
+- [TAC-style 基线复现协议](docs/06_tac_reproduction_protocol.md)
+- [首轮 Pilot 执行计划](docs/07_pilot_execution_plan.md)
+- [机器可读实验矩阵](configs/experiment_matrix.yaml)
 - [规范化事件账本 JSON Schema](schemas/sceneledger.schema.json)
 - [BibTeX 参考文献](references.bib)
 
 ## 当前建议
 
-先做一个可证伪的小规模 pilot，而不是立刻扩到百万视频：人工标注 200 个复杂片段；复现 TAC/MOSS-Audio/Qwen3-Omni 类基线；用 50k-100k 个无标注片段验证 CARC 是否在真实集上同时降低漏检和幻觉。只有这一步成立，再扩大数据和做完整 benchmark。
+工程底座确定为开放的 **MOSS-Audio-4B-Instruct**。先完成 `B0=MOSS zero-shot`、`B1=static SFT`、`B2=MOSS 上的 TAC-style paper-spec reimplementation`、`B3=joint speech/lyrics autoregressive baseline`，再依次加入 `S1=event slots`、`S2=local evidence` 和 `S3=CARC`。TAC 官方截至调研冻结日未公开训练代码、checkpoint 和 licensed single-source corpus，因此不能声称 exact reproduction；但其 mixer、多任务 prompt、atomic timestamp token、weighted CE 和评价协议都应作为 B2 复现。
+
+先做一个可证伪的小规模 pilot，而不是立刻扩到百万视频：人工标注 200 个复杂片段；在 MOSS 上完成 TAC-style 基线；用 5k-10k 个无标注片段完成 CARC 最小闭环，确认相对等量 pseudo-label SFT 在真实集上同时降低漏检和幻觉后，才扩到 50k-100k。
 
 截至 2026-08-08，ICLR 2027 的摘要与全文截止日期分别是 2026-09-11 和 2026-09-16；从空仓库开始完成高质量 benchmark、模型与充分消融并不现实。主线更适合瞄准 NeurIPS 2027 或 ACM MM 2027（正式日期发布后再确认），并把 ICLR 2027 作为仅在已有实现和算力成熟时才考虑的高风险窗口。
 
 ## 数据合规原则
 
 互联网音视频只能在确认研究使用权、平台条款、隐私和版权边界后进入训练。默认只公开可再分发音频、平台 ID/时间段、派生标注及构建脚本；不要直接公开未经授权的原始 Bilibili、Instagram 或 TikTok 媒体。严格按音频指纹、视频 ID、上传者和音乐作品做 group split，避免同源泄漏。
-
