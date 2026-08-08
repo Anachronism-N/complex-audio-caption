@@ -1,0 +1,169 @@
+version: 1
+frozen_at: "2026-08-08"
+note: >-
+  Proposed starting configuration. Values not explicitly attributed to TAC are
+  project choices and must be tuned on development data only.
+
+task:
+  clip_seconds: [10, 30]
+  sample_rate_hz: 16000
+  output_grid_seconds: 0.1
+  types: [speech, lys, music, sfx]
+  max_events: 24
+  timestamp_tokens:
+    first: "<|t_000|>"
+    last: "<|t_300|>"
+    count: 301
+
+backbone:
+  repository: "https://github.com/OpenMOSS/MOSS-Audio"
+  model: "OpenMOSS-Team/MOSS-Audio-4B-Instruct"
+  frame_rate_hz: 12.5
+  freeze_audio_encoder_initially: true
+  freeze_base_llm_initially: true
+
+tac_paper_spec:
+  optimizer: AdamW
+  peak_learning_rate: 5.0e-5
+  schedule: cosine
+  warmup_steps: 1000
+  train_steps: 5000
+  global_effective_batch: 32
+  lora_rank: 128
+  lora_alpha: 256
+  timestamp_weight: 5.0
+  styles: [keyword, brief, detailed]
+  resolutions_seconds: [0.1, 0.5, 1.0]
+  merge_threshold_seconds: [0.1, 1.0]
+  caveat: >-
+    TAC code, checkpoint, complete template distributions, and licensed
+    single-source corpus were not public at the freeze date; this is a
+    paper-spec reimplementation, not an exact reproduction.
+
+sceneledger:
+  temporal_fusion:
+    output_rate_hz: 10
+    hidden_size: 768
+    alternatives:
+      - "10-Hz interpolation"
+      - "native 12.5-Hz with continuous boundary offsets"
+  slot_decoder:
+    slots: 24
+    layers: 6
+    attention_heads: 8
+    source_embedding_size: 256
+  evidence_decoder:
+    local_prefix_tokens: 4
+    global_context_tokens: 2
+    global_context_gated: true
+  loss_weights:
+    set: 1.0
+    text: 1.0
+    evidence: 0.5
+    source: 0.2
+    calibration: 0.1
+    carc: 1.0
+
+runs:
+  - id: B0-moss-zero-shot
+    parent: null
+    change: "No training; canonical unified-caption prompt."
+    purpose: "Measure raw backbone ability and parser failure."
+
+  - id: B1-moss-static-sft
+    parent: B0-moss-zero-shot
+    change: "Static 0.1-s target format and ordinary token CE."
+    purpose: "Separate format/data gains from TAC recipe gains."
+
+  - id: B2-moss-tac
+    parent: B1-moss-static-sft
+    change: >-
+      Dynamic scene templates, sampled style/merge/activity/resolution,
+      atomic timestamps, and weighted timestamp CE.
+    purpose: "Primary TAC-style autoregressive baseline."
+
+  - id: B3-moss-tac-joint
+    parent: B2-moss-tac
+    change: "Joint lyrics and overlapping speaker targets; no external Whisper."
+    purpose: "Strongest autoregressive unified-caption baseline."
+
+  - id: S1-ledger
+    parent: B3-moss-tac-joint
+    change: "Permutation-invariant slots, activity masks, and boundary heads."
+    purpose: "Test set prediction independently of evidence/CARC."
+
+  - id: S2-evidence
+    parent: S1-ledger
+    change: "Slot-local evidence prefixes, source identity, null and calibration."
+    purpose: "Test whether phrase-level evidence reduces unsupported events."
+
+  - id: S3-carc
+    parent: S2-evidence
+    change: "Counterfactual add/remove/shift/nuisance consistency."
+    purpose: "Full SceneLedger model and primary paper result."
+
+required_ablations:
+  - B2-no-template
+  - B2-time-weight-1
+  - B2-time-weight-10
+  - B2-no-TACOS
+  - B2-10k-steps
+  - S1-slots-12
+  - S1-slots-36
+  - S2-no-local-evidence
+  - S2-unrestricted-global-context
+  - S2-no-source-loss
+  - S3-no-removal
+  - S3-no-audibility-gate
+  - S3-pseudo-label-sft-instead-of-CARC
+
+evaluation:
+  parsing:
+    min_valid_rate: 0.995
+  tac_compatible:
+    - "SegF1@100ms"
+    - "EvtF1@onset-collar-1.0s"
+    - "FLAM-Hal/Conf/Spec"
+  strict_temporal:
+    onset_collars_seconds: [0.1, 0.25, 0.5, 1.0]
+    metrics:
+      - "joint onset-offset F1"
+      - "boundary median/p90 absolute error"
+      - "multi-span IoU"
+  speech:
+    - WER
+    - cpWER
+    - tcpWER
+    - DER
+    - JER
+  lyrics:
+    - "line CER/WER"
+    - "lyrics-presence F1"
+    - "line-boundary error"
+  reliability:
+    - "negative false-event rate"
+    - ECE
+    - Brier
+    - "selective risk"
+  robustness_axes:
+    - SNR
+    - T60
+    - echo_delay
+    - codec
+    - source_count
+    - overlap_ratio
+    - event_duration
+
+pilot_go_no_go:
+  baseline: >-
+    B2 must improve at least two of EvtF1, SegF1, and hallucination over B1
+    on both TACOS and the real pilot before scaling model work.
+  slots: >-
+    S1 must improve real-pilot semantic-temporal F1 over B3, not only
+    synthetic performance.
+  evidence: >-
+    S2 should reduce unsupported events without a material degradation in
+    speaker-attributed transcription or lyrics CER.
+  carc: >-
+    S3 must improve the real robustness aggregate and hallucination versus S2;
+    otherwise stop scaling web data and audit separation leakage.
