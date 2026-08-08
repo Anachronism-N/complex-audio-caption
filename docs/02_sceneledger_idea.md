@@ -1,4 +1,9 @@
+Exit code: 0
+Wall time: 5.9 seconds
+Output:
 # SceneLedger：面向复杂真实声景的证据优先时间戳 Caption
+
+> 更新说明：本文保留 SceneLedger 的总体任务与早期 event-ledger 论证；显式教师分轨、隐式 track/event 两级 slots、未知 source count、专家 caption 和受限 LLM 重写的实现级定义见 [08_hybrid_track_event_idea.md](08_hybrid_track_event_idea.md)。
 
 ## 1. 候选论文标题
 
@@ -211,3 +216,4 @@ $$
 - **统一训练相互干扰**：若 speech WER 和 music caption 同时恶化，保留共享 encoder/slotter，但增加 modality adapters、梯度投影或分阶段解冻；不要拆回四个推理模型。
 - **benchmark 不够新**：如果只把现有数据混在一起，无法支持论文。WildMix-Cap 必须是真实混合、跨平台、重叠、多说话/歌词、声学退化、边界不确定性共同存在的人工复核集。
 - **CARC 只改善合成集**：在 200 条 pilot real set 上若没有可信增益，不扩百万数据；优先检查 audibility gating、separator leakage 和 teacher collapse。
+
