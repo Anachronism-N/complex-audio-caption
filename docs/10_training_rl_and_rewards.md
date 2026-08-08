@@ -1,6 +1,3 @@
-Exit code: 0
-Wall time: 6 seconds
-Output:
 # 训练课程、偏好对齐与可验证奖励
 
 > 核心原则：先让模型学会结构化检测和局部证据，再训练文字；先做 SFT 和反事实偏好，再考虑 RL。RL 不是时间戳准确性的起点，也不能用一个 LLM judge 替代声学证据。
@@ -289,5 +286,4 @@ Gate 条件：B3/S2 在人工 dev 上格式成功率 >99%、event F1 稳定、�
 - AHA 的反事实 hard-negative preference alignment 为 hallucination taxonomy 和 DPO 数据提供直接参考：[paper](https://arxiv.org/abs/2512.24052)。
 - TEMPO 将 temporal SFT 与带时间 reward 的 GRPO 结合；截至本文冻结日其 OpenReview 版本仍应标记为匿名在审工作：[OpenReview](https://openreview.net/forum?id=LoXjHBlPEd)。
 - TAC 的 atomic timestamp tokens 与 time-weighted CE 是 B2 的直接基线：[paper](https://arxiv.org/abs/2602.15766)。
-
 
