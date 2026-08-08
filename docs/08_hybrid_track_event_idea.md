@@ -1,6 +1,3 @@
-Exit code: 0
-Wall time: 5.2 seconds
-Output:
 # Hybrid Track–Event Ledger：显式教师分轨与隐式学生分轨
 
 > 本文是当前主 idea 的实现级定义。它吸收“先分轨再 caption”“AudioChat 式隐式声音分解”“TAC 式精确合成”“Audio-Omni 式真实/合成双支路”“可验证 RL”和“LLM/VLM 交叉验证”，但把它们放在不同职责与阶段中，避免一个不可训练、不可归因的巨型 agent pipeline。
@@ -348,5 +345,4 @@ LLM 输入：
 - 1000 条 WildMix-Cap hidden test。
 
 最小实现若已显著超过 B3，就足以证明核心结构；不要把 Audio-Omni、SAM Audio、VLM 和 RL 都变成方法成立的前置条件。
-
 
