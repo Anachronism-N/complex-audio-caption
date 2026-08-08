@@ -61,6 +61,12 @@ SpotSound 的核心发现很重要：如果只问模型“这个事件在哪里�
 - 评价必须把“是否存在”“是什么”“何时发生”拆开；
 - 0.1 s 标签要带边界不确定区间，否则精细模型会因标注噪声被错误惩罚。
 
+### 2.4 开源可用性对工程路线的影响
+
+截至调研冻结日，TAC 官方项目页只提供论文、结果和演示，未发现训练代码或 checkpoint；论文还使用未公开的 licensed single-source corpus，因此只能做 paper-spec reimplementation，不能声称 exact reproduction。TimeAudio 的 Hugging Face 页面提供约 907 MB checkpoint，但未发现配套完整训练仓库。
+
+相较之下，[MOSS-Audio](https://github.com/OpenMOSS/MOSS-Audio)公开 4B/8B 权重、推理、LoRA/全参微调脚本及可访问的 12.5 Hz 多层 audio features，并声明 Apache-2.0；[SpotSound](https://github.com/LoieSun/SpotSound)公开基于 Audio Flamingo 3 的训练/推理与 checkpoint，但任务仍是 query grounding，且 AF3 checkpoint 为非商业研究许可证。因此本项目选择 MOSS-Audio-4B-Instruct 作为工程底座，在其上实现 TAC-style autoregressive baseline，再增加 event slots/evidence/CARC。完整审计见[实现蓝图](05_base_and_implementation.md)。
+
 ## 3. 时间对齐与开放词汇检测
 
 - [TACOS](https://arxiv.org/html/2505.07609) 提供 12,358 个 Freesound 录音和 47,748 条与具体时间段绑定的自由文本 strong captions，是训练开放词汇 temporal alignment 的核心真实数据；但语音转写被清除，且不以 music/lyrics/speaker 为中心。
@@ -108,4 +114,3 @@ SpotSound 的核心发现很重要：如果只问模型“这个事件在哪里�
 7. **可校准的“不知道”**：对不可听歌词、完全掩蔽 speech 或不确定声源，可靠模型应降低置信或只输出高层描述，而不是强行转写。
 
 这些空缺共同支持下一篇论文的中心论点：**复杂音频 caption 的瓶颈不再只是语言模型的时间表示，而是如何建立可验证、可组合、抗声学扰动的事件证据。**
-
