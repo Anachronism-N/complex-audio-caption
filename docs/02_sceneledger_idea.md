@@ -74,7 +74,7 @@ flowchart LR
 
 ### 4.1 Audio encoder
 
-首选从开放的 MOSS-Audio 4B/8B encoder 或其 12.5 Hz 表征开始；其 80 ms 帧率天然接近 0.1 s 目标，并且多层特征已覆盖 low-level transient、speech、music 与高层语义。可复现备选是 Whisper encoder + BEATs/FLAM 双塔，作为与 TimeAudio 类架构的公平基线。
+工程底座确定为开放的 **MOSS-Audio-4B-Instruct**；8B 只在方法稳定后验证 scaling。其 `get_audio_features()` 可返回 12.5 Hz 最后层和 DeepStack 中间层，80 ms 帧率接近但并不等于 100 ms 精度。实现中比较两种 temporal fusion：插值为 10 Hz 活动网格，或保留 12.5 Hz 并回归连续 boundary offset，最后才量化为 0.1 s。完整选择依据和 wrapper 结构见[开源底座与实现蓝图](05_base_and_implementation.md)。
 
 不要在论文初期从零训练通用 audio encoder。先冻结 encoder，对 event slotter、adapter 和 LoRA 做训练；只有 pilot 证明低层特征成为瓶颈，才解冻最后若干层。
 
@@ -101,7 +101,7 @@ flowchart LR
 - music slot 描述结构、风格、乐器、节奏、动态和人声存在；
 - sfx slot 生成开放词汇事件与声学属性。
 
-四类使用共享 LLM 和轻量 modality adapters，而不是四套完全独立模型。共享参数保持单模型能力；adapters 减少 ASR、歌词和描述性语言之间的梯度冲突。推理仍是一次端到端调用，不像 TAC 再调用外部 Whisper。
+四类使用共享 LLM 和轻量 modality adapters，而不是四套完全独立模型。共享参数保持单模型能力；adapters 减少 ASR、歌词和描述性语言之间的梯度冲突。第一版实现共享一次 audio encoder，所有有效 slots 批量解码 event text，再由 serializer 合成单一 caption；它对用户是一次 audio-to-caption 调用，也不再调用外部 Whisper，但不虚构为“所有事件只经过一次 autoregressive decode”。
 
 ### 4.4 Constrained serializer
 
@@ -211,4 +211,3 @@ $$
 - **统一训练相互干扰**：若 speech WER 和 music caption 同时恶化，保留共享 encoder/slotter，但增加 modality adapters、梯度投影或分阶段解冻；不要拆回四个推理模型。
 - **benchmark 不够新**：如果只把现有数据混在一起，无法支持论文。WildMix-Cap 必须是真实混合、跨平台、重叠、多说话/歌词、声学退化、边界不确定性共同存在的人工复核集。
 - **CARC 只改善合成集**：在 200 条 pilot real set 上若没有可信增益，不扩百万数据；优先检查 audibility gating、separator leakage 和 teacher collapse。
-
