@@ -1,0 +1,17 @@
+seed: 7
+sample_count: 8
+sample_rate: 16000
+time_resolution_sec: 0.1
+duration_sec: [8.0, 8.0]
+gain_db: [-6.0, -2.0]
+activity_threshold_db: 35.0
+merge_gap_sec: 0.2
+save_stems: true
+rir_probability: 0.0
+templates:
+  - name: speech_music_sfx
+    sources: [speech, music, sfx]
+  - name: two_speakers_music
+    sources: [speech, speech, music]
+  - name: lyrics_music_sfx
+    sources: [lys, music, sfx]

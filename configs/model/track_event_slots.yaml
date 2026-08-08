@@ -1,0 +1,20 @@
+model:
+  model_dim: 768
+  track_slots: 8
+  event_slots: 24
+  track_types: 6
+  event_types: 4
+  attention_heads: 8
+  decoder_layers: 3
+  feedforward_dim: 2048
+  source_embedding_dim: 256
+  dropout: 0.1
+training:
+  seed: 20260808
+  epochs: 10
+  learning_rate: 0.0001
+  weight_decay: 0.01
+  gradient_clip: 1.0
+  gradient_accumulation_steps: 8
+  # Set to 32 for the mandatory structural overfit smoke test.
+  overfit_samples: null

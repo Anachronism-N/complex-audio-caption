@@ -1,0 +1,75 @@
+# Downloading a dataset is not itself permission to redistribute or use it.
+# The CLI requires explicit acknowledgement of each dataset's current terms.
+datasets:
+  librispeech_train_clean_100:
+    kind: url
+    homepage: https://www.openslr.org/12
+    license: "See the current LibriSpeech/OpenSLR terms"
+    license_url: https://www.openslr.org/12
+    requires_acceptance: true
+    files:
+      - url: https://www.openslr.org/resources/12/train-clean-100.tar.gz
+        filename: train-clean-100.tar.gz
+        extract: false
+
+  musan:
+    kind: url
+    homepage: https://www.openslr.org/17
+    license: "MUSAN contains multiple source corpora; inspect the per-corpus licenses"
+    license_url: https://www.openslr.org/17
+    requires_acceptance: true
+    files:
+      - url: https://www.openslr.org/resources/17/musan.tar.gz
+        filename: musan.tar.gz
+        extract: false
+
+  rirs_noises:
+    kind: url
+    homepage: https://www.openslr.org/28
+    license: "See the current RIRS_NOISES/OpenSLR terms"
+    license_url: https://www.openslr.org/28
+    requires_acceptance: true
+    files:
+      - url: https://www.openslr.org/resources/28/rirs_noises.zip
+        filename: rirs_noises.zip
+        extract: false
+
+  fsd50k:
+    kind: manual
+    homepage: https://zenodo.org/records/4060432
+    license: "Per-clip Creative Commons licenses; preserve attribution metadata"
+    license_url: https://zenodo.org/records/4060432
+    requires_acceptance: true
+    instructions: >-
+      Download the audio and metadata parts from the official Zenodo record. Verify every clip's
+      license from the metadata before training or redistribution; then place audio under sfx/.
+
+  musdb18hq:
+    kind: manual
+    homepage: https://sigsep.github.io/datasets/musdb.html
+    license: "MUSDB18 terms and source-track licenses apply"
+    license_url: https://sigsep.github.io/datasets/musdb.html
+    requires_acceptance: true
+    instructions: >-
+      Obtain MUSDB18-HQ from the official SIGSEP instructions. Keep mixture/vocals/drums/bass/other
+      grouping and do not redistribute audio through this repository.
+
+  clotho:
+    kind: manual
+    homepage: https://zenodo.org/communities/clotho
+    license: "See the selected Clotho release and audio-source licenses"
+    license_url: https://zenodo.org/communities/clotho
+    requires_acceptance: true
+    instructions: >-
+      Select a release from the official Clotho Zenodo community, download audio and captions,
+      and retain the release/version in source-manifest metadata.
+
+  web_private:
+    kind: manual
+    homepage: about:blank
+    license: "Project-specific platform, copyright, privacy and research-use review required"
+    license_url: about:blank
+    requires_acceptance: true
+    instructions: >-
+      Do not download through this tool. Place only authorized local media in a private data root.
+      Retain platform ID, uploader hash, work ID, license status and deletion index in metadata.

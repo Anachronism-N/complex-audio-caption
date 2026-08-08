@@ -58,12 +58,12 @@
         "start_sec": {
           "type": "number",
           "minimum": 0,
-          "multipleOf": 0.1
+          "description": "Must lie on the 0.1-second grid; checked with numeric tolerance by the Python validator."
         },
         "end_sec": {
           "type": "number",
           "exclusiveMinimum": 0,
-          "multipleOf": 0.1
+          "description": "Must lie on the 0.1-second grid; checked with numeric tolerance by the Python validator."
         },
         "start_uncertainty_sec": {
           "type": ["number", "null"],
@@ -81,6 +81,13 @@
       "properties": {
         "method": {
           "type": "string"
+        },
+        "spans": {
+          "type": "array",
+          "description": "Intervals with measurable support after acoustic rendering; semantic event spans remain in event.spans.",
+          "items": {
+            "$ref": "#/$defs/span"
+          }
         },
         "audio_support": {
           "type": ["number", "null"],
@@ -231,6 +238,19 @@
         },
         "codec": {
           "type": ["string", "null"]
+        },
+        "noise_color": {
+          "type": ["string", "null"],
+          "enum": ["white", "pink", "brown", null]
+        },
+        "device_filter": {
+          "type": ["boolean", "null"]
+        },
+        "compression": {
+          "type": ["boolean", "null"]
+        },
+        "clipping": {
+          "type": ["boolean", "null"]
         },
         "overlap_ratio": {
           "type": ["number", "null"],

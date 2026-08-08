@@ -1,6 +1,24 @@
 # Complex Audio Caption / SceneLedger
 
+> 代码状态（2026-08-08）：现已实现 TAC-mini/TAC++ 可复现渲染、语义与证据双时间轴、
+> Exact-CARC 生成与反事实评测、结构化偏好负例、Track–Event slot 解码，以及可插拔教师编排骨架。
+> 可直接执行的服务器流程与验收标准见
+> [实现与实验运行手册](docs/13_implementation_and_experiment_runbook.md)。
+
 面向真实复杂声景的统一、细粒度、带时间戳音频描述研究方案（调研冻结日期：2026-08-08）。
+
+## 可运行代码
+
+仓库现已包含首个可运行里程碑：Track–Event schema、parser/serializer、Hungarian 事件匹配与指标、许可感知的数据下载/整理、可重放 TAC-mini renderer、Exact-CARC、MOSS 官方 SFT 格式转换、MOSS/SAM Audio 延迟适配以及 PyTorch Track–Event slot decoder。完整命令见[代码快速开始与服务器运行手册](docs/12_code_quickstart.md)。
+
+```bash
+python -m pip install -e ".[dev]"
+python scripts/make_toy_sources.py --output data/interim/toy
+sceneledger render --sources data/interim/toy/sources.jsonl \
+  --config configs/data/tac_smoke.yaml --output data/derived/tac_smoke
+sceneledger validate-render data/derived/tac_smoke
+pytest
+```
 
 ## 一句话结论
 
@@ -44,6 +62,7 @@
 - [数据、音频编辑与 LLM/VLM 验证](docs/09_data_editing_and_verification.md)
 - [训练课程、偏好对齐与可验证奖励](docs/10_training_rl_and_rewards.md)
 - [逐步开发计划与验收标准](docs/11_development_plan.md)
+- [代码快速开始与服务器运行手册](docs/12_code_quickstart.md)
 - [机器可读实验矩阵](configs/experiment_matrix.yaml)
 - [机器可读开发阶段](configs/pipeline_stages.yaml)
 - [规范化事件账本 JSON Schema](schemas/sceneledger.schema.json)

@@ -1,0 +1,27 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+build/
+dist/
+
+# Generated data, weights and experiment output
+data/raw/
+data/interim/
+data/derived/
+weights/
+outputs/
+runs/
+wandb/
+third_party/*
+!third_party/README.md
+*.wav
+*.flac
+*.mp3
+*.mp4
+
+# Keep small fixtures explicitly tracked
+!tests/fixtures/**/*.wav
