@@ -1,6 +1,3 @@
-Exit code: 0
-Wall time: 5.9 seconds
-Output:
 # 从零到投稿的逐步开发计划
 
 > 直接回答：**第一个“大型复现模块”应当是 TAC 数据构造流程，但第一个代码 PR 不应直接开始批量混音。** 先用 2–3 天冻结输出 schema、parser/serializer、事件匹配指标和 MOSS zero-shot 接口；随后立刻实现 TAC-mini renderer。否则无法判断生成标签是否正确，也无法公平比较 B0/B1/B2。
@@ -399,5 +396,4 @@ GRPO 失败的默认处理是回到 DPO，不把 RL 作为论文必须项。论�
 5. SAM Audio 权重是否可取得且许可证是否允许论文训练；
 6. 主要投稿窗口与时间；决定 full paper 还是 MVP；
 7. 测试集是否允许发布音频，若不允许则发布 ID/时间段、特征和评测服务器。
-
 
