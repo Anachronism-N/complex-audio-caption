@@ -44,6 +44,7 @@
 - [数据、音频编辑与 LLM/VLM 验证](docs/09_data_editing_and_verification.md)
 - [训练课程、偏好对齐与可验证奖励](docs/10_training_rl_and_rewards.md)
 - [逐步开发计划与验收标准](docs/11_development_plan.md)
+- [复现指南](docs/12_reproduction_guide.md)
 - [机器可读实验矩阵](configs/experiment_matrix.yaml)
 - [机器可读开发阶段](configs/pipeline_stages.yaml)
 - [规范化事件账本 JSON Schema](schemas/sceneledger.schema.json)

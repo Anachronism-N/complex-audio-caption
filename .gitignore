@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+
+# Third-party clones (MOSS-Audio is cloned separately; see README)
+third_party/
+
+# Rendered datasets: audio is regenerable from the manifest via
+# `sceneledger-render` (deterministic). Keep manifests / data cards / listen
+# lists (small text). Audio lives on local disk.
+data/derived/*/audio/
+data/derived/*/stems/
+
+# Generated predictions (regenerable from the manifest + model)
+reports/*.jsonl
+
+# Large per-sample metrics (regenerable via sceneledger-evaluate).
+# Keep small summary reports checked in for reproducibility.
+reports/b0_metrics.json
+reports/b0_metrics_moss.json
+reports/b0_infer_report.json
+reports/b0_robustness.json

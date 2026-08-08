@@ -1,0 +1,49 @@
+# TAC-mini data construction config (P2).
+# First version per docs/11 §5: 500 clips, 3 core templates + 2 paper-spec,
+# single speaker, atomic 0.1 s timestamp targets, deterministic replay.
+#
+# Source pool: "synthetic" generates deterministic placeholder audio so the
+# renderer is fully testable without licensed corpora. Switch to "file" and
+# point ``file_pool`` at LibriSpeech / Freesound / MUSDB18 to produce the
+# real R1 dataset (docs/06 §2).
+
+pool:
+  kind: synthetic            # "synthetic" | "file"
+  sample_rate: 24000
+  seed: 20260808
+  # file_pool:               # used when kind == "file"
+  #   speech: ["/data/librispeech/train-clean-100/**/*.flac"]
+  #   music:  ["/data/musdb18/**/*.wav"]
+  #   sfx:    ["/data/freesound/**/*.wav"]
+  #   ambience: ["/data/ambience/**/*.wav"]
+
+sampler:
+  sample_rate: 24000
+  duration_range: [10.0, 30.0]
+  gain_db_range: [-12.0, 3.0]
+  fg_bg_snr_range: [-10.0, 20.0]
+  t60_range: [0.1, 1.2]
+  echo_delay_ms_range: [80, 500]
+  echo_atten_db_range: [-18.0, -3.0]
+  repeat_range: [1, 5]
+  merge_threshold_range: [0.1, 1.0]
+  resolutions: [0.1, 0.5, 1.0]
+  styles: [keyword, brief, detailed]
+  activity_threshold_range: [0.03, 0.12]
+  p_rir: 0.5
+  p_echo: 0.3
+
+render:
+  sample_count: 500
+  # template distribution for the 500 clips (weights, normalized internally)
+  template_weights:
+    speech_over_music: 3
+    music_with_sfx: 2
+    speech_music_sfx: 2
+    isolated_sfx: 1
+    repeated_event: 1
+    ambient_with_intermittent_sfx: 1
+  seed_base: 1947
+  subgroup_count: 5          # for group-split audit; sources do not cross folds
+  audio_format:
+    subtype: PCM_16

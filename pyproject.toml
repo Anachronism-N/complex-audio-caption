@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sceneledger"
+version = "0.1.0"
+description = "SceneLedger: evidence-first timestamped captioning of complex audio scenes."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "SceneLedger contributors" }]
+dependencies = [
+  "pydantic>=2.6",
+  "numpy>=1.24",
+  "scipy>=1.10",
+  "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7.2",
+  "pytest-cov>=4.0",
+  "ruff>=0.4",
+]
+moss = [
+  # MOSS-Audio adapter deps are intentionally optional; pin at P1.
+  "torch>=2.1",
+  "torchaudio>=2.1",
+  "soundfile>=0.12",
+]
+
+[project.scripts]
+sceneledger-evaluate = "sceneledger.cli.evaluate:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-ra -q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E501"]
