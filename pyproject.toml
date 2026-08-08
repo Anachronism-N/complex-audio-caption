@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sceneledger"
+version = "0.1.0"
+description = "Evidence-grounded track-event data and evaluation toolkit for complex audio captioning"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [{name = "SceneLedger contributors"}]
+dependencies = [
+  "jsonschema>=4.21",
+  "numpy>=1.24",
+  "PyYAML>=6.0",
+  "scipy>=1.10",
+]
+
+[project.optional-dependencies]
+download = ["huggingface-hub>=0.24"]
+audio = ["soundfile>=0.12"]
+torch = ["torch>=2.2"]
+dev = ["pytest>=8.0", "ruff>=0.6"]
+
+[project.scripts]
+sceneledger = "sceneledger.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

@@ -2,6 +2,19 @@
 
 面向真实复杂声景的统一、细粒度、带时间戳音频描述研究方案（调研冻结日期：2026-08-08）。
 
+## 可运行代码
+
+仓库现已包含首个可运行里程碑：Track–Event schema、parser/serializer、Hungarian 事件匹配与指标、许可感知的数据下载/整理、可重放 TAC-mini renderer、Exact-CARC、MOSS 官方 SFT 格式转换、MOSS/SAM Audio 延迟适配以及 PyTorch Track–Event slot decoder。完整命令见[代码快速开始与服务器运行手册](docs/12_code_quickstart.md)。
+
+```bash
+python -m pip install -e ".[dev]"
+python scripts/make_toy_sources.py --output data/interim/toy
+sceneledger render --sources data/interim/toy/sources.jsonl \
+  --config configs/data/tac_smoke.yaml --output data/derived/tac_smoke
+sceneledger validate-render data/derived/tac_smoke
+pytest
+```
+
 ## 一句话结论
 
 仅仅把时间 token 加进 Audio LLM 已经不足以构成新贡献。TAC、TimeAudio、SpotSound、MOSS-Audio 和 TEMPO 已分别覆盖了 dense caption、时间定位、统一音频理解或多任务时间戳。更有潜力的方向是：让每条文字描述绑定可定位的声学证据，并通过真实无标注音视频构造“加入、移除、平移、污染某个声源后，事件集合应如何变化”的反事实监督。
@@ -44,6 +57,7 @@
 - [数据、音频编辑与 LLM/VLM 验证](docs/09_data_editing_and_verification.md)
 - [训练课程、偏好对齐与可验证奖励](docs/10_training_rl_and_rewards.md)
 - [逐步开发计划与验收标准](docs/11_development_plan.md)
+- [代码快速开始与服务器运行手册](docs/12_code_quickstart.md)
 - [机器可读实验矩阵](configs/experiment_matrix.yaml)
 - [机器可读开发阶段](configs/pipeline_stages.yaml)
 - [规范化事件账本 JSON Schema](schemas/sceneledger.schema.json)

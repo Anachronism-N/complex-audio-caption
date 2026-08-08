@@ -1,0 +1,4 @@
+relative_path,type,text,group_id,language,verbatim,license,platform_id,uploader_hash,work_id,license_status
+speech/example.wav,speech,replace with the transcript,speaker_001,zh,true,replace with source license,,,,reviewed
+lys/example.wav,lys,replace with the lyric line,singer_001,en,true,replace with source license,,,,reviewed
+sfx/example.wav,sfx,a short example sound,recording_001,,false,replace with source license,,,,reviewed

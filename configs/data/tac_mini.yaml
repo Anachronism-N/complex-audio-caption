@@ -1,0 +1,26 @@
+seed: 20260808
+sample_count: 500
+sample_rate: 24000
+time_resolution_sec: 0.1
+duration_sec: [10.0, 20.0]
+gain_db: [-8.0, 2.0]
+activity_threshold_db: 35.0
+merge_gap_sec: 0.2
+save_stems: true
+rir_probability: 0.0
+templates:
+  - name: speech_music
+    weight: 2.0
+    sources: [speech, music]
+  - name: music_sfx
+    weight: 1.0
+    sources: [music, sfx]
+  - name: speech_music_sfx
+    weight: 2.0
+    sources: [speech, music, sfx]
+  - name: two_speakers_music
+    weight: 1.0
+    sources: [speech, speech, music]
+  - name: lyrics_music_sfx
+    weight: 1.0
+    sources: [lys, music, sfx]

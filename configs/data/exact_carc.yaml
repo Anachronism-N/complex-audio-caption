@@ -1,0 +1,7 @@
+seed: 20260808
+pair_count: 5000
+sample_rate: 24000
+duration_sec: 20.0
+snr_db: [-10.0, 6.0]
+audible_snr_db: -2.0
+hidden_snr_db: -10.0

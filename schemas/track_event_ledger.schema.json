@@ -58,12 +58,12 @@
         "start_sec": {
           "type": "number",
           "minimum": 0,
-          "multipleOf": 0.1
+          "description": "Must lie on the 0.1-second grid; checked with numeric tolerance by the Python validator."
         },
         "end_sec": {
           "type": "number",
           "exclusiveMinimum": 0,
-          "multipleOf": 0.1
+          "description": "Must lie on the 0.1-second grid; checked with numeric tolerance by the Python validator."
         },
         "start_uncertainty_sec": {
           "type": ["number", "null"],
