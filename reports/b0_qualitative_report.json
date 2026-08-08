@@ -1,100 +1,46 @@
 {
   "backend": "moss",
   "n_samples": 10,
-  "n_ok": 0,
-  "strict_format_success_rate": 0.0,
-  "mean_events_recovered": 0.0,
-  "total_events_rejected": 0,
   "samples": [
     {
       "sample_id": "mix_000001",
-      "ok": false,
-      "strict_format_success": false,
-      "events_recovered": 0,
-      "events_rejected": 0,
-      "warnings": [],
-      "raw_text": "[敲击; 5.496s–0.37s, 7.490s–0.88s, 9.541s–1.80s]"
+      "raw_text": "[0.00-3.00s] Metallic clatter with percussive sharpness, likely keys from a desk drawer\n[1.00-4.00s] Glass chink and clatter, indicating drinking glass placed on a hard surface\n[2.00-8.00s] Resonant door slam with strong reverberation from an interior room\n[3.00-10.00s] Persistent low-frequency hum "
     },
     {
       "sample_id": "mix_000002",
-      "ok": false,
-      "strict_format_success": false,
-      "events_recovered": 0,
-      "events_rejected": 0,
-      "warnings": [],
-      "raw_text": "[sound event] percussive impact | [sound event] bell or chime | [sound event] electronic hum | [human voice] ..."
+      "raw_text": "[Cricket chirping]"
     },
     {
       "sample_id": "mix_000003",
-      "ok": false,
-      "strict_format_success": false,
-      "events_recovered": 0,
-      "events_rejected": 0,
-      "warnings": [],
-      "raw_text": "[Ringtone]"
+      "raw_text": "A sustained metallic resonance, consistent with a gong or singing bowl, continues for 8.6 seconds, filling the space with a dense, low-frequency drone. The sound is accompanied by heavy reverberation, indicating a large interior environment such as a hall or sanctuary, and decays over 5.2 seconds. N"
     },
     {
       "sample_id": "mix_000004",
-      "ok": false,
-      "strict_format_success": false,
-      "events_recovered": 0,
-      "events_rejected": 0,
-      "warnings": [],
-      "raw_text": "[0.00] A clear, repeating melodic ringing sound begins. Identifiable as a doorbell chime. It fades away by [9.98]."
+      "raw_text": "[Music] [Music]"
     },
     {
       "sample_id": "mix_000005",
-      "ok": false,
-      "strict_format_success": false,
-      "events_recovered": 0,
-      "events_rejected": 0,
-      "warnings": [],
-      "raw_text": "Metal object impacting or colliding, resonant metallic strikes continuing"
+      "raw_text": "[Sustain] [Metallic impact]"
     },
     {
       "sample_id": "mix_000006",
-      "ok": false,
-      "strict_format_success": false,
-      "events_recovered": 0,
-      "events_rejected": 0,
-      "warnings": [],
-      "raw_text": "- A low, sustained electronic buzzer tone sounds, continuing for a period of time\n- The tone fades out, followed immediately by a sharp, high-pitched metallic click or clack\n- After a brief silence, a single, low, resonant metallic \"clunk\" or \"thud\" occurs\n- The sound has a hollow quality with a long decay and noticeable reverberation, suggesting a large physical space\n- No other sounds or background noise are present"
+      "raw_text": "[Synthesizer emitting a sustained, resonant electronic tone]"
     },
     {
       "sample_id": "mix_000007",
-      "ok": false,
-      "strict_format_success": false,
-      "events_recovered": 0,
-      "events_rejected": 0,
-      "warnings": [],
-      "raw_text": "[Abrupt metallic impact]"
+      "raw_text": "A metallic clank occurs between 2.84 seconds and 4.64 seconds, characterized by a sharp transient and distinct high-frequency resonance, typical of a loose metal component such as a latch or hinge vibrating in an industrial environment; the sound is singular, brief, and clearly audible against a low"
     },
     {
       "sample_id": "mix_000008",
-      "ok": false,
-      "strict_format_success": false,
-      "events_recovered": 0,
-      "events_rejected": 0,
-      "warnings": [],
-      "raw_text": "[0.0, 12.0] Music"
+      "raw_text": "A loud metallic clang abruptly interrupts the stillness, its sharp high-pitched strike giving way to a complex sequence of decaying resonances. Overtones blend and overlap, producing a dense sonic cloud that gradually fades into silence. The space exhibits natural acoustic properties consistent with"
     },
     {
       "sample_id": "mix_000009",
-      "ok": false,
-      "strict_format_success": false,
-      "events_recovered": 0,
-      "events_rejected": 0,
-      "warnings": [],
-      "raw_text": "[0.000 - 1.000 sec] Low electronic drone, continuous, sine-wave-like texture.  \n[1.000 - 13.000 sec] Modulated high-frequency hum, layered with metallic resonance, evokes industrial machinery."
+      "raw_text": "Drums, singing."
     },
     {
       "sample_id": "mix_000010",
-      "ok": false,
-      "strict_format_success": false,
-      "events_recovered": 0,
-      "events_rejected": 0,
-      "warnings": [],
-      "raw_text": "A sustained, soft synthesizer note with a slightly hollow quality begins at 3.48s, maintaining consistent pitch throughout; a second identical note starts at 5.15s, continuing the melodic phrase at 7.72s, and sustains the final note of the sequence until 9.44s. From 9.44s onward, the synthesizer remains the sole acoustic presence in the environment."
+      "raw_text": "[0.000]: Bell ringing begins, producing a resonant, metallic decay with a warm timbre, likely from 12 or 16-note chimes, decaying over 2.8 seconds; the sound is spatially centered with a light reverb suggesting a large, empty stone or cathedral space, such as a monastery; no ambient noise or competi"
     }
   ]
 }
