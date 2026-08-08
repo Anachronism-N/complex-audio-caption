@@ -1,5 +1,7 @@
 # 实验设计、消融与投稿路线
 
+> 本文给出论文级实验全景。具体工程底座、TAC-style 复现参数和首轮八周执行顺序分别见[实现蓝图](05_base_and_implementation.md)、[复现协议](06_tac_reproduction_protocol.md)和[Pilot 计划](07_pilot_execution_plan.md)。机器可读的 run/ablation 列表见 [`configs/experiment_matrix.yaml`](../configs/experiment_matrix.yaml)。
+
 ## 1. 先回答的最小问题
 
 在扩大数据和训练大模型前，用 200 条人工 pilot 和 50k-100k 无标注片段回答：
@@ -225,4 +227,3 @@ TACOS、AudioSet Strong、SpotSound-Bench、AudioCapBench、LibriCSS、DALI/MUSD
 ### “pseudo-label 只是复制 teacher。”
 
 主监督 CARC 使用可验证的集合变化，不需要 teacher 提供完整真值；在 teacher disagreement、OOD 类和人工 test 上证明 student 的增益，并做不同 teacher 的敏感性分析。
-
