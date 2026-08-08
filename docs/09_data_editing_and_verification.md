@@ -1,6 +1,3 @@
-Exit code: 0
-Wall time: 5.8 seconds
-Output:
 # 数据、音频编辑与多模态验证设计
 
 > 本文回答三个工程问题：无标注互联网音视频怎样变成可训练监督；如何比 TAC 更接近真实分布；LLM/VLM 应该怎样参与纠错而不制造新的幻觉。
@@ -299,5 +296,4 @@ src/verification/
 - Audio-Omni 的真实分离与 Scaper 合成双支路用于设计 Level D/B：[paper](https://arxiv.org/abs/2604.10708)。
 - SAM Audio 可作为 text/visual/span-prompted separator，但需遵循其权重访问和许可证：[official repository](https://github.com/facebookresearch/sam-audio)。
 - SpotSound 可作为正负 query 的 grounding verifier：[official repository](https://github.com/LoieSun/SpotSound)。
-
 
