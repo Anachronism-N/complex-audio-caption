@@ -1,0 +1,151 @@
+Exit code: 0
+Wall time: 5.4 seconds
+Output:
+project: sceneledger
+schema_version: "0.2.0"
+decision: >-
+  Build protocol and B0 first, then reproduce a 500-sample TAC-mini data
+  pipeline before large-scale training or agent integration.
+
+defaults:
+  audio_sample_rate: 24000
+  time_resolution_sec: 0.1
+  max_duration_sec: 30.0
+  track_slots: 8
+  event_slots: 24
+  seed: 20260808
+
+stages:
+  p0_protocol:
+    depends_on: []
+    duration_days: 3
+    modules:
+      - src/sceneledger/data/schema.py
+      - src/sceneledger/models/serializer.py
+      - src/sceneledger/eval/parser.py
+      - src/sceneledger/eval/event_matcher.py
+      - src/sceneledger/eval/temporal.py
+    artifacts:
+      - schemas/track_event_ledger.schema.json
+      - reports/p0_metrics.json
+    gates:
+      - schema_parser_serializer_round_trip
+      - permutation_invariant_metrics
+      - toy_metrics_match_hand_calculation
+
+  p1_b0_moss:
+    depends_on: [p0_protocol]
+    duration_days: 3
+    base: OpenMOSS/MOSS-Audio-4B-Instruct
+    modules:
+      - src/sceneledger/models/moss_adapter.py
+      - src/sceneledger/cli/infer.py
+    artifacts:
+      - reports/b0_predictions.jsonl
+      - reports/b0_metrics.json
+    gates:
+      - twenty_fixture_inference_smoke_test
+      - two_hundred_pilot_predictions
+
+  p2_tac_mini_data:
+    depends_on: [p0_protocol]
+    duration_days: 5
+    sample_count: 500
+    modules:
+      - src/sceneledger/data/activity.py
+      - src/sceneledger/data/scene_graph_sampler.py
+      - src/sceneledger/data/renderer.py
+      - src/sceneledger/data/manifests.py
+    artifacts:
+      - data/derived/tac_mini/manifest.jsonl
+      - reports/tac_mini_data_card.md
+    gates:
+      - deterministic_replay
+      - sample_accurate_manifest
+      - fifty_clip_listening_check
+
+  p3_b1_b2_baselines:
+    depends_on: [p1_b0_moss, p2_tac_mini_data]
+    duration_days: 10
+    experiments: [B1_static_sft, B2_tac_paper_spec]
+    gates:
+      - single_batch_overfit
+      - b2_beats_b1_on_synthetic_temporal_metrics
+      - real_pilot_regression_checked
+
+  p4_b3_unified_ar:
+    depends_on: [p3_b1_b2_baselines]
+    duration_days: 7
+    outputs: [speech, lys, music, sfx]
+    gates:
+      - speaker_attributed_wer_reported
+      - lyric_line_error_reported
+      - fusion_conflict_rate_reported
+
+  p5_explicit_teacher:
+    depends_on: [p2_tac_mini_data]
+    duration_days: 7
+    required_components: [WhisperX, pyannote_or_vad, Demucs, MOSS_Audio]
+    optional_components: [FLAM, SAM_Audio]
+    gates:
+      - oracle_stem_topline
+      - predicted_stem_cascade_baseline
+      - one_hundred_real_clip_audit
+
+  p6_real_data_carc:
+    depends_on: [p5_explicit_teacher]
+    duration_days: 14
+    initial_pair_count: 5000
+    expansion_pair_count: 50000
+    modules:
+      - src/sceneledger/data/scene_prior.py
+      - src/sceneledger/data/exact_carc.py
+      - src/sceneledger/teachers/verification.py
+    gates:
+      - audibility_gate_calibrated
+      - synthetic_detector_reported
+      - pseudo_track_precision_at_least_0_90_if_used
+
+  p7_s1_track_event_slots:
+    depends_on: [p4_b3_unified_ar, p6_real_data_carc]
+    duration_days: 14
+    order: [event_activity, track_activity, event_track_pointer, identity, text]
+    gates:
+      - thirty_two_sample_overfit
+      - source_count_mae_beats_b3_parser
+      - overlap_event_recall_improves
+
+  p8_s2_s3_evidence_carc:
+    depends_on: [p7_s1_track_event_slots]
+    duration_days: 14
+    experiments: [S2_local_evidence, S3_exact_carc]
+    gates:
+      - real_hallucination_rate_decreases
+      - removal_sensitivity_improves
+      - weak_overlap_recall_does_not_regress
+
+  p9_alignment:
+    depends_on: [p8_s2_s3_evidence_carc]
+    duration_days: 10
+    order: [DPO, optional_GRPO]
+    grpo_default_enabled: false
+    grpo_gates:
+      - schema_validity_above_0_99
+      - reward_correlates_with_human_preference
+      - output_length_and_event_count_stable
+
+  p10_av_verification:
+    depends_on: [p8_s2_s3_evidence_carc]
+    duration_days: 10
+    modes: [student_fast, audio_verified, av_verified, teacher_agent]
+    policy: audio_evidence_gates_visual_correction
+    gates:
+      - visual_lure_test
+      - offscreen_audio_test
+      - closed_model_cost_and_version_disclosed
+
+paper_minimum:
+  required: [B2_tac_paper_spec, B3_unified_ar, S1_track_event_slots, S2_local_evidence, S3_exact_carc]
+  optional: [SAM_Audio_teacher, audio_editor, GRPO, AV_verifier]
+
+
