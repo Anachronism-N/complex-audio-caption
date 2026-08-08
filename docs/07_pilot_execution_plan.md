@@ -1,4 +1,9 @@
+Exit code: 0
+Wall time: 5.4 seconds
+Output:
 # 首轮 Pilot 执行计划与验收表
+
+> 本文保留八周 pilot 的实验验收表。最新的代码目录、阶段依赖、第一周 issue 和“先复现什么”的决策见 [11_development_plan.md](11_development_plan.md)；若两者冲突，以文档 11 为准。
 
 ## 1. Pilot 要回答什么
 
