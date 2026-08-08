@@ -1,6 +1,3 @@
-Exit code: 0
-Wall time: 5.9 seconds
-Output:
 # Complex Audio Caption / SceneLedger
 
 面向真实复杂声景的统一、细粒度、带时间戳音频描述研究方案（调研冻结日期：2026-08-08）。
@@ -64,4 +61,3 @@ Output:
 ## 数据合规原则
 
 互联网音视频只能在确认研究使用权、平台条款、隐私和版权边界后进入训练。默认只公开可再分发音频、平台 ID/时间段、派生标注及构建脚本；不要直接公开未经授权的原始 Bilibili、Instagram 或 TikTok 媒体。严格按音频指纹、视频 ID、上传者和音乐作品做 group split，避免同源泄漏。
-
