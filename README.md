@@ -1,0 +1,52 @@
+# Complex Audio Caption / SceneLedger
+
+面向真实复杂声景的统一、细粒度、带时间戳音频描述研究方案（调研冻结日期：2026-08-08）。
+
+## 一句话结论
+
+仅仅把时间 token 加进 Audio LLM 已经不足以构成新贡献。TAC、TimeAudio、SpotSound、MOSS-Audio 和 TEMPO 已分别覆盖了 dense caption、时间定位、统一音频理解或多任务时间戳。更有潜力的方向是：让每条文字描述绑定可定位的声学证据，并通过真实无标注音视频构造“加入、移除、平移、污染某个声源后，事件集合应如何变化”的反事实监督。
+
+本仓库提出暂名 **SceneLedger** 的方案：模型在一次前向推理中，把一个混合音频解析为可重叠的事件集合，并序列化成包含 `<speech>`、`<music>`、`<lys>`、`<sfx>` 的单一 caption。时间使用 0.1 s 网格，但论文将严格区分“0.1 s 输出分辨率”和“真实边界误差达到 0.1 s”。
+
+```xml
+<music id="M1" t="0.0-12.8">轻快的电子伴奏持续播放，鼓点逐渐增强。</music>
+<speech speaker="S1" t="0.7-2.9">一名男子快速说道：“我们现在开始。”</speech>
+<lys singer="V1" t="3.2-6.1">“take me home tonight”</lys>
+<sfx id="E1" t="4.6-4.9">近处传来一次玻璃破碎声。</sfx>
+<speech speaker="S2" t="4.7-7.0">另一名说话者在音乐和破碎声上方回应。</speech>
+```
+
+## 核心贡献候选
+
+1. **Evidence-first event ledger**：先以 permutation-invariant event slots 预测类型、声源身份、可多段的 100 ms 活动掩码和不确定性，再从每个 slot 的局部声学证据生成文字，最后约束序列化；避免自回归模型先“讲故事”再猜时间。
+2. **Counterfactual Acoustic Remix Consistency (CARC)**：对真实无标注音视频做声源加入、移除、时间平移以及混响/回声/噪声变换，直接约束预测事件集合满足并集、差集、时间等变和可听条件下的不变性。
+3. **WildMix-Cap benchmark**：从真实短视频构建人工复核的复杂场景测试集，覆盖多说话人、音乐-人声、lyrics、环境声、混响/回声/噪声和强重叠，提供边界不确定区间、说话人归属及统一标签。
+4. **可复现的分解式评价**：分别报告事件语义-时间匹配、边界误差、speaker-attributed WER、歌词错误率、幻觉/漏检、校准和随 SNR/T60/并发声源数变化的鲁棒性曲线，不用单一 BLEU/CIDEr 或单一 LLM judge 掩盖失败。
+
+## 为什么不是已有工作的简单重复
+
+- [TAC](https://arxiv.org/abs/2602.15766) 已能输出 `[music]/[sfx]/[speech]` 与 0.1 s 时间，但语音转录是后接 Whisper，训练以可控合成混音为主；论文也明确承认 sim-to-real gap 和音乐细节不足。
+- [TEMPO](https://openreview.net/forum?id=LoXjHBlPEd) 已统一五种 timestamping 任务，但依靠不同任务 prompt；音乐监督主要来自 Slakh2100 合成 MIDI，目标不是同一真实复调场景的一次性统一描述。
+- [MOSS-Audio](https://arxiv.org/abs/2606.01802) 已覆盖 speech/sound/music、歌词与时间感知，但没有把“每个生成短语必须由一个局部事件证据支持”作为结构约束，也没有专门验证强混响、回声、噪声和多源重叠下的统一 caption。
+- [SpotSound](https://arxiv.org/abs/2604.13023) 通过正/负 query 抑制不存在事件的时间幻觉，但它是 query-based grounding；论文把 polyphonic scenes 和 repeated multi-instance localization 明确列为后续问题。
+- [AudioChat](https://arxiv.org/abs/2602.17097) 和 [Audio-Omni](https://arxiv.org/abs/2604.10708) 的重点分别是复杂音频故事的生成/编辑与跨 speech/music/sound 的统一生成编辑，并非本任务的真实复杂声景时间戳 caption。
+
+## 文档导航
+
+- [相关工作与差距矩阵](docs/01_related_work.md)
+- [SceneLedger 方法设计](docs/02_sceneledger_idea.md)
+- [无标注数据与 WildMix-Cap 基准](docs/03_data_and_benchmark.md)
+- [实验、消融、资源与投稿路线](docs/04_experiments_and_roadmap.md)
+- [规范化事件账本 JSON Schema](schemas/sceneledger.schema.json)
+- [BibTeX 参考文献](references.bib)
+
+## 当前建议
+
+先做一个可证伪的小规模 pilot，而不是立刻扩到百万视频：人工标注 200 个复杂片段；复现 TAC/MOSS-Audio/Qwen3-Omni 类基线；用 50k-100k 个无标注片段验证 CARC 是否在真实集上同时降低漏检和幻觉。只有这一步成立，再扩大数据和做完整 benchmark。
+
+截至 2026-08-08，ICLR 2027 的摘要与全文截止日期分别是 2026-09-11 和 2026-09-16；从空仓库开始完成高质量 benchmark、模型与充分消融并不现实。主线更适合瞄准 NeurIPS 2027 或 ACM MM 2027（正式日期发布后再确认），并把 ICLR 2027 作为仅在已有实现和算力成熟时才考虑的高风险窗口。
+
+## 数据合规原则
+
+互联网音视频只能在确认研究使用权、平台条款、隐私和版权边界后进入训练。默认只公开可再分发音频、平台 ID/时间段、派生标注及构建脚本；不要直接公开未经授权的原始 Bilibili、Instagram 或 TikTok 媒体。严格按音频指纹、视频 ID、上传者和音乐作品做 group split，避免同源泄漏。
+
