@@ -1,3 +1,6 @@
+Exit code: 0
+Wall time: 5.9 seconds
+Output:
 # Complex Audio Caption / SceneLedger
 
 面向真实复杂声景的统一、细粒度、带时间戳音频描述研究方案（调研冻结日期：2026-08-08）。
@@ -18,7 +21,7 @@
 
 ## 核心贡献候选
 
-1. **Evidence-first event ledger**：先以 permutation-invariant event slots 预测类型、声源身份、可多段的 100 ms 活动掩码和不确定性，再从每个 slot 的局部声学证据生成文字，最后约束序列化；避免自回归模型先“讲故事”再猜时间。
+1. **Hybrid Track–Event Ledger**：用显式分轨教师产生可审计的 track-level 监督，最终学生在一次前向中以 permutation-invariant track slots 表示持续声源、以 event slots 表示最小 caption 单元，并学习 event-to-track pointer、100 ms activity 与局部声学证据；避免纯 cascade 的分离误差，也避免自回归模型先“讲故事”再猜时间。
 2. **Counterfactual Acoustic Remix Consistency (CARC)**：对真实无标注音视频做声源加入、移除、时间平移以及混响/回声/噪声变换，直接约束预测事件集合满足并集、差集、时间等变和可听条件下的不变性。
 3. **WildMix-Cap benchmark**：从真实短视频构建人工复核的复杂场景测试集，覆盖多说话人、音乐-人声、lyrics、环境声、混响/回声/噪声和强重叠，提供边界不确定区间、说话人归属及统一标签。
 4. **可复现的分解式评价**：分别报告事件语义-时间匹配、边界误差、speaker-attributed WER、歌词错误率、幻觉/漏检、校准和随 SNR/T60/并发声源数变化的鲁棒性曲线，不用单一 BLEU/CIDEr 或单一 LLM judge 掩盖失败。
@@ -40,13 +43,19 @@
 - [开源底座选择与实现蓝图](docs/05_base_and_implementation.md)
 - [TAC-style 基线复现协议](docs/06_tac_reproduction_protocol.md)
 - [首轮 Pilot 执行计划](docs/07_pilot_execution_plan.md)
+- [Hybrid Track–Event Ledger 详细方法](docs/08_hybrid_track_event_idea.md)
+- [数据、音频编辑与 LLM/VLM 验证](docs/09_data_editing_and_verification.md)
+- [训练课程、偏好对齐与可验证奖励](docs/10_training_rl_and_rewards.md)
+- [逐步开发计划与验收标准](docs/11_development_plan.md)
 - [机器可读实验矩阵](configs/experiment_matrix.yaml)
+- [机器可读开发阶段](configs/pipeline_stages.yaml)
 - [规范化事件账本 JSON Schema](schemas/sceneledger.schema.json)
+- [Track–Event Ledger v0.2 JSON Schema](schemas/track_event_ledger.schema.json)
 - [BibTeX 参考文献](references.bib)
 
 ## 当前建议
 
-工程底座确定为开放的 **MOSS-Audio-4B-Instruct**。先完成 `B0=MOSS zero-shot`、`B1=static SFT`、`B2=MOSS 上的 TAC-style paper-spec reimplementation`、`B3=joint speech/lyrics autoregressive baseline`，再依次加入 `S1=event slots`、`S2=local evidence` 和 `S3=CARC`。TAC 官方截至调研冻结日未公开训练代码、checkpoint 和 licensed single-source corpus，因此不能声称 exact reproduction；但其 mixer、多任务 prompt、atomic timestamp token、weighted CE 和评价协议都应作为 B2 复现。
+工程底座确定为开放的 **MOSS-Audio-4B-Instruct**。先用 2–3 天完成 schema、parser、指标和 `B0=MOSS zero-shot`，随后把 **TAC-mini 数据构造**作为第一项主要复现工作；再完成 `B1=static SFT`、`B2=MOSS 上的 TAC-style paper-spec reimplementation`、`B3=joint speech/lyrics autoregressive baseline`，最后依次加入 `S1=track/event slots`、`S2=local evidence` 和 `S3=CARC`。TAC 官方截至调研冻结日未公开训练代码、checkpoint 和 licensed single-source corpus，因此不能声称 exact reproduction；但其 mixer、多任务 prompt、atomic timestamp token、weighted CE 和评价协议都应作为 B2 复现。
 
 先做一个可证伪的小规模 pilot，而不是立刻扩到百万视频：人工标注 200 个复杂片段；在 MOSS 上完成 TAC-style 基线；用 5k-10k 个无标注片段完成 CARC 最小闭环，确认相对等量 pseudo-label SFT 在真实集上同时降低漏检和幻觉后，才扩到 50k-100k。
 
@@ -55,3 +64,4 @@
 ## 数据合规原则
 
 互联网音视频只能在确认研究使用权、平台条款、隐私和版权边界后进入训练。默认只公开可再分发音频、平台 ID/时间段、派生标注及构建脚本；不要直接公开未经授权的原始 Bilibili、Instagram 或 TikTok 媒体。严格按音频指纹、视频 ID、上传者和音乐作品做 group split，避免同源泄漏。
+
