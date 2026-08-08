@@ -1,6 +1,3 @@
-Exit code: 0
-Wall time: 5.4 seconds
-Output:
 # 首轮 Pilot 执行计划与验收表
 
 > 本文保留八周 pilot 的实验验收表。最新的代码目录、阶段依赖、第一周 issue 和“先复现什么”的决策见 [11_development_plan.md](11_development_plan.md)；若两者冲突，以文档 11 为准。
@@ -185,4 +182,3 @@ schema/parser/metrics
 ```
 
 不要先写 SAM Audio 大规模分离脚本或复杂 AV pipeline。没有 B2 和 200-real pilot，无法判断 pseudo-data 的提升是真实能力还是 teacher 自洽。
-
