@@ -213,10 +213,16 @@ class SyntheticSourcePool:
         return f"{kind}:{idx:03d}"
 
     def load(self, key: str, sample_rate: int) -> tuple[np.ndarray, float]:
+        import hashlib
+
         kind, _, idx_s = key.partition(":")
         idx = int(idx_s) if idx_s else 0
         sr = sample_rate
-        rng = np.random.default_rng(self.seed + idx + 1000 * hash(kind) % 100000)
+        # Deterministic seed: use hashlib (NOT Python hash(), which is
+        # randomized per-process via PYTHONHASHSEED and breaks cross-process
+        # reproducibility).
+        kind_hash = int(hashlib.sha256(kind.encode()).hexdigest()[:8], 16)
+        rng = np.random.default_rng(self.seed + idx + 1000 * (kind_hash % 100000))
         if kind == "speech":
             dur = rng.uniform(1.5, 5.0)
             wav = self._synth_speech(sr, dur, rng, idx)
