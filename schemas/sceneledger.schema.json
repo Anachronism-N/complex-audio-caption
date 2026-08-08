@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Anachronism-N/complex-audio-caption/schemas/sceneledger.schema.json",
+  "title": "SceneLedger unified timestamped audio caption",
+  "description": "Canonical structured representation. XML-like tagged captions are deterministic serializations of this object.",
+  "type": "object",
+  "required": ["schema_version", "duration_sec", "time_resolution_sec", "events"],
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0"
+    },
+    "duration_sec": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "time_resolution_sec": {
+      "const": 0.1
+    },
+    "language": {
+      "type": "string",
+      "description": "BCP-47 language code for the container caption when known. Individual events may override it."
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/event"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "span": {
+      "type": "object",
+      "required": ["start_sec", "end_sec"],
+      "properties": {
+        "start_sec": {
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 0.1
+        },
+        "end_sec": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "multipleOf": 0.1
+        },
+        "start_uncertainty_sec": {
+          "type": "number",
+          "minimum": 0
+        },
+        "end_uncertainty_sec": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "event": {
+      "type": "object",
+      "required": ["id", "type", "spans", "text", "confidence"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "enum": ["speech", "lys", "music", "sfx"]
+        },
+        "source_id": {
+          "type": ["string", "null"],
+          "description": "Anonymous within-clip speaker, singer, track, or sound-source identity."
+        },
+        "spans": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/span"
+          }
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "language": {
+          "type": ["string", "null"]
+        },
+        "foreground": {
+          "type": ["boolean", "null"]
+        },
+        "audibility": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "attributes": {
+          "type": "object",
+          "description": "Optional type-specific, evaluation-safe attributes such as prosody, tempo, instrument, or acoustic texture.",
+          "additionalProperties": {
+            "type": ["string", "number", "boolean", "null"]
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
+
