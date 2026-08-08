@@ -7,6 +7,7 @@ from pathlib import Path
 
 from jsonschema import Draft202012Validator
 
+from .counterfactual import evaluate_carc
 from .data.carc import build_exact_carc
 from .data.datasets import download_datasets
 from .data.manifest import load_source_manifest, write_source_manifest
@@ -15,6 +16,7 @@ from .data.renderer import render_tac_dataset
 from .data.validate import validate_rendered_dataset, validate_source_manifest
 from .integrations.moss import MossInferenceAdapter, write_moss_sft
 from .metrics import evaluate_corpus
+from .preference import build_preference_rows, write_preference_jsonl
 from .serialization import parse_tagged_caption, serialize_tagged_caption
 from .types import Ledger, read_jsonl
 
@@ -54,6 +56,13 @@ def build_parser() -> argparse.ArgumentParser:
     evaluate.add_argument("reference")
     evaluate.add_argument("prediction")
     evaluate.add_argument("--output")
+
+    evaluate_cf = commands.add_parser(
+        "evaluate-carc", help="Evaluate Exact-CARC add/remove/shift consistency"
+    )
+    evaluate_cf.add_argument("--pairs", required=True)
+    evaluate_cf.add_argument("--predictions", required=True)
+    evaluate_cf.add_argument("--output")
 
     download = commands.add_parser("download", help="Download registered public datasets")
     download.add_argument("--registry", default="configs/data/datasets.yaml")
@@ -97,6 +106,17 @@ def build_parser() -> argparse.ArgumentParser:
     moss_sft.add_argument("--data-root")
     moss_sft.add_argument("--output", required=True)
     moss_sft.add_argument("--prompt")
+
+    preference = commands.add_parser(
+        "build-preference", help="Build structure-aware hard-negative preference JSONL"
+    )
+    preference.add_argument("--ledgers", required=True)
+    preference.add_argument("--render-manifest", required=True)
+    preference.add_argument("--data-root")
+    preference.add_argument("--output", required=True)
+    preference.add_argument("--negatives-per-sample", type=int, default=4)
+    preference.add_argument("--seed", type=int, default=20260808)
+    preference.add_argument("--prompt")
 
     moss_infer = commands.add_parser("moss-infer", help="Run official MOSS-Audio inference")
     moss_infer.add_argument("--upstream-root", required=True)
@@ -143,6 +163,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
     elif args.command == "evaluate":
         metrics = evaluate_corpus(read_jsonl(args.reference), read_jsonl(args.prediction)).to_dict()
+        rendered = json.dumps(metrics, ensure_ascii=False, indent=2)
+        if args.output:
+            Path(args.output).write_text(rendered, encoding="utf-8")
+        print(rendered)
+    elif args.command == "evaluate-carc":
+        metrics = evaluate_carc(args.pairs, list(read_jsonl(args.predictions))).to_dict()
         rendered = json.dumps(metrics, ensure_ascii=False, indent=2)
         if args.output:
             Path(args.output).write_text(rendered, encoding="utf-8")
@@ -207,6 +233,27 @@ def main(argv: Sequence[str] | None = None) -> int:
             kwargs["prompt"] = args.prompt
         count = write_moss_sft(read_jsonl(args.ledgers), audio_paths, args.output, **kwargs)
         print(json.dumps({"samples": count, "output": args.output}))
+    elif args.command == "build-preference":
+        data_root = (
+            Path(args.data_root).resolve()
+            if args.data_root
+            else Path(args.render_manifest).resolve().parent
+        )
+        audio_paths = {}
+        for row in _read_rows(args.render_manifest):
+            audio_path = Path(row["mixture_path"])
+            audio_paths[row["sample_id"]] = (
+                audio_path if audio_path.is_absolute() else data_root / audio_path
+            )
+        kwargs = {
+            "negatives_per_sample": args.negatives_per_sample,
+            "seed": args.seed,
+        }
+        if args.prompt:
+            kwargs["prompt"] = args.prompt
+        rows = build_preference_rows(read_jsonl(args.ledgers), audio_paths, **kwargs)
+        count = write_preference_jsonl(args.output, rows)
+        print(json.dumps({"preferences": count, "output": args.output}))
     elif args.command == "moss-infer":
         adapter = MossInferenceAdapter(args.upstream_root, args.model_path, device=args.device)
         result = adapter.generate(args.audio, args.prompt)

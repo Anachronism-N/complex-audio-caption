@@ -5,9 +5,11 @@ time_resolution_sec: 0.1
 duration_sec: [10.0, 20.0]
 gain_db: [-8.0, 2.0]
 activity_threshold_db: 35.0
+evidence_threshold_db: 45.0
 merge_gap_sec: 0.2
 save_stems: true
 rir_probability: 0.0
+echo_probability: 0.0
 templates:
   - name: speech_music
     weight: 2.0

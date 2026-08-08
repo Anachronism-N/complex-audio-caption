@@ -1,0 +1,53 @@
+# TAC++ stage-2 recipe. Start with tac_mini.yaml for pipeline debugging, then
+# enable this distribution-matched acoustic curriculum on the training server.
+seed: 20260808
+sample_count: 100000
+sample_rate: 24000
+time_resolution_sec: 0.1
+duration_sec: [10.0, 30.0]
+gain_db: [-14.0, 4.0]
+activity_threshold_db: 35.0
+evidence_threshold_db: 45.0
+merge_gap_sec: 0.2
+save_stems: true
+
+# Supply a SourceManifest containing measured/simulated RIR files before enabling.
+rir_probability: 0.0
+# rir_manifest: data/manifests/rir.jsonl
+echo_probability: 0.35
+echo_delay_sec: [0.08, 0.35]
+echo_decay: [0.2, 0.6]
+echo_repeats: 3
+
+scene_degradation:
+  noise_probability: 0.65
+  noise_color: [white, pink, brown]
+  snr_db: [-8.0, 20.0]
+  device_filter_probability: 0.45
+  low_cut_hz: [40.0, 400.0]
+  high_cut_hz: [2800.0, 11000.0]
+  compression_probability: 0.35
+  compression_threshold_dbfs: [-24.0, -8.0]
+  compression_ratio: [2.0, 8.0]
+  clipping_probability: 0.20
+  clipping_threshold: [0.35, 0.9]
+
+templates:
+  - name: speech_music
+    weight: 2.0
+    sources: [speech, music]
+  - name: music_sfx
+    weight: 1.0
+    sources: [music, sfx]
+  - name: speech_music_sfx
+    weight: 3.0
+    sources: [speech, music, sfx]
+  - name: two_speakers_music
+    weight: 2.0
+    sources: [speech, speech, music]
+  - name: speech_lyrics_music_sfx
+    weight: 2.0
+    sources: [speech, lys, music, sfx]
+  - name: dense_scene
+    weight: 1.0
+    sources: [speech, speech, lys, music, sfx, ambience]

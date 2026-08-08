@@ -1,5 +1,10 @@
 # Complex Audio Caption / SceneLedger
 
+> 代码状态（2026-08-08）：现已实现 TAC-mini/TAC++ 可复现渲染、语义与证据双时间轴、
+> Exact-CARC 生成与反事实评测、结构化偏好负例、Track–Event slot 解码，以及可插拔教师编排骨架。
+> 可直接执行的服务器流程与验收标准见
+> [实现与实验运行手册](docs/13_implementation_and_experiment_runbook.md)。
+
 面向真实复杂声景的统一、细粒度、带时间戳音频描述研究方案（调研冻结日期：2026-08-08）。
 
 ## 可运行代码

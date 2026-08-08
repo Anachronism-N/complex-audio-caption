@@ -1,5 +1,9 @@
 # 代码快速开始与服务器运行手册
 
+> 本文保留基础 smoke-test 路径。TAC++ 复杂退化、CARC 反事实评测、偏好数据、slot 输出解码和
+> 教师插件接口的完整命令见
+> [实现与实验运行手册](13_implementation_and_experiment_runbook.md)。
+
 本文对应首个可运行研究里程碑：统一数据契约、数据下载/整理、TAC-mini、Exact-CARC、MOSS SFT 转换、Track–Event slots 和分解式评价。
 
 ## 1. 已实现范围

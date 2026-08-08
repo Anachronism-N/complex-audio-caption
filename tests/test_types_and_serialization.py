@@ -7,7 +7,7 @@ import pytest
 from jsonschema import Draft202012Validator
 
 from sceneledger.serialization import parse_tagged_caption, serialize_tagged_caption
-from sceneledger.types import Event, Ledger, Span, Track
+from sceneledger.types import Event, Evidence, Ledger, Span, Track
 
 
 def example_ledger() -> Ledger:
@@ -15,7 +15,18 @@ def example_ledger() -> Ledger:
         sample_id="sample",
         duration_sec=5.0,
         tracks=[
-            Track("T1", "music", [Span(0.0, 5.0)], 0.9),
+            Track(
+                "T1",
+                "music",
+                [Span(0.0, 5.0)],
+                0.9,
+                evidence=Evidence(
+                    method="fixture",
+                    spans=[Span(0.0, 5.0)],
+                    audio_support=0.95,
+                    waveform_uri="stems/T1.wav",
+                ),
+            ),
             Track("T2", "speech", [Span(1.0, 2.2)], 0.8, identity="speaker_1"),
         ],
         events=[

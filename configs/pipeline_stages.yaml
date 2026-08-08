@@ -12,6 +12,28 @@ defaults:
   event_slots: 24
   seed: 20260808
 
+implementation_status:
+  cpu_complete:
+    - canonical_schema_parser_serializer
+    - tac_mini_and_tac_pp_renderer
+    - exact_carc_generation_and_evaluation
+    - moss_sft_and_feature_adapters
+    - track_event_slot_structure_loss_and_decode
+    - hard_negative_preference_builder
+    - pluggable_teacher_orchestrator
+  server_required:
+    - moss_zero_shot_and_lora_runs
+    - real_teacher_adapters_and_precision_audit
+    - thirty_two_sample_slot_overfit
+    - real_distribution_prior_estimation
+    - wildmix_human_annotation
+  explicitly_not_yet_implemented:
+    - event_text_decoder_training
+    - distributed_training_launcher
+    - real_codec_ducking_and_occlusion
+    - whisperx_pyannote_demucs_teacher_adapters
+    - av_vlm_verifier
+
 stages:
   p0_protocol:
     depends_on: []

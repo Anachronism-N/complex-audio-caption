@@ -50,6 +50,7 @@ class Span:
 @dataclass
 class Evidence:
     method: str | None = None
+    spans: list[Span] = field(default_factory=list)
     audio_support: float | None = None
     target_residual_margin: float | None = None
     av_support: float | None = None
@@ -60,7 +61,15 @@ class Evidence:
     def from_dict(cls, value: dict[str, Any] | None) -> Evidence | None:
         if value is None:
             return None
-        return cls(**value)
+        return cls(
+            method=value.get("method"),
+            spans=[Span.from_dict(item) for item in value.get("spans", [])],
+            audio_support=_optional_float(value.get("audio_support")),
+            target_residual_margin=_optional_float(value.get("target_residual_margin")),
+            av_support=_optional_float(value.get("av_support")),
+            waveform_uri=value.get("waveform_uri"),
+            mask_uri=value.get("mask_uri"),
+        )
 
 
 @dataclass
@@ -156,6 +165,9 @@ class Ledger:
             if track.audibility is not None:
                 _validate_confidence(track.audibility, f"track {track.id} audibility")
             _validate_spans(track.spans, self.duration_sec, self.time_resolution_sec, False)
+            _validate_evidence(
+                track.evidence, self.duration_sec, self.time_resolution_sec, f"track {track.id}"
+            )
 
         for event in self.events:
             _validate_confidence(event.confidence, f"event {event.id}")
@@ -164,6 +176,9 @@ class Ledger:
             if not event.text.strip():
                 raise ValueError(f"Event {event.id} has empty text")
             _validate_spans(event.spans, self.duration_sec, self.time_resolution_sec, True)
+            _validate_evidence(
+                event.evidence, self.duration_sec, self.time_resolution_sec, f"event {event.id}"
+            )
             for relation in event.relations:
                 target = relation.get("target_event_id")
                 if target not in set(event_ids):
@@ -236,6 +251,20 @@ def _require_unique(values: list[str], label: str) -> None:
 def _validate_confidence(value: float, label: str) -> None:
     if not math.isfinite(value) or not 0 <= value <= 1:
         raise ValueError(f"{label} confidence must be in [0, 1], got {value}")
+
+
+def _validate_evidence(
+    evidence: Evidence | None, duration_sec: float, resolution_sec: float, label: str
+) -> None:
+    if evidence is None:
+        return
+    _validate_spans(evidence.spans, duration_sec, resolution_sec, False)
+    for name, value in (
+        ("audio_support", evidence.audio_support),
+        ("av_support", evidence.av_support),
+    ):
+        if value is not None:
+            _validate_confidence(value, f"{label} evidence {name}")
 
 
 def _optional_float(value: Any) -> float | None:

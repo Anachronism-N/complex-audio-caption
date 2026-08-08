@@ -9,7 +9,8 @@ import numpy as np
 import yaml
 
 from ..serialization import serialize_tagged_caption
-from ..types import Event, Ledger, Span, Track, quantize_time, write_jsonl
+from ..types import Event, Evidence, Ledger, Span, Track, quantize_time, write_jsonl
+from .acoustics import apply_echo, apply_scene_degradation
 from .audio import (
     activity_to_spans,
     apply_rir,
@@ -32,6 +33,8 @@ class RenderedSource:
     placement_sample: int
     gain_db: float
     rir_path: str | None
+    echo_delay_sec: float | None
+    echo_decay: float | None
     stem_path: str | None
 
 
@@ -124,6 +127,7 @@ def _render_one(
     gain_range = config.get("gain_db", [-8.0, 2.0])
     frame_sec = float(config.get("time_resolution_sec", 0.1))
     merge_gap = float(config.get("merge_gap_sec", 0.2))
+    echo_probability = float(config.get("echo_probability", 0.0))
 
     for source_index, record in enumerate(selected, 1):
         audio = load_audio(record.path, sample_rate)
@@ -144,28 +148,32 @@ def _render_one(
             transformed = apply_rir(transformed, rir, len(transformed))
             rir_path = rir_record.path
 
+        echo_delay_sec: float | None = None
+        echo_decay: float | None = None
+        if rng.random() < echo_probability:
+            echo_delay_sec = _sample_range(config.get("echo_delay_sec", [0.08, 0.35]), rng)
+            echo_decay = _sample_range(config.get("echo_decay", [0.2, 0.6]), rng)
+            transformed = apply_echo(
+                transformed,
+                sample_rate,
+                delay_sec=echo_delay_sec,
+                decay=echo_decay,
+                repeats=int(config.get("echo_repeats", 2)),
+            )
+
         stem = np.zeros(total_samples, dtype=np.float32)
         end_sample = min(total_samples, placement_sample + len(transformed))
         stem[placement_sample:end_sample] = transformed[: end_sample - placement_sample]
         stems.append(stem)
 
-        semantic_activity = frame_activity(
+        span_pairs = _placed_activity_spans(
             audio,
+            placement_frame,
+            duration_sec,
             sample_rate,
-            frame_sec=frame_sec,
-            threshold_db_below_peak=float(config.get("activity_threshold_db", 35.0)),
-        )
-        placement_zeros = np.zeros(placement_frame, dtype=bool)
-        full_activity = np.concatenate([placement_zeros, semantic_activity])
-        frame_count = round(duration_sec / frame_sec)
-        full_activity = np.pad(full_activity, (0, max(0, frame_count - len(full_activity))))[
-            :frame_count
-        ]
-        span_pairs = activity_to_spans(
-            full_activity,
-            frame_sec=frame_sec,
-            merge_gap_sec=merge_gap,
-            minimum_duration_sec=frame_sec,
+            frame_sec,
+            merge_gap,
+            float(config.get("activity_threshold_db", 35.0)),
         )
         if not span_pairs:
             start = quantize_time(placement_sample / sample_rate)
@@ -174,6 +182,16 @@ def _render_one(
                 end = quantize_time(start + frame_sec)
             span_pairs = [(start, end)]
         spans = [Span(start, min(end, duration_sec)) for start, end in span_pairs]
+        evidence_pairs = _placed_activity_spans(
+            transformed,
+            placement_frame,
+            duration_sec,
+            sample_rate,
+            frame_sec,
+            merge_gap,
+            float(config.get("evidence_threshold_db", 45.0)),
+        )
+        evidence_spans = [Span(start, min(end, duration_sec)) for start, end in evidence_pairs]
         track_id = f"T{source_index}"
         event_id = f"E{source_index}"
         track_kind = "vocal" if record.type == "lys" else record.type
@@ -185,6 +203,9 @@ def _render_one(
                 spans=spans,
                 confidence=1.0,
                 identity=record.group_id if record.type in {"speech", "lys"} else None,
+                evidence=Evidence(
+                    method="exact_renderer_stem", spans=evidence_spans, audio_support=1.0
+                ),
                 attributes={"source_record_id": record.id},
             )
         )
@@ -198,6 +219,9 @@ def _render_one(
                 confidence=1.0,
                 language=record.language,
                 verbatim=record.verbatim if event_type in {"speech", "lys"} else None,
+                evidence=Evidence(
+                    method="exact_renderer_stem", spans=evidence_spans, audio_support=1.0
+                ),
             )
         )
         rendered_sources.append(
@@ -210,12 +234,26 @@ def _render_one(
                 placement_sample=placement_sample,
                 gain_db=gain_db,
                 rir_path=rir_path,
+                echo_delay_sec=echo_delay_sec,
+                echo_decay=echo_decay,
                 stem_path=None,
             )
         )
 
     stems, master_scale = peak_normalize_group(stems)
-    mixture = np.sum(np.stack(stems), axis=0)
+    clean_mixture = np.sum(np.stack(stems), axis=0)
+    degraded_mixture, degradation = apply_scene_degradation(
+        clean_mixture, sample_rate, config.get("scene_degradation"), rng
+    )
+    residual = degraded_mixture - clean_mixture
+    component_peak = max(
+        [float(np.max(np.abs(degraded_mixture))), float(np.max(np.abs(residual)))]
+        + [float(np.max(np.abs(stem))) for stem in stems]
+    )
+    degradation_scale = min(1.0, 0.98 / component_peak) if component_peak > 0 else 1.0
+    stems = [np.asarray(stem * degradation_scale, dtype=np.float32) for stem in stems]
+    residual = np.asarray(residual * degradation_scale, dtype=np.float32)
+    mixture = np.asarray(degraded_mixture * degradation_scale, dtype=np.float32)
     mixture_path = output / "audio" / f"{sample_id}.wav"
     save_audio(mixture_path, mixture, sample_rate)
     if bool(config.get("save_stems", True)):
@@ -223,13 +261,35 @@ def _render_one(
             stem_path = output / "stems" / sample_id / f"T{stem_index}.wav"
             save_audio(stem_path, stem, sample_rate)
             rendered_sources[stem_index - 1].stem_path = str(stem_path.relative_to(output))
+            waveform_uri = str(stem_path.relative_to(output))
+            ledger_tracks[stem_index - 1].evidence.waveform_uri = waveform_uri  # type: ignore[union-attr]
+            ledger_events[stem_index - 1].evidence.waveform_uri = waveform_uri  # type: ignore[union-attr]
+        if degradation["operations"]:
+            residual_path = output / "stems" / sample_id / "T_residual.wav"
+            save_audio(residual_path, residual, sample_rate)
+            residual_uri: str | None = str(residual_path.relative_to(output))
+        else:
+            residual_uri = None
+    else:
+        residual_uri = None
+
+    conditions = {
+        "domain": "tac_pp" if degradation["operations"] or echo_probability else "tac_mini",
+        "overlap_ratio": _overlap_ratio(stems),
+        "snr_db": degradation.get("snr_db"),
+        "noise_color": degradation.get("noise_color"),
+        "device_filter": "device_filter" in degradation["operations"],
+        "compression": "compression" in degradation["operations"],
+        "clipping": "clipping" in degradation["operations"],
+        "echo": any(item.echo_delay_sec is not None for item in rendered_sources),
+    }
 
     ledger = Ledger(
         sample_id=sample_id,
         duration_sec=duration_sec,
         tracks=ledger_tracks,
         events=ledger_events,
-        conditions={"domain": "tac_mini", "overlap_ratio": _overlap_ratio(stems)},
+        conditions=conditions,
         provenance={
             "label_level": "B",
             "source_dataset": "source_manifest",
@@ -245,6 +305,9 @@ def _render_one(
         "seed": int(config.get("seed", 20260808)) + index,
         "template": template.get("name", "+".join(source_types)),
         "master_scale": master_scale,
+        "degradation_scale": degradation_scale,
+        "acoustic_degradation": degradation,
+        "residual_stem_path": residual_uri,
         "sources": [asdict(item) for item in rendered_sources],
         "caption": serialize_tagged_caption(ledger),
     }
@@ -256,3 +319,39 @@ def _overlap_ratio(stems: list[np.ndarray]) -> float:
         return 0.0
     active = np.stack([np.abs(stem) > 1e-5 for stem in stems])
     return float(np.mean(np.sum(active, axis=0) >= 2))
+
+
+def _placed_activity_spans(
+    audio: np.ndarray,
+    placement_frame: int,
+    duration_sec: float,
+    sample_rate: int,
+    frame_sec: float,
+    merge_gap: float,
+    threshold_db: float,
+) -> list[tuple[float, float]]:
+    activity = frame_activity(
+        audio,
+        sample_rate,
+        frame_sec=frame_sec,
+        threshold_db_below_peak=threshold_db,
+    )
+    full_activity = np.concatenate([np.zeros(placement_frame, dtype=bool), activity])
+    frame_count = round(duration_sec / frame_sec)
+    full_activity = np.pad(full_activity, (0, max(0, frame_count - len(full_activity))))[
+        :frame_count
+    ]
+    return activity_to_spans(
+        full_activity,
+        frame_sec=frame_sec,
+        merge_gap_sec=merge_gap,
+        minimum_duration_sec=frame_sec,
+    )
+
+
+def _sample_range(value: float | list[float], rng: np.random.Generator) -> float:
+    if isinstance(value, list):
+        if len(value) != 2:
+            raise ValueError(f"Expected [minimum, maximum], got {value}")
+        return float(rng.uniform(float(value[0]), float(value[1])))
+    return float(value)

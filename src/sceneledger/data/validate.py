@@ -53,6 +53,8 @@ def validate_rendered_dataset(output_dir: str | Path, tolerance: float = 2e-4) -
         stem_paths = [item.get("stem_path") for item in row["sources"]]
         if all(stem_paths):
             stems = [load_audio(root / path, sample_rate) for path in stem_paths]
+            if row.get("residual_stem_path"):
+                stems.append(load_audio(root / row["residual_stem_path"], sample_rate))
             reconstruction = np.sum(np.stack(stems), axis=0)
             error = float(np.max(np.abs(mixture - reconstruction)))
             maximum_reconstruction_error = max(maximum_reconstruction_error, error)

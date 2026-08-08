@@ -15,3 +15,6 @@ training:
   learning_rate: 0.0001
   weight_decay: 0.01
   gradient_clip: 1.0
+  gradient_accumulation_steps: 8
+  # Set to 32 for the mandatory structural overfit smoke test.
+  overfit_samples: null

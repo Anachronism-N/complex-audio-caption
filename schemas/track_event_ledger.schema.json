@@ -82,6 +82,13 @@
         "method": {
           "type": "string"
         },
+        "spans": {
+          "type": "array",
+          "description": "Intervals with measurable support after acoustic rendering; semantic event spans remain in event.spans.",
+          "items": {
+            "$ref": "#/$defs/span"
+          }
+        },
         "audio_support": {
           "type": ["number", "null"],
           "minimum": 0,
@@ -231,6 +238,19 @@
         },
         "codec": {
           "type": ["string", "null"]
+        },
+        "noise_color": {
+          "type": ["string", "null"],
+          "enum": ["white", "pink", "brown", null]
+        },
+        "device_filter": {
+          "type": ["boolean", "null"]
+        },
+        "compression": {
+          "type": ["boolean", "null"]
+        },
+        "clipping": {
+          "type": ["boolean", "null"]
         },
         "overlap_ratio": {
           "type": ["number", "null"],

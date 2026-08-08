@@ -104,6 +104,48 @@ def test_exact_carc_pair_is_exact(tmp_path: Path) -> None:
     assert row["shift_delta_sec"] != 0
 
 
+def test_tac_pp_degradation_retains_evidence_and_exact_residual(tmp_path: Path) -> None:
+    manifest = _source_manifest(tmp_path / "source")
+    config = {
+        "seed": 11,
+        "sample_count": 1,
+        "sample_rate": 8000,
+        "duration_sec": [3.0, 3.0],
+        "gain_db": [-3.0, -3.0],
+        "save_stems": True,
+        "echo_probability": 1.0,
+        "echo_delay_sec": [0.1, 0.1],
+        "echo_decay": [0.4, 0.4],
+        "scene_degradation": {
+            "noise_probability": 1.0,
+            "noise_color": ["pink"],
+            "snr_db": [5.0, 5.0],
+            "device_filter_probability": 1.0,
+            "low_cut_hz": [80.0, 80.0],
+            "high_cut_hz": [3000.0, 3000.0],
+            "compression_probability": 1.0,
+            "compression_threshold_dbfs": [-12.0, -12.0],
+            "compression_ratio": [4.0, 4.0],
+            "clipping_probability": 1.0,
+            "clipping_threshold": [0.7, 0.7],
+        },
+        "templates": [{"name": "dense", "sources": ["speech", "music", "sfx"]}],
+    }
+    config_path = tmp_path / "render_pp.yaml"
+    config_path.write_text(yaml.safe_dump(config), encoding="utf-8")
+    output = tmp_path / "render_pp"
+    render_tac_dataset(manifest, config_path, output)
+    row = json.loads((output / "render_manifest.jsonl").read_text(encoding="utf-8"))
+    ledger = next(read_jsonl(output / "ledgers.jsonl"))
+    assert row["residual_stem_path"]
+    assert ledger.conditions["domain"] == "tac_pp"
+    assert ledger.conditions["echo"]
+    assert all(track.evidence and track.evidence.spans for track in ledger.tracks)
+    assert all(event.evidence and event.evidence.waveform_uri for event in ledger.events)
+    validation = validate_rendered_dataset(output)
+    assert validation["valid"], validation["errors"]
+
+
 def _sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
