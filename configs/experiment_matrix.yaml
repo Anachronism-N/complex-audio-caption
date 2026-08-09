@@ -86,6 +86,12 @@ runs:
     parent: B2-moss-tac
     change: "Joint lyrics and overlapping speaker targets; no external Whisper."
     purpose: "Strongest autoregressive unified-caption baseline."
+    validity_requirements:
+      - "file-backed vocal audio with verbatim lyrics"
+      - "source-group connected-component split"
+      - "source-aware atomic track attributes"
+      - "validation-only inference with parse report"
+      - "temporal-only and text-gated metrics reported separately"
 
   - id: S1-ledger
     parent: B3-moss-tac-joint

@@ -19,7 +19,10 @@ status_snapshot:
   p2_tac_mini_code: cpu_smoke_verified_v0.3.0
   p2_tac_mini_500_artifact: rerender_required
   p3_b1_official_pipeline: code_ready_gpu_pending
-  p3_b2_weighted_timestamps: blocked_until_atomic_token_registration
+  p3_b2_weighted_timestamps: atomic_registration_code_ready_gpu_pending
+  p4_b3_historical_artifact: superseded_invalid_lyrics_and_evaluation
+  p4_b3_valid_pipeline: code_ready_real_catalog_and_gpu_pending
+  tag2021_anchor: code_ready_server_execution_pending
   real_public_source_pool: not_server_verified
   web_unlabeled_teacher_pipeline: not_integrated
   wildmix_cap_human_benchmark: not_annotated

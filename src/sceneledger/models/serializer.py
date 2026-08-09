@@ -95,7 +95,7 @@ def _apply_uncertainties(
         raise ValueError(
             f"uncertainty count {len(chunks)} != span count {len(spans)}"
         )
-    for span_row, chunk in zip(spans, chunks, strict=False):
+    for span_row, chunk in zip(spans, chunks):  # noqa: B905 - Python 3.9 smoke env
         su_s, eu_s = chunk.split("|", 1)
         span_row[2] = float(su_s) if su_s else None
         span_row[3] = float(eu_s) if eu_s else None

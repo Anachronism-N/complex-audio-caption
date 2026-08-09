@@ -1,3 +1,6 @@
+# HISTORICAL/INVALID: retained only to trace the superseded synthetic B3 report.
+# The trainer now refuses its non-lexical synthetic vocal sources. Use
+# configs/model/b3_valid.yaml with configs/data/b3_real.yaml.
 # B3: unified speech/lyrics baseline.
 # Same as B2 (timestamp_weight=5.0) but trained on data with lyrics and
 # overlapping speakers, and prompt includes lyrics instructions.

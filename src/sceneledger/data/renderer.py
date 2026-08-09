@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import hashlib
 from dataclasses import dataclass
+from pathlib import Path
 
 import numpy as np
 
@@ -199,7 +200,8 @@ def _build_events_for_source(
                     track_id=track_id,
                     spans=[sp],
                     text=src.text,
-                    verbatim=False,
+                    verbatim=src.verbatim if src.verbatim is not None else False,
+                    language=src.language,
                     confidence=0.95,
                 )
             )
@@ -215,7 +217,8 @@ def _build_events_for_source(
                     track_id=track_id,
                     spans=[sp],
                     text=src.text,
-                    verbatim=True,
+                    verbatim=src.verbatim if src.verbatim is not None else True,
+                    language=src.language,
                     confidence=0.88,
                 )
             )
@@ -230,6 +233,8 @@ def _build_events_for_source(
                 track_id=track_id,
                 spans=span_objs,
                 text=src.text,
+                verbatim=src.verbatim,
+                language=src.language,
                 confidence=0.93,
             )
         )
@@ -243,6 +248,8 @@ def _build_events_for_source(
             track_id=track_id,
             spans=span_objs,
             text=src.text,
+            verbatim=src.verbatim,
+            language=src.language,
             confidence=0.94,
         )
     )
@@ -304,6 +311,9 @@ def _build_ledger(scene: Scene, rendered: list[RenderedSource]) -> Ledger:
         overlap_ratio=overlap_ratio,
     )
 
+    datasets = sorted({source.dataset for source in scene.sources if source.dataset})
+    licenses = sorted({source.license for source in scene.sources if source.license})
+    synthetic = all(":" in source.path and not Path(source.path).is_absolute() for source in scene.sources)
     return Ledger(
         schema_version=SCHEMA_VERSION,  # type: ignore[arg-type]
         sample_id=scene.scene_id,
@@ -314,9 +324,17 @@ def _build_ledger(scene: Scene, rendered: list[RenderedSource]) -> Ledger:
         events=events,
         provenance=Provenance(
             label_level="B",
-            source_dataset="tac_mini_synthetic",
+            source_dataset=(
+                "+".join(datasets)
+                if datasets
+                else "tac_mini_synthetic" if synthetic else "source_catalog_mixture"
+            ),
             renderer_manifest_uri=None,
-            license_status="synthetic",
+            license_status=(
+                ";".join(licenses)
+                if licenses
+                else "synthetic" if synthetic else "catalog_missing_license"
+            ),
         ),
     )
 

@@ -22,6 +22,7 @@ from sceneledger.data.renderer import (
     render_scene,
 )
 from sceneledger.data.scene_graph_sampler import (
+    FileSourcePool,
     PlacedSource,
     SceneGraphSampler,
     SceneSamplerConfig,
@@ -240,3 +241,47 @@ def test_mixture_no_clipping(pool, sampler):
     scene = _scene(sampler, template="speech_music_sfx")
     out = render_scene(scene, pool)
     assert float(np.max(np.abs(out.mixture))) <= 0.99 + 1e-6
+
+
+def test_file_backed_vocal_uses_catalog_lyrics_not_invented_text(tmp_path: Path):
+    import soundfile as sf
+
+    sr = 24000
+    seconds = 10
+    time = np.arange(sr * seconds) / sr
+    vocal_path = (tmp_path / "vocal.wav").resolve()
+    music_path = (tmp_path / "music.wav").resolve()
+    sf.write(vocal_path, (0.2 * np.sin(2 * np.pi * 220 * time)).astype(np.float32), sr)
+    sf.write(music_path, (0.1 * np.sin(2 * np.pi * 110 * time)).astype(np.float32), sr)
+    file_pool = FileSourcePool(
+        by_kind={"vocal": [str(vocal_path)], "music": [str(music_path)]},
+        metadata_by_path={
+            str(vocal_path): {
+                "text": "take me home",
+                "language": "en",
+                "verbatim": True,
+                "source_group": "song-1",
+                "dataset": "fixture",
+                "license": "test-only",
+            },
+            str(music_path): {
+                "text": "instrumental accompaniment",
+                "source_group": "song-2",
+                "dataset": "fixture",
+                "license": "test-only",
+            },
+        },
+        strict_metadata=True,
+    )
+    file_sampler = SceneGraphSampler(
+        pool=file_pool, config=SceneSamplerConfig(sample_rate=sr)
+    )
+    output = render_scene(
+        file_sampler.sample("real_lyrics", seed=17, template="lyrics_over_music"),
+        file_pool,
+    )
+    lyrics = [event for event in output.target_ledger.events if event.type == "lys"]
+    assert len(lyrics) == 1
+    assert lyrics[0].text == "take me home"
+    assert lyrics[0].verbatim is True
+    assert output.target_ledger.provenance.source_dataset == "fixture"

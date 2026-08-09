@@ -118,3 +118,43 @@ def test_canonical_prompt_can_specify_atomic_grammar():
 def test_token_count_matches_config():
     # experiment_matrix.yaml: count 301 (0.0..30.0 inclusive at 0.1s)
     assert T_TOKEN_COUNT == 301
+
+
+def test_source_aware_atomic_round_trip_preserves_two_speakers():
+    original = ledger(
+        "dialogue",
+        5.0,
+        tracks=[
+            tr("T1", "speech", [t(0.0, 2.0)], identity="S1"),
+            tr("T2", "speech", [t(1.0, 3.0)], identity="S2"),
+        ],
+        events=[
+            ev("E1", "speech", [t(0.0, 2.0)], "hello", track_id="T1"),
+            ev("E2", "speech", [t(1.0, 3.0)], "goodbye", track_id="T2"),
+        ],
+    )
+    caption = format_atomic_caption(original, include_tracks=True)
+    assert '<speech track="T1" identity="S1">' in caption
+    assert '<speech track="T2" identity="S2">' in caption
+    recovered = atomic_to_ledger(caption, "dialogue", 5.0)
+    assert [(track.id, track.identity) for track in recovered.tracks] == [
+        ("T1", "S1"),
+        ("T2", "S2"),
+    ]
+    assert [event.track_id for event in recovered.events] == ["T1", "T2"]
+
+
+def test_atomic_parser_can_clip_out_of_range_spans():
+    caption = "<sfx><|t_040|>impact<|t_060|></sfx>"
+    recovered = atomic_to_ledger(
+        caption, "short", 5.0, clip_to_duration=True
+    )
+    assert recovered.events[0].spans[0].end_sec == 5.0
+
+
+def test_source_aware_prompt_documents_track_grammar():
+    prompt = canonical_prompt(
+        include_lyrics=True, include_tracks=True, output_mode="atomic"
+    )
+    assert 'track="Tn"' in prompt
+    assert 'identity="Sn"' in prompt

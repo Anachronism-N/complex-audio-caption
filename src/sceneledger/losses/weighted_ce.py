@@ -16,28 +16,7 @@ from __future__ import annotations
 import torch
 import torch.nn.functional as F
 
-from sceneledger.models.target_formatter import T_TOKEN_COUNT, time_to_token
-
-
-def compute_timestamp_token_ids(tokenizer) -> set[int]:
-    """Return the set of token IDs that constitute ``<|t_XXX|>`` tokens.
-
-    B2 requires every timestamp string to be a single registered vocabulary
-    entry. Splitting it into punctuation/digit pieces would also upweight
-    ordinary text tokens, so fail closed instead of silently broadening the
-    timestamp class.
-    """
-    ids: set[int] = set()
-    for i in range(T_TOKEN_COUNT):
-        token = time_to_token(i * 0.1)
-        sub_ids = tokenizer.encode(token, add_special_tokens=False)
-        if len(sub_ids) != 1:
-            raise ValueError(
-                f"timestamp token {token!r} is not atomic (encoded as {sub_ids}); "
-                "register special tokens and resize model embeddings first"
-            )
-        ids.add(sub_ids[0])
-    return ids
+from sceneledger.models.tokenizer_utils import compute_timestamp_token_ids
 
 
 def time_weighted_ce_loss(

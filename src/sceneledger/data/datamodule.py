@@ -83,7 +83,7 @@ def _group_key(entry: ManifestEntry, key: str) -> str:
 
 def _source_paths(entry: ManifestEntry) -> set[str]:
     return {
-        str(source["path"])
+        str(source.get("source_group") or source["path"])
         for source in entry.scene.get("sources", [])
         if source.get("path")
     }

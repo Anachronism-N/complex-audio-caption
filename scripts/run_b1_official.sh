@@ -2,6 +2,7 @@
 set -euo pipefail
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+export PYTHONPATH="${PROJECT_ROOT}/src${PYTHONPATH:+:${PYTHONPATH}}"
 MOSS_DIR="${MOSS_DIR:-${PROJECT_ROOT}/third_party/MOSS-Audio}"
 MOSS_COMMIT="${MOSS_COMMIT:-5cbb1d823937cd5b5de3d8fa4d3a7253ebd3b883}"
 MODEL_DIR="${MODEL_DIR:-/tmp/moss_weights}"
@@ -70,5 +71,6 @@ python -m sceneledger.cli.infer \
 python -m sceneledger.cli.evaluate \
   --prediction "${OUTPUT_DIR}/val_predictions.jsonl" \
   --reference "${SFT_DIR}/val_references.jsonl" \
+  --parse-report "${OUTPUT_DIR}/val_infer_report.json" \
   --output "${OUTPUT_DIR}/val_metrics.json" \
   --pretty

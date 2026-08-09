@@ -1,9 +1,4 @@
-# B2: TAC paper-spec reimplementation (time-weighted CE).
-# Same as B1 but with timestamp_weight=5.0 to improve temporal precision.
-# B1 weakness: offset-MAE=0.217s. B2 target: reduce offset-MAE.
-# This is a paper-spec reimplementation, NOT an exact reproduction (TAC code/
-# checkpoint/corpus not public per docs/06).
-
+# B3-valid: real speech/lyrics sources, source-aware targets, atomic timestamps.
 model:
   path: /tmp/moss_weights
   device: cuda:0
@@ -19,29 +14,32 @@ lora:
   target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
 
 data:
-  manifest_path: data/derived/tac_mini/manifest.jsonl
-  audio_base_dir: /tmp/tac_mini
+  manifest_path: data/derived/b3_real/manifest.jsonl
+  audio_base_dir: data/derived/b3_real
   sample_rate: 16000
   max_audio_seconds: 30.0
   style: brief
   target_mode: atomic
   group_key: source_id
   val_fraction: 0.1
+  include_lyrics: true
+  include_tracks: true
+  allow_placeholder_lyrics: false
 
 train:
-  steps: 1000                     # same as B1 for fair comparison
-  global_effective_batch: 8
+  steps: 10000
+  global_effective_batch: 32
   micro_batch_size: 1
   learning_rate: 5.0e-5
   schedule: cosine
-  warmup_steps: 50
+  warmup_steps: 500
   weight_decay: 0.0
   max_grad_norm: 1.0
   gradient_checkpointing: true
   seed: 20260808
-  output_dir: outputs/b2_tac
+  output_dir: outputs/b3_valid
 
 loss:
   text_weight: 1.0
   type_weight: 2.0
-  timestamp_weight: 5.0           # KEY B2 CHANGE: upweight timestamp tokens
+  timestamp_weight: 5.0

@@ -22,13 +22,14 @@ from __future__ import annotations
 
 import random
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Literal, Protocol
 
 import numpy as np
 
 from sceneledger.data.schema import TIME_RESOLUTION_SEC
 
-SourceKind = Literal["speech", "music", "sfx", "ambience"]
+SourceKind = Literal["speech", "vocal", "music", "sfx", "ambience"]
 TemplateID = Literal[
     "isolated_sfx",
     "speech_over_music",
@@ -65,6 +66,11 @@ class PlacedSource:
     gain_db: float
     text: str  # caption text for the events derived from this source
     identity: str | None = None  # speaker_1 / singer_1 / None
+    language: str | None = None
+    verbatim: bool | None = None
+    source_group: str | None = None  # original media/song/speaker leakage group
+    license: str | None = None
+    dataset: str | None = None
     repeat: int = 1
     repeat_gap_s: float = 0.0
     rir_id: str | None = None
@@ -133,6 +139,11 @@ def _source_dict(s: PlacedSource) -> dict:
         "gain_db": s.gain_db,
         "text": s.text,
         "identity": s.identity,
+        "language": s.language,
+        "verbatim": s.verbatim,
+        "source_group": s.source_group,
+        "license": s.license,
+        "dataset": s.dataset,
         "repeat": s.repeat,
         "repeat_gap_s": s.repeat_gap_s,
         "rir_id": s.rir_id,
@@ -173,12 +184,19 @@ class SourcePool(Protocol):
     def pick(self, kind: SourceKind, rng: random.Random) -> str:  # pragma: no cover
         ...
 
+    def metadata(
+        self, key: str, kind: SourceKind, rng: random.Random
+    ) -> dict:  # pragma: no cover
+        ...
+
 
 @dataclass
 class FileSourcePool:
     """Reads single-source audio from a ``{kind: [paths]}`` mapping."""
 
     by_kind: dict[str, list[str]]
+    metadata_by_path: dict[str, dict] = field(default_factory=dict)
+    strict_metadata: bool = False
 
     def pick(self, kind: SourceKind, rng: random.Random) -> str:
         paths = self.by_kind.get(kind, [])
@@ -203,6 +221,20 @@ class FileSourcePool:
                 int(sr) // factor,
             )
         return wav.astype(np.float32), float(len(wav) / sample_rate)
+
+    def metadata(self, key: str, kind: SourceKind, rng: random.Random) -> dict:
+        record = self.metadata_by_path.get(str(Path(key).resolve()))
+        if record is not None:
+            return dict(record)
+        if self.strict_metadata or kind in {"speech", "vocal"}:
+            raise ValueError(
+                f"file-backed {kind} source has no catalog metadata: {key}; "
+                "invented transcripts/lyrics are forbidden"
+            )
+        return {
+            "text": f"an audible {kind} event",
+            "source_group": str(Path(key).resolve()),
+        }
 
 
 @dataclass
@@ -254,6 +286,15 @@ class SyntheticSourcePool:
         peak = float(np.max(np.abs(wav)) + 1e-9)
         wav = (wav / peak) * 0.9
         return wav.astype(np.float32), float(len(wav) / sr)
+
+    def metadata(self, key: str, kind: SourceKind, rng: random.Random) -> dict:
+        if kind == "vocal":
+            return {
+                "text": "[synthetic vocal placeholder; no lexical supervision]",
+                "source_group": key,
+                "verbatim": False,
+            }
+        return {"text": _caption_for(kind, rng), "source_group": key}
 
     @staticmethod
     def _synth_speech(sr: int, dur: float, rng: np.random.Generator, idx: int) -> np.ndarray:
@@ -471,6 +512,7 @@ class SceneGraphSampler:
         bg_gain = _snr_to_gain_db(rng.uniform(*cfg.fg_bg_snr_range), fg_gain)
         source_prefix = {
             "speech": "SP",
+            "vocal": "VO",
             "music": "MU",
             "sfx": "FX",
             "ambience": "AM",
@@ -479,6 +521,7 @@ class SceneGraphSampler:
 
         def _src(kind: SourceKind, *, fg: bool, identity: str | None = None) -> PlacedSource:
             key = self.pool.pick(kind, rng)
+            metadata = self.pool.metadata(key, kind, rng)
             gain = fg_gain if fg else bg_gain
             # onset: foreground sources placed with margin; background at 0
             if kind in ("music", "ambience"):
@@ -512,8 +555,13 @@ class SceneGraphSampler:
                 path=key,
                 onset=round(onset, 6),
                 gain_db=round(gain, 3),
-                text=_caption_for(kind, rng),
+                text=str(metadata.get("text") or _caption_for(kind, rng)),
                 identity=identity,
+                language=metadata.get("language"),
+                verbatim=metadata.get("verbatim"),
+                source_group=str(metadata.get("source_group") or key),
+                license=metadata.get("license"),
+                dataset=metadata.get("dataset"),
                 repeat=repeat,
                 repeat_gap_s=repeat_gap,
                 rir_id=rir_id,

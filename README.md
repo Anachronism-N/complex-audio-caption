@@ -1,5 +1,9 @@
 # Complex Audio Caption / SceneLedger
 
+> 2026-08-09：实验主线已切换为 anchor-first。服务器先复现 TAG 2021，再运行 B1 official
+> 和 B3-valid；执行入口见 [有效实验管线](docs/14_valid_experiment_pipeline.md)。旧 B3
+> synthetic lyrics 数据和全量集合报告已 supersede，不得用于论文结论。
+
 > 最新的数据管线验收状态、服务器重渲染命令和 B1 go/no-go gate 见
 > [数据管线复现状态与下一步实验](docs/13_data_pipeline_status.md)。仓库中旧的
 > 500 条 TAC-mini manifest 已被判定为过期，正式训练前必须重新渲染。

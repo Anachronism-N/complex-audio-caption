@@ -23,10 +23,13 @@ from sceneledger.models.target_formatter import (
 )
 
 
-def _target(entry: ManifestEntry, mode: str, style: str) -> str:
+def _target(entry: ManifestEntry, mode: str, style: str, include_tracks: bool) -> str:
     ledger = Ledger.model_validate(entry.target_ledger)
-    formatter = format_atomic_caption if mode == "atomic" else format_xml_caption
-    return formatter(ledger, style=style, cfg=StyleConfig())
+    if mode == "atomic":
+        return format_atomic_caption(
+            ledger, style=style, cfg=StyleConfig(), include_tracks=include_tracks
+        )
+    return format_xml_caption(ledger, style=style, cfg=StyleConfig())
 
 
 def _conversation_row(
@@ -35,6 +38,7 @@ def _conversation_row(
     prompt: str,
     mode: str,
     style: str,
+    include_tracks: bool,
 ) -> dict:
     audio_path = (audio_base / entry.mixture_path).resolve()
     return {
@@ -45,7 +49,7 @@ def _conversation_row(
             {
                 "role": "assistant",
                 "message_type": "text",
-                "content": _target(entry, mode, style),
+                "content": _target(entry, mode, style, include_tracks),
             },
         ],
     }
@@ -68,8 +72,10 @@ def export_moss_sft(
     target_mode: str = "atomic",
     style: str = "brief",
     include_lyrics: bool = False,
+    include_tracks: bool = False,
     allow_missing_audio: bool = False,
     allow_invalid_manifest: bool = False,
+    allow_placeholder_lyrics: bool = False,
 ) -> dict:
     if target_mode not in {"atomic", "xml"}:
         raise ValueError("target_mode must be 'atomic' or 'xml'")
@@ -79,6 +85,25 @@ def export_moss_sft(
     destination.mkdir(parents=True, exist_ok=True)
 
     entries = read_manifest(manifest)
+    placeholder_lyrics = [
+        entry.scene["scene_id"]
+        for entry in entries
+        if any(
+            source.get("kind") == "vocal"
+            and (
+                str(source.get("path", "")).startswith("vocal:")
+                or "synthetic"
+                in str(entry.target_ledger.get("provenance", {}).get("source_dataset", ""))
+            )
+            for source in entry.scene.get("sources", [])
+        )
+    ]
+    if include_lyrics and placeholder_lyrics and not allow_placeholder_lyrics:
+        raise ValueError(
+            f"{len(placeholder_lyrics)} scene(s) contain synthetic vocal placeholders; "
+            "they cannot supervise verbatim <lys> text. Use a real source catalog, or "
+            "pass --allow-placeholder-lyrics for renderer smoke tests only."
+        )
     audit = audit_manifest_structure(entries)
     if not audit.ok() and not allow_invalid_manifest:
         preview = "\n".join(audit.errors[:10])
@@ -105,14 +130,17 @@ def export_moss_sft(
         raise AssertionError(f"source leakage detected: {sorted(leaked)[:10]}")
 
     prompt = canonical_prompt(
-        style=style, include_lyrics=include_lyrics, output_mode=target_mode
+        style=style,
+        include_lyrics=include_lyrics,
+        include_tracks=include_tracks,
+        output_mode=target_mode,
     )
     train_rows = [
-        _conversation_row(entry, audio_root, prompt, target_mode, style)
+        _conversation_row(entry, audio_root, prompt, target_mode, style, include_tracks)
         for entry in train_entries
     ]
     val_rows = [
-        _conversation_row(entry, audio_root, prompt, target_mode, style)
+        _conversation_row(entry, audio_root, prompt, target_mode, style, include_tracks)
         for entry in val_entries
     ]
     _write_jsonl(destination / "train.jsonl", train_rows)
@@ -149,10 +177,13 @@ def export_moss_sft(
         "target_mode": target_mode,
         "style": style,
         "include_lyrics": include_lyrics,
+        "include_tracks": include_tracks,
         "prompt": prompt,
         "missing_audio_count": len(missing_audio),
         "structural_audit_ok": audit.ok(),
         "structural_audit_errors": audit.errors[:100],
+        "placeholder_lyrics_count": len(placeholder_lyrics),
+        "placeholder_lyrics_allowed": allow_placeholder_lyrics,
     }
     (destination / "metadata.json").write_text(
         json.dumps(metadata, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
@@ -171,8 +202,18 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--target-mode", choices=["atomic", "xml"], default="atomic")
     parser.add_argument("--style", choices=["keyword", "brief", "detailed"], default="brief")
     parser.add_argument("--include-lyrics", action="store_true")
+    parser.add_argument(
+        "--include-tracks",
+        action="store_true",
+        help="preserve source track and speaker/singer identity attributes in atomic targets",
+    )
     parser.add_argument("--allow-missing-audio", action="store_true")
     parser.add_argument("--allow-invalid-manifest", action="store_true")
+    parser.add_argument(
+        "--allow-placeholder-lyrics",
+        action="store_true",
+        help="smoke-test only: allow synthetic vocal waveforms to enter an SFT export",
+    )
     args = parser.parse_args(argv)
     metadata = export_moss_sft(
         manifest_path=args.manifest,
@@ -184,8 +225,10 @@ def main(argv: list[str] | None = None) -> int:
         target_mode=args.target_mode,
         style=args.style,
         include_lyrics=args.include_lyrics,
+        include_tracks=args.include_tracks,
         allow_missing_audio=args.allow_missing_audio,
         allow_invalid_manifest=args.allow_invalid_manifest,
+        allow_placeholder_lyrics=args.allow_placeholder_lyrics,
     )
     print(json.dumps(metadata, ensure_ascii=False, indent=2))
     return 0

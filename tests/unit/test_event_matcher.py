@@ -81,3 +81,12 @@ def test_track_pointer_agreement_reported():
     matches = match_events(refs, hyps)
     m = next(x for x in matches if x.is_match)
     assert m.track_match is False
+
+
+def test_text_gate_rejects_semantically_unsupported_match():
+    refs = [ev("E1", "sfx", [t(0.0, 1.0)], text="glass breaks")]
+    hyps = [ev("E2", "sfx", [t(0.0, 1.0)], text="a dog barks")]
+    legacy = match_events(refs, hyps)
+    gated = match_events(refs, hyps, min_text_similarity=0.1)
+    assert any(match.is_match for match in legacy)
+    assert not any(match.is_match for match in gated)
