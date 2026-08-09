@@ -1,0 +1,25 @@
+name: "Text-to-Audio Grounding: Building Correspondence Between Captions and Sound Events"
+paper: "https://arxiv.org/abs/2102.11474"
+repository: "https://github.com/wsntxxn/TextToAudioGrounding"
+commit: "048f7af3d5167eeee0b7fd59aa877f46f245ff36"
+commit_date: "2021-04-22"
+profile: paper2021
+dataset:
+  source: "https://drive.google.com/file/d/1znGt8OEBdX3uCrnIUXqLz6Pn3NabBxLs/view"
+  file_id: "1znGt8OEBdX3uCrnIUXqLz6Pn3NabBxLs"
+  checksum_status: "not published upstream; recorded at download time"
+  source_label_sha256:
+    train.json: "2dfa6f1e67648fd6d271d0fcd463b78b84b0f520c5b601c6fac9a6cc5f978f6a"
+    val.json: "01357572098531af609cf3f40f85d977bf4ce598930323ca30b4d5b38e34cb8d"
+    test.json: "44e94db7c63afbd28bc22a317fd347e85519f946c971329ca3ae8bb57ba786c8"
+    test_meta.csv: "d3d9002c4f7e9f3ca0cd1a0a629cbe7ea1cb21824e0c7267b5c564c55e3555d5"
+  expected:
+    train: {rows: 12373, unique_audio: 4489}
+    val: {rows: 451, unique_audio: 31}
+    test: {rows: 1161, unique_audio: 70}
+metrics:
+  event_f1: {expected: 0.283, absolute_tolerance: 0.03}
+  precision: {expected: 0.286, absolute_tolerance: 0.03}
+  recall: {expected: 0.279, absolute_tolerance: 0.03}
+  psds: {expected: 0.147, absolute_tolerance: 0.03}
+  random_query_event_f1: {expected: 0.196, absolute_tolerance: 0.04}
