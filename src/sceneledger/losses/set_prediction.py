@@ -1,9 +1,10 @@
-"""Set prediction loss for S1 event slots.
+"""Permutation-invariant matching and losses for S1 event slots.
 
-Hungarian matching between predicted slots and target events, followed by
-per-slot losses: eventness BCE, type CE, activity Dice. The matching cost
-combines type agreement and activity IoU so that the assignment is
-permutation-invariant.
+Hungarian matching uses event type probability and a soft activity Dice cost.
+After assignment, eventness is learned for every slot while type and activity
+losses are averaged over matched events. This keeps scenes with many events
+from receiving an accidental larger loss solely because they contain more
+matches.
 """
 
 from __future__ import annotations
@@ -13,170 +14,240 @@ import torch.nn.functional as F
 from scipy.optimize import linear_sum_assignment
 
 from sceneledger.data.schema import TIME_RESOLUTION_SEC
-from sceneledger.models.event_slots import N_EVENT_TYPES
+
+EVENT_TYPE_TO_INDEX = {"speech": 0, "lys": 1, "music": 2, "sfx": 3}
 
 
-def _activity_iou(a: torch.Tensor, b: torch.Tensor) -> torch.Tensor:
-    """IoU between two binary activity masks [T]."""
-    inter = (a & b).sum().float()
-    union = (a | b).sum().float()
-    return inter / (union + 1e-6)
+def _event_spans(event: dict) -> list[dict[str, float]]:
+    spans = event.get("spans")
+    if spans:
+        return [
+            {
+                "start_sec": float(span["start_sec"]),
+                "end_sec": float(span["end_sec"]),
+            }
+            for span in spans
+        ]
+    if "onset" in event and "offset" in event:
+        return [
+            {
+                "start_sec": float(event["onset"]),
+                "end_sec": float(event["offset"]),
+            }
+        ]
+    return []
 
 
 def _events_to_targets(
     events: list[dict], n_frames: int, max_slots: int
-) -> dict[str, torch.Tensor]:
-    """Convert target events (from ledger) to slot-format tensors.
+) -> dict[str, torch.Tensor | int]:
+    """Convert Ledger-like events to padded slot targets.
 
-    Returns padded tensors of shape [max_slots, ...] with a validity mask.
+    All disjoint spans are preserved on the 100 ms activity grid. Events that
+    fall completely outside the represented audio are excluded explicitly.
     """
-    n_events = min(len(events), max_slots)
     type_targets = torch.zeros(max_slots, dtype=torch.long)
     activity_targets = torch.zeros(max_slots, n_frames)
     valid = torch.zeros(max_slots, dtype=torch.bool)
 
-    for i in range(n_events):
-        ev = events[i]
-        type_idx = {"speech": 0, "lys": 1, "music": 2, "sfx": 3}.get(ev["type"], 0)
-        type_targets[i] = type_idx
-        # build activity mask from onset/offset
-        onset_frame = int(round(ev["onset"] / TIME_RESOLUTION_SEC))
-        offset_frame = int(round(ev["offset"] / TIME_RESOLUTION_SEC))
-        onset_frame = max(0, min(n_frames, onset_frame))
-        offset_frame = max(onset_frame + 1, min(n_frames, offset_frame))
-        activity_targets[i, onset_frame:offset_frame] = 1.0
-        valid[i] = True
+    target_index = 0
+    for event in events:
+        if target_index >= max_slots:
+            break
+        event_type = event.get("type")
+        if event_type not in EVENT_TYPE_TO_INDEX:
+            continue
+
+        mask = torch.zeros(n_frames)
+        for span in _event_spans(event):
+            start = int(round(span["start_sec"] / TIME_RESOLUTION_SEC))
+            end = int(round(span["end_sec"] / TIME_RESOLUTION_SEC))
+            start = max(0, min(n_frames, start))
+            end = max(0, min(n_frames, end))
+            if end <= start and start < n_frames:
+                end = start + 1
+            if end > start:
+                mask[start:end] = 1.0
+        if not mask.any():
+            continue
+
+        type_targets[target_index] = EVENT_TYPE_TO_INDEX[event_type]
+        activity_targets[target_index] = mask
+        valid[target_index] = True
+        target_index += 1
 
     return {
         "type_targets": type_targets,
         "activity_targets": activity_targets,
         "valid_mask": valid,
-        "n_events": n_events,
+        "n_events": target_index,
     }
 
 
 def hungarian_match(
-    type_logits: torch.Tensor,  # [K, 4]
-    activity_logits: torch.Tensor,  # [K, T]
-    type_targets: torch.Tensor,  # [K_target,]
-    activity_targets: torch.Tensor,  # [K_target, T]
-    valid_mask: torch.Tensor,  # [K_target,]
+    type_logits: torch.Tensor,
+    activity_logits: torch.Tensor,
+    type_targets: torch.Tensor,
+    activity_targets: torch.Tensor,
+    valid_mask: torch.Tensor,
+    *,
+    type_cost_weight: float = 1.0,
+    activity_cost_weight: float = 2.0,
 ) -> tuple[list[tuple[int, int]], list[int], list[int]]:
-    """Match predicted slots to target events.
-
-    Returns (matched_pairs, unmatched_pred, unmatched_target) where
-    matched_pairs is [(pred_idx, target_idx), ...].
-    """
-    K_pred = type_logits.shape[0]
-    K_target = valid_mask.sum().item()
-
-    if K_target == 0:
-        return [], list(range(K_pred)), []
-
-    type_probs = type_logits.softmax(-1)  # [K, 4]
-    act_probs = activity_logits.sigmoid()  # [K, T]
-
-    # cost matrix [K_pred, K_target]
-    cost = torch.zeros(K_pred, K_target)
-    for i in range(K_pred):
-        for j in range(K_target):
-            if not valid_mask[j]:
-                continue
-            # type cost: 1 - prob of correct type
-            type_cost = 1.0 - type_probs[i, type_targets[j]].item()
-            # activity cost: 1 - IoU
-            act_pred = act_probs[i] > 0.5
-            act_tgt = activity_targets[j] > 0.5
-            iou = _activity_iou(act_pred, act_tgt).item()
-            cost[i, j] = type_cost + (1.0 - iou)
-
-    # Hungarian
-    row_ind, col_ind = linear_sum_assignment(cost.detach().cpu().numpy())
-    # col_ind maps to valid target indices
+    """Match predicted slots to valid targets with a soft assignment cost."""
+    n_predictions = type_logits.shape[0]
     valid_indices = valid_mask.nonzero(as_tuple=True)[0]
-    matched = [(int(row_ind[k]), int(valid_indices[col_ind[k]])) for k in range(len(row_ind))]
+    if len(valid_indices) == 0:
+        return [], list(range(n_predictions)), []
 
-    matched_pred = {r for r, _ in matched}
-    matched_tgt = {t for _, t in matched}
-    unmatched_pred = [i for i in range(K_pred) if i not in matched_pred]
-    unmatched_tgt = [int(valid_indices[j]) for j in range(K_target) if int(valid_indices[j]) not in matched_tgt]
+    selected_types = type_targets[valid_indices]
+    selected_activity = activity_targets[valid_indices].float()
+    type_probability = type_logits.softmax(-1)[:, selected_types]
+    type_cost = -torch.log(type_probability.clamp_min(1e-8))
 
-    return matched, unmatched_pred, unmatched_tgt
+    predicted_activity = activity_logits.sigmoid()[:, None, :]
+    target_activity = selected_activity[None, :, :]
+    intersection = (predicted_activity * target_activity).sum(dim=-1)
+    denominator = predicted_activity.sum(dim=-1) + target_activity.sum(dim=-1)
+    activity_cost = 1.0 - (2.0 * intersection + 1.0) / (denominator + 1.0)
+
+    cost = type_cost_weight * type_cost + activity_cost_weight * activity_cost
+    rows, columns = linear_sum_assignment(cost.detach().cpu().numpy())
+    matched = [
+        (int(row), int(valid_indices[column]))
+        for row, column in zip(rows, columns)  # noqa: B905 - Python 3.10 target
+    ]
+
+    matched_predictions = {prediction for prediction, _ in matched}
+    matched_targets = {target for _, target in matched}
+    unmatched_predictions = [
+        index for index in range(n_predictions) if index not in matched_predictions
+    ]
+    unmatched_targets = [
+        int(index) for index in valid_indices if int(index) not in matched_targets
+    ]
+    return matched, unmatched_predictions, unmatched_targets
+
+
+def _zero_like(reference: torch.Tensor) -> torch.Tensor:
+    return reference.sum() * 0.0
 
 
 def set_prediction_loss(
-    outputs: dict[str, torch.Tensor],
-    targets: list[dict[str, torch.Tensor]],
-) -> dict[str, torch.Tensor]:
-    """Compute the S1 set prediction loss for a batch.
+    outputs: dict[str, torch.Tensor | int],
+    targets: list[dict[str, torch.Tensor | int]],
+    *,
+    eventness_weight: float = 1.0,
+    type_weight: float = 1.0,
+    activity_weight: float = 2.0,
+    positive_weight_scale: float = 1.0,
+    max_positive_weight: float = 20.0,
+) -> dict[str, torch.Tensor | float]:
+    """Compute normalized eventness, type and activity losses for a batch."""
+    eventness_logits = outputs["eventness_logits"]
+    type_logits = outputs["type_logits"]
+    activity_logits = outputs["activity_logits"]
+    if not isinstance(eventness_logits, torch.Tensor):  # defensive type narrowing
+        raise TypeError("eventness_logits must be a tensor")
+    if not isinstance(type_logits, torch.Tensor):
+        raise TypeError("type_logits must be a tensor")
+    if not isinstance(activity_logits, torch.Tensor):
+        raise TypeError("activity_logits must be a tensor")
 
-    Args:
-        outputs: dict from EventSlotDecoder.forward with keys
-            eventness_logits [B, K], type_logits [B, K, 4],
-            activity_logits [B, K, T].
-        targets: list of B target dicts (from _events_to_targets).
+    batch_size, n_slots = eventness_logits.shape
+    if len(targets) != batch_size:
+        raise ValueError(f"received {len(targets)} targets for batch size {batch_size}")
 
-    Returns:
-        dict with 'loss' (scalar) and component losses.
-    """
-    eventness_logits = outputs["eventness_logits"]  # [B, K]
-    type_logits = outputs["type_logits"]  # [B, K, 4]
-    activity_logits = outputs["activity_logits"]  # [B, K, T]
-    B, K = eventness_logits.shape
+    eventness_losses: list[torch.Tensor] = []
+    type_losses: list[torch.Tensor] = []
+    activity_losses: list[torch.Tensor] = []
+    total_matches = 0
 
-    total_loss = torch.tensor(0.0, device=eventness_logits.device)
-    total_eventness = torch.tensor(0.0, device=eventness_logits.device)
-    total_type = torch.tensor(0.0, device=eventness_logits.device)
-    total_activity = torch.tensor(0.0, device=eventness_logits.device)
-    n_matched = 0
-
-    for b in range(B):
-        tgt = targets[b]
-        # move targets to prediction device
+    for batch_index, target in enumerate(targets):
         device = eventness_logits.device
-        type_targets = tgt["type_targets"].to(device)
-        activity_targets = tgt["activity_targets"].to(device)
-        valid_mask = tgt["valid_mask"].to(device)
-        n_events = tgt["n_events"]
+        type_target = target["type_targets"]
+        activity_target = target["activity_targets"]
+        valid_mask = target["valid_mask"]
+        if not isinstance(type_target, torch.Tensor):
+            raise TypeError("type_targets must be a tensor")
+        if not isinstance(activity_target, torch.Tensor):
+            raise TypeError("activity_targets must be a tensor")
+        if not isinstance(valid_mask, torch.Tensor):
+            raise TypeError("valid_mask must be a tensor")
+        type_target = type_target.to(device)
+        activity_target = activity_target.to(device)
+        valid_mask = valid_mask.to(device)
 
-        # Hungarian matching
-        matched, unmatched_pred, unmatched_tgt = hungarian_match(
-            type_logits[b], activity_logits[b],
-            type_targets, activity_targets, valid_mask,
+        if activity_target.shape[-1] != activity_logits.shape[-1]:
+            raise ValueError("target and prediction activity grids differ")
+        matched, _, _ = hungarian_match(
+            type_logits[batch_index],
+            activity_logits[batch_index],
+            type_target,
+            activity_target,
+            valid_mask,
         )
 
-        # eventness loss: matched slots should be active, unmatched should be null.
-        # Use pos_weight to counter class imbalance (most slots are null).
-        eventness_target = torch.zeros(K, device=device)
-        for pi, _ in matched:
-            eventness_target[pi] = 1.0
-        pos_weight = torch.tensor([max(1.0, len(matched) / max(1, K - len(matched)) * 3.0)], device=device)
-        total_eventness += F.binary_cross_entropy_with_logits(
-            eventness_logits[b], eventness_target, reduction="mean", pos_weight=pos_weight
-        )
-
-        # type + activity loss on matched slots
-        for pi, ti in matched:
-            total_type += F.cross_entropy(
-                type_logits[b, pi:pi+1], torch.tensor([type_targets[ti]], device=device)
+        eventness_target = torch.zeros(n_slots, device=device)
+        for prediction_index, _ in matched:
+            eventness_target[prediction_index] = 1.0
+        n_positive = len(matched)
+        if n_positive:
+            imbalance = (n_slots - n_positive) / n_positive
+            positive_weight = min(
+                max_positive_weight, max(1.0, imbalance * positive_weight_scale)
             )
-            act_pred = activity_logits[b, pi]  # [T]
-            act_tgt = activity_targets[ti]  # [T] already on device
-            # Dice loss
-            act_p = act_pred.sigmoid()
-            inter = (act_p * act_tgt).sum()
-            union = act_p.sum() + act_tgt.sum()
-            total_activity += 1.0 - 2.0 * inter / (union + 1e-6)
-            n_matched += 1
+        else:
+            positive_weight = 1.0
+        eventness_losses.append(
+            F.binary_cross_entropy_with_logits(
+                eventness_logits[batch_index],
+                eventness_target,
+                pos_weight=torch.tensor(positive_weight, device=device),
+            )
+        )
 
-    total_loss = total_eventness + total_type + total_activity
+        for prediction_index, target_index in matched:
+            type_losses.append(
+                F.cross_entropy(
+                    type_logits[batch_index, prediction_index].unsqueeze(0),
+                    type_target[target_index].unsqueeze(0),
+                )
+            )
+            probability = activity_logits[
+                batch_index, prediction_index
+            ].sigmoid()
+            expected = activity_target[target_index]
+            intersection = (probability * expected).sum()
+            denominator = probability.sum() + expected.sum()
+            activity_losses.append(
+                1.0 - (2.0 * intersection + 1.0) / (denominator + 1.0)
+            )
+        total_matches += n_positive
+
+    eventness_loss = torch.stack(eventness_losses).mean()
+    type_loss = (
+        torch.stack(type_losses).mean()
+        if type_losses
+        else _zero_like(type_logits)
+    )
+    activity_loss = (
+        torch.stack(activity_losses).mean()
+        if activity_losses
+        else _zero_like(activity_logits)
+    )
+    loss = (
+        eventness_weight * eventness_loss
+        + type_weight * type_loss
+        + activity_weight * activity_loss
+    )
     return {
-        "loss": total_loss / max(1, B),
-        "eventness_loss": total_eventness / max(1, B),
-        "type_loss": total_type / max(1, B),
-        "activity_loss": total_activity / max(1, B),
-        "n_matched": float(n_matched),
+        "loss": loss,
+        "eventness_loss": eventness_loss,
+        "type_loss": type_loss,
+        "activity_loss": activity_loss,
+        "n_matched": float(total_matches),
     }
 
 
-__all__ = ["hungarian_match", "set_prediction_loss", "_events_to_targets"]
+__all__ = ["_events_to_targets", "hungarian_match", "set_prediction_loss"]

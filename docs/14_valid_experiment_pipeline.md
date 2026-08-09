@@ -157,6 +157,21 @@ token-F1 gate 只是防止“文本完全无关却算 true positive”的最低�
 指标。正式论文需冻结一个 multilingual embedding/LLM judge 版本，并用人工双盲子集报告与
 人类判断的相关性。
 
+### S1a-valid：事件槽定位探针
+
+B3-valid 完成后再运行：
+
+```bash
+MODEL_DIR=/path/to/MOSS-Audio-4B-Instruct \
+B3_WORK_DIR=/path/to/runs/b3_valid \
+bash scripts/run_s1_valid.sh
+```
+
+该实验复用 B3-valid 的冻结 train/val manifests 和 MOSS features，训练 permutation-invariant
+event slots，输出事件类型与多段 100 ms activity。实现、消融、输出文件和可声称范围见
+`docs/15_s1_event_slot_experiment.md`。它不包含 caption text 或 track identity，不能把事件 F1
+解释为统一 caption 质量。
+
 ## 6. 当前可声称与不可声称内容
 
 代码就绪后可以声称：数据和目标格式能够保留四类事件、0.1 秒离散时间戳与多个 source

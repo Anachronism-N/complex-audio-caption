@@ -8,6 +8,10 @@
 > [数据管线复现状态与下一步实验](docs/13_data_pipeline_status.md)。仓库中旧的
 > 500 条 TAC-mini manifest 已被判定为过期，正式训练前必须重新渲染。
 
+> S1a event-slot 原型已整理为 leakage-safe、可恢复、机器可读的服务器实验；运行与消融协议见
+> [S1a-valid 实验文档](docs/15_s1_event_slot_experiment.md)。该阶段仅评价事件类型与 100 ms
+> activity，不代表最终统一 caption 已完成。
+
 面向真实复杂声景的统一、细粒度、带时间戳音频描述研究方案（调研冻结日期：2026-08-08）。
 
 ## 一句话结论
@@ -54,6 +58,8 @@
 - [逐步开发计划与验收标准](docs/11_development_plan.md)
 - [复现指南](docs/12_reproduction_guide.md)
 - [Anchor-first：TAG 2021 完整复现协议](docs/13_anchor_first_tag_reproduction.md)
+- [Anchor-first 与 B3-valid 执行手册](docs/14_valid_experiment_pipeline.md)
+- [S1a-valid 事件槽实验与消融](docs/15_s1_event_slot_experiment.md)
 - [机器可读实验矩阵](configs/experiment_matrix.yaml)
 - [机器可读复现锚点与门槛](configs/reproduction_anchor.yaml)
 - [机器可读开发阶段](configs/pipeline_stages.yaml)

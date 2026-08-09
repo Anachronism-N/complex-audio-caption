@@ -1,267 +1,790 @@
-"""S1 event-slot training: cache MOSS features, train slot decoder, evaluate.
+"""Cache MOSS features, train the S1a event-slot probe, and evaluate it.
 
-This is S1a (event-only, no text). The slot decoder predicts event sets
-(type + activity mask) via permutation-invariant Hungarian matching.
-
-::
-
-    conda run -n moss-audio python -m sceneledger.cli.train_slots \
-      --config configs/model/s1_event_slots.yaml
+S1a predicts an unordered set of event types and 100 ms activity masks. It is
+an event-localization probe, not yet the final text/track SceneLedger model.
+The command is intentionally fail-closed around feature-cache identity and
+source leakage so server results remain auditable.
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import os
+import platform
+import random
+import subprocess
 import sys
 import time
 from pathlib import Path
 
 import numpy as np
 import torch
-import torch.nn.functional as F
 import yaml
 
-
-def _load_config(path: str) -> dict:
-    return yaml.safe_load(Path(path).read_text(encoding="utf-8"))
+CACHE_VERSION = "s1-moss-features-v2"
 
 
-def _load_audio(path, sr_target, max_sec):
-    import soundfile as sf
-    from scipy.signal import resample_poly
+def _load_config(path: str | Path) -> dict:
+    payload = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise ValueError("S1 config must contain a YAML mapping")
+    return payload
+
+
+def _sha256_file(path: str | Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _json_hash(payload: dict) -> str:
+    encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def _cache_file_name(sample_id: str) -> str:
+    digest = hashlib.sha1(sample_id.encode("utf-8")).hexdigest()  # noqa: S324
+    return f"{digest}.pt"
+
+
+def _manifest_paths(cfg: dict) -> list[Path]:
+    data_cfg = cfg["data"]
+    train_path = data_cfg.get("train_manifest_path")
+    val_path = data_cfg.get("val_manifest_path")
+    if bool(train_path) != bool(val_path):
+        raise ValueError(
+            "data.train_manifest_path and data.val_manifest_path must be set together"
+        )
+    paths = [Path(train_path), Path(val_path)] if train_path else []
+    if not paths:
+        manifest_path = data_cfg.get("manifest_path")
+        if not manifest_path:
+            raise ValueError("set either an unsplit manifest or explicit train/val manifests")
+        paths = [Path(manifest_path)]
+    missing = [str(path) for path in paths if not path.is_file()]
+    if missing:
+        raise FileNotFoundError(f"S1 manifest file(s) missing: {missing}")
+    return [path.resolve() for path in paths]
+
+
+def _model_identity(model_path: str | Path) -> dict:
+    root = Path(model_path).expanduser().resolve()
+    identity: dict[str, object] = {"path": str(root)}
+    hashes: dict[str, str] = {}
+    for name in (
+        "config.json",
+        "generation_config.json",
+        "preprocessor_config.json",
+        "processor_config.json",
+        "model.safetensors.index.json",
+        "tokenizer_config.json",
+    ):
+        candidate = root / name
+        if candidate.is_file():
+            hashes[name] = _sha256_file(candidate)
+    identity["metadata_sha256"] = hashes
+    return identity
+
+
+def _cache_signature(cfg: dict, sample_ids: list[str]) -> dict:
+    paths = _manifest_paths(cfg)
+    payload = {
+        "cache_version": CACHE_VERSION,
+        "manifests": [
+            {"path": str(path), "sha256": _sha256_file(path)} for path in paths
+        ],
+        "model": _model_identity(cfg["model"]["path"]),
+        "model_dtype": cfg["model"].get("dtype", "bfloat16"),
+        "max_audio_seconds": float(cfg["data"].get("max_audio_seconds", 30.0)),
+        "feature_storage_dtype": "float16",
+        "sample_count": len(sample_ids),
+        "sample_ids_sha256": hashlib.sha256(
+            "\n".join(sorted(sample_ids)).encode("utf-8")
+        ).hexdigest(),
+    }
+    return {**payload, "signature_sha256": _json_hash(payload)}
+
+
+def _load_audio(path: str | Path, sample_rate: int, max_seconds: float) -> np.ndarray:
     from math import gcd
 
-    wav, sr = sf.read(path, dtype="float32", always_2d=False)
+    import soundfile as sf
+    from scipy.signal import resample_poly
+
+    wav, source_rate = sf.read(path, dtype="float32", always_2d=False)
     if wav.ndim == 2:
         wav = wav.mean(axis=1)
-    if sr != sr_target:
-        g = gcd(int(sr), int(sr_target))
-        wav = resample_poly(wav.astype(np.float64), int(sr_target) // g, int(sr) // g).astype(np.float32)
-    return wav[: int(max_sec * sr_target)]
+    if source_rate != sample_rate:
+        factor = gcd(int(source_rate), int(sample_rate))
+        wav = resample_poly(
+            wav.astype(np.float64),
+            int(sample_rate) // factor,
+            int(source_rate) // factor,
+        ).astype(np.float32)
+    return wav[: int(max_seconds * sample_rate)]
 
 
-def cache_features(cfg, force=False):
-    """Extract and cache MOSS audio encoder features for all clips."""
-    cache_dir = Path(cfg["data"].get("feature_cache", "/tmp/s1_features"))
-    cache_dir.mkdir(parents=True, exist_ok=True)
-    if (cache_dir / "done.flag").exists() and not force:
-        print(f"[s1] features already cached at {cache_dir}", file=sys.stderr)
-        return cache_dir
+def _torch_dtype(name: str) -> torch.dtype:
+    mapping = {
+        "bfloat16": torch.bfloat16,
+        "float16": torch.float16,
+        "float32": torch.float32,
+    }
+    try:
+        return mapping[name.lower()]
+    except KeyError as exc:
+        raise ValueError(f"unsupported model dtype: {name}") from exc
 
-    import sys as _sys
-    repo = Path(__file__).resolve().parents[2] / "third_party" / "MOSS-Audio"
-    if str(repo) not in _sys.path:
-        _sys.path.insert(0, str(repo))
-    from sceneledger.models.moss_adapter import MossAdapter, MossAdapterConfig
+
+def _all_entries(cfg: dict):
     from sceneledger.data.manifests import read_manifest
 
-    print("[s1] loading MOSS model for feature extraction ...", file=sys.stderr, flush=True)
-    adapter = MossAdapter(MossAdapterConfig(
-        model_path=cfg["model"]["path"], device=cfg["model"]["device"], dtype=cfg["model"]["dtype"]
-    ))
+    entries = [entry for path in _manifest_paths(cfg) for entry in read_manifest(path)]
+    sample_ids = [str(entry.scene["scene_id"]) for entry in entries]
+    duplicates = sorted(
+        {sample_id for sample_id in sample_ids if sample_ids.count(sample_id) > 1}
+    )
+    if duplicates:
+        raise ValueError(f"duplicate sample IDs across S1 manifests: {duplicates[:10]}")
+    return entries
+
+
+def cache_features(cfg: dict, force: bool = False) -> Path:
+    """Extract MOSS audio embeddings with a content-addressed cache contract."""
+    cache_dir = Path(cfg["data"].get("feature_cache", "/tmp/s1_features")).resolve()
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    metadata_path = cache_dir / "cache_manifest.json"
+    entries = _all_entries(cfg)
+    sample_ids = [str(entry.scene["scene_id"]) for entry in entries]
+    signature = _cache_signature(cfg, sample_ids)
+    expected_files = [_cache_file_name(sample_id) for sample_id in sample_ids]
+
+    existing = None
+    if metadata_path.is_file():
+        existing = json.loads(metadata_path.read_text(encoding="utf-8"))
+    complete = all((cache_dir / name).is_file() for name in expected_files)
+    if (
+        not force
+        and existing is not None
+        and existing.get("signature_sha256") == signature["signature_sha256"]
+        and complete
+    ):
+        print(f"[s1] verified feature cache at {cache_dir}", file=sys.stderr)
+        return cache_dir
+    if not force and existing is not None:
+        raise RuntimeError(
+            "feature cache identity/completeness differs from this run; "
+            "inspect cache_manifest.json and rerun with --force-cache"
+        )
+
+    from sceneledger.models.moss_adapter import MossAdapter, MossAdapterConfig
+
+    print("[s1] loading MOSS for feature extraction", file=sys.stderr, flush=True)
+    adapter = MossAdapter(
+        MossAdapterConfig(
+            model_path=cfg["model"]["path"],
+            device=cfg["model"]["device"],
+            dtype=cfg["model"].get("dtype", "bfloat16"),
+        )
+    )
     adapter._load()
     model = adapter._model
     processor = adapter._processor
     model.eval()
 
-    entries = read_manifest(cfg["data"]["manifest_path"])
-    audio_base = cfg["data"]["audio_base_dir"]
-    sr = processor.config.mel_sr
-    max_sec = cfg["data"].get("max_audio_seconds", 30.0)
-
-    print(f"[s1] caching features for {len(entries)} clips ...", file=sys.stderr, flush=True)
-    t0 = time.time()
-    for i, entry in enumerate(entries):
-        cache_path = cache_dir / f"{entry.scene['scene_id']}.pt"
-        if cache_path.exists() and not force:
-            continue
-        audio_path = str(Path(audio_base) / entry.mixture_path)
-        wav = _load_audio(audio_path, sr, max_sec)
+    audio_root = Path(cfg["data"]["audio_base_dir"]).resolve()
+    sample_rate = int(processor.config.mel_sr)
+    max_seconds = float(cfg["data"].get("max_audio_seconds", 30.0))
+    input_dtype = _torch_dtype(cfg["model"].get("dtype", "bfloat16"))
+    started = time.time()
+    for index, entry in enumerate(entries, start=1):
+        sample_id = str(entry.scene["scene_id"])
+        cache_path = cache_dir / _cache_file_name(sample_id)
+        audio_path = audio_root / entry.mixture_path
+        if not audio_path.is_file():
+            raise FileNotFoundError(f"mixture audio missing: {audio_path}")
+        wav = _load_audio(audio_path, sample_rate, max_seconds)
         inputs = processor(text="x", audios=[wav], return_tensors="pt")
-        audio_data = inputs["audio_data"].to(cfg["model"]["device"]).to(torch.bfloat16)
-        audio_seqlens = inputs["audio_data_seqlens"].to(cfg["model"]["device"])
-        with torch.no_grad():
-            audio_embeds, deepstack = model.get_audio_features(audio_data, audio_seqlens)
-            audio_embeds = model.audio_adapter(audio_embeds)
-        # save as float16 to save space
-        torch.save({
-            "features": audio_embeds[0].float().cpu(),
-            "sample_id": entry.scene["scene_id"],
-            "duration": float(entry.scene["duration"]),
-            "target_ledger": entry.target_ledger,
-        }, cache_path)
-        if (i + 1) % 100 == 0:
-            print(f"[s1] cached {i+1}/{len(entries)} ({time.time()-t0:.0f}s)", file=sys.stderr, flush=True)
+        audio_data = inputs["audio_data"].to(cfg["model"]["device"]).to(input_dtype)
+        audio_lengths = inputs["audio_data_seqlens"].to(cfg["model"]["device"])
+        with torch.inference_mode():
+            audio_embeddings, _ = model.get_audio_features(audio_data, audio_lengths)
+            audio_embeddings = model.audio_adapter(audio_embeddings)
+        torch.save(
+            {
+                "features": audio_embeddings[0].to(dtype=torch.float16).cpu(),
+                "sample_id": sample_id,
+                "duration_sec": float(entry.scene["duration"]),
+            },
+            cache_path,
+        )
+        if index % 100 == 0 or index == len(entries):
+            elapsed = time.time() - started
+            print(
+                f"[s1] cached {index}/{len(entries)} ({elapsed:.0f}s)",
+                file=sys.stderr,
+                flush=True,
+            )
 
-    (cache_dir / "done.flag").touch()
-    print(f"[s1] feature caching done in {time.time()-t0:.0f}s", file=sys.stderr, flush=True)
+    metadata = {
+        **signature,
+        "created_unix": time.time(),
+        "files": dict(zip(sample_ids, expected_files, strict=True)),
+    }
+    metadata_path.write_text(
+        json.dumps(metadata, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
     return cache_dir
 
 
-def train_slots(cfg, cache_dir):
-    """Train the event slot decoder on cached features."""
-    from sceneledger.models.event_slots import EventSlotDecoder
-    from sceneledger.losses.set_prediction import set_prediction_loss, _events_to_targets
-    from sceneledger.data.manifests import read_manifest
-    from sceneledger.data.schema import Ledger, Span, Event
+def _set_reproducible(seed: int, deterministic: bool) -> None:
+    os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+    if deterministic:
+        torch.use_deterministic_algorithms(True, warn_only=True)
+        if torch.backends.cudnn.is_available():
+            torch.backends.cudnn.benchmark = False
+            torch.backends.cudnn.deterministic = True
 
-    device = cfg["model"]["device"]
-    tcfg = cfg["train"]
 
-    # load all cached features + targets
-    entries = read_manifest(cfg["data"]["manifest_path"])
+def _split_entries(cfg: dict):
+    from sceneledger.data.datamodule import group_split, source_leakage
+    from sceneledger.data.manifests import audit_manifest_structure, read_manifest
+
+    data_cfg = cfg["data"]
+    train_path = data_cfg.get("train_manifest_path")
+    val_path = data_cfg.get("val_manifest_path")
+    if train_path and val_path:
+        train_entries = read_manifest(train_path)
+        val_entries = read_manifest(val_path)
+    else:
+        entries = read_manifest(data_cfg["manifest_path"])
+        train_entries, val_entries = group_split(
+            entries,
+            val_fraction=float(cfg["train"].get("val_fraction", 0.1)),
+            group_key=data_cfg.get("group_key", "source_id"),
+            seed=int(cfg["train"]["seed"]),
+        )
+
+    for name, entries in (("train", train_entries), ("val", val_entries)):
+        audit = audit_manifest_structure(entries)
+        if not audit.ok():
+            raise ValueError(f"{name} manifest failed audit: {audit.errors[:5]}")
+    if not train_entries or not val_entries:
+        raise ValueError("S1 requires non-empty train and validation folds")
+    leakage = source_leakage(train_entries, val_entries)
+    if leakage:
+        raise ValueError(f"source leakage between S1 folds: {sorted(leakage)[:10]}")
+    return train_entries, val_entries
+
+
+def _event_targets(entry) -> list[dict]:
+    from sceneledger.data.schema import Ledger
+
+    ledger = Ledger.model_validate(entry.target_ledger)
+    return [
+        {
+            "type": event.type,
+            "spans": [span.model_dump(mode="json") for span in event.spans],
+        }
+        for event in ledger.events
+    ]
+
+
+def _load_fold(entries, cache_dir: Path) -> list[dict]:
     dataset = []
     for entry in entries:
-        cache_path = cache_dir / f"{entry.scene['scene_id']}.pt"
-        if not cache_path.exists():
-            continue
-        data = torch.load(cache_path, weights_only=False)
-        ledger = Ledger.model_validate(entry.target_ledger)
-        events = []
-        for ev in ledger.events:
-            events.append({
-                "type": ev.type,
-                "onset": ev.start_sec(),
-                "offset": ev.end_sec(),
-            })
-        dataset.append({
-            "features": data["features"],
-            "events": events,
-            "sample_id": entry.scene["scene_id"],
-            "duration": float(entry.scene["duration"]),
-        })
+        sample_id = str(entry.scene["scene_id"])
+        cache_path = cache_dir / _cache_file_name(sample_id)
+        if not cache_path.is_file():
+            raise FileNotFoundError(f"cached feature missing for {sample_id}: {cache_path}")
+        payload = torch.load(cache_path, map_location="cpu", weights_only=False)
+        if payload.get("sample_id") != sample_id:
+            raise ValueError(f"cache sample mismatch for {sample_id}")
+        dataset.append(
+            {
+                "features": payload["features"].float(),
+                "events": _event_targets(entry),
+                "sample_id": sample_id,
+                "duration": float(entry.scene["duration"]),
+                "target_ledger": entry.target_ledger,
+            }
+        )
+    return dataset
 
-    n_train = int(len(dataset) * (1 - tcfg.get("val_fraction", 0.1)))
-    train_data = dataset[:n_train]
-    val_data = dataset[n_train:]
-    print(f"[s1] {len(train_data)} train, {len(val_data)} val", file=sys.stderr, flush=True)
 
-    # build model
-    feature_dim = dataset[0]["features"].shape[-1]
-    model = EventSlotDecoder(
+def _loss_kwargs(cfg: dict) -> dict[str, float]:
+    loss_cfg = cfg.get("loss", {})
+    return {
+        "eventness_weight": float(loss_cfg.get("eventness_weight", 1.0)),
+        "type_weight": float(loss_cfg.get("type_weight", 1.0)),
+        "activity_weight": float(loss_cfg.get("activity_weight", 2.0)),
+        "positive_weight_scale": float(loss_cfg.get("positive_weight_scale", 1.0)),
+        "max_positive_weight": float(loss_cfg.get("max_positive_weight", 20.0)),
+    }
+
+
+def _sample_loss(model, sample: dict, device: str, loss_kwargs: dict):
+    from sceneledger.losses.set_prediction import _events_to_targets, set_prediction_loss
+
+    features = sample["features"].unsqueeze(0).to(device)
+    outputs = model(features)
+    targets = [
+        _events_to_targets(sample["events"], int(outputs["n_frames"]), model.n_slots)
+    ]
+    return set_prediction_loss(outputs, targets, **loss_kwargs)
+
+
+def _validation_loss(model, dataset: list[dict], device: str, loss_kwargs: dict) -> float:
+    model.eval()
+    losses = []
+    with torch.inference_mode():
+        for sample in dataset:
+            losses.append(float(_sample_loss(model, sample, device, loss_kwargs)["loss"]))
+    model.train()
+    return sum(losses) / len(losses)
+
+
+def _git_commit() -> str | None:
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], text=True, stderr=subprocess.DEVNULL
+        ).strip()
+    except (OSError, subprocess.CalledProcessError):
+        return None
+
+
+def _save_checkpoint(
+    path: Path,
+    *,
+    model,
+    optimizer,
+    scheduler,
+    step: int,
+    best_val_loss: float,
+    rng: random.Random,
+    config_hash: str,
+) -> None:
+    torch.save(
+        {
+            "checkpoint_version": 2,
+            "model": model.state_dict(),
+            "optimizer": optimizer.state_dict(),
+            "scheduler": scheduler.state_dict(),
+            "step": step,
+            "best_val_loss": best_val_loss,
+            "python_rng_state": rng.getstate(),
+            "torch_rng_state": torch.get_rng_state(),
+            "cuda_rng_state": torch.cuda.get_rng_state_all()
+            if torch.cuda.is_available()
+            else None,
+            "config_sha256": config_hash,
+        },
+        path,
+    )
+
+
+def _load_checkpoint(
+    path: Path,
+    *,
+    model,
+    optimizer=None,
+    scheduler=None,
+    rng: random.Random | None = None,
+    expected_config_hash: str | None = None,
+) -> dict:
+    payload = torch.load(path, map_location="cpu", weights_only=False)
+    checkpoint_hash = payload.get("config_sha256")
+    if expected_config_hash and checkpoint_hash != expected_config_hash:
+        raise ValueError(
+            f"checkpoint config hash {checkpoint_hash} != current {expected_config_hash}"
+        )
+    model.load_state_dict(payload["model"])
+    if optimizer is not None:
+        optimizer.load_state_dict(payload["optimizer"])
+        parameter_device = next(model.parameters()).device
+        for state in optimizer.state.values():
+            for key, value in state.items():
+                if isinstance(value, torch.Tensor):
+                    state[key] = value.to(parameter_device)
+    if scheduler is not None:
+        scheduler.load_state_dict(payload["scheduler"])
+    if rng is not None and payload.get("python_rng_state") is not None:
+        rng.setstate(payload["python_rng_state"])
+    if payload.get("torch_rng_state") is not None:
+        torch.set_rng_state(payload["torch_rng_state"])
+    if torch.cuda.is_available() and payload.get("cuda_rng_state") is not None:
+        torch.cuda.set_rng_state_all(payload["cuda_rng_state"])
+    return payload
+
+
+def _build_model(cfg: dict, feature_dim: int):
+    from sceneledger.models.event_slots import EventSlotDecoder
+
+    model_cfg = cfg["model"]
+    return EventSlotDecoder(
         feature_dim=feature_dim,
-        hidden_dim=cfg["model"].get("hidden_dim", 768),
-        n_slots=cfg["model"].get("n_slots", 24),
-        n_heads=cfg["model"].get("n_heads", 8),
-        n_layers=cfg["model"].get("n_layers", 4),
-    ).to(device)
+        hidden_dim=int(model_cfg.get("hidden_dim", 768)),
+        n_slots=int(model_cfg.get("n_slots", 24)),
+        n_heads=int(model_cfg.get("n_heads", 8)),
+        n_layers=int(model_cfg.get("n_layers", 4)),
+        max_duration_sec=float(cfg["data"].get("max_audio_seconds", 30.0)),
+        use_temporal_embedding=bool(model_cfg.get("use_temporal_embedding", True)),
+    )
 
-    optimizer = torch.optim.AdamW(model.parameters(), lr=tcfg["learning_rate"])
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=tcfg["steps"])
 
-    import random
-    rng = random.Random(tcfg["seed"])
-    step = 0
-    t0 = time.time()
-    while step < tcfg["steps"]:
-        rng.shuffle(train_data)
-        for sample in train_data:
-            if step >= tcfg["steps"]:
-                break
-            features = sample["features"].unsqueeze(0).to(device)
-            outputs = model(features)
-            T_100 = outputs["n_frames"]
-            targets = [_events_to_targets(sample["events"], T_100, model.n_slots)]
-            loss_dict = set_prediction_loss(outputs, targets)
-            loss = loss_dict["loss"]
-            optimizer.zero_grad()
-            loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-            optimizer.step()
-            scheduler.step()
+def _write_jsonl(path: Path, rows: list[dict]) -> None:
+    with path.open("w", encoding="utf-8", newline="\n") as handle:
+        for row in rows:
+            handle.write(json.dumps(row, ensure_ascii=False) + "\n")
 
-            if (step + 1) % 100 == 0:
-                print(
-                    f"[s1] step {step+1}/{tcfg['steps']} loss={loss.item():.4f} "
-                    f"(ev={loss_dict['eventness_loss'].item():.3f} "
-                    f"ty={loss_dict['type_loss'].item():.3f} "
-                    f"act={loss_dict['activity_loss'].item():.3f}) "
-                    f"({time.time()-t0:.0f}s)",
-                    file=sys.stderr, flush=True,
-                )
-            step += 1
 
-    # save model
-    out_dir = Path(tcfg.get("output_dir", "outputs/s1_event_slots"))
-    out_dir.mkdir(parents=True, exist_ok=True)
-    torch.save(model.state_dict(), out_dir / "slot_decoder.pt")
-    print(f"[s1] saved to {out_dir / 'slot_decoder.pt'}", file=sys.stderr, flush=True)
+def evaluate_slots(
+    cfg: dict,
+    *,
+    model,
+    val_data: list[dict],
+    out_dir: Path,
+    checkpoint_path: Path,
+) -> dict:
+    """Evaluate event-only predictions and persist machine-readable evidence."""
+    from sceneledger.eval.metrics import evaluate_corpus
 
-    # evaluate on val set
+    device = cfg["model"]["device"]
+    eval_cfg = cfg.get("evaluation", {})
+    eventness_threshold = float(eval_cfg.get("eventness_threshold", 0.5))
+    activity_threshold = float(eval_cfg.get("activity_threshold", 0.5))
+    tiou_threshold = float(eval_cfg.get("tiou_threshold", 0.3))
     model.eval()
     predictions = []
     references = []
-    for sample in val_data:
-        features = sample["features"].unsqueeze(0).to(device)
-        with torch.no_grad():
-            preds = model.predict(features)
-        pred_events = preds[0]
-        # build prediction ledger
-        pred_ledger_events = []
-        for i, pe in enumerate(pred_events):
-            pred_ledger_events.append({
-                "id": f"E{i+1:03d}",
-                "type": pe["type"],
-                "track_id": None,
-                "spans": [{"start_sec": pe["onset"], "end_sec": pe["offset"]}],
-                "text": pe["type"],
-                "confidence": pe["confidence"],
-            })
-        pred_ledger = {
-            "schema_version": "0.2.0",
-            "sample_id": sample["sample_id"],
-            "duration_sec": sample["duration"],
-            "time_resolution_sec": 0.1,
-            "tracks": [],
-            "events": pred_ledger_events,
-        }
-        predictions.append(pred_ledger)
-        references.append(sample["target_ledger"] if isinstance(sample.get("target_ledger"), dict) else
-                         next(e.target_ledger for e in entries if e.scene["scene_id"] == sample["sample_id"]))
+    with torch.inference_mode():
+        for sample in val_data:
+            features = sample["features"].unsqueeze(0).to(device)
+            events = model.predict(
+                features,
+                eventness_threshold=eventness_threshold,
+                activity_threshold=activity_threshold,
+            )[0]
+            for event in events:
+                event["spans"] = [
+                    {
+                        "start_sec": span["start_sec"],
+                        "end_sec": min(sample["duration"], span["end_sec"]),
+                    }
+                    for span in event["spans"]
+                    if span["start_sec"] < sample["duration"]
+                ]
+            events = [event for event in events if event["spans"]]
+            events.sort(key=lambda event: event["spans"][0]["start_sec"])
+            prediction_events = [
+                {
+                    "id": f"E{index:03d}",
+                    "type": event["type"],
+                    "track_id": None,
+                    "spans": event["spans"],
+                    "text": event["type"],
+                    "confidence": event["confidence"],
+                }
+                for index, event in enumerate(events, start=1)
+            ]
+            predictions.append(
+                {
+                    "schema_version": "0.2.0",
+                    "sample_id": sample["sample_id"],
+                    "duration_sec": sample["duration"],
+                    "time_resolution_sec": 0.1,
+                    "tracks": [],
+                    "events": prediction_events,
+                }
+            )
+            references.append(sample["target_ledger"])
 
-    # write predictions + references for evaluation
-    pred_path = out_dir / "predictions.jsonl"
-    ref_path = out_dir / "references.jsonl"
-    with open(pred_path, "w") as f:
-        for p in predictions:
-            f.write(json.dumps(p, ensure_ascii=False) + "\n")
-    with open(ref_path, "w") as f:
-        for r in references:
-            f.write(json.dumps(r, ensure_ascii=False) + "\n")
-
-    print(f"[s1] predictions -> {pred_path}", file=sys.stderr, flush=True)
-    print(f"[s1] references -> {ref_path}", file=sys.stderr, flush=True)
-
-    # quick eval
-    from sceneledger.eval.metrics import evaluate_corpus
-    corpus = evaluate_corpus(pred_path, ref_path)
-    print(f"\n=== S1a val results ({len(val_data)} clips) ===", file=sys.stderr)
-    print(f"event-F1:     {corpus.macro_event_f1:.3f}", file=sys.stderr)
-    print(f"precision:    {corpus.macro_event_precision:.3f}", file=sys.stderr)
-    print(f"recall:       {corpus.macro_event_recall:.3f}", file=sys.stderr)
-    print(f"onset-MAE:    {corpus.mean_onset_mae:.3f}s", file=sys.stderr)
-    print(f"offset-MAE:   {corpus.mean_offset_mae:.3f}s", file=sys.stderr)
-    print(f"halluc:       {corpus.total_hallucination}", file=sys.stderr)
-    print(f"omission:     {corpus.total_omission}", file=sys.stderr)
-
-    # save metrics
-    import json as _json
-    (out_dir / "val_metrics.json").write_text(
-        _json.dumps(corpus.to_dict(), indent=2, ensure_ascii=False), encoding="utf-8"
+    prediction_path = out_dir / "val_predictions.jsonl"
+    reference_path = out_dir / "val_references.jsonl"
+    _write_jsonl(prediction_path, predictions)
+    _write_jsonl(reference_path, references)
+    corpus = evaluate_corpus(
+        prediction_path,
+        reference_path,
+        tiou_threshold=tiou_threshold,
+        min_text_similarity=0.0,
     )
-    return 0
+    metrics = corpus.to_dict()
+    (out_dir / "val_metrics.json").write_text(
+        json.dumps(metrics, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    summary = {
+        "experiment": "S1a-event-only",
+        "status": "completed",
+        "scope": "event type and 100 ms multi-span activity; no caption text or tracks",
+        "checkpoint": str(checkpoint_path.resolve()),
+        "git_commit": _git_commit(),
+        "config_sha256": _json_hash(cfg),
+        "n_validation": len(val_data),
+        "eventness_threshold": eventness_threshold,
+        "activity_threshold": activity_threshold,
+        "tiou_threshold": tiou_threshold,
+        "metrics_path": str((out_dir / "val_metrics.json").resolve()),
+        "metrics": {
+            "macro_event_f1": metrics["macro_event_f1"],
+            "macro_event_precision": metrics["macro_event_precision"],
+            "macro_event_recall": metrics["macro_event_recall"],
+            "macro_seg_f1_100ms": metrics["macro_seg_f1_100ms"],
+            "mean_onset_mae": metrics["mean_onset_mae"],
+            "mean_offset_mae": metrics["mean_offset_mae"],
+            "total_hallucination": metrics["total_hallucination"],
+            "total_omission": metrics["total_omission"],
+        },
+    }
+    (out_dir / "run_summary.json").write_text(
+        json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    return summary
 
 
-def main(argv=None):
+def train_slots(
+    cfg: dict,
+    cache_dir: Path,
+    *,
+    resume_from: str | Path | None = None,
+    evaluate_checkpoint: str | Path | None = None,
+) -> dict:
+    """Train S1a with leakage-safe folds, validation, and resumable checkpoints."""
+    train_entries, val_entries = _split_entries(cfg)
+    train_data = _load_fold(train_entries, cache_dir)
+    val_data = _load_fold(val_entries, cache_dir)
+    train_cfg = cfg["train"]
+    seed = int(train_cfg["seed"])
+    deterministic = bool(train_cfg.get("deterministic", True))
+    _set_reproducible(seed, deterministic)
+
+    device = cfg["model"]["device"]
+    model = _build_model(cfg, train_data[0]["features"].shape[-1]).to(device)
+    out_dir = Path(train_cfg.get("output_dir", "outputs/s1_event_slots")).resolve()
+    out_dir.mkdir(parents=True, exist_ok=True)
+    config_hash = _json_hash(cfg)
+    split_payload = {
+        "seed": seed,
+        "group_key": cfg["data"].get("group_key", "source_id"),
+        "source_leakage_count": 0,
+        "train": [sample["sample_id"] for sample in train_data],
+        "val": [sample["sample_id"] for sample in val_data],
+    }
+    (out_dir / "split.json").write_text(
+        json.dumps(split_payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    run_manifest = {
+        "experiment": "S1a-event-only",
+        "git_commit": _git_commit(),
+        "config": cfg,
+        "config_sha256": config_hash,
+        "cache_manifest_sha256": _sha256_file(cache_dir / "cache_manifest.json"),
+        "seed": seed,
+        "deterministic_algorithms": deterministic,
+        "n_train": len(train_data),
+        "n_val": len(val_data),
+        "python": platform.python_version(),
+        "torch": torch.__version__,
+        "cuda": torch.version.cuda,
+    }
+    (out_dir / "run_manifest.json").write_text(
+        json.dumps(run_manifest, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+    if evaluate_checkpoint:
+        checkpoint_path = Path(evaluate_checkpoint).resolve()
+        _load_checkpoint(
+            checkpoint_path,
+            model=model,
+            expected_config_hash=config_hash,
+        )
+        return evaluate_slots(
+            cfg,
+            model=model,
+            val_data=val_data,
+            out_dir=out_dir,
+            checkpoint_path=checkpoint_path,
+        )
+
+    optimizer = torch.optim.AdamW(
+        model.parameters(),
+        lr=float(train_cfg["learning_rate"]),
+        weight_decay=float(train_cfg.get("weight_decay", 0.01)),
+    )
+    total_steps = int(train_cfg["steps"])
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+        optimizer, T_max=total_steps
+    )
+    rng = random.Random(seed)
+    start_step = 0
+    best_val_loss = float("inf")
+    if resume_from:
+        resumed = _load_checkpoint(
+            Path(resume_from).resolve(),
+            model=model,
+            optimizer=optimizer,
+            scheduler=scheduler,
+            rng=rng,
+            expected_config_hash=config_hash,
+        )
+        start_step = int(resumed["step"])
+        best_val_loss = float(resumed["best_val_loss"])
+        print(f"[s1] resumed at step {start_step}", file=sys.stderr)
+
+    loss_kwargs = _loss_kwargs(cfg)
+    eval_every = int(train_cfg.get("eval_every", 500))
+    log_every = int(train_cfg.get("log_every", 100))
+    best_path = out_dir / "best.pt"
+    last_path = out_dir / "last.pt"
+    step = start_step
+    started = time.time()
+    model.train()
+    while step < total_steps:
+        order = list(range(len(train_data)))
+        rng.shuffle(order)
+        for sample_index in order:
+            if step >= total_steps:
+                break
+            loss_values = _sample_loss(
+                model, train_data[sample_index], device, loss_kwargs
+            )
+            loss = loss_values["loss"]
+            optimizer.zero_grad(set_to_none=True)
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(
+                model.parameters(), float(train_cfg.get("max_grad_norm", 1.0))
+            )
+            optimizer.step()
+            scheduler.step()
+            step += 1
+
+            if step % log_every == 0 or step == total_steps:
+                print(
+                    f"[s1] step={step}/{total_steps} loss={float(loss):.4f} "
+                    f"eventness={float(loss_values['eventness_loss']):.4f} "
+                    f"type={float(loss_values['type_loss']):.4f} "
+                    f"activity={float(loss_values['activity_loss']):.4f} "
+                    f"elapsed={time.time() - started:.0f}s",
+                    file=sys.stderr,
+                    flush=True,
+                )
+            if step % eval_every == 0 or step == total_steps:
+                val_loss = _validation_loss(model, val_data, device, loss_kwargs)
+                print(f"[s1] step={step} val_loss={val_loss:.6f}", file=sys.stderr)
+                if val_loss < best_val_loss:
+                    best_val_loss = val_loss
+                    _save_checkpoint(
+                        best_path,
+                        model=model,
+                        optimizer=optimizer,
+                        scheduler=scheduler,
+                        step=step,
+                        best_val_loss=best_val_loss,
+                        rng=rng,
+                        config_hash=config_hash,
+                    )
+                _save_checkpoint(
+                    last_path,
+                    model=model,
+                    optimizer=optimizer,
+                    scheduler=scheduler,
+                    step=step,
+                    best_val_loss=best_val_loss,
+                    rng=rng,
+                    config_hash=config_hash,
+                )
+
+    if not best_path.is_file():
+        raise RuntimeError("training completed without producing a best checkpoint")
+    _load_checkpoint(best_path, model=model, expected_config_hash=config_hash)
+    return evaluate_slots(
+        cfg,
+        model=model,
+        val_data=val_data,
+        out_dir=out_dir,
+        checkpoint_path=best_path,
+    )
+
+
+def _apply_overrides(cfg: dict, args: argparse.Namespace) -> dict:
+    if args.model_path:
+        cfg["model"]["path"] = args.model_path
+    if args.device:
+        cfg["model"]["device"] = args.device
+    if args.train_manifest:
+        cfg["data"]["train_manifest_path"] = args.train_manifest
+    if args.val_manifest:
+        cfg["data"]["val_manifest_path"] = args.val_manifest
+    if args.audio_base:
+        cfg["data"]["audio_base_dir"] = args.audio_base
+    if args.feature_cache:
+        cfg["data"]["feature_cache"] = args.feature_cache
+    if args.output_dir:
+        cfg["train"]["output_dir"] = args.output_dir
+    if args.steps is not None:
+        cfg["train"]["steps"] = args.steps
+    if args.seed is not None:
+        cfg["train"]["seed"] = args.seed
+    if args.n_slots is not None:
+        cfg["model"]["n_slots"] = args.n_slots
+    if args.disable_temporal_embedding:
+        cfg["model"]["use_temporal_embedding"] = False
+    if args.positive_weight_scale is not None:
+        cfg.setdefault("loss", {})["positive_weight_scale"] = args.positive_weight_scale
+    if args.activity_weight is not None:
+        cfg.setdefault("loss", {})["activity_weight"] = args.activity_weight
+    return cfg
+
+
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="sceneledger-train-slots")
     parser.add_argument("--config", required=True)
+    parser.add_argument("--model-path")
+    parser.add_argument("--device")
+    parser.add_argument("--train-manifest")
+    parser.add_argument("--val-manifest")
+    parser.add_argument("--audio-base")
+    parser.add_argument("--feature-cache")
+    parser.add_argument("--output-dir")
+    parser.add_argument("--steps", type=int)
+    parser.add_argument("--seed", type=int)
+    parser.add_argument("--n-slots", type=int)
+    parser.add_argument("--disable-temporal-embedding", action="store_true")
+    parser.add_argument("--positive-weight-scale", type=float)
+    parser.add_argument("--activity-weight", type=float)
     parser.add_argument("--force-cache", action="store_true")
+    parser.add_argument("--cache-only", action="store_true")
+    parser.add_argument("--resume")
+    parser.add_argument("--evaluate-checkpoint")
     args = parser.parse_args(argv)
+    if bool(args.train_manifest) != bool(args.val_manifest):
+        parser.error("--train-manifest and --val-manifest must be supplied together")
+    if args.resume and args.evaluate_checkpoint:
+        parser.error("--resume and --evaluate-checkpoint are mutually exclusive")
 
-    cfg = _load_config(args.config)
+    cfg = _apply_overrides(_load_config(args.config), args)
     cache_dir = cache_features(cfg, force=args.force_cache)
-    train_slots(cfg, cache_dir)
+    if args.cache_only:
+        print(json.dumps({"cache_dir": str(cache_dir), "status": "complete"}))
+        return 0
+    summary = train_slots(
+        cfg,
+        cache_dir,
+        resume_from=args.resume,
+        evaluate_checkpoint=args.evaluate_checkpoint,
+    )
+    print(json.dumps(summary, ensure_ascii=False, indent=2))
     return 0
 
 

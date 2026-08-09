@@ -9,6 +9,9 @@ MODEL_DIR="${MODEL_DIR:-/tmp/moss_weights}"
 AUDIO_DIR="${AUDIO_DIR:-/tmp/tac_mini}"
 SFT_DIR="${SFT_DIR:-/tmp/sceneledger_b1_sft}"
 OUTPUT_DIR="${OUTPUT_DIR:-${PROJECT_ROOT}/outputs/b1_official}"
+TAG_SUMMARY="${TAG_SUMMARY:-${PROJECT_ROOT}/runs/tag2021/reproduction_summary.json}"
+
+python "${PROJECT_ROOT}/scripts/repro/require_anchor_pass.py" "${TAG_SUMMARY}"
 
 if [[ ! -d "${MOSS_DIR}/.git" ]]; then
   echo "MOSS-Audio checkout not found at ${MOSS_DIR}" >&2

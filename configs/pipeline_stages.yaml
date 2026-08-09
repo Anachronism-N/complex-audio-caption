@@ -22,6 +22,7 @@ status_snapshot:
   p3_b2_weighted_timestamps: atomic_registration_code_ready_gpu_pending
   p4_b3_historical_artifact: superseded_invalid_lyrics_and_evaluation
   p4_b3_valid_pipeline: code_ready_real_catalog_and_gpu_pending
+  p7_s1a_event_probe: code_ready_torch_server_execution_pending
   tag2021_anchor: code_ready_server_execution_pending
   real_public_source_pool: not_server_verified
   web_unlabeled_teacher_pipeline: not_integrated
@@ -129,6 +130,8 @@ stages:
     duration_days: 14
     order: [event_activity, track_activity, event_track_pointer, identity, text]
     gates:
+      - s1a_event_only_probe_completed_on_b3_valid_fold
+      - s1a_machine_readable_run_evidence_complete
       - thirty_two_sample_overfit
       - source_count_mae_beats_b3_parser
       - overlap_event_recall_improves

@@ -11,6 +11,9 @@ SOURCE_AUDIO_ROOT="${SOURCE_AUDIO_ROOT:?set SOURCE_AUDIO_ROOT to the waveform ro
 WORK_DIR="${WORK_DIR:-${PROJECT_ROOT}/runs/b3_valid}"
 N_SAMPLES="${N_SAMPLES:-10000}"
 MAX_STEPS="${MAX_STEPS:-10000}"
+TAG_SUMMARY="${TAG_SUMMARY:-${PROJECT_ROOT}/runs/tag2021/reproduction_summary.json}"
+
+python "${PROJECT_ROOT}/scripts/repro/require_anchor_pass.py" "${TAG_SUMMARY}"
 
 if [[ ! -d "${MOSS_DIR}/.git" ]]; then
   echo "MOSS-Audio checkout not found at ${MOSS_DIR}" >&2

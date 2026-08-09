@@ -1,26 +1,44 @@
-# S1a: event-only slot decoder (no text).
-# Core SceneLedger contribution: permutation-invariant set prediction.
-# Trains on frozen MOSS audio encoder features -> lightweight slot decoder.
-# Tests: does set prediction beat autoregressive (B3) on complex scenes?
+# S1a-valid: event-only slot decoder (no caption text or track prediction).
+# Uses the exact leakage-safe folds produced by scripts/run_b3_valid.sh.
 
 model:
   path: /tmp/moss_weights
   device: cuda:0
   dtype: bfloat16
   hidden_dim: 768
-  n_slots: 8
+  n_slots: 24
   n_heads: 8
   n_layers: 4
+  use_temporal_embedding: true
 
 data:
-  manifest_path: data/derived/b3_unified/manifest.jsonl
-  audio_base_dir: /tmp/b3_unified
-  feature_cache: /tmp/s1_features
+  train_manifest_path: runs/b3_valid/sft/train_manifest.jsonl
+  val_manifest_path: runs/b3_valid/sft/val_manifest.jsonl
+  audio_base_dir: runs/b3_valid/data
+  feature_cache: runs/s1_valid/features
+  group_key: source_id
   max_audio_seconds: 30.0
 
 train:
-  steps: 5000
+  steps: 10000
   learning_rate: 1.0e-4
-  val_fraction: 0.1
+  weight_decay: 0.01
+  max_grad_norm: 1.0
+  eval_every: 500
+  log_every: 100
+  deterministic: true
   seed: 20260808
-  output_dir: outputs/s1_event_slots
+  output_dir: runs/s1_valid/model
+
+loss:
+  eventness_weight: 1.0
+  type_weight: 1.0
+  activity_weight: 2.0
+  positive_weight_scale: 1.0
+  max_positive_weight: 20.0
+
+evaluation:
+  # Fixed before the validation run; do not tune these on the reported fold.
+  eventness_threshold: 0.5
+  activity_threshold: 0.5
+  tiou_threshold: 0.3

@@ -1,6 +1,7 @@
 # 数据管线复现状态与下一步实验
 
-状态冻结日期：2026-08-09。这里区分“代码已实现”“CPU 已验证”“GPU/真实数据已验证”，避免把存在脚本误写成已经完成实验。
+状态更新日期：2026-08-09。这里区分“代码已实现”“CPU 已验证”“GPU/真实数据已验证”，避免把存在脚本误写成已经完成实验。当前唯一服务器总入口是
+`docs/14_valid_experiment_pipeline.md`；S1a 见 `docs/15_s1_event_slot_experiment.md`。
 
 ## 1. 当前结论
 
@@ -15,17 +16,18 @@ TAC-style 合成数据的最小闭环已经实现：scene graph → source rende
 | 阶段 | 实现状态 | 验证状态 | 当前限制 |
 |---|---|---|---|
 | P0 schema/parser/serializer | 已实现 | CPU fixtures 已验证 | canonical 时间仍需从“静默量化”升级为严格校验 |
-| P0 temporal/event metrics | 已实现 | CPU 已验证 | semantic gate 与 permutation-invariant track matching 待修复 |
+| P0 temporal/event metrics | 已实现 | CPU 已验证 | 已有 text hard gate；最终 multilingual semantic metric 待冻结 |
 | P2 SyntheticSourcePool | 已实现 | 跨进程确定性已验证 | 只是占位波形，不能代表真实声学分布 |
-| P2 scene templates | 已实现 6 类 | CPU 已验证 | 暂无 lyrics、双说话人、music+vocal 专门模板 |
+| P2 scene templates | TAC-mini 与 B3-real 模板已实现 | CPU 已验证 | 真实数据分布仍需服务器统计与校准 |
 | P2 RIR/echo/repeat | 已实现 | CPU 已验证 | noise、codec、ducking、occlusion 尚未进入 main renderer |
 | P2 exact components | semantic stems + residual | CPU/落盘 PCM 审计已实现 | 需要在服务器重渲染 500 条正式数据 |
 | source leakage split | union-find 传递分组 | CPU 反例已验证 | 真实数据还需加入 media ID、uploader、performer、audio fingerprint |
 | B0 MOSS zero-shot | 已运行旧 500 条 | 有 500 条 raw output | 旧运行不是完整 deterministic protocol，需在修复数据上 greedy 重跑 |
 | B1 MOSS static SFT | 官方格式导出和启动脚本已实现 | CPU 只验证数据导出 | GPU checkpoint、完整 val 指标待服务器运行 |
-| B2 TAC-style weighted CE | 目标 formatter 已实现 | 未达到可训练门槛 | 301 个时间 token 尚未注册为原子 token，代码主动阻止误跑 |
-| PR #1 TAC++/CARC/slot model | Draft 分支已有实现 | PR 报告 CPU smoke 通过 | 尚未与 main schema/renderer 统一，不能视为 main 已复现 |
-| 真实公开单源数据 | 有设计和旧 PR 下载脚本 | 未在目标服务器完整下载/审计 | 许可证、路径、checksum 和配额待确认 |
+| B2 TAC-style weighted CE | 301 个原子时间 token、PEFT embedding rows 和 reload 校验已实现 | CPU tokenizer/loss tests 已验证 | GPU B2 数字待服务器运行 |
+| B3-valid | file-backed catalog、真实歌词 fail-closed、统一 target 和执行脚本已实现 | CPU renderer/export 已验证 | 完整真实 source catalog 与 GPU 结果待服务器完成 |
+| S1a-valid event slots | leakage-safe split、MOSS cache、Hungarian loss、checkpoint/eval/消融已实现 | CPU 契约测试通过，Torch 模型测试待服务器 | 当前只做事件类型/activity，不含 track/text |
+| 真实公开单源数据 | LibriSpeech 下载/catalog 脚本已实现；受限 singing 数据手工登记 | 未在目标服务器完整下载/审计 | 许可证、路径、checksum 和配额待确认 |
 | B站/Instagram/TikTok 数据 | 原始无标注数据可用 | 未进入训练闭环 | 必须先做授权索引、去重、AV 切片和 teacher 置信度分层 |
 | WildMix-Cap 200 条人工集 | 规范已设计 | 未标注 | 这是论文真实性结论的关键阻塞项 |
 
@@ -114,9 +116,9 @@ bash scripts/run_b1_official.sh
 
 如果格式成功但真实音频内容 F1 很低，下一步应优先替换 SyntheticSourcePool 为公开真实单源数据，而不是增加模型结构。如果 synthetic val 很高、真实 pilot 很低，则说明主要瓶颈是 sim-to-real gap，应进入 TAC++/真实 teacher/CARC，而不是继续在合成集刷分。
 
-## 5. B2 尚未允许执行的原因
+## 5. B2 当前状态
 
-`<|t_000|>` 到 `<|t_300|>` 当前只是字符串，不保证 tokenizer 编码为单个 token。B2 前必须实现并测试：
+`<|t_000|>` 到 `<|t_300|>` 的工程门槛已经实现：
 
 1. 注册 301 个 timestamp special tokens 和结构/type tokens；
 2. resize input/output embeddings；
@@ -126,4 +128,6 @@ bash scripts/run_b1_official.sh
 6. tokenizer/checkpoint reload 后 token ID 完全一致；
 7. ordinary CE 与 weighted CE 在权重为 1 时数值一致。
 
-在这些条件满足前，实验入口会拒绝 `timestamp_weight != 1.0`，以防生成看似成功但定义错误的 B2 数字。
+上述条件由 tokenizer/loss 单元测试和训练入口 fail-closed 校验覆盖。仍未完成的是在固定 B3-valid
+fold 上运行 GPU 训练、保存模型/tokenizer revision 与 checkpoint hash，并报告 validation 结果。
+因此可以运行 B2，但在服务器产物回传前不能声称 B2 已复现成功。
