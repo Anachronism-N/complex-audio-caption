@@ -1,0 +1,501 @@
+scene_id,template,mixture_path,duration,n_events,first_event_text
+mix_000001,speech_music_lyrics_sfx,audio/mix_000001.wav,24.6,4,"""don't stop believing, hold on to that feeling"""
+mix_000002,speech_music_lyrics_sfx,audio/mix_000002.wav,11.3,4,"""take me home tonight"""
+mix_000003,isolated_sfx,audio/mix_000003.wav,15.4,1,A glass breaking sound.
+mix_000004,music_with_sfx,audio/mix_000004.wav,17.6,2,背景音乐持续播放，节奏平稳。
+mix_000005,repeated_event,audio/mix_000005.wav,10.0,1,一次玻璃破碎声。
+mix_000006,isolated_sfx,audio/mix_000006.wav,16.0,1,远处的犬吠。
+mix_000007,speech_music_lyrics_sfx,audio/mix_000007.wav,10.8,4,一名说话者正在讲话。
+mix_000008,speech_music_sfx,audio/mix_000008.wav,15.9,3,背景音乐持续播放，节奏平稳。
+mix_000009,repeated_event,audio/mix_000009.wav,23.4,1,A glass breaking sound.
+mix_000010,ambient_with_intermittent_sfx,audio/mix_000010.wav,11.6,2,Ambient room tone.
+mix_000011,overlapping_speakers,audio/mix_000011.wav,10.7,2,说话者描述当前场景。
+mix_000012,repeated_event,audio/mix_000012.wav,22.5,1,一次玻璃破碎声。
+mix_000013,speech_music_sfx,audio/mix_000013.wav,12.5,3,Background music plays steadily.
+mix_000014,speech_music_lyrics_sfx,audio/mix_000014.wav,21.8,4,电子伴奏循环播放。
+mix_000015,lyrics_over_music,audio/mix_000015.wav,14.2,2,背景音乐持续播放，节奏平稳。
+mix_000016,music_with_sfx,audio/mix_000016.wav,16.8,2,Background music plays steadily.
+mix_000017,overlapping_speakers,audio/mix_000017.wav,18.6,2,说话者描述当前场景。
+mix_000018,overlapping_speakers,audio/mix_000018.wav,26.3,2,一名说话者正在讲话。
+mix_000019,speech_music_lyrics_sfx,audio/mix_000019.wav,27.2,4,背景音乐持续播放，节奏平稳。
+mix_000020,overlapping_speakers,audio/mix_000020.wav,18.4,2,一名说话者正在讲话。
+mix_000021,speech_music_sfx,audio/mix_000021.wav,25.8,3,电子伴奏循环播放。
+mix_000022,lyrics_over_music,audio/mix_000022.wav,24.6,2,背景音乐持续播放，节奏平稳。
+mix_000023,overlapping_speakers,audio/mix_000023.wav,28.6,2,一名说话者正在讲话。
+mix_000024,lyrics_over_music,audio/mix_000024.wav,12.1,2,电子伴奏循环播放。
+mix_000025,repeated_event,audio/mix_000025.wav,17.1,1,一次玻璃破碎声。
+mix_000026,speech_over_music,audio/mix_000026.wav,16.0,2,Background music plays steadily.
+mix_000027,isolated_sfx,audio/mix_000027.wav,14.2,1,远处的犬吠。
+mix_000028,lyrics_over_music,audio/mix_000028.wav,12.3,2,背景音乐持续播放，节奏平稳。
+mix_000029,overlapping_speakers,audio/mix_000029.wav,25.7,2,说话者描述当前场景。
+mix_000030,overlapping_speakers,audio/mix_000030.wav,17.5,2,一名说话者正在讲话。
+mix_000031,repeated_event,audio/mix_000031.wav,17.6,1,远处的犬吠。
+mix_000032,speech_music_lyrics_sfx,audio/mix_000032.wav,24.1,4,Background music plays steadily.
+mix_000033,music_with_sfx,audio/mix_000033.wav,28.4,2,背景音乐持续播放，节奏平稳。
+mix_000034,speech_music_lyrics_sfx,audio/mix_000034.wav,26.0,4,"""la la la, dancing in the rain"""
+mix_000035,ambient_with_intermittent_sfx,audio/mix_000035.wav,15.8,2,雨声背景。
+mix_000036,speech_over_music,audio/mix_000036.wav,13.7,2,背景音乐持续播放，节奏平稳。
+mix_000037,lyrics_over_music,audio/mix_000037.wav,15.5,2,背景音乐持续播放，节奏平稳。
+mix_000038,speech_music_sfx,audio/mix_000038.wav,21.5,3,电子伴奏循环播放。
+mix_000039,speech_music_lyrics_sfx,audio/mix_000039.wav,12.4,4,Background music plays steadily.
+mix_000040,lyrics_over_music,audio/mix_000040.wav,24.0,2,电子伴奏循环播放。
+mix_000041,speech_over_music,audio/mix_000041.wav,20.9,2,电子伴奏循环播放。
+mix_000042,repeated_event,audio/mix_000042.wav,13.0,1,一次玻璃破碎声。
+mix_000043,overlapping_speakers,audio/mix_000043.wav,28.4,2,A speaker is talking.
+mix_000044,music_with_sfx,audio/mix_000044.wav,10.3,2,Background music plays steadily.
+mix_000045,speech_music_sfx,audio/mix_000045.wav,14.8,3,电子伴奏循环播放。
+mix_000046,overlapping_speakers,audio/mix_000046.wav,22.7,2,A speaker is talking.
+mix_000047,music_with_sfx,audio/mix_000047.wav,22.2,2,Background music plays steadily.
+mix_000048,ambient_with_intermittent_sfx,audio/mix_000048.wav,29.7,2,Ambient room tone.
+mix_000049,music_with_sfx,audio/mix_000049.wav,10.1,2,Background music plays steadily.
+mix_000050,overlapping_speakers,audio/mix_000050.wav,17.6,2,一名说话者正在讲话。
+mix_000051,speech_music_lyrics_sfx,audio/mix_000051.wav,23.2,4,电子伴奏循环播放。
+mix_000052,isolated_sfx,audio/mix_000052.wav,20.6,1,一次玻璃破碎声。
+mix_000053,speech_over_music,audio/mix_000053.wav,13.9,2,电子伴奏循环播放。
+mix_000054,speech_music_sfx,audio/mix_000054.wav,10.4,3,A speaker is talking.
+mix_000055,repeated_event,audio/mix_000055.wav,16.9,1,A glass breaking sound.
+mix_000056,overlapping_speakers,audio/mix_000056.wav,19.2,2,A speaker is talking.
+mix_000057,speech_over_music,audio/mix_000057.wav,27.0,2,电子伴奏循环播放。
+mix_000058,ambient_with_intermittent_sfx,audio/mix_000058.wav,25.2,2,持续的环境噪声。
+mix_000059,lyrics_over_music,audio/mix_000059.wav,13.9,2,背景音乐持续播放，节奏平稳。
+mix_000060,ambient_with_intermittent_sfx,audio/mix_000060.wav,21.6,2,Ambient room tone.
+mix_000061,speech_music_lyrics_sfx,audio/mix_000061.wav,28.3,4,电子伴奏循环播放。
+mix_000062,ambient_with_intermittent_sfx,audio/mix_000062.wav,13.7,2,持续的环境噪声。
+mix_000063,overlapping_speakers,audio/mix_000063.wav,17.5,2,A speaker is talking.
+mix_000064,lyrics_over_music,audio/mix_000064.wav,11.3,2,Background music plays steadily.
+mix_000065,ambient_with_intermittent_sfx,audio/mix_000065.wav,24.8,2,持续的环境噪声。
+mix_000066,isolated_sfx,audio/mix_000066.wav,13.8,1,短促的撞击声。
+mix_000067,ambient_with_intermittent_sfx,audio/mix_000067.wav,28.6,2,持续的环境噪声。
+mix_000068,speech_music_sfx,audio/mix_000068.wav,16.9,3,电子伴奏循环播放。
+mix_000069,ambient_with_intermittent_sfx,audio/mix_000069.wav,25.9,2,持续的环境噪声。
+mix_000070,speech_music_sfx,audio/mix_000070.wav,12.0,3,电子伴奏循环播放。
+mix_000071,music_with_sfx,audio/mix_000071.wav,27.1,2,背景音乐持续播放，节奏平稳。
+mix_000072,music_with_sfx,audio/mix_000072.wav,14.1,2,电子伴奏循环播放。
+mix_000073,lyrics_over_music,audio/mix_000073.wav,28.0,2,电子伴奏循环播放。
+mix_000074,lyrics_over_music,audio/mix_000074.wav,13.5,2,"""la la la, dancing in the rain"""
+mix_000075,repeated_event,audio/mix_000075.wav,13.3,1,短促的撞击声。
+mix_000076,speech_over_music,audio/mix_000076.wav,10.5,2,电子伴奏循环播放。
+mix_000077,speech_music_lyrics_sfx,audio/mix_000077.wav,25.8,4,背景音乐持续播放，节奏平稳。
+mix_000078,overlapping_speakers,audio/mix_000078.wav,10.4,2,说话者描述当前场景。
+mix_000079,overlapping_speakers,audio/mix_000079.wav,15.3,2,说话者描述当前场景。
+mix_000080,speech_music_lyrics_sfx,audio/mix_000080.wav,16.6,4,电子伴奏循环播放。
+mix_000081,overlapping_speakers,audio/mix_000081.wav,17.2,2,说话者描述当前场景。
+mix_000082,overlapping_speakers,audio/mix_000082.wav,12.2,2,说话者描述当前场景。
+mix_000083,ambient_with_intermittent_sfx,audio/mix_000083.wav,20.3,2,持续的环境噪声。
+mix_000084,speech_music_sfx,audio/mix_000084.wav,10.7,3,背景音乐持续播放，节奏平稳。
+mix_000085,lyrics_over_music,audio/mix_000085.wav,24.7,2,背景音乐持续播放，节奏平稳。
+mix_000086,speech_music_sfx,audio/mix_000086.wav,25.0,3,背景音乐持续播放，节奏平稳。
+mix_000087,speech_music_lyrics_sfx,audio/mix_000087.wav,10.7,4,电子伴奏循环播放。
+mix_000088,speech_music_lyrics_sfx,audio/mix_000088.wav,15.3,4,Background music plays steadily.
+mix_000089,overlapping_speakers,audio/mix_000089.wav,22.8,2,一名说话者正在讲话。
+mix_000090,ambient_with_intermittent_sfx,audio/mix_000090.wav,23.9,2,Ambient room tone.
+mix_000091,overlapping_speakers,audio/mix_000091.wav,17.1,2,说话者描述当前场景。
+mix_000092,ambient_with_intermittent_sfx,audio/mix_000092.wav,25.4,2,Ambient room tone.
+mix_000093,isolated_sfx,audio/mix_000093.wav,19.1,1,一次玻璃破碎声。
+mix_000094,lyrics_over_music,audio/mix_000094.wav,11.5,2,电子伴奏循环播放。
+mix_000095,overlapping_speakers,audio/mix_000095.wav,28.5,2,一名说话者正在讲话。
+mix_000096,overlapping_speakers,audio/mix_000096.wav,23.3,2,A speaker is talking.
+mix_000097,speech_music_lyrics_sfx,audio/mix_000097.wav,14.5,4,电子伴奏循环播放。
+mix_000098,speech_over_music,audio/mix_000098.wav,19.6,2,Background music plays steadily.
+mix_000099,lyrics_over_music,audio/mix_000099.wav,19.7,2,背景音乐持续播放，节奏平稳。
+mix_000100,repeated_event,audio/mix_000100.wav,26.3,1,一次玻璃破碎声。
+mix_000101,lyrics_over_music,audio/mix_000101.wav,29.7,2,Background music plays steadily.
+mix_000102,speech_music_lyrics_sfx,audio/mix_000102.wav,19.0,4,背景音乐持续播放，节奏平稳。
+mix_000103,music_with_sfx,audio/mix_000103.wav,17.7,2,电子伴奏循环播放。
+mix_000104,lyrics_over_music,audio/mix_000104.wav,20.5,2,背景音乐持续播放，节奏平稳。
+mix_000105,speech_over_music,audio/mix_000105.wav,27.3,2,背景音乐持续播放，节奏平稳。
+mix_000106,music_with_sfx,audio/mix_000106.wav,26.0,2,背景音乐持续播放，节奏平稳。
+mix_000107,speech_music_lyrics_sfx,audio/mix_000107.wav,19.2,4,Background music plays steadily.
+mix_000108,speech_music_sfx,audio/mix_000108.wav,20.0,3,电子伴奏循环播放。
+mix_000109,speech_music_lyrics_sfx,audio/mix_000109.wav,29.2,4,背景音乐持续播放，节奏平稳。
+mix_000110,speech_over_music,audio/mix_000110.wav,16.7,2,电子伴奏循环播放。
+mix_000111,music_with_sfx,audio/mix_000111.wav,25.9,2,电子伴奏循环播放。
+mix_000112,lyrics_over_music,audio/mix_000112.wav,20.4,2,背景音乐持续播放，节奏平稳。
+mix_000113,speech_over_music,audio/mix_000113.wav,10.6,2,背景音乐持续播放，节奏平稳。
+mix_000114,ambient_with_intermittent_sfx,audio/mix_000114.wav,27.8,2,雨声背景。
+mix_000115,overlapping_speakers,audio/mix_000115.wav,16.8,2,说话者描述当前场景。
+mix_000116,ambient_with_intermittent_sfx,audio/mix_000116.wav,19.6,2,雨声背景。
+mix_000117,lyrics_over_music,audio/mix_000117.wav,13.7,2,电子伴奏循环播放。
+mix_000118,speech_over_music,audio/mix_000118.wav,22.9,2,电子伴奏循环播放。
+mix_000119,lyrics_over_music,audio/mix_000119.wav,12.4,2,背景音乐持续播放，节奏平稳。
+mix_000120,lyrics_over_music,audio/mix_000120.wav,21.7,2,电子伴奏循环播放。
+mix_000121,ambient_with_intermittent_sfx,audio/mix_000121.wav,13.6,2,Ambient room tone.
+mix_000122,speech_music_sfx,audio/mix_000122.wav,21.4,3,电子伴奏循环播放。
+mix_000123,speech_music_sfx,audio/mix_000123.wav,16.1,3,电子伴奏循环播放。
+mix_000124,overlapping_speakers,audio/mix_000124.wav,13.7,2,A speaker is talking.
+mix_000125,speech_over_music,audio/mix_000125.wav,17.9,2,背景音乐持续播放，节奏平稳。
+mix_000126,speech_over_music,audio/mix_000126.wav,24.1,2,背景音乐持续播放，节奏平稳。
+mix_000127,overlapping_speakers,audio/mix_000127.wav,17.6,2,A speaker is talking.
+mix_000128,music_with_sfx,audio/mix_000128.wav,15.4,2,背景音乐持续播放，节奏平稳。
+mix_000129,speech_over_music,audio/mix_000129.wav,17.1,2,背景音乐持续播放，节奏平稳。
+mix_000130,music_with_sfx,audio/mix_000130.wav,29.6,2,Background music plays steadily.
+mix_000131,speech_music_lyrics_sfx,audio/mix_000131.wav,18.2,4,Background music plays steadily.
+mix_000132,overlapping_speakers,audio/mix_000132.wav,28.6,2,A speaker is talking.
+mix_000133,speech_over_music,audio/mix_000133.wav,21.8,2,电子伴奏循环播放。
+mix_000134,isolated_sfx,audio/mix_000134.wav,14.1,1,A glass breaking sound.
+mix_000135,speech_over_music,audio/mix_000135.wav,18.2,2,电子伴奏循环播放。
+mix_000136,music_with_sfx,audio/mix_000136.wav,13.5,2,背景音乐持续播放，节奏平稳。
+mix_000137,music_with_sfx,audio/mix_000137.wav,17.6,2,电子伴奏循环播放。
+mix_000138,lyrics_over_music,audio/mix_000138.wav,27.9,2,电子伴奏循环播放。
+mix_000139,speech_music_sfx,audio/mix_000139.wav,29.8,3,Background music plays steadily.
+mix_000140,music_with_sfx,audio/mix_000140.wav,14.4,2,背景音乐持续播放，节奏平稳。
+mix_000141,repeated_event,audio/mix_000141.wav,10.3,1,短促的撞击声。
+mix_000142,speech_over_music,audio/mix_000142.wav,29.0,2,背景音乐持续播放，节奏平稳。
+mix_000143,speech_over_music,audio/mix_000143.wav,14.0,2,一名说话者正在讲话。
+mix_000144,overlapping_speakers,audio/mix_000144.wav,27.6,2,A speaker is talking.
+mix_000145,music_with_sfx,audio/mix_000145.wav,19.2,2,背景音乐持续播放，节奏平稳。
+mix_000146,speech_music_sfx,audio/mix_000146.wav,25.7,3,Background music plays steadily.
+mix_000147,lyrics_over_music,audio/mix_000147.wav,17.8,2,Background music plays steadily.
+mix_000148,speech_music_lyrics_sfx,audio/mix_000148.wav,21.4,4,Background music plays steadily.
+mix_000149,overlapping_speakers,audio/mix_000149.wav,29.9,2,一名说话者正在讲话。
+mix_000150,music_with_sfx,audio/mix_000150.wav,17.2,2,电子伴奏循环播放。
+mix_000151,lyrics_over_music,audio/mix_000151.wav,18.9,2,电子伴奏循环播放。
+mix_000152,overlapping_speakers,audio/mix_000152.wav,21.4,2,说话者描述当前场景。
+mix_000153,speech_over_music,audio/mix_000153.wav,13.7,2,电子伴奏循环播放。
+mix_000154,lyrics_over_music,audio/mix_000154.wav,20.6,2,背景音乐持续播放，节奏平稳。
+mix_000155,speech_music_lyrics_sfx,audio/mix_000155.wav,23.9,4,Background music plays steadily.
+mix_000156,speech_music_sfx,audio/mix_000156.wav,17.1,3,Background music plays steadily.
+mix_000157,music_with_sfx,audio/mix_000157.wav,22.7,2,Background music plays steadily.
+mix_000158,ambient_with_intermittent_sfx,audio/mix_000158.wav,24.4,2,雨声背景。
+mix_000159,isolated_sfx,audio/mix_000159.wav,14.7,1,A glass breaking sound.
+mix_000160,music_with_sfx,audio/mix_000160.wav,18.0,2,电子伴奏循环播放。
+mix_000161,repeated_event,audio/mix_000161.wav,28.4,1,一次玻璃破碎声。
+mix_000162,isolated_sfx,audio/mix_000162.wav,26.6,1,远处的犬吠。
+mix_000163,ambient_with_intermittent_sfx,audio/mix_000163.wav,11.4,2,持续的环境噪声。
+mix_000164,repeated_event,audio/mix_000164.wav,16.4,1,一次玻璃破碎声。
+mix_000165,speech_music_sfx,audio/mix_000165.wav,16.3,3,电子伴奏循环播放。
+mix_000166,speech_music_sfx,audio/mix_000166.wav,28.8,3,背景音乐持续播放，节奏平稳。
+mix_000167,speech_music_lyrics_sfx,audio/mix_000167.wav,17.8,4,一名说话者正在讲话。
+mix_000168,music_with_sfx,audio/mix_000168.wav,26.0,2,Background music plays steadily.
+mix_000169,ambient_with_intermittent_sfx,audio/mix_000169.wav,28.4,2,Ambient room tone.
+mix_000170,speech_over_music,audio/mix_000170.wav,11.8,2,背景音乐持续播放，节奏平稳。
+mix_000171,speech_music_lyrics_sfx,audio/mix_000171.wav,25.9,4,Background music plays steadily.
+mix_000172,speech_music_sfx,audio/mix_000172.wav,22.7,3,电子伴奏循环播放。
+mix_000173,speech_over_music,audio/mix_000173.wav,27.5,2,背景音乐持续播放，节奏平稳。
+mix_000174,speech_music_sfx,audio/mix_000174.wav,13.7,3,Background music plays steadily.
+mix_000175,music_with_sfx,audio/mix_000175.wav,18.0,2,背景音乐持续播放，节奏平稳。
+mix_000176,overlapping_speakers,audio/mix_000176.wav,21.6,2,说话者描述当前场景。
+mix_000177,speech_music_sfx,audio/mix_000177.wav,10.1,3,背景音乐持续播放，节奏平稳。
+mix_000178,speech_music_sfx,audio/mix_000178.wav,23.7,3,电子伴奏循环播放。
+mix_000179,speech_music_sfx,audio/mix_000179.wav,25.6,3,电子伴奏循环播放。
+mix_000180,overlapping_speakers,audio/mix_000180.wav,29.4,2,一名说话者正在讲话。
+mix_000181,lyrics_over_music,audio/mix_000181.wav,13.4,2,背景音乐持续播放，节奏平稳。
+mix_000182,lyrics_over_music,audio/mix_000182.wav,20.4,2,Background music plays steadily.
+mix_000183,lyrics_over_music,audio/mix_000183.wav,14.8,2,电子伴奏循环播放。
+mix_000184,speech_music_sfx,audio/mix_000184.wav,26.2,3,Background music plays steadily.
+mix_000185,isolated_sfx,audio/mix_000185.wav,13.1,1,一次玻璃破碎声。
+mix_000186,lyrics_over_music,audio/mix_000186.wav,11.3,2,Background music plays steadily.
+mix_000187,speech_over_music,audio/mix_000187.wav,15.2,2,Background music plays steadily.
+mix_000188,music_with_sfx,audio/mix_000188.wav,24.5,2,Background music plays steadily.
+mix_000189,speech_music_sfx,audio/mix_000189.wav,19.4,3,背景音乐持续播放，节奏平稳。
+mix_000190,music_with_sfx,audio/mix_000190.wav,12.0,2,背景音乐持续播放，节奏平稳。
+mix_000191,lyrics_over_music,audio/mix_000191.wav,24.7,2,背景音乐持续播放，节奏平稳。
+mix_000192,speech_music_sfx,audio/mix_000192.wav,10.8,3,背景音乐持续播放，节奏平稳。
+mix_000193,overlapping_speakers,audio/mix_000193.wav,27.5,2,A speaker is talking.
+mix_000194,ambient_with_intermittent_sfx,audio/mix_000194.wav,26.6,2,雨声背景。
+mix_000195,isolated_sfx,audio/mix_000195.wav,20.4,1,短促的撞击声。
+mix_000196,isolated_sfx,audio/mix_000196.wav,12.7,1,A glass breaking sound.
+mix_000197,lyrics_over_music,audio/mix_000197.wav,12.9,2,电子伴奏循环播放。
+mix_000198,isolated_sfx,audio/mix_000198.wav,28.3,1,A glass breaking sound.
+mix_000199,lyrics_over_music,audio/mix_000199.wav,15.7,2,Background music plays steadily.
+mix_000200,speech_over_music,audio/mix_000200.wav,13.3,2,Background music plays steadily.
+mix_000201,isolated_sfx,audio/mix_000201.wav,27.5,1,A glass breaking sound.
+mix_000202,music_with_sfx,audio/mix_000202.wav,19.7,2,Background music plays steadily.
+mix_000203,music_with_sfx,audio/mix_000203.wav,14.3,2,Background music plays steadily.
+mix_000204,repeated_event,audio/mix_000204.wav,20.8,1,短促的撞击声。
+mix_000205,repeated_event,audio/mix_000205.wav,11.1,1,远处的犬吠。
+mix_000206,ambient_with_intermittent_sfx,audio/mix_000206.wav,20.5,2,持续的环境噪声。
+mix_000207,speech_music_lyrics_sfx,audio/mix_000207.wav,10.7,4,Background music plays steadily.
+mix_000208,overlapping_speakers,audio/mix_000208.wav,22.2,2,一名说话者正在讲话。
+mix_000209,repeated_event,audio/mix_000209.wav,13.9,1,远处的犬吠。
+mix_000210,speech_music_sfx,audio/mix_000210.wav,27.2,3,电子伴奏循环播放。
+mix_000211,repeated_event,audio/mix_000211.wav,23.9,1,A glass breaking sound.
+mix_000212,speech_music_lyrics_sfx,audio/mix_000212.wav,14.5,4,Background music plays steadily.
+mix_000213,overlapping_speakers,audio/mix_000213.wav,27.1,2,说话者描述当前场景。
+mix_000214,speech_music_lyrics_sfx,audio/mix_000214.wav,22.1,4,电子伴奏循环播放。
+mix_000215,music_with_sfx,audio/mix_000215.wav,28.6,2,背景音乐持续播放，节奏平稳。
+mix_000216,overlapping_speakers,audio/mix_000216.wav,16.2,2,说话者描述当前场景。
+mix_000217,lyrics_over_music,audio/mix_000217.wav,12.6,2,电子伴奏循环播放。
+mix_000218,speech_over_music,audio/mix_000218.wav,10.7,2,说话者描述当前场景。
+mix_000219,lyrics_over_music,audio/mix_000219.wav,11.9,2,背景音乐持续播放，节奏平稳。
+mix_000220,overlapping_speakers,audio/mix_000220.wav,20.5,2,一名说话者正在讲话。
+mix_000221,isolated_sfx,audio/mix_000221.wav,12.9,1,A glass breaking sound.
+mix_000222,lyrics_over_music,audio/mix_000222.wav,10.9,2,电子伴奏循环播放。
+mix_000223,speech_music_sfx,audio/mix_000223.wav,28.8,3,电子伴奏循环播放。
+mix_000224,music_with_sfx,audio/mix_000224.wav,10.3,2,Background music plays steadily.
+mix_000225,lyrics_over_music,audio/mix_000225.wav,17.5,2,电子伴奏循环播放。
+mix_000226,speech_over_music,audio/mix_000226.wav,21.2,2,电子伴奏循环播放。
+mix_000227,speech_music_lyrics_sfx,audio/mix_000227.wav,15.6,4,电子伴奏循环播放。
+mix_000228,repeated_event,audio/mix_000228.wav,20.3,1,短促的撞击声。
+mix_000229,speech_over_music,audio/mix_000229.wav,22.9,2,背景音乐持续播放，节奏平稳。
+mix_000230,speech_over_music,audio/mix_000230.wav,20.8,2,背景音乐持续播放，节奏平稳。
+mix_000231,lyrics_over_music,audio/mix_000231.wav,12.2,2,背景音乐持续播放，节奏平稳。
+mix_000232,overlapping_speakers,audio/mix_000232.wav,23.2,2,说话者描述当前场景。
+mix_000233,speech_music_sfx,audio/mix_000233.wav,21.2,3,背景音乐持续播放，节奏平稳。
+mix_000234,overlapping_speakers,audio/mix_000234.wav,29.7,2,说话者描述当前场景。
+mix_000235,speech_over_music,audio/mix_000235.wav,25.1,2,背景音乐持续播放，节奏平稳。
+mix_000236,speech_music_lyrics_sfx,audio/mix_000236.wav,26.1,4,电子伴奏循环播放。
+mix_000237,speech_music_sfx,audio/mix_000237.wav,27.1,3,电子伴奏循环播放。
+mix_000238,speech_over_music,audio/mix_000238.wav,20.9,2,电子伴奏循环播放。
+mix_000239,speech_music_sfx,audio/mix_000239.wav,11.6,3,Background music plays steadily.
+mix_000240,isolated_sfx,audio/mix_000240.wav,11.0,1,一次玻璃破碎声。
+mix_000241,speech_music_lyrics_sfx,audio/mix_000241.wav,13.8,4,电子伴奏循环播放。
+mix_000242,speech_music_lyrics_sfx,audio/mix_000242.wav,13.8,4,背景音乐持续播放，节奏平稳。
+mix_000243,music_with_sfx,audio/mix_000243.wav,14.2,2,Background music plays steadily.
+mix_000244,repeated_event,audio/mix_000244.wav,29.4,1,一次玻璃破碎声。
+mix_000245,lyrics_over_music,audio/mix_000245.wav,26.6,2,Background music plays steadily.
+mix_000246,speech_music_sfx,audio/mix_000246.wav,11.6,3,背景音乐持续播放，节奏平稳。
+mix_000247,overlapping_speakers,audio/mix_000247.wav,11.4,2,说话者描述当前场景。
+mix_000248,speech_music_sfx,audio/mix_000248.wav,17.5,3,Background music plays steadily.
+mix_000249,speech_over_music,audio/mix_000249.wav,21.2,2,背景音乐持续播放，节奏平稳。
+mix_000250,speech_over_music,audio/mix_000250.wav,21.1,2,Background music plays steadily.
+mix_000251,lyrics_over_music,audio/mix_000251.wav,18.1,2,背景音乐持续播放，节奏平稳。
+mix_000252,ambient_with_intermittent_sfx,audio/mix_000252.wav,12.5,2,Ambient room tone.
+mix_000253,overlapping_speakers,audio/mix_000253.wav,25.0,2,说话者描述当前场景。
+mix_000254,overlapping_speakers,audio/mix_000254.wav,22.7,2,一名说话者正在讲话。
+mix_000255,overlapping_speakers,audio/mix_000255.wav,26.5,2,A speaker is talking.
+mix_000256,speech_over_music,audio/mix_000256.wav,26.0,2,电子伴奏循环播放。
+mix_000257,speech_music_lyrics_sfx,audio/mix_000257.wav,18.0,4,Background music plays steadily.
+mix_000258,lyrics_over_music,audio/mix_000258.wav,14.8,2,电子伴奏循环播放。
+mix_000259,lyrics_over_music,audio/mix_000259.wav,18.6,2,Background music plays steadily.
+mix_000260,lyrics_over_music,audio/mix_000260.wav,22.4,2,背景音乐持续播放，节奏平稳。
+mix_000261,overlapping_speakers,audio/mix_000261.wav,15.1,2,A speaker is talking.
+mix_000262,lyrics_over_music,audio/mix_000262.wav,11.8,2,背景音乐持续播放，节奏平稳。
+mix_000263,speech_music_sfx,audio/mix_000263.wav,16.3,3,电子伴奏循环播放。
+mix_000264,ambient_with_intermittent_sfx,audio/mix_000264.wav,27.8,2,持续的环境噪声。
+mix_000265,music_with_sfx,audio/mix_000265.wav,26.1,2,电子伴奏循环播放。
+mix_000266,ambient_with_intermittent_sfx,audio/mix_000266.wav,29.3,2,持续的环境噪声。
+mix_000267,speech_over_music,audio/mix_000267.wav,11.6,2,电子伴奏循环播放。
+mix_000268,music_with_sfx,audio/mix_000268.wav,16.2,2,背景音乐持续播放，节奏平稳。
+mix_000269,speech_music_sfx,audio/mix_000269.wav,14.4,3,电子伴奏循环播放。
+mix_000270,speech_music_lyrics_sfx,audio/mix_000270.wav,26.4,4,Background music plays steadily.
+mix_000271,lyrics_over_music,audio/mix_000271.wav,19.1,2,电子伴奏循环播放。
+mix_000272,speech_music_sfx,audio/mix_000272.wav,19.6,3,Background music plays steadily.
+mix_000273,lyrics_over_music,audio/mix_000273.wav,17.1,2,Background music plays steadily.
+mix_000274,speech_over_music,audio/mix_000274.wav,18.2,2,Background music plays steadily.
+mix_000275,music_with_sfx,audio/mix_000275.wav,10.5,2,电子伴奏循环播放。
+mix_000276,overlapping_speakers,audio/mix_000276.wav,12.2,2,A speaker is talking.
+mix_000277,speech_music_sfx,audio/mix_000277.wav,19.1,3,背景音乐持续播放，节奏平稳。
+mix_000278,speech_music_sfx,audio/mix_000278.wav,26.2,3,背景音乐持续播放，节奏平稳。
+mix_000279,ambient_with_intermittent_sfx,audio/mix_000279.wav,24.8,2,雨声背景。
+mix_000280,speech_music_sfx,audio/mix_000280.wav,11.5,3,Background music plays steadily.
+mix_000281,repeated_event,audio/mix_000281.wav,19.6,1,短促的撞击声。
+mix_000282,music_with_sfx,audio/mix_000282.wav,20.9,2,Background music plays steadily.
+mix_000283,speech_over_music,audio/mix_000283.wav,18.7,2,Background music plays steadily.
+mix_000284,music_with_sfx,audio/mix_000284.wav,13.4,2,Background music plays steadily.
+mix_000285,repeated_event,audio/mix_000285.wav,26.0,1,短促的撞击声。
+mix_000286,speech_over_music,audio/mix_000286.wav,20.6,2,背景音乐持续播放，节奏平稳。
+mix_000287,isolated_sfx,audio/mix_000287.wav,11.6,1,远处的犬吠。
+mix_000288,speech_music_sfx,audio/mix_000288.wav,17.9,3,电子伴奏循环播放。
+mix_000289,isolated_sfx,audio/mix_000289.wav,26.5,1,短促的撞击声。
+mix_000290,speech_over_music,audio/mix_000290.wav,17.4,2,背景音乐持续播放，节奏平稳。
+mix_000291,overlapping_speakers,audio/mix_000291.wav,25.2,2,A speaker is talking.
+mix_000292,repeated_event,audio/mix_000292.wav,27.1,1,远处的犬吠。
+mix_000293,speech_music_lyrics_sfx,audio/mix_000293.wav,13.1,4,电子伴奏循环播放。
+mix_000294,overlapping_speakers,audio/mix_000294.wav,24.2,2,一名说话者正在讲话。
+mix_000295,speech_music_sfx,audio/mix_000295.wav,15.2,3,Background music plays steadily.
+mix_000296,repeated_event,audio/mix_000296.wav,17.9,1,一次玻璃破碎声。
+mix_000297,lyrics_over_music,audio/mix_000297.wav,10.1,2,Background music plays steadily.
+mix_000298,isolated_sfx,audio/mix_000298.wav,15.0,1,远处的犬吠。
+mix_000299,speech_music_sfx,audio/mix_000299.wav,26.3,3,电子伴奏循环播放。
+mix_000300,speech_music_lyrics_sfx,audio/mix_000300.wav,24.5,4,电子伴奏循环播放。
+mix_000301,overlapping_speakers,audio/mix_000301.wav,28.8,2,说话者描述当前场景。
+mix_000302,overlapping_speakers,audio/mix_000302.wav,23.1,2,说话者描述当前场景。
+mix_000303,lyrics_over_music,audio/mix_000303.wav,11.1,2,Background music plays steadily.
+mix_000304,speech_music_sfx,audio/mix_000304.wav,17.5,3,Background music plays steadily.
+mix_000305,overlapping_speakers,audio/mix_000305.wav,27.6,2,一名说话者正在讲话。
+mix_000306,lyrics_over_music,audio/mix_000306.wav,13.8,2,"""don't stop believing, hold on to that feeling"""
+mix_000307,speech_over_music,audio/mix_000307.wav,15.7,2,背景音乐持续播放，节奏平稳。
+mix_000308,speech_over_music,audio/mix_000308.wav,14.2,2,Background music plays steadily.
+mix_000309,speech_music_lyrics_sfx,audio/mix_000309.wav,24.1,4,背景音乐持续播放，节奏平稳。
+mix_000310,speech_over_music,audio/mix_000310.wav,29.9,2,背景音乐持续播放，节奏平稳。
+mix_000311,speech_over_music,audio/mix_000311.wav,21.9,2,电子伴奏循环播放。
+mix_000312,speech_music_sfx,audio/mix_000312.wav,14.6,3,背景音乐持续播放，节奏平稳。
+mix_000313,repeated_event,audio/mix_000313.wav,20.6,1,短促的撞击声。
+mix_000314,isolated_sfx,audio/mix_000314.wav,11.8,1,一次玻璃破碎声。
+mix_000315,repeated_event,audio/mix_000315.wav,27.0,1,远处的犬吠。
+mix_000316,ambient_with_intermittent_sfx,audio/mix_000316.wav,20.9,2,雨声背景。
+mix_000317,lyrics_over_music,audio/mix_000317.wav,15.6,2,电子伴奏循环播放。
+mix_000318,isolated_sfx,audio/mix_000318.wav,21.3,1,A glass breaking sound.
+mix_000319,speech_music_sfx,audio/mix_000319.wav,11.1,3,说话者描述当前场景。
+mix_000320,overlapping_speakers,audio/mix_000320.wav,12.7,2,说话者描述当前场景。
+mix_000321,music_with_sfx,audio/mix_000321.wav,18.3,2,Background music plays steadily.
+mix_000322,speech_music_lyrics_sfx,audio/mix_000322.wav,14.1,4,背景音乐持续播放，节奏平稳。
+mix_000323,isolated_sfx,audio/mix_000323.wav,20.6,1,短促的撞击声。
+mix_000324,speech_music_sfx,audio/mix_000324.wav,27.4,3,电子伴奏循环播放。
+mix_000325,speech_over_music,audio/mix_000325.wav,24.7,2,背景音乐持续播放，节奏平稳。
+mix_000326,speech_music_lyrics_sfx,audio/mix_000326.wav,26.5,4,一名说话者正在讲话。
+mix_000327,lyrics_over_music,audio/mix_000327.wav,16.9,2,Background music plays steadily.
+mix_000328,overlapping_speakers,audio/mix_000328.wav,23.5,2,A speaker is talking.
+mix_000329,isolated_sfx,audio/mix_000329.wav,12.6,1,一次玻璃破碎声。
+mix_000330,lyrics_over_music,audio/mix_000330.wav,14.0,2,电子伴奏循环播放。
+mix_000331,speech_over_music,audio/mix_000331.wav,25.2,2,背景音乐持续播放，节奏平稳。
+mix_000332,speech_music_sfx,audio/mix_000332.wav,17.1,3,Background music plays steadily.
+mix_000333,music_with_sfx,audio/mix_000333.wav,26.3,2,Background music plays steadily.
+mix_000334,speech_over_music,audio/mix_000334.wav,18.1,2,背景音乐持续播放，节奏平稳。
+mix_000335,overlapping_speakers,audio/mix_000335.wav,15.8,2,说话者描述当前场景。
+mix_000336,music_with_sfx,audio/mix_000336.wav,26.9,2,背景音乐持续播放，节奏平稳。
+mix_000337,music_with_sfx,audio/mix_000337.wav,23.7,2,Background music plays steadily.
+mix_000338,music_with_sfx,audio/mix_000338.wav,25.9,2,Background music plays steadily.
+mix_000339,speech_music_sfx,audio/mix_000339.wav,21.3,3,电子伴奏循环播放。
+mix_000340,ambient_with_intermittent_sfx,audio/mix_000340.wav,28.4,2,持续的环境噪声。
+mix_000341,music_with_sfx,audio/mix_000341.wav,18.8,2,电子伴奏循环播放。
+mix_000342,overlapping_speakers,audio/mix_000342.wav,26.5,2,一名说话者正在讲话。
+mix_000343,overlapping_speakers,audio/mix_000343.wav,25.4,2,一名说话者正在讲话。
+mix_000344,music_with_sfx,audio/mix_000344.wav,25.8,2,背景音乐持续播放，节奏平稳。
+mix_000345,isolated_sfx,audio/mix_000345.wav,14.8,1,远处的犬吠。
+mix_000346,lyrics_over_music,audio/mix_000346.wav,20.6,2,Background music plays steadily.
+mix_000347,overlapping_speakers,audio/mix_000347.wav,26.9,2,一名说话者正在讲话。
+mix_000348,repeated_event,audio/mix_000348.wav,20.5,1,A glass breaking sound.
+mix_000349,overlapping_speakers,audio/mix_000349.wav,21.1,2,一名说话者正在讲话。
+mix_000350,speech_music_sfx,audio/mix_000350.wav,21.3,3,电子伴奏循环播放。
+mix_000351,repeated_event,audio/mix_000351.wav,11.9,1,远处的犬吠。
+mix_000352,repeated_event,audio/mix_000352.wav,18.3,1,一次玻璃破碎声。
+mix_000353,lyrics_over_music,audio/mix_000353.wav,16.9,2,背景音乐持续播放，节奏平稳。
+mix_000354,music_with_sfx,audio/mix_000354.wav,22.1,2,电子伴奏循环播放。
+mix_000355,lyrics_over_music,audio/mix_000355.wav,23.1,2,Background music plays steadily.
+mix_000356,music_with_sfx,audio/mix_000356.wav,11.3,2,电子伴奏循环播放。
+mix_000357,speech_music_sfx,audio/mix_000357.wav,15.7,3,电子伴奏循环播放。
+mix_000358,overlapping_speakers,audio/mix_000358.wav,19.3,2,A speaker is talking.
+mix_000359,overlapping_speakers,audio/mix_000359.wav,12.8,2,A speaker is talking.
+mix_000360,speech_music_lyrics_sfx,audio/mix_000360.wav,13.9,4,Background music plays steadily.
+mix_000361,speech_over_music,audio/mix_000361.wav,14.7,2,Background music plays steadily.
+mix_000362,music_with_sfx,audio/mix_000362.wav,14.8,2,电子伴奏循环播放。
+mix_000363,music_with_sfx,audio/mix_000363.wav,22.7,2,Background music plays steadily.
+mix_000364,speech_music_lyrics_sfx,audio/mix_000364.wav,14.0,4,电子伴奏循环播放。
+mix_000365,speech_music_lyrics_sfx,audio/mix_000365.wav,11.0,4,电子伴奏循环播放。
+mix_000366,ambient_with_intermittent_sfx,audio/mix_000366.wav,12.6,2,Ambient room tone.
+mix_000367,lyrics_over_music,audio/mix_000367.wav,12.3,2,背景音乐持续播放，节奏平稳。
+mix_000368,speech_music_lyrics_sfx,audio/mix_000368.wav,11.3,4,背景音乐持续播放，节奏平稳。
+mix_000369,speech_over_music,audio/mix_000369.wav,24.1,2,电子伴奏循环播放。
+mix_000370,speech_over_music,audio/mix_000370.wav,13.9,2,背景音乐持续播放，节奏平稳。
+mix_000371,overlapping_speakers,audio/mix_000371.wav,15.1,2,A speaker is talking.
+mix_000372,speech_over_music,audio/mix_000372.wav,20.2,2,电子伴奏循环播放。
+mix_000373,music_with_sfx,audio/mix_000373.wav,22.5,2,电子伴奏循环播放。
+mix_000374,speech_over_music,audio/mix_000374.wav,21.3,2,背景音乐持续播放，节奏平稳。
+mix_000375,speech_over_music,audio/mix_000375.wav,20.9,2,背景音乐持续播放，节奏平稳。
+mix_000376,speech_music_lyrics_sfx,audio/mix_000376.wav,12.9,4,Background music plays steadily.
+mix_000377,speech_music_sfx,audio/mix_000377.wav,26.5,3,电子伴奏循环播放。
+mix_000378,music_with_sfx,audio/mix_000378.wav,10.6,2,电子伴奏循环播放。
+mix_000379,music_with_sfx,audio/mix_000379.wav,18.6,2,电子伴奏循环播放。
+mix_000380,lyrics_over_music,audio/mix_000380.wav,13.7,2,背景音乐持续播放，节奏平稳。
+mix_000381,overlapping_speakers,audio/mix_000381.wav,18.9,2,A speaker is talking.
+mix_000382,repeated_event,audio/mix_000382.wav,21.8,1,短促的撞击声。
+mix_000383,overlapping_speakers,audio/mix_000383.wav,29.1,2,说话者描述当前场景。
+mix_000384,repeated_event,audio/mix_000384.wav,23.5,1,短促的撞击声。
+mix_000385,ambient_with_intermittent_sfx,audio/mix_000385.wav,20.2,2,雨声背景。
+mix_000386,lyrics_over_music,audio/mix_000386.wav,25.1,2,背景音乐持续播放，节奏平稳。
+mix_000387,speech_music_lyrics_sfx,audio/mix_000387.wav,27.4,4,电子伴奏循环播放。
+mix_000388,speech_music_lyrics_sfx,audio/mix_000388.wav,19.9,4,电子伴奏循环播放。
+mix_000389,overlapping_speakers,audio/mix_000389.wav,12.7,2,一名说话者正在讲话。
+mix_000390,speech_music_lyrics_sfx,audio/mix_000390.wav,14.4,4,背景音乐持续播放，节奏平稳。
+mix_000391,overlapping_speakers,audio/mix_000391.wav,24.5,2,A speaker is talking.
+mix_000392,music_with_sfx,audio/mix_000392.wav,13.7,2,Background music plays steadily.
+mix_000393,ambient_with_intermittent_sfx,audio/mix_000393.wav,12.4,2,Ambient room tone.
+mix_000394,ambient_with_intermittent_sfx,audio/mix_000394.wav,18.7,2,持续的环境噪声。
+mix_000395,speech_music_lyrics_sfx,audio/mix_000395.wav,18.6,4,Background music plays steadily.
+mix_000396,repeated_event,audio/mix_000396.wav,24.7,1,远处的犬吠。
+mix_000397,speech_music_lyrics_sfx,audio/mix_000397.wav,11.5,4,背景音乐持续播放，节奏平稳。
+mix_000398,speech_music_sfx,audio/mix_000398.wav,12.5,3,电子伴奏循环播放。
+mix_000399,ambient_with_intermittent_sfx,audio/mix_000399.wav,16.3,2,持续的环境噪声。
+mix_000400,speech_music_lyrics_sfx,audio/mix_000400.wav,21.3,4,电子伴奏循环播放。
+mix_000401,speech_music_lyrics_sfx,audio/mix_000401.wav,20.1,5,背景音乐持续播放，节奏平稳。
+mix_000402,lyrics_over_music,audio/mix_000402.wav,28.6,2,电子伴奏循环播放。
+mix_000403,speech_over_music,audio/mix_000403.wav,23.3,2,Background music plays steadily.
+mix_000404,music_with_sfx,audio/mix_000404.wav,28.4,2,Background music plays steadily.
+mix_000405,repeated_event,audio/mix_000405.wav,27.6,1,一次玻璃破碎声。
+mix_000406,music_with_sfx,audio/mix_000406.wav,10.7,2,背景音乐持续播放，节奏平稳。
+mix_000407,speech_over_music,audio/mix_000407.wav,24.8,2,电子伴奏循环播放。
+mix_000408,speech_music_lyrics_sfx,audio/mix_000408.wav,20.1,4,Background music plays steadily.
+mix_000409,overlapping_speakers,audio/mix_000409.wav,27.3,2,一名说话者正在讲话。
+mix_000410,speech_music_sfx,audio/mix_000410.wav,26.1,3,背景音乐持续播放，节奏平稳。
+mix_000411,isolated_sfx,audio/mix_000411.wav,11.9,1,短促的撞击声。
+mix_000412,speech_music_lyrics_sfx,audio/mix_000412.wav,14.3,4,Background music plays steadily.
+mix_000413,speech_over_music,audio/mix_000413.wav,14.5,2,电子伴奏循环播放。
+mix_000414,lyrics_over_music,audio/mix_000414.wav,11.9,2,背景音乐持续播放，节奏平稳。
+mix_000415,speech_over_music,audio/mix_000415.wav,23.2,2,背景音乐持续播放，节奏平稳。
+mix_000416,speech_music_sfx,audio/mix_000416.wav,21.2,3,Background music plays steadily.
+mix_000417,speech_music_lyrics_sfx,audio/mix_000417.wav,11.9,4,电子伴奏循环播放。
+mix_000418,speech_over_music,audio/mix_000418.wav,12.0,2,背景音乐持续播放，节奏平稳。
+mix_000419,speech_over_music,audio/mix_000419.wav,22.8,2,电子伴奏循环播放。
+mix_000420,isolated_sfx,audio/mix_000420.wav,21.8,1,一次玻璃破碎声。
+mix_000421,repeated_event,audio/mix_000421.wav,28.0,1,一次玻璃破碎声。
+mix_000422,speech_music_lyrics_sfx,audio/mix_000422.wav,20.4,4,Background music plays steadily.
+mix_000423,lyrics_over_music,audio/mix_000423.wav,17.9,2,电子伴奏循环播放。
+mix_000424,lyrics_over_music,audio/mix_000424.wav,16.5,2,Background music plays steadily.
+mix_000425,music_with_sfx,audio/mix_000425.wav,23.2,2,背景音乐持续播放，节奏平稳。
+mix_000426,overlapping_speakers,audio/mix_000426.wav,25.9,2,一名说话者正在讲话。
+mix_000427,isolated_sfx,audio/mix_000427.wav,23.1,1,A glass breaking sound.
+mix_000428,lyrics_over_music,audio/mix_000428.wav,25.8,2,Background music plays steadily.
+mix_000429,speech_music_sfx,audio/mix_000429.wav,21.5,3,Background music plays steadily.
+mix_000430,speech_over_music,audio/mix_000430.wav,10.4,2,背景音乐持续播放，节奏平稳。
+mix_000431,repeated_event,audio/mix_000431.wav,10.5,1,一次玻璃破碎声。
+mix_000432,music_with_sfx,audio/mix_000432.wav,12.2,2,背景音乐持续播放，节奏平稳。
+mix_000433,speech_over_music,audio/mix_000433.wav,26.0,2,Background music plays steadily.
+mix_000434,lyrics_over_music,audio/mix_000434.wav,22.2,2,"""don't stop believing, hold on to that feeling"""
+mix_000435,lyrics_over_music,audio/mix_000435.wav,18.9,2,背景音乐持续播放，节奏平稳。
+mix_000436,speech_over_music,audio/mix_000436.wav,29.2,2,Background music plays steadily.
+mix_000437,ambient_with_intermittent_sfx,audio/mix_000437.wav,13.2,2,Ambient room tone.
+mix_000438,speech_music_sfx,audio/mix_000438.wav,10.3,3,Background music plays steadily.
+mix_000439,speech_music_sfx,audio/mix_000439.wav,24.4,3,电子伴奏循环播放。
+mix_000440,speech_music_lyrics_sfx,audio/mix_000440.wav,28.9,4,Background music plays steadily.
+mix_000441,repeated_event,audio/mix_000441.wav,24.1,1,A glass breaking sound.
+mix_000442,overlapping_speakers,audio/mix_000442.wav,17.2,2,A speaker is talking.
+mix_000443,lyrics_over_music,audio/mix_000443.wav,20.7,2,电子伴奏循环播放。
+mix_000444,repeated_event,audio/mix_000444.wav,10.6,1,一次玻璃破碎声。
+mix_000445,lyrics_over_music,audio/mix_000445.wav,20.3,2,背景音乐持续播放，节奏平稳。
+mix_000446,speech_music_sfx,audio/mix_000446.wav,17.6,3,背景音乐持续播放，节奏平稳。
+mix_000447,speech_over_music,audio/mix_000447.wav,24.1,2,背景音乐持续播放，节奏平稳。
+mix_000448,lyrics_over_music,audio/mix_000448.wav,24.1,2,背景音乐持续播放，节奏平稳。
+mix_000449,lyrics_over_music,audio/mix_000449.wav,10.4,2,电子伴奏循环播放。
+mix_000450,speech_music_lyrics_sfx,audio/mix_000450.wav,17.4,4,电子伴奏循环播放。
+mix_000451,speech_over_music,audio/mix_000451.wav,20.9,2,背景音乐持续播放，节奏平稳。
+mix_000452,overlapping_speakers,audio/mix_000452.wav,21.5,2,说话者描述当前场景。
+mix_000453,speech_music_lyrics_sfx,audio/mix_000453.wav,19.3,4,Background music plays steadily.
+mix_000454,overlapping_speakers,audio/mix_000454.wav,12.0,2,一名说话者正在讲话。
+mix_000455,overlapping_speakers,audio/mix_000455.wav,14.1,2,一名说话者正在讲话。
+mix_000456,lyrics_over_music,audio/mix_000456.wav,17.9,2,电子伴奏循环播放。
+mix_000457,speech_music_lyrics_sfx,audio/mix_000457.wav,13.0,4,电子伴奏循环播放。
+mix_000458,repeated_event,audio/mix_000458.wav,26.3,1,一次玻璃破碎声。
+mix_000459,speech_music_lyrics_sfx,audio/mix_000459.wav,18.7,4,Background music plays steadily.
+mix_000460,music_with_sfx,audio/mix_000460.wav,14.5,2,电子伴奏循环播放。
+mix_000461,speech_music_lyrics_sfx,audio/mix_000461.wav,15.1,4,背景音乐持续播放，节奏平稳。
+mix_000462,isolated_sfx,audio/mix_000462.wav,28.7,1,远处的犬吠。
+mix_000463,speech_music_lyrics_sfx,audio/mix_000463.wav,16.4,4,一名说话者正在讲话。
+mix_000464,isolated_sfx,audio/mix_000464.wav,28.4,1,短促的撞击声。
+mix_000465,speech_music_lyrics_sfx,audio/mix_000465.wav,23.1,4,背景音乐持续播放，节奏平稳。
+mix_000466,speech_over_music,audio/mix_000466.wav,19.2,2,背景音乐持续播放，节奏平稳。
+mix_000467,speech_over_music,audio/mix_000467.wav,17.1,2,电子伴奏循环播放。
+mix_000468,overlapping_speakers,audio/mix_000468.wav,22.2,2,A speaker is talking.
+mix_000469,repeated_event,audio/mix_000469.wav,26.2,1,远处的犬吠。
+mix_000470,overlapping_speakers,audio/mix_000470.wav,15.9,2,说话者描述当前场景。
+mix_000471,overlapping_speakers,audio/mix_000471.wav,21.8,2,A speaker is talking.
+mix_000472,lyrics_over_music,audio/mix_000472.wav,26.5,2,电子伴奏循环播放。
+mix_000473,ambient_with_intermittent_sfx,audio/mix_000473.wav,29.2,2,持续的环境噪声。
+mix_000474,music_with_sfx,audio/mix_000474.wav,29.9,2,电子伴奏循环播放。
+mix_000475,speech_over_music,audio/mix_000475.wav,29.6,2,Background music plays steadily.
+mix_000476,speech_music_lyrics_sfx,audio/mix_000476.wav,19.7,4,Background music plays steadily.
+mix_000477,overlapping_speakers,audio/mix_000477.wav,12.7,2,A speaker is talking.
+mix_000478,speech_music_lyrics_sfx,audio/mix_000478.wav,15.2,4,电子伴奏循环播放。
+mix_000479,lyrics_over_music,audio/mix_000479.wav,29.9,2,电子伴奏循环播放。
+mix_000480,isolated_sfx,audio/mix_000480.wav,23.8,1,远处的犬吠。
+mix_000481,speech_music_sfx,audio/mix_000481.wav,28.0,3,Background music plays steadily.
+mix_000482,speech_over_music,audio/mix_000482.wav,16.8,2,Background music plays steadily.
+mix_000483,isolated_sfx,audio/mix_000483.wav,14.9,1,短促的撞击声。
+mix_000484,ambient_with_intermittent_sfx,audio/mix_000484.wav,10.9,2,持续的环境噪声。
+mix_000485,overlapping_speakers,audio/mix_000485.wav,21.7,2,说话者描述当前场景。
+mix_000486,overlapping_speakers,audio/mix_000486.wav,12.2,2,一名说话者正在讲话。
+mix_000487,isolated_sfx,audio/mix_000487.wav,11.1,1,远处的犬吠。
+mix_000488,speech_over_music,audio/mix_000488.wav,17.0,2,电子伴奏循环播放。
+mix_000489,speech_music_lyrics_sfx,audio/mix_000489.wav,25.0,4,背景音乐持续播放，节奏平稳。
+mix_000490,speech_music_lyrics_sfx,audio/mix_000490.wav,17.2,4,背景音乐持续播放，节奏平稳。
+mix_000491,speech_over_music,audio/mix_000491.wav,12.7,2,电子伴奏循环播放。
+mix_000492,isolated_sfx,audio/mix_000492.wav,17.7,1,短促的撞击声。
+mix_000493,lyrics_over_music,audio/mix_000493.wav,20.1,2,背景音乐持续播放，节奏平稳。
+mix_000494,speech_over_music,audio/mix_000494.wav,26.0,2,背景音乐持续播放，节奏平稳。
+mix_000495,overlapping_speakers,audio/mix_000495.wav,16.0,2,一名说话者正在讲话。
+mix_000496,overlapping_speakers,audio/mix_000496.wav,29.3,2,一名说话者正在讲话。
+mix_000497,lyrics_over_music,audio/mix_000497.wav,14.8,2,Background music plays steadily.
+mix_000498,speech_over_music,audio/mix_000498.wav,16.9,2,电子伴奏循环播放。
+mix_000499,speech_over_music,audio/mix_000499.wav,11.5,2,Background music plays steadily.
+mix_000500,speech_music_sfx,audio/mix_000500.wav,13.7,3,Background music plays steadily.

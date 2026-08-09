@@ -38,6 +38,9 @@ TemplateID = Literal[
     "speech_music_sfx",
     "repeated_event",
     "ambient_with_intermittent_sfx",
+    "lyrics_over_music",
+    "speech_music_lyrics_sfx",
+    "overlapping_speakers",
 ]
 
 # Sampling ranges (docs/06 §3.3). These are project choices, not TAC values.
@@ -74,6 +77,8 @@ class PlacedSource:
         """Map source kind to event type tag (speech/lys/music/sfx)."""
         if self.kind == "speech":
             return "speech"
+        if self.kind == "vocal":
+            return "lys"
         if self.kind == "ambience":
             return "sfx"
         return self.kind  # music, sfx
@@ -226,6 +231,9 @@ class SyntheticSourcePool:
         if kind == "speech":
             dur = rng.uniform(1.5, 5.0)
             wav = self._synth_speech(sr, dur, rng, idx)
+        elif kind == "vocal":
+            dur = rng.uniform(2.0, 6.0)
+            wav = self._synth_vocal(sr, dur, rng, idx)
         elif kind == "music":
             dur = rng.uniform(8.0, 15.0)
             wav = self._synth_music(sr, dur, rng, idx)
@@ -260,6 +268,34 @@ class SyntheticSourcePool:
         sig *= env
         # add pitch
         sig += 0.3 * np.sin(2 * np.pi * f0 * t) * env
+        return (sig / (np.max(np.abs(sig)) + 1e-9)).astype(np.float32)
+
+    @staticmethod
+    def _synth_vocal(sr: int, dur: float, rng: np.random.Generator, idx: int) -> np.ndarray:
+        """Singing-like sustained tones with vibrato and breath envelope."""
+        n = int(sr * dur)
+        t = np.arange(n) / sr
+        # higher pitch than speech, with vibrato
+        f0 = rng.uniform(220, 440)
+        vibrato = 0.02 * f0 * np.sin(2 * np.pi * 5.0 * t)
+        carrier = np.sin(2 * np.pi * (f0 + vibrato) * t)
+        # harmonics for vocal timbre
+        sig = carrier + 0.4 * np.sin(2 * np.pi * 2 * f0 * t) + 0.2 * np.sin(2 * np.pi * 3 * f0 * t)
+        # breath envelope: sustained notes with gaps
+        note_dur = rng.uniform(0.8, 2.0)
+        env = np.zeros(n)
+        pos = 0
+        while pos < n:
+            note_len = int(min(note_dur, (n - pos) / sr) * sr)
+            fade = int(0.05 * sr)
+            if note_len > 2 * fade:
+                env[pos:pos + fade] = np.linspace(0, 1, fade)
+                env[pos + fade:pos + note_len - fade] = 1.0
+                env[pos + note_len - fade:pos + note_len] = np.linspace(1, 0, fade)
+            else:
+                env[pos:pos + note_len] = 1.0
+            pos += note_len + int(rng.uniform(0.1, 0.3) * sr)
+        sig *= env[:n]
         return (sig / (np.max(np.abs(sig)) + 1e-9)).astype(np.float32)
 
     @staticmethod
@@ -335,6 +371,12 @@ _SYNTH_CAPTIONS = {
         "一名说话者正在讲话。",
         "A speaker is talking.",
         "说话者描述当前场景。",
+    ],
+    "vocal": [
+        '"take me home tonight"',
+        '"la la la, dancing in the rain"',
+        '"don\'t stop believing, hold on to that feeling"',
+        '"月亮代表我的心"',
     ],
     "music": [
         "背景音乐持续播放，节奏平稳。",
@@ -476,6 +518,21 @@ class SceneGraphSampler:
             return [_src("sfx", fg=True)]
         if template == "ambient_with_intermittent_sfx":
             return [_src("ambience", fg=False), _src("sfx", fg=True)]
+        # B3 templates: lyrics + overlapping speakers
+        if template == "lyrics_over_music":
+            return [_src("music", fg=False), _src("vocal", fg=True, identity="V1")]
+        if template == "speech_music_lyrics_sfx":
+            return [
+                _src("music", fg=False),
+                _src("speech", fg=True, identity="S1"),
+                _src("vocal", fg=True, identity="V1"),
+                _src("sfx", fg=True),
+            ]
+        if template == "overlapping_speakers":
+            return [
+                _src("speech", fg=True, identity="S1"),
+                _src("speech", fg=True, identity="S2"),
+            ]
         raise ValueError(f"unknown template {template!r}")
 
     def _sample_conditions(

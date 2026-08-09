@@ -222,7 +222,10 @@ def main(argv: list[str] | None = None) -> int:
 
     grad_accum = tcfg["global_effective_batch"] // tcfg["micro_batch_size"]
     style_cfg = StyleConfig()
-    prompt_text = canonical_prompt(style=cfg["data"].get("style", "brief"))
+    prompt_text = canonical_prompt(
+        style=cfg["data"].get("style", "brief"),
+        include_lyrics=cfg["data"].get("include_lyrics", False),
+    )
     audio_base = cfg["data"]["audio_base_dir"]
     sr = cfg["data"].get("sample_rate", MOSS_INPUT_SAMPLE_RATE)
     max_sec = cfg["data"].get("max_audio_seconds", 30.0)

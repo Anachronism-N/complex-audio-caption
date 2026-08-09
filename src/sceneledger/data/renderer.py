@@ -197,6 +197,22 @@ def _build_events_for_source(
             )
         return events
 
+    if etype == "lys":
+        # lyrics: one event per line (like speech utterances), verbatim=True
+        for i, sp in enumerate(span_objs):
+            events.append(
+                Event(
+                    id=f"E{eid_start + i:03d}",
+                    type="lys",
+                    track_id=track_id,
+                    spans=[sp],
+                    text=src.text,
+                    verbatim=True,
+                    confidence=0.88,
+                )
+            )
+        return events
+
     if etype == "sfx":
         # one event with all spans (repeated same source) — exercises multi-span
         events.append(
