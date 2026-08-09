@@ -20,17 +20,16 @@ The first TAC-mini version (``docs/11`` §5) targets 3 core templates
 
 from __future__ import annotations
 
-import math
 import random
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Literal, Protocol, Sequence
+from typing import Literal, Protocol
 
 import numpy as np
 
 from sceneledger.data.schema import TIME_RESOLUTION_SEC
 
-SourceKind = Literal["speech", "music", "sfx", "ambience"]
+SourceKind = Literal["speech", "vocal", "music", "sfx", "ambience"]
 TemplateID = Literal[
     "isolated_sfx",
     "speech_over_music",
@@ -67,6 +66,11 @@ class PlacedSource:
     gain_db: float
     text: str  # caption text for the events derived from this source
     identity: str | None = None  # speaker_1 / singer_1 / None
+    language: str | None = None
+    verbatim: bool | None = None
+    source_group: str | None = None  # original media/song/speaker leakage group
+    license: str | None = None
+    dataset: str | None = None
     repeat: int = 1
     repeat_gap_s: float = 0.0
     rir_id: str | None = None
@@ -135,6 +139,11 @@ def _source_dict(s: PlacedSource) -> dict:
         "gain_db": s.gain_db,
         "text": s.text,
         "identity": s.identity,
+        "language": s.language,
+        "verbatim": s.verbatim,
+        "source_group": s.source_group,
+        "license": s.license,
+        "dataset": s.dataset,
         "repeat": s.repeat,
         "repeat_gap_s": s.repeat_gap_s,
         "rir_id": s.rir_id,
@@ -175,12 +184,19 @@ class SourcePool(Protocol):
     def pick(self, kind: SourceKind, rng: random.Random) -> str:  # pragma: no cover
         ...
 
+    def metadata(
+        self, key: str, kind: SourceKind, rng: random.Random
+    ) -> dict:  # pragma: no cover
+        ...
+
 
 @dataclass
 class FileSourcePool:
     """Reads single-source audio from a ``{kind: [paths]}`` mapping."""
 
     by_kind: dict[str, list[str]]
+    metadata_by_path: dict[str, dict] = field(default_factory=dict)
+    strict_metadata: bool = False
 
     def pick(self, kind: SourceKind, rng: random.Random) -> str:
         paths = self.by_kind.get(kind, [])
@@ -189,16 +205,36 @@ class FileSourcePool:
         return rng.choice(paths)
 
     def load(self, key: str, sample_rate: int) -> tuple[np.ndarray, float]:
+        from math import gcd
+
         import soundfile as sf
+        from scipy.signal import resample_poly
 
         wav, sr = sf.read(key, dtype="float32", always_2d=False)
         if wav.ndim == 2:
             wav = wav.mean(axis=1)
         if sr != sample_rate:
-            import librosa
-
-            wav = librosa.resample(wav.astype(np.float64), orig_sr=sr, target_sr=sample_rate)
+            factor = gcd(int(sr), int(sample_rate))
+            wav = resample_poly(
+                wav.astype(np.float64),
+                int(sample_rate) // factor,
+                int(sr) // factor,
+            )
         return wav.astype(np.float32), float(len(wav) / sample_rate)
+
+    def metadata(self, key: str, kind: SourceKind, rng: random.Random) -> dict:
+        record = self.metadata_by_path.get(str(Path(key).resolve()))
+        if record is not None:
+            return dict(record)
+        if self.strict_metadata or kind in {"speech", "vocal"}:
+            raise ValueError(
+                f"file-backed {kind} source has no catalog metadata: {key}; "
+                "invented transcripts/lyrics are forbidden"
+            )
+        return {
+            "text": f"an audible {kind} event",
+            "source_group": str(Path(key).resolve()),
+        }
 
 
 @dataclass
@@ -251,6 +287,15 @@ class SyntheticSourcePool:
         wav = (wav / peak) * 0.9
         return wav.astype(np.float32), float(len(wav) / sr)
 
+    def metadata(self, key: str, kind: SourceKind, rng: random.Random) -> dict:
+        if kind == "vocal":
+            return {
+                "text": "[synthetic vocal placeholder; no lexical supervision]",
+                "source_group": key,
+                "verbatim": False,
+            }
+        return {"text": _caption_for(kind, rng), "source_group": key}
+
     @staticmethod
     def _synth_speech(sr: int, dur: float, rng: np.random.Generator, idx: int) -> np.ndarray:
         """Formant-ish tones with syllable envelopes (not real speech)."""
@@ -302,7 +347,6 @@ class SyntheticSourcePool:
     def _synth_music(sr: int, dur: float, rng: np.random.Generator, idx: int) -> np.ndarray:
         """A slow chord progression (root + fifth + octave)."""
         n = int(sr * dur)
-        t = np.arange(n) / sr
         roots = [220.0, 246.94, 196.0, 174.61]
         chord_period = dur / max(1, len(roots))
         sig = np.zeros(n, dtype=np.float64)
@@ -466,9 +510,18 @@ class SceneGraphSampler:
         cfg = self.config
         fg_gain = rng.uniform(*cfg.gain_db_range)
         bg_gain = _snr_to_gain_db(rng.uniform(*cfg.fg_bg_snr_range), fg_gain)
+        source_prefix = {
+            "speech": "SP",
+            "vocal": "VO",
+            "music": "MU",
+            "sfx": "FX",
+            "ambience": "AM",
+        }
+        source_counts: dict[str, int] = {}
 
         def _src(kind: SourceKind, *, fg: bool, identity: str | None = None) -> PlacedSource:
             key = self.pool.pick(kind, rng)
+            metadata = self.pool.metadata(key, kind, rng)
             gain = fg_gain if fg else bg_gain
             # onset: foreground sources placed with margin; background at 0
             if kind in ("music", "ambience"):
@@ -487,14 +540,28 @@ class SceneGraphSampler:
             if rng.random() < cfg.p_rir:
                 t60 = round(rng.uniform(*cfg.t60_range), 3)
                 rir_id = f"room_{rng.randint(1, 8):02d}"
+            # Source IDs are scene-local structural keys.  Do not derive them
+            # from a random two-digit suffix: speech and SFX both used to map
+            # to ``Sxx``, which silently overwrote stems and track pointers.
+            # The counter is deterministic and unique.
+            source_counts[kind] = source_counts.get(kind, 0) + 1
+            source_id = f"{source_prefix[kind]}{source_counts[kind]:02d}"
+            # Preserve the historical RNG stream so the repair changes IDs
+            # and affected supervision only, not source selection/acoustics.
+            rng.randint(1, 99)
             return PlacedSource(
-                source_id=f"{kind[0].upper()}{rng.randint(1, 99):02d}",
+                source_id=source_id,
                 kind=kind,
                 path=key,
                 onset=round(onset, 6),
                 gain_db=round(gain, 3),
-                text=_caption_for(kind, rng),
+                text=str(metadata.get("text") or _caption_for(kind, rng)),
                 identity=identity,
+                language=metadata.get("language"),
+                verbatim=metadata.get("verbatim"),
+                source_group=str(metadata.get("source_group") or key),
+                license=metadata.get("license"),
+                dataset=metadata.get("dataset"),
                 repeat=repeat,
                 repeat_gap_s=repeat_gap,
                 rir_id=rir_id,

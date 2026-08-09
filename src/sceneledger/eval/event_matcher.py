@@ -16,8 +16,8 @@ Unmatched references are *omissions*; unmatched hypotheses are *hallucinations*
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 import numpy as np
 from scipy.optimize import linear_sum_assignment
@@ -69,12 +69,16 @@ def match_events(
     *,
     tiou_threshold: float = 0.3,
     text_sim: TextSim = token_f1,
+    min_text_similarity: float = 0.0,
     text_weight: float = 0.3,
     track_weight: float = 0.1,
 ) -> list[EventMatch]:
     """Return the optimal one-to-one matching between ``refs`` and ``hyps``.
 
-    A pair is a valid match iff same type AND ``tIoU >= tiou_threshold``.
+    A pair is a valid match iff type and temporal gates pass and its text
+    similarity is at least ``min_text_similarity``.  A zero threshold retains
+    the legacy temporal-only event F1; paper experiments should report a
+    positive semantic/lexical gate as a separate metric.
     The assignment cost is minimized over valid pairs; invalid pairs have
     infinite cost. The result is permutation-invariant: reordering ``hyps``
     does not change the set of matches.
@@ -93,6 +97,8 @@ def match_events(
             if tiou < tiou_threshold:
                 continue
             tsim = text_sim(ref.text, hyp.text)
+            if tsim < min_text_similarity:
+                continue
             track_ok = _track_agreement(ref, hyp)
             # cost in [0, 1]; lower is better
             c = (
@@ -111,7 +117,7 @@ def match_events(
     matches: list[EventMatch] = []
     matched_ref: set[int] = set()
     matched_hyp: set[int] = set()
-    for i, j in zip(row_ind, col_ind):
+    for i, j in zip(row_ind, col_ind):  # noqa: B905 - Python 3.9 smoke env
         if i >= n or j >= m:
             continue  # padding row/col
         if cost[i, j] >= INF:

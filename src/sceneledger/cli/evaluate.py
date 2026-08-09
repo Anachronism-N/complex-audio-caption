@@ -43,9 +43,27 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Pretty-print JSON output.",
     )
+    parser.add_argument(
+        "--parse-report",
+        default=None,
+        help="inference parse report JSON; preserves raw format failures",
+    )
+    parser.add_argument("--tiou-threshold", type=float, default=0.3)
+    parser.add_argument(
+        "--min-text-similarity",
+        type=float,
+        default=0.0,
+        help="hard token-F1 gate; use 0.1 for the lexical-semantic experiment",
+    )
     args = parser.parse_args(argv)
 
-    corpus: CorpusMetrics = evaluate_corpus(args.prediction, args.reference)
+    corpus: CorpusMetrics = evaluate_corpus(
+        args.prediction,
+        args.reference,
+        parse_reports=args.parse_report,
+        tiou_threshold=args.tiou_threshold,
+        min_text_similarity=args.min_text_similarity,
+    )
     payload = corpus.to_dict()
     text = json.dumps(payload, indent=2 if args.pretty else None, ensure_ascii=False)
 

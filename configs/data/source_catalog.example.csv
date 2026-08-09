@@ -1,0 +1,6 @@
+path,kind,text,source_group,identity,language,verbatim,license,dataset
+speech/example_001.wav,speech,This is an example utterance.,speaker_example_001,S1,en,true,REPLACE_WITH_DATASET_LICENSE,example
+vocal/example_001.wav,vocal,la la la,song_example_001,V1,en,true,REPLACE_WITH_DATASET_LICENSE,example
+music/example_001.wav,music,soft instrumental accompaniment,song_example_002,,,false,REPLACE_WITH_DATASET_LICENSE,example
+sfx/example_001.wav,sfx,a glass breaks,sfx_recording_example_001,,,false,REPLACE_WITH_DATASET_LICENSE,example
+ambience/example_001.wav,ambience,steady room ambience,ambience_recording_example_001,,,false,REPLACE_WITH_DATASET_LICENSE,example

@@ -16,8 +16,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "third_party" / "MOSS-Audio"))
 
-from sceneledger.models.moss_adapter import MossAdapter, MossAdapterConfig
-from sceneledger.models.target_formatter import canonical_prompt
+from sceneledger.models.moss_adapter import MossAdapter, MossAdapterConfig  # noqa: E402
+from sceneledger.models.target_formatter import canonical_prompt  # noqa: E402
 
 WEIGHTS = "/tmp/moss_weights"
 AUDIO_BASE = Path("/tmp/tac_mini/audio")

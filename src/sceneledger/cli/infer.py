@@ -23,7 +23,7 @@ import json
 import sys
 from pathlib import Path
 
-from sceneledger.data.manifests import ManifestEntry, read_manifest
+from sceneledger.data.manifests import file_hash, read_manifest
 from sceneledger.data.schema import Ledger
 from sceneledger.eval.parser import ParseReport, parse_model_output
 from sceneledger.models.moss_adapter import (
@@ -32,7 +32,12 @@ from sceneledger.models.moss_adapter import (
     MossAdapter,
     MossAdapterConfig,
 )
-from sceneledger.models.target_formatter import atomic_to_ledger, canonical_prompt
+from sceneledger.models.target_formatter import (
+    atomic_to_ledger,
+    canonical_prompt,
+    is_strict_atomic_caption,
+    parse_atomic_events,
+)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -55,6 +60,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--style", default="brief")
     parser.add_argument("--include-lyrics", action="store_true")
+    parser.add_argument("--include-tracks", action="store_true")
+    parser.add_argument(
+        "--max-events",
+        type=int,
+        default=16,
+        help="flag, but do not discard, structurally valid runaway generations",
+    )
+    parser.add_argument("--target-mode", choices=["atomic", "xml"], default="atomic")
     args = parser.parse_args(argv)
 
     entries = read_manifest(args.manifest)
@@ -85,7 +98,12 @@ def main(argv: list[str] | None = None) -> int:
             sid = entry.scene["scene_id"]
             duration = float(entry.scene["duration"])
             audio_path = str(Path(args.audio_base) / entry.mixture_path)
-            prompt = canonical_prompt(style=args.style, include_lyrics=args.include_lyrics)
+            prompt = canonical_prompt(
+                style=args.style,
+                include_lyrics=args.include_lyrics,
+                include_tracks=args.include_tracks,
+                output_mode=args.target_mode,
+            )
 
             if args.backend == "mock":
                 target_ledger = Ledger.model_validate(entry.target_ledger)
@@ -96,17 +114,17 @@ def main(argv: list[str] | None = None) -> int:
             # parse the (atomic-token or free-form) output into a Ledger
             pred_ledger, report = _parse_output(raw_text, sid, duration)
             f.write(json.dumps(pred_ledger.model_dump(mode="json"), ensure_ascii=False) + "\n")
-            reports.append(
-                {
-                    "sample_id": sid,
-                    "ok": report.ok,
-                    "strict_format_success": report.strict_format_success,
-                    "events_recovered": report.events_recovered,
-                    "events_rejected": report.events_rejected,
-                    "warnings": report.warnings[:5],
-                    "raw_text": raw_text[:500] if args.backend == "moss" else None,
-                }
-            )
+            sample_report = {
+                "sample_id": sid,
+                "ok": report.ok,
+                "strict_format_success": report.strict_format_success,
+                "events_recovered": report.events_recovered,
+                "events_rejected": report.events_rejected,
+                "degenerate_output": report.events_recovered > args.max_events,
+                "warnings": report.warnings[:5],
+                "raw_text": raw_text if args.backend == "moss" else None,
+            }
+            reports.append(sample_report)
             if report.ok:
                 n_ok += 1
             if (i + 1) % 100 == 0:
@@ -117,6 +135,17 @@ def main(argv: list[str] | None = None) -> int:
         rp.parent.mkdir(parents=True, exist_ok=True)
         summary = {
             "backend": args.backend,
+            "manifest_path": str(Path(args.manifest).resolve()),
+            "manifest_sha256": file_hash(args.manifest),
+            "model_path": args.model_path,
+            "lora_path": args.lora_path,
+            "greedy": args.greedy,
+            "target_mode": args.target_mode,
+            "style": args.style,
+            "include_lyrics": args.include_lyrics,
+            "include_tracks": args.include_tracks,
+            "max_new_tokens": args.max_new_tokens,
+            "max_events": args.max_events,
             "n_samples": len(entries),
             "n_ok": n_ok,
             "strict_format_success_rate": round(
@@ -126,13 +155,14 @@ def main(argv: list[str] | None = None) -> int:
                 sum(r["events_recovered"] for r in reports) / max(1, len(reports)), 3
             ),
             "total_events_rejected": sum(r["events_rejected"] for r in reports),
+            "degenerate_output_count": sum(r["degenerate_output"] for r in reports),
             "samples": reports,
         }
         rp.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
 
     print(
         f"[infer] {len(entries)} samples via {args.backend} -> {out_path} "
-        f"(strict ok={n_ok})",
+        f"(parse ok={n_ok})",
         file=sys.stderr,
     )
     return 0
@@ -142,11 +172,42 @@ def _parse_output(raw_text: str, sample_id: str, duration: float) -> tuple[Ledge
     """Parse model output: try atomic-token first, fall back to tolerant XML parser."""
     # atomic-token path (B2/B0 with time markers)
     try:
-        ledger = atomic_to_ledger(raw_text, sample_id, duration)
-        if ledger.events:
-            report = ParseReport(
-                sample_id=sample_id, ok=True, events_recovered=len(ledger.events),
+        parsed = parse_atomic_events(raw_text)
+        ledger = atomic_to_ledger(
+            raw_text, sample_id, duration, clip_to_duration=True
+        )
+        if raw_text.strip() == "<empty/>":
+            return ledger, ParseReport(
+                sample_id=sample_id,
+                ok=True,
+                events_recovered=0,
                 strict_format_success=True,
+            )
+        if parsed:
+            strict_syntax = is_strict_atomic_caption(raw_text)
+            out_of_bounds = sum(
+                1
+                for event in parsed
+                for start, end in event.spans
+                if start < 0.0 or end > duration
+            )
+            rejected = max(0, len(parsed) - len(ledger.events))
+            warnings = []
+            if not strict_syntax:
+                warnings.append("atomic output required tolerant extraction")
+            if out_of_bounds:
+                warnings.append(
+                    f"clipped {out_of_bounds} atomic span(s) to duration={duration:g}s"
+                )
+            if rejected:
+                warnings.append(f"rejected {rejected} empty atomic event(s) after clipping")
+            report = ParseReport(
+                sample_id=sample_id,
+                ok=not warnings,
+                events_recovered=len(ledger.events),
+                events_rejected=rejected,
+                warnings=warnings,
+                strict_format_success=strict_syntax and not out_of_bounds and not rejected,
             )
             return ledger, report
     except Exception:

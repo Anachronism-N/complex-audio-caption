@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
+from sceneledger.cli.infer import _parse_output
 from sceneledger.eval.parser import parse_model_output
-from fixtures.factory import t
 
 
 def _xml(text: str, sample_id: str = "s1", duration: float = 30.0):
@@ -93,3 +93,20 @@ def test_smart_quotes_and_case_insensitive_tags():
     lg, rep = _xml(text, duration=1.0)
     assert len(lg.events) == 1
     assert lg.events[0].type == "speech"
+
+
+def test_atomic_out_of_range_span_is_clipped_and_not_strict():
+    raw = "<speech><|t_040|>hello<|t_060|></speech>"
+    ledger, report = _parse_output(raw, "short", 5.0)
+    assert ledger.events[0].spans[0].end_sec == 5.0
+    assert report.strict_format_success is False
+    assert report.ok is False
+    assert "clipped" in report.warnings[0]
+
+
+def test_atomic_surrounding_prose_is_recovered_but_not_strict():
+    raw = "caption: <sfx><|t_000|>impact<|t_005|></sfx>"
+    ledger, report = _parse_output(raw, "sample", 1.0)
+    assert len(ledger.events) == 1
+    assert report.strict_format_success is False
+    assert "tolerant" in report.warnings[0]

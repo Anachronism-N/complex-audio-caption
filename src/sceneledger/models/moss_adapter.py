@@ -31,7 +31,6 @@ import numpy as np
 from sceneledger.data.schema import Event, Ledger, Span
 from sceneledger.models.target_formatter import (
     format_atomic_caption,
-    canonical_prompt,
 )
 
 
@@ -93,21 +92,45 @@ class MossAdapter:
             dtype=self.config.dtype,
             device_map=self.config.device,
         )
+        self._processor = MossAudioProcessor.from_pretrained(
+            self.config.model_path,
+            trust_remote_code=True,
+            enable_time_marker=self.config.enable_time_marker,
+        )
+        # B2/B3 checkpoints may add 301 target-side decisecond tokens.  The
+        # base model must be resized identically before PEFT restores the
+        # saved embedding/lm-head modules.
+        if self.config.lora_path is not None:
+            token_metadata_path = (
+                Path(self.config.lora_path) / "atomic_timestamp_tokens.json"
+            )
+            if token_metadata_path.exists():
+                import json
+
+                from sceneledger.models.tokenizer_utils import (
+                    ensure_atomic_timestamp_tokens,
+                )
+
+                expected = json.loads(token_metadata_path.read_text(encoding="utf-8"))
+                token_ids, _ = ensure_atomic_timestamp_tokens(
+                    self._processor.tokenizer,
+                    self._model,
+                    register_missing=True,
+                )
+                if sorted(token_ids) != expected.get("ids"):
+                    raise RuntimeError(
+                        "timestamp token IDs do not match the training checkpoint"
+                    )
         # load LoRA adapter if specified (B1/B2 trained checkpoint)
         if self.config.lora_path is not None:
             from peft import PeftModel
             self._model = PeftModel.from_pretrained(self._model, self.config.lora_path)
             print(f"[moss_adapter] loaded LoRA from {self.config.lora_path}", flush=True)
         self._model.eval()
-        self._processor = MossAudioProcessor.from_pretrained(
-            self.config.model_path,
-            trust_remote_code=True,
-            enable_time_marker=self.config.enable_time_marker,
-        )
         self._torch = torch
 
     @staticmethod
-    def _load_audio_native(path: str, sample_rate: int) -> "np.ndarray":
+    def _load_audio_native(path: str, sample_rate: int) -> np.ndarray:
         """Load audio as 1D float32 numpy array at ``sample_rate`` (mono).
 
         Uses soundfile + scipy resample to avoid torchaudio's torchcodec

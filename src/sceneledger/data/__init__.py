@@ -2,8 +2,8 @@
 
 from sceneledger.data.schema import (
     Conditions,
-    Evidence,
     Event,
+    Evidence,
     Ledger,
     Provenance,
     Span,

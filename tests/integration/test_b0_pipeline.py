@@ -2,23 +2,20 @@
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 import pytest
 
 from sceneledger.data.datamodule import (
+    MOSS_INPUT_SAMPLE_RATE,
     DatamoduleConfig,
-    TacMiniDataset,
     build_dataset,
     group_split,
-    MOSS_INPUT_SAMPLE_RATE,
 )
 from sceneledger.data.manifests import ManifestEntry, read_manifest, write_manifest
-from sceneledger.models.moss_adapter import MockMossAdapter, MockMossAdapterConfig
 from sceneledger.data.schema import Ledger
-from sceneledger.models.target_formatter import atomic_to_ledger, format_atomic_caption
-
+from sceneledger.models.moss_adapter import MockMossAdapter, MockMossAdapterConfig
+from sceneledger.models.target_formatter import atomic_to_ledger
 
 # use the real 500-clip manifest if available, else build a tiny one from the
 # integration fixtures.
@@ -36,13 +33,13 @@ def manifest_entries() -> list[ManifestEntry]:
     spec = importlib.util.spec_from_file_location("trt", "tests/integration/test_round_trip.py")
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
+    from sceneledger.data.manifests import persist_render
     from sceneledger.data.renderer import render_scene
     from sceneledger.data.scene_graph_sampler import (
         SceneGraphSampler,
         SceneSamplerConfig,
         SyntheticSourcePool,
     )
-    from sceneledger.data.manifests import persist_render
 
     pool = SyntheticSourcePool()
     sampler = SceneGraphSampler(pool=pool, config=SceneSamplerConfig())
@@ -59,6 +56,9 @@ def manifest_entries() -> list[ManifestEntry]:
 
 
 def test_dataset_loads_audio_and_targets(manifest_entries):
+    pytest.importorskip("torch")
+    if TAC_MINI_MANIFEST.exists() and not TAC_MINI_AUDIO.exists():
+        pytest.skip("rendered TAC-mini audio is not present in the CPU checkout")
     if TAC_MINI_MANIFEST.exists():
         cfg = DatamoduleConfig(
             manifest_path=str(TAC_MINI_MANIFEST),

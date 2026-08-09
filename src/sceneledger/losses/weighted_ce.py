@@ -13,26 +13,10 @@ are ignored, matching the model's ``ignore_index``.
 
 from __future__ import annotations
 
-from typing import Iterable, Sequence
-
 import torch
 import torch.nn.functional as F
 
-from sceneledger.models.target_formatter import T_TOKEN_COUNT, time_to_token
-
-
-def compute_timestamp_token_ids(tokenizer) -> set[int]:
-    """Return the set of token IDs that constitute ``<|t_XXX|>`` tokens.
-
-    Each timestamp token may encode to one or more sub-tokens depending on the
-    tokenizer; we collect all of them so the weight applies to every piece.
-    """
-    ids: set[int] = set()
-    for i in range(T_TOKEN_COUNT):
-        token = time_to_token(i * 0.1)
-        sub_ids = tokenizer.encode(token, add_special_tokens=False)
-        ids.update(sub_ids)
-    return ids
+from sceneledger.models.tokenizer_utils import compute_timestamp_token_ids
 
 
 def time_weighted_ce_loss(
@@ -55,15 +39,6 @@ def time_weighted_ce_loss(
     Returns:
         Scalar mean loss.
     """
-    if timestamp_weight == 1.0 or not timestamp_token_ids:
-        # fast path: standard CE (matches model's built-in loss)
-        loss = F.cross_entropy(
-            logits.view(-1, logits.size(-1)),
-            labels.view(-1),
-            ignore_index=ignore_index,
-        )
-        return loss
-
     # shift: predict token t+1 from token t (standard causal LM)
     shift_logits = logits[..., :-1, :].contiguous()
     shift_labels = labels[..., 1:].contiguous()
@@ -82,6 +57,9 @@ def time_weighted_ce_loss(
     valid_labels = flat_labels[valid_mask]
     per_token_loss = F.cross_entropy(valid_logits, valid_labels, reduction="none")
 
+    if timestamp_weight == 1.0 or not timestamp_token_ids:
+        return per_token_loss.mean()
+
     # build weight vector: timestamp_weight for timestamp tokens, 1.0 otherwise
     ts_set = torch.tensor(
         sorted(timestamp_token_ids), device=logits.device, dtype=torch.long
@@ -93,7 +71,7 @@ def time_weighted_ce_loss(
         torch.ones_like(per_token_loss),
     )
 
-    return (per_token_loss * weights).mean()
+    return (per_token_loss * weights).sum() / weights.sum()
 
 
 __all__ = ["compute_timestamp_token_ids", "time_weighted_ce_loss"]

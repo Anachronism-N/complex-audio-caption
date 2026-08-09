@@ -1,5 +1,13 @@
 # Complex Audio Caption / SceneLedger
 
+> 2026-08-09：实验主线已切换为 anchor-first。服务器先复现 TAG 2021，再运行 B1 official
+> 和 B3-valid；执行入口见 [有效实验管线](docs/14_valid_experiment_pipeline.md)。旧 B3
+> synthetic lyrics 数据和全量集合报告已 supersede，不得用于论文结论。
+
+> 最新的数据管线验收状态、服务器重渲染命令和 B1 go/no-go gate 见
+> [数据管线复现状态与下一步实验](docs/13_data_pipeline_status.md)。仓库中旧的
+> 500 条 TAC-mini manifest 已被判定为过期，正式训练前必须重新渲染。
+
 面向真实复杂声景的统一、细粒度、带时间戳音频描述研究方案（调研冻结日期：2026-08-08）。
 
 ## 一句话结论
@@ -45,7 +53,9 @@
 - [训练课程、偏好对齐与可验证奖励](docs/10_training_rl_and_rewards.md)
 - [逐步开发计划与验收标准](docs/11_development_plan.md)
 - [复现指南](docs/12_reproduction_guide.md)
+- [Anchor-first：TAG 2021 完整复现协议](docs/13_anchor_first_tag_reproduction.md)
 - [机器可读实验矩阵](configs/experiment_matrix.yaml)
+- [机器可读复现锚点与门槛](configs/reproduction_anchor.yaml)
 - [机器可读开发阶段](configs/pipeline_stages.yaml)
 - [规范化事件账本 JSON Schema](schemas/sceneledger.schema.json)
 - [Track–Event Ledger v0.2 JSON Schema](schemas/track_event_ledger.schema.json)
@@ -53,9 +63,9 @@
 
 ## 当前建议
 
-工程底座确定为开放的 **MOSS-Audio-4B-Instruct**。先用 2–3 天完成 schema、parser、指标和 `B0=MOSS zero-shot`，随后把 **TAC-mini 数据构造**作为第一项主要复现工作；再完成 `B1=static SFT`、`B2=MOSS 上的 TAC-style paper-spec reimplementation`、`B3=joint speech/lyrics autoregressive baseline`，最后依次加入 `S1=track/event slots`、`S2=local evidence` 和 `S3=CARC`。TAC 官方截至调研冻结日未公开训练代码、checkpoint 和 licensed single-source corpus，因此不能声称 exact reproduction；但其 mixer、多任务 prompt、atomic timestamp token、weighted CE 和评价协议都应作为 B2 复现。
+项目改为 **anchor-first**。第一优先级是完整复现 ICASSP 2021 Text-to-Audio Grounding：固定论文时代代码、标签、特征、训练和官方 evaluator，依次通过数据审计、单 seed 论文指标、随机查询诊断和三 seed 稳定性四个门槛。`runs/tag2021/reproduction_summary.json` 的 `pass=true` 之前，不继续增加新 loss、RL、agent 重写或合成数据变量。
 
-先做一个可证伪的小规模 pilot，而不是立刻扩到百万视频：人工标注 200 个复杂片段；在 MOSS 上完成 TAC-style 基线；用 5k-10k 个无标注片段完成 CARC 最小闭环，确认相对等量 pseudo-label SFT 在真实集上同时降低漏检和幻觉后，才扩到 50k-100k。
+现有 `B1/B2` 和 TAC-mini 结果降级为工程探索结果；schema、parser、evaluator、数据审计和 renderer 继续保留。复现通过后，先在完全相同的数据和 evaluator 上只替换现代 grounding backbone，再逐级扩展到多查询、联合 `<sfx>` 事件、speech/music/lyrics 和复杂声学环境。MOSS-Audio 仍是后续统一模型候选，TAC 仍是最终输出规格参考，但二者不再充当第一阶段的可复现锚点。
 
 截至 2026-08-08，ICLR 2027 的摘要与全文截止日期分别是 2026-09-11 和 2026-09-16；从空仓库开始完成高质量 benchmark、模型与充分消融并不现实。主线更适合瞄准 NeurIPS 2027 或 ACM MM 2027（正式日期发布后再确认），并把 ICLR 2027 作为仅在已有实现和算力成熟时才考虑的高风险窗口。
 

@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 import numpy as np
 import pytest
 
+from sceneledger.data.activity import ActivityResult
 from sceneledger.data.manifests import (
     persist_render,
     read_manifest,
@@ -15,8 +15,15 @@ from sceneledger.data.manifests import (
     validate_manifest,
     write_manifest,
 )
-from sceneledger.data.renderer import render_scene
+from sceneledger.data.renderer import (
+    RESIDUAL_STEM_ID,
+    RenderedSource,
+    _overlap_ratio,
+    render_scene,
+)
 from sceneledger.data.scene_graph_sampler import (
+    FileSourcePool,
+    PlacedSource,
     SceneGraphSampler,
     SceneSamplerConfig,
     SyntheticSourcePool,
@@ -63,6 +70,51 @@ def test_stems_sum_to_dry_mixture(pool, sampler):
     for rs in out.stems:
         dry += rs.stem
     assert np.array_equal(dry, out.dry_mixture)
+
+
+def test_semantic_stems_plus_residual_reconstruct_mixture(pool, sampler):
+    scene = _scene(sampler, template="speech_music_sfx")
+    scene.conditions.echo_delay_ms = 180
+    scene.conditions.echo_atten_db = -8.0
+    out = render_scene(scene, pool)
+    reconstructed = out.dry_mixture + out.residual_stem
+    assert np.allclose(reconstructed, out.mixture, atol=1e-7, rtol=0.0)
+    assert RESIDUAL_STEM_ID in out.stem_hashes()
+
+
+def test_source_ids_are_unique_across_sampled_scenes(sampler):
+    for seed in range(500):
+        scene = sampler.sample(
+            f"unique_{seed}", seed=seed, template="speech_music_sfx"
+        )
+        source_ids = [source.source_id for source in scene.sources]
+        assert len(source_ids) == len(set(source_ids))
+
+
+def test_overlap_ratio_expands_coarse_activity_masks():
+    def rendered(source_id: str, mask: list[int]) -> RenderedSource:
+        placed = PlacedSource(
+            source_id=source_id,
+            kind="sfx",
+            path=f"sfx:{source_id}",
+            onset=0.0,
+            gain_db=0.0,
+            text="event",
+        )
+        activity = ActivityResult(
+            rms_curve=np.zeros(0),
+            hop_sec=0.01,
+            activity_mask=np.asarray(mask, dtype=np.int8),
+            resolution_sec=1.0,
+            spans=[],
+        )
+        return RenderedSource(placed=placed, stem=np.zeros(100), activity=activity)
+
+    sources = [
+        rendered("FX01", [1] * 10),
+        rendered("FX02", [0, 0, 1, 1, 0, 0, 0, 0, 0, 0]),
+    ]
+    assert _overlap_ratio(sources, duration=10.0) == 0.2
 
 
 def test_mixture_length_matches_duration(pool, sampler):
@@ -154,6 +206,8 @@ def test_validate_manifest_passes(tmp_path: Path, pool, sampler):
     assert rep.n_replay_ok == 5
     assert rep.n_stems_sum_ok == 5
     assert rep.n_ledger_valid == 5
+    assert rep.n_saved_reconstruction_ok == 5
+    assert rep.n_audio_files_fail == 0
 
 
 def test_validate_manifest_detects_tampered_hash(tmp_path: Path, pool, sampler):
@@ -168,7 +222,66 @@ def test_validate_manifest_detects_tampered_hash(tmp_path: Path, pool, sampler):
     assert not rep.ok()
 
 
+def test_validate_manifest_detects_tampered_audio_file(tmp_path: Path, pool, sampler):
+    scene = sampler.sample("tamper_audio", seed=17, template="speech_over_music")
+    out = render_scene(scene, pool)
+    entry = persist_render(out, tmp_path / "audio", rel_to=tmp_path)
+    manifest = tmp_path / "manifest.jsonl"
+    write_manifest(manifest, [entry])
+    mixture_path = tmp_path / entry.mixture_path
+    content = bytearray(mixture_path.read_bytes())
+    content[-1] ^= 1
+    mixture_path.write_bytes(content)
+    rep = validate_manifest(manifest, pool, check_audio=True)
+    assert rep.n_audio_files_fail >= 1
+    assert not rep.ok()
+
+
 def test_mixture_no_clipping(pool, sampler):
     scene = _scene(sampler, template="speech_music_sfx")
     out = render_scene(scene, pool)
     assert float(np.max(np.abs(out.mixture))) <= 0.99 + 1e-6
+
+
+def test_file_backed_vocal_uses_catalog_lyrics_not_invented_text(tmp_path: Path):
+    import soundfile as sf
+
+    sr = 24000
+    seconds = 10
+    time = np.arange(sr * seconds) / sr
+    vocal_path = (tmp_path / "vocal.wav").resolve()
+    music_path = (tmp_path / "music.wav").resolve()
+    sf.write(vocal_path, (0.2 * np.sin(2 * np.pi * 220 * time)).astype(np.float32), sr)
+    sf.write(music_path, (0.1 * np.sin(2 * np.pi * 110 * time)).astype(np.float32), sr)
+    file_pool = FileSourcePool(
+        by_kind={"vocal": [str(vocal_path)], "music": [str(music_path)]},
+        metadata_by_path={
+            str(vocal_path): {
+                "text": "take me home",
+                "language": "en",
+                "verbatim": True,
+                "source_group": "song-1",
+                "dataset": "fixture",
+                "license": "test-only",
+            },
+            str(music_path): {
+                "text": "instrumental accompaniment",
+                "source_group": "song-2",
+                "dataset": "fixture",
+                "license": "test-only",
+            },
+        },
+        strict_metadata=True,
+    )
+    file_sampler = SceneGraphSampler(
+        pool=file_pool, config=SceneSamplerConfig(sample_rate=sr)
+    )
+    output = render_scene(
+        file_sampler.sample("real_lyrics", seed=17, template="lyrics_over_music"),
+        file_pool,
+    )
+    lyrics = [event for event in output.target_ledger.events if event.type == "lys"]
+    assert len(lyrics) == 1
+    assert lyrics[0].text == "take me home"
+    assert lyrics[0].verbatim is True
+    assert output.target_ledger.provenance.source_dataset == "fixture"

@@ -10,7 +10,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from sceneledger.data.schema import Event, Span, TIME_RESOLUTION_SEC
+from sceneledger.data.schema import TIME_RESOLUTION_SEC, Event, Span
 
 
 def _span_union_seconds(spans: list[Span]) -> list[tuple[float, float]]:

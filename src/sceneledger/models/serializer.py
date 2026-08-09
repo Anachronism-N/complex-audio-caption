@@ -19,7 +19,7 @@ raw model output.
 from __future__ import annotations
 
 import xml.etree.ElementTree as ET
-from typing import Iterable
+from collections.abc import Iterable
 
 from sceneledger.data.schema import (
     SCHEMA_VERSION,
@@ -95,7 +95,7 @@ def _apply_uncertainties(
         raise ValueError(
             f"uncertainty count {len(chunks)} != span count {len(spans)}"
         )
-    for span_row, chunk in zip(spans, chunks):
+    for span_row, chunk in zip(spans, chunks):  # noqa: B905 - Python 3.9 smoke env
         su_s, eu_s = chunk.split("|", 1)
         span_row[2] = float(su_s) if su_s else None
         span_row[3] = float(eu_s) if eu_s else None

@@ -10,6 +10,7 @@ model:
   dtype: bfloat16
   freeze_audio_encoder: true
   freeze_base_llm: true
+  register_timestamp_tokens: true
 
 lora:
   rank: 128
