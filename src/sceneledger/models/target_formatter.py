@@ -24,7 +24,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from sceneledger.data.schema import Event, Ledger, TIME_RESOLUTION_SEC
+from sceneledger.data.schema import TIME_RESOLUTION_SEC, Event, Ledger
 
 # Atomic timestamp token vocabulary (configs/experiment_matrix.yaml).
 T_TOKEN_FIRST = "<|t_000|>"
@@ -240,7 +240,10 @@ def canonical_prompt(
     activity: float = 0.05,
     resolution_s: float = 0.1,
     include_lyrics: bool = False,
+    output_mode: str | None = None,
 ) -> str:
+    if output_mode not in {None, "atomic", "xml"}:
+        raise ValueError("output_mode must be one of: atomic, xml, or None")
     lyrics_line = (
         "Return sung lyrics as <lys> events; if lyrics are not clearly "
         'intelligible, describe them inside <music> as "unclear vocals" '
@@ -248,12 +251,29 @@ def canonical_prompt(
         if include_lyrics
         else ""
     )
+    grammar = ""
+    if output_mode == "atomic":
+        grammar = (
+            "Return only concatenated tagged events, with no prose or Markdown.\n"
+            "Atomic grammar: <TYPE><|t_SSS|>event text<|t_EEE|></TYPE>, where "
+            "TYPE is speech, music, sfx"
+            + (", or lys" if include_lyrics else "")
+            + " and SSS/EEE are decisecond indices from 000 to 300.\n"
+            "Example: <speech><|t_007|>a person says hello<|t_029|></speech>\n"
+        )
+    elif output_mode == "xml":
+        grammar = (
+            "Return only one tagged event per line, with no prose or Markdown.\n"
+            'XML grammar: <TYPE t="START-END">event text</TYPE>; use comma-separated '
+            "START-END pairs for repeated spans.\n"
+        )
     return (
         "Describe every audible event in the audio.\n"
         "Return speech, sung lyrics, music, and sound effects as separate typed events.\n"
         "Events may overlap and may contain multiple time spans.\n"
         f"[style={style}, merge={merge_s}s, activity={activity}, resolution={resolution_s}s]\n"
         f"{lyrics_line}"
+        f"{grammar}"
         "Do not infer events that are not acoustically supported."
     ).strip()
 

@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import random
 
-from sceneledger.eval.event_matcher import match_events, token_f1
 from fixtures.factory import ev, t
+
+from sceneledger.eval.event_matcher import match_events, token_f1
 
 
 def _events():

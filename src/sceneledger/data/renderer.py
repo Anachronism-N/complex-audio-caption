@@ -17,30 +17,33 @@ waveform hash is identical. Validation/test mixes are pre-generated and frozen.
 from __future__ import annotations
 
 import hashlib
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import numpy as np
 
 from sceneledger.data.activity import ActivityResult, compute_activity
+from sceneledger.data.scene_graph_sampler import (
+    PlacedSource,
+    Scene,
+    SourcePool,
+)
 from sceneledger.data.schema import (
     SCHEMA_VERSION,
     TIME_RESOLUTION_SEC,
-    Conditions as LedgerConditions,
     Event,
     Ledger,
     Provenance,
     Span,
     Track,
 )
-from sceneledger.data.scene_graph_sampler import (
-    Conditions,
-    PlacedSource,
-    Scene,
-    SourcePool,
+from sceneledger.data.schema import (
+    Conditions as LedgerConditions,
 )
 
 # type ordering for stable event serialization (docs/06 §5.2)
 _TYPE_ORDER = {"speech": 0, "lys": 1, "music": 2, "sfx": 3}
+RENDERER_VERSION = "0.3.0"
+RESIDUAL_STEM_ID = "__residual__"
 
 
 @dataclass
@@ -54,7 +57,8 @@ class RenderedSource:
 class RenderOutput:
     scene: Scene
     mixture: np.ndarray  # [N] float32, post-echo + clipping guard
-    dry_mixture: np.ndarray  # [N] float32, sum of stems BEFORE echo/clipping
+    dry_mixture: np.ndarray  # [N] float32, sum of scaled semantic stems
+    residual_stem: np.ndarray  # [N] float32, echo/mastering residual
     stems: list[RenderedSource]
     target_ledger: Ledger
     sample_rate: int
@@ -66,7 +70,11 @@ class RenderOutput:
         return self.waveform_hash(self.mixture)
 
     def stem_hashes(self) -> dict[str, str]:
-        return {rs.placed.source_id: self.waveform_hash(rs.stem) for rs in self.stems}
+        hashes = {
+            rs.placed.source_id: self.waveform_hash(rs.stem) for rs in self.stems
+        }
+        hashes[RESIDUAL_STEM_ID] = self.waveform_hash(self.residual_stem)
+        return hashes
 
 
 # --------------------------------------------------------------------------- #
@@ -260,10 +268,6 @@ def _build_ledger(scene: Scene, rendered: list[RenderedSource]) -> Ledger:
 
     # stable order: onset asc, then type order, then source id
     def _sort_key(e: Event) -> tuple:
-        src_idx = next(
-            (i for i, rs in enumerate(rendered) if rs.placed.source_id == e.track_id and False),
-            0,
-        ) if False else 0
         return (
             round(e.start_sec(), 6),
             _TYPE_ORDER.get(e.type, 9),
@@ -293,7 +297,7 @@ def _build_ledger(scene: Scene, rendered: list[RenderedSource]) -> Ledger:
         tracks=tracks,
         events=events,
         provenance=Provenance(
-            label_level="model_prediction",
+            label_level="B",
             source_dataset="tac_mini_synthetic",
             renderer_manifest_uri=None,
             license_status="synthetic",
@@ -311,8 +315,13 @@ def _overlap_ratio(rendered: list[RenderedSource], duration: float) -> float:
     active = np.zeros(n_frames, dtype=np.int32)
     for rs in rendered:
         mask = rs.activity.activity_mask
-        L = min(len(mask), n_frames)
-        active[:L] += mask[:L]
+        resolution = rs.activity.resolution_sec
+        for index in np.flatnonzero(mask):
+            start = int(round(index * resolution / TIME_RESOLUTION_SEC))
+            end = int(round((index + 1) * resolution / TIME_RESOLUTION_SEC))
+            start = max(0, min(start, n_frames))
+            end = max(start, min(end, n_frames))
+            active[start:end] += 1
     overlap = int(np.sum(active >= 2))
     return round(overlap / n_frames, 6)
 
@@ -325,6 +334,11 @@ def render_scene(scene: Scene, pool: SourcePool) -> RenderOutput:
     sr = scene.sample_rate
     n_clip = int(round(scene.duration * sr))
     rendered: list[RenderedSource] = []
+
+    source_ids = [source.source_id for source in scene.sources]
+    if len(source_ids) != len(set(source_ids)):
+        duplicates = sorted({sid for sid in source_ids if source_ids.count(sid) > 1})
+        raise ValueError(f"scene {scene.scene_id} has duplicate source IDs: {duplicates}")
 
     for idx, src in enumerate(scene.sources):
         wav, _dur = pool.load(src.path, sr)
@@ -357,20 +371,41 @@ def render_scene(scene: Scene, pool: SourcePool) -> RenderOutput:
             mixture, sr, scene.conditions.echo_delay_ms, scene.conditions.echo_atten_db
         )
 
-    # prevent clipping
-    peak = float(np.max(np.abs(mixture)))
-    if peak > 0.99:
-        mixture = mixture * (0.99 / peak)
+    # Represent scene-level echo/mastering as an explicit residual.  Apply one
+    # common scale to the mixture, semantic stems, and residual so that saved
+    # components remain physically auditable:
+    #     mixture ~= sum(semantic stems) + residual.
+    residual = np.asarray(mixture - dry_mixture, dtype=np.float32)
+    component_peak = max(
+        [float(np.max(np.abs(mixture))), float(np.max(np.abs(residual)))]
+        + [float(np.max(np.abs(rs.stem))) for rs in rendered]
+    )
+    master_scale = min(1.0, 0.98 / component_peak) if component_peak > 0 else 1.0
+    if master_scale != 1.0:
+        mixture = np.asarray(mixture * master_scale, dtype=np.float32)
+        for rs in rendered:
+            rs.stem = np.asarray(rs.stem * master_scale, dtype=np.float32)
+    dry_mixture = np.zeros(n_clip, dtype=np.float32)
+    for rs in rendered:
+        dry_mixture += rs.stem
+    residual = np.asarray(mixture - dry_mixture, dtype=np.float32)
 
     target_ledger = _build_ledger(scene, rendered)
     return RenderOutput(
         scene=scene,
-        mixture=mixture,
+        mixture=np.asarray(mixture, dtype=np.float32),
         dry_mixture=dry_mixture,
+        residual_stem=residual,
         stems=rendered,
         target_ledger=target_ledger,
         sample_rate=sr,
     )
 
 
-__all__ = ["RenderOutput", "RenderedSource", "render_scene"]
+__all__ = [
+    "RESIDUAL_STEM_ID",
+    "RENDERER_VERSION",
+    "RenderOutput",
+    "RenderedSource",
+    "render_scene",
+]

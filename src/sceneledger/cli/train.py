@@ -1,7 +1,8 @@
-"""``sceneledger-train`` CLI: LoRA SFT on MOSS-Audio-4B.
+"""Experimental single-process trainer for MOSS-Audio-4B.
 
-B1 (static SFT): ordinary token CE on atomic-token captions.
-B2 (TAC paper-spec): time-weighted CE (``timestamp_weight=5.0``).
+The reproducible B1 path uses ``scripts/run_b1_official.sh`` and the upstream
+MOSS trainer. This module remains a development harness; B2 is intentionally
+blocked until the timestamp vocabulary is registered as truly atomic tokens.
 
 ::
 
@@ -46,7 +47,7 @@ def _set_seed(seed: int) -> None:
 def _load_model_and_processor(cfg: dict):
     import sys as _sys
 
-    repo = Path(__file__).resolve().parents[2] / "third_party" / "MOSS-Audio"
+    repo = Path(__file__).resolve().parents[3] / "third_party" / "MOSS-Audio"
     if str(repo) not in _sys.path:
         _sys.path.insert(0, str(repo))
     from src.modeling_moss_audio import MossAudioModel
@@ -86,9 +87,10 @@ def _apply_lora(model, lora_cfg: dict):
 
 
 def _load_audio(path: str, sample_rate: int, max_seconds: float) -> np.ndarray:
+    from math import gcd
+
     import soundfile as sf
     from scipy.signal import resample_poly
-    from math import gcd
 
     wav, sr = sf.read(path, dtype="float32", always_2d=False)
     if wav.ndim == 2:
@@ -187,12 +189,12 @@ def main(argv: list[str] | None = None) -> int:
     model.train()
 
     # dataset
+    from sceneledger.data.datamodule import MOSS_INPUT_SAMPLE_RATE, group_split
     from sceneledger.data.manifests import read_manifest
-    from sceneledger.data.datamodule import group_split, MOSS_INPUT_SAMPLE_RATE
     from sceneledger.models.target_formatter import (
+        StyleConfig,
         canonical_prompt,
         format_atomic_caption,
-        StyleConfig,
     )
 
     entries = read_manifest(cfg["data"]["manifest_path"])
@@ -205,6 +207,11 @@ def main(argv: list[str] | None = None) -> int:
 
     # precompute timestamp token IDs for B2
     timestamp_weight = cfg["loss"].get("timestamp_weight", 1.0)
+    if timestamp_weight != 1.0:
+        raise RuntimeError(
+            "B2 weighted training is disabled until <|t_000|>..<|t_300|> are "
+            "registered as atomic tokenizer entries with trainable embeddings"
+        )
     ts_token_ids = None
     if timestamp_weight != 1.0:
         from sceneledger.losses.weighted_ce import compute_timestamp_token_ids
@@ -222,7 +229,10 @@ def main(argv: list[str] | None = None) -> int:
 
     grad_accum = tcfg["global_effective_batch"] // tcfg["micro_batch_size"]
     style_cfg = StyleConfig()
-    prompt_text = canonical_prompt(style=cfg["data"].get("style", "brief"))
+    target_mode = cfg["data"].get("target_mode", "atomic")
+    prompt_text = canonical_prompt(
+        style=cfg["data"].get("style", "brief"), output_mode=target_mode
+    )
     audio_base = cfg["data"]["audio_base_dir"]
     sr = cfg["data"].get("sample_rate", MOSS_INPUT_SAMPLE_RATE)
     max_sec = cfg["data"].get("max_audio_seconds", 30.0)
@@ -248,7 +258,11 @@ def main(argv: list[str] | None = None) -> int:
 
             from sceneledger.data.schema import Ledger
             ledger = Ledger.model_validate(entry.target_ledger)
-            target = format_atomic_caption(ledger, style=cfg["data"].get("style", "brief"), cfg=style_cfg)
+            if target_mode != "atomic":
+                raise ValueError("experimental trainer currently supports target_mode=atomic only")
+            target = format_atomic_caption(
+                ledger, style=cfg["data"].get("style", "brief"), cfg=style_cfg
+            )
 
             try:
                 batch = _build_training_sample(

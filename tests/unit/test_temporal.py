@@ -2,14 +2,14 @@
 
 from __future__ import annotations
 
-from sceneledger.data.schema import Span
+from fixtures.factory import ev, t
+
 from sceneledger.eval.temporal import (
     boundary_mae,
     multi_span_iou,
     seg_f1,
     tolerance_accuracy,
 )
-from fixtures.factory import ev, t
 
 
 def test_multi_span_iou_identical():

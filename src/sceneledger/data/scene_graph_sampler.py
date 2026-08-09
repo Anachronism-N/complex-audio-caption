@@ -20,11 +20,9 @@ The first TAC-mini version (``docs/11`` §5) targets 3 core templates
 
 from __future__ import annotations
 
-import math
 import random
 from dataclasses import dataclass, field
-from pathlib import Path
-from typing import Literal, Protocol, Sequence
+from typing import Literal, Protocol
 
 import numpy as np
 
@@ -184,15 +182,21 @@ class FileSourcePool:
         return rng.choice(paths)
 
     def load(self, key: str, sample_rate: int) -> tuple[np.ndarray, float]:
+        from math import gcd
+
         import soundfile as sf
+        from scipy.signal import resample_poly
 
         wav, sr = sf.read(key, dtype="float32", always_2d=False)
         if wav.ndim == 2:
             wav = wav.mean(axis=1)
         if sr != sample_rate:
-            import librosa
-
-            wav = librosa.resample(wav.astype(np.float64), orig_sr=sr, target_sr=sample_rate)
+            factor = gcd(int(sr), int(sample_rate))
+            wav = resample_poly(
+                wav.astype(np.float64),
+                int(sample_rate) // factor,
+                int(sr) // factor,
+            )
         return wav.astype(np.float32), float(len(wav) / sample_rate)
 
 
@@ -266,7 +270,6 @@ class SyntheticSourcePool:
     def _synth_music(sr: int, dur: float, rng: np.random.Generator, idx: int) -> np.ndarray:
         """A slow chord progression (root + fifth + octave)."""
         n = int(sr * dur)
-        t = np.arange(n) / sr
         roots = [220.0, 246.94, 196.0, 174.61]
         chord_period = dur / max(1, len(roots))
         sig = np.zeros(n, dtype=np.float64)
@@ -424,6 +427,13 @@ class SceneGraphSampler:
         cfg = self.config
         fg_gain = rng.uniform(*cfg.gain_db_range)
         bg_gain = _snr_to_gain_db(rng.uniform(*cfg.fg_bg_snr_range), fg_gain)
+        source_prefix = {
+            "speech": "SP",
+            "music": "MU",
+            "sfx": "FX",
+            "ambience": "AM",
+        }
+        source_counts: dict[str, int] = {}
 
         def _src(kind: SourceKind, *, fg: bool, identity: str | None = None) -> PlacedSource:
             key = self.pool.pick(kind, rng)
@@ -445,8 +455,17 @@ class SceneGraphSampler:
             if rng.random() < cfg.p_rir:
                 t60 = round(rng.uniform(*cfg.t60_range), 3)
                 rir_id = f"room_{rng.randint(1, 8):02d}"
+            # Source IDs are scene-local structural keys.  Do not derive them
+            # from a random two-digit suffix: speech and SFX both used to map
+            # to ``Sxx``, which silently overwrote stems and track pointers.
+            # The counter is deterministic and unique.
+            source_counts[kind] = source_counts.get(kind, 0) + 1
+            source_id = f"{source_prefix[kind]}{source_counts[kind]:02d}"
+            # Preserve the historical RNG stream so the repair changes IDs
+            # and affected supervision only, not source selection/acoustics.
+            rng.randint(1, 99)
             return PlacedSource(
-                source_id=f"{kind[0].upper()}{rng.randint(1, 99):02d}",
+                source_id=source_id,
                 kind=kind,
                 path=key,
                 onset=round(onset, 6),

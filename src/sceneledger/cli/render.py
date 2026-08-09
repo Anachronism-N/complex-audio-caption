@@ -14,7 +14,7 @@ and ledger validity.
 from __future__ import annotations
 
 import argparse
-import json
+import glob
 import sys
 from pathlib import Path
 
@@ -22,8 +22,8 @@ import yaml
 
 from sceneledger.data.manifests import (
     ManifestEntry,
+    audit_manifest_structure,
     persist_render,
-    read_manifest,
     validate_manifest,
     write_manifest,
 )
@@ -44,9 +44,24 @@ def _build_pool(cfg: dict) -> object:
             sample_rate=pcfg.get("sample_rate", 24000),
             seed=pcfg.get("seed", 20260808),
         )
-    elif kind == "file":
+    if kind == "file":
         mapping = pcfg.get("file_pool", {})
-        return FileSourcePool(by_kind={k: list(v) for k, v in mapping.items()})
+        expanded: dict[str, list[str]] = {}
+        for source_kind, patterns in mapping.items():
+            paths = sorted(
+                {
+                    str(Path(path).resolve())
+                    for pattern in patterns
+                    for path in glob.glob(str(pattern), recursive=True)
+                    if Path(path).is_file()
+                }
+            )
+            if not paths:
+                raise ValueError(
+                    f"file pool pattern(s) for {source_kind!r} matched no files: {patterns}"
+                )
+            expanded[source_kind] = paths
+        return FileSourcePool(by_kind=expanded)
     raise ValueError(f"unknown pool kind {kind!r}")
 
 
@@ -119,6 +134,10 @@ def render_dataset(config_path: str, output_dir: str, limit: int | None = None) 
 
     manifest_path = odir / "manifest.jsonl"
     write_manifest(manifest_path, entries)
+    structure_report = audit_manifest_structure(entries)
+    if not structure_report.ok():
+        preview = "\n".join(structure_report.errors[:20])
+        raise RuntimeError(f"rendered manifest failed structural audit:\n{preview}")
     _write_data_card(odir, cfg, entries)
     _write_listen_list(odir, entries)
     print(
@@ -184,7 +203,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--validate", action="store_true", help="validate after rendering")
     args = parser.parse_args(argv)
 
-    n = render_dataset(args.config, args.output_dir, limit=args.limit)
+    render_dataset(args.config, args.output_dir, limit=args.limit)
 
     if args.validate:
         pool = _build_pool(yaml.safe_load(Path(args.config).read_text(encoding="utf-8")))
@@ -193,6 +212,7 @@ def main(argv: list[str] | None = None) -> int:
         print(
             f"[validate] replay ok={rep.n_replay_ok}/{rep.n_entries} "
             f"stems_sum ok={rep.n_stems_sum_ok} ledger_valid={rep.n_ledger_valid} "
+            f"saved_reconstruction={rep.n_saved_reconstruction_ok} "
             f"failures={len(rep.failures)}",
             file=sys.stderr,
         )

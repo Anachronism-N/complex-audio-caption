@@ -16,8 +16,8 @@ Unmatched references are *omissions*; unmatched hypotheses are *hallucinations*
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 import numpy as np
 from scipy.optimize import linear_sum_assignment
@@ -111,7 +111,7 @@ def match_events(
     matches: list[EventMatch] = []
     matched_ref: set[int] = set()
     matched_hyp: set[int] = set()
-    for i, j in zip(row_ind, col_ind):
+    for i, j in zip(row_ind, col_ind, strict=False):
         if i >= n or j >= m:
             continue  # padding row/col
         if cost[i, j] >= INF:
