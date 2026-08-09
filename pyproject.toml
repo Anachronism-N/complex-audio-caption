@@ -32,6 +32,7 @@ moss = [
 
 [project.scripts]
 sceneledger-evaluate = "sceneledger.cli.evaluate:main"
+sceneledger-tag-repro = "sceneledger.repro.tag2021:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

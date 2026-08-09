@@ -1,5 +1,9 @@
 # 从零到投稿的逐步开发计划
 
+> **已被 anchor-first 门控更新。** TAG 2021 的 R0–R3 未通过前，本文中的 TAC-mini、
+> B1/B2、slot/evidence/CARC 开发步骤全部暂停。当前执行顺序见
+> [Anchor-first TAG 复现协议](13_anchor_first_tag_reproduction.md)。
+
 > 直接回答：**第一个“大型复现模块”应当是 TAC 数据构造流程，但第一个代码 PR 不应直接开始批量混音。** 先用 2–3 天冻结输出 schema、parser/serializer、事件匹配指标和 MOSS zero-shot 接口；随后立刻实现 TAC-mini renderer。否则无法判断生成标签是否正确，也无法公平比较 B0/B1/B2。
 
 ## 1. 总体依赖关系
