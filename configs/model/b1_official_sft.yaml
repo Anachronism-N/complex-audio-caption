@@ -1,0 +1,50 @@
+experiment_id: b1_moss_static_sft_official
+stage: B1
+purpose: learn the fixed SceneLedger grammar with ordinary causal token CE
+
+upstream:
+  repository: https://github.com/OpenMOSS/MOSS-Audio
+  commit: 5cbb1d823937cd5b5de3d8fa4d3a7253ebd3b883
+  trainer: finetune/finetune.py
+  model: OpenMOSS-Team/MOSS-Audio-4B-Instruct
+
+data:
+  manifest: /tmp/tac_mini_v2/manifest.jsonl
+  audio_base: /tmp/tac_mini_v2
+  export_dir: /tmp/sceneledger_b1_sft
+  target_mode: atomic
+  style: brief
+  group_key: source_id
+  val_fraction: 0.1
+  split_seed: 20260808
+
+lora:
+  rank: 128
+  alpha: 256
+  audio_encoder: false
+
+training:
+  bf16: true
+  per_device_train_batch_size: 1
+  per_device_eval_batch_size: 1
+  gradient_accumulation_steps: 8
+  max_optimizer_steps: 1000
+  learning_rate: 5.0e-5
+  warmup_steps: 50
+  eval_steps: 125
+  save_steps: 125
+  seed: 20260808
+
+evaluation:
+  decoding: greedy
+  require_full_raw_predictions: true
+  primary_gate:
+    strict_format_success: 0.99
+    event_f1: 0.85
+  report:
+    - per_type_f1
+    - onset_offset_mae
+    - onset_offset_p90
+    - collar_accuracy
+    - hallucination
+    - omission

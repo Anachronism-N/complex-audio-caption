@@ -23,7 +23,7 @@ import json
 import sys
 from pathlib import Path
 
-from sceneledger.data.manifests import ManifestEntry, read_manifest
+from sceneledger.data.manifests import file_hash, read_manifest
 from sceneledger.data.schema import Ledger
 from sceneledger.eval.parser import ParseReport, parse_model_output
 from sceneledger.models.moss_adapter import (
@@ -55,6 +55,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--style", default="brief")
     parser.add_argument("--include-lyrics", action="store_true")
+    parser.add_argument("--target-mode", choices=["atomic", "xml"], default="atomic")
     args = parser.parse_args(argv)
 
     entries = read_manifest(args.manifest)
@@ -85,7 +86,11 @@ def main(argv: list[str] | None = None) -> int:
             sid = entry.scene["scene_id"]
             duration = float(entry.scene["duration"])
             audio_path = str(Path(args.audio_base) / entry.mixture_path)
-            prompt = canonical_prompt(style=args.style, include_lyrics=args.include_lyrics)
+            prompt = canonical_prompt(
+                style=args.style,
+                include_lyrics=args.include_lyrics,
+                output_mode=args.target_mode,
+            )
 
             if args.backend == "mock":
                 target_ledger = Ledger.model_validate(entry.target_ledger)
@@ -104,7 +109,7 @@ def main(argv: list[str] | None = None) -> int:
                     "events_recovered": report.events_recovered,
                     "events_rejected": report.events_rejected,
                     "warnings": report.warnings[:5],
-                    "raw_text": raw_text[:500] if args.backend == "moss" else None,
+                    "raw_text": raw_text if args.backend == "moss" else None,
                 }
             )
             if report.ok:
@@ -117,6 +122,15 @@ def main(argv: list[str] | None = None) -> int:
         rp.parent.mkdir(parents=True, exist_ok=True)
         summary = {
             "backend": args.backend,
+            "manifest_path": str(Path(args.manifest).resolve()),
+            "manifest_sha256": file_hash(args.manifest),
+            "model_path": args.model_path,
+            "lora_path": args.lora_path,
+            "greedy": args.greedy,
+            "target_mode": args.target_mode,
+            "style": args.style,
+            "include_lyrics": args.include_lyrics,
+            "max_new_tokens": args.max_new_tokens,
             "n_samples": len(entries),
             "n_ok": n_ok,
             "strict_format_success_rate": round(

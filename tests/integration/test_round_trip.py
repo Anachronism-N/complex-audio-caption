@@ -6,10 +6,10 @@ import json
 from pathlib import Path
 
 import pytest
+from fixtures.factory import ev, ledger, t, tr
 
 from sceneledger.eval.metrics import evaluate_corpus, evaluate_sample
 from sceneledger.models.serializer import serialize
-from fixtures.factory import ev, ledger, t, tr
 
 
 def _build_fixture_set():
@@ -174,9 +174,7 @@ def test_empty_scene_handled():
 
 def test_missing_prediction_counts_as_all_omission():
     refs = {lg.sample_id: lg for lg in FIXTURES}
-    sm = evaluate_sample(refs["f10"], refs["f10"].model_copy())
     # fudge: simulate missing by direct call to metrics path
-    from sceneledger.eval.metrics import SampleMetrics
 
     # use evaluate_corpus with only refs present
     corpus = evaluate_corpus({}, refs)

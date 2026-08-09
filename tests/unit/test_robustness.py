@@ -11,7 +11,6 @@ from sceneledger.eval.robustness import (
     robustness_report,
     stratify,
 )
-from fixtures.factory import ev, ledger, t
 
 
 def _sm(sample_id: str, f1: float, **kw) -> SampleMetrics:
@@ -74,7 +73,7 @@ def test_robustness_report_round_trip(tmp_path: Path):
         + json.dumps({"scene": {"scene_id": "b", "template": "speech_music_sfx", "sources": [{}, {}, {}], "conditions": {"t60_sec": 0.9, "overlap_ratio": 0.5}}}) + "\n"
     )
     out = tmp_path / "robustness.json"
-    strat = robustness_report(mp, manifest, out)
+    robustness_report(mp, manifest, out)
     assert out.exists()
     loaded = json.loads(out.read_text())
     assert "template" in loaded

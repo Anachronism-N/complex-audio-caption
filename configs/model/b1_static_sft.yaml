@@ -1,4 +1,6 @@
 # B1: static SFT on TAC-mini (ordinary token CE).
+# DEVELOPMENT HARNESS ONLY. The reproducible experiment uses
+# configs/model/b1_official_sft.yaml + scripts/run_b1_official.sh.
 # Goal: teach MOSS-Audio-4B the canonical atomic-token caption format.
 # B0 baseline: format-success=0%, event-F1=0. B1 target: format-success>=99%.
 

@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import pytest
+from fixtures.factory import ev, ledger, t, tr
 
 from sceneledger.data.schema import Conditions, Evidence, Provenance, Relation, Span
 from sceneledger.models.serializer import deserialize, serialize
-from fixtures.factory import ev, ledger, t, tr
 
 
 def _full_ledger():

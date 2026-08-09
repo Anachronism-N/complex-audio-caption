@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from sceneledger.eval.parser import parse_model_output
-from fixtures.factory import t
 
 
 def _xml(text: str, sample_id: str = "s1", duration: float = 30.0):
