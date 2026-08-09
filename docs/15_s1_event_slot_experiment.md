@@ -4,8 +4,8 @@
 `src/sceneledger/losses/set_prediction.py` 和
 `src/sceneledger/cli/train_slots.py`。它把早期 S1a 原型收敛为一个可以复查数据划分、特征、
 随机种子、checkpoint 和指标的实验。S1a 只回答一个问题：在相同 B3-valid 音频与冻结 MOSS
-特征上，无序 event slots 能否稳定恢复事件类型和 100 ms activity；它尚不生成 caption 文本，
-也不预测 track identity。
+特征上，无序 event slots 能否稳定恢复事件类型、100 ms activity 和边界 envelope；它尚不生成
+caption 文本，也不预测 track identity。
 
 ## 1. 前置门槛
 
@@ -25,21 +25,36 @@
 
 | 问题 | 当前实现 |
 |---|---|
-| 按 manifest 顺序切前 90%/后 10% | 使用 B3-valid 已冻结的 train/val manifest，并再次检查 `source_group` 泄漏 |
+| 按 manifest 顺序切前 90%/后 10% | 使用 B3-valid 已冻结的 train/val manifest，再从 train 内划 source-disjoint calibration |
 | 只设置 Python shuffle seed | 固定 Python、NumPy、Torch、CUDA，并启用 deterministic algorithms |
 | eventness 正样本权重方向错误 | 使用 `(K-N_pos)/N_pos`，再执行可配置缩放与上限截断 |
-| type/activity loss 随事件数线性增大 | 对全 batch 的 matched events 求均值 |
+| type/activity/boundary loss 随事件数线性增大 | 对全 batch 的 matched events 求均值 |
 | 多段 SFX 被首尾区间填满 | target 和 prediction 都保留 disjoint activity spans |
 | slot 聚合缺少显式时序位置 | 在 100 ms memory grid 上加入 learned temporal embedding |
-| `0.3/0.4` 阈值与配置不一致 | eventness/activity/tIoU 阈值全部由配置读取并写入结果 |
+| 在报告 validation 上 sweep 阈值 | 只在 calibration 上按 micro Event-F1 选阈值，再一次性评价 validation |
 | `done.flag` 无法判断缓存身份 | cache manifest 绑定 manifest SHA-256、模型元数据、样本集合和存储 dtype |
 | 注释称 fp16，实际存 fp32 | embedding 以 fp16 存储，训练加载时恢复 fp32 |
 | 只在训练结束保存权重 | 定期验证，保存 `best.pt` 和 `last.pt`，支持严格 config-hash resume |
 | 指标只写在 commit message | 保存 prediction、reference、完整 metrics、run manifest 和 summary |
 
-Hungarian assignment 使用两项 soft cost：正确事件类型的负对数概率，以及预测 activity 与目标
-activity 的 soft Dice cost。assignment 本身不参与反向传播；匹配后再计算 eventness BCE、type
-CE 和 activity Dice loss。
+Hungarian assignment 使用三项 soft cost：正确事件类型的负对数概率、activity Dice cost 和按
+clip duration 归一化的 boundary L1 cost。assignment 本身不参与反向传播；匹配后再计算
+eventness BCE、type CE、activity Dice 和按 clip duration 归一化的 boundary L1 loss。
+
+### 2.1 对最新 S1a-v2 结果的解释
+
+`2217194` 报告 threshold=0.40 时 onset MAE=0.008s，但该点 recall=0.010、F1=0.004；MAE
+只在成功匹配的极少事件上计算。因此它说明“少数高置信匹配的边界可落在相邻 0.1s grid”，不能
+说明模型整体达到 10ms 定位，也不能证明 boundary-only 优于 activity。新实现把 boundary head
+并入同一模型，并同时输出：
+
+- `matched_boundary_count` 与 `boundary_reference_coverage`；
+- 按 matched event 加权的 onset/offset MAE；
+- micro/macro Event-F1、SegF1、hallucination 与 omission；
+- activity-only、boundary-only、hybrid 三种相同 checkpoint 解码结果。
+
+历史 `scripts/train_s1v2.py` 和 `s1v2_threshold_sweep.py` 现为兼容入口，内部调用本协议，不再
+读取过期 B3 synthetic manifest 或在最终 validation 上选择阈值。
 
 ## 3. 一次完整运行
 
@@ -82,14 +97,18 @@ STAGE=evaluate MODEL_DIR=/models/moss bash scripts/run_s1_valid.sh
 - 24 个 event slots，对应方法设计中的容量；
 - 4 层、8 heads、hidden size 768 的 Transformer decoder；
 - 冻结 MOSS embedding，仅训练 event-slot head；
-- 10000 steps，每 500 steps 完整验证；
-- eventness/type/activity loss 权重为 `1/1/2`；
-- eventness 和 activity 固定阈值均为 0.5；
+- 10000 steps，500-step warmup，每 500 steps 用 calibration loss 选择 checkpoint；
+- eventness/type/activity/boundary loss 权重为 `1/1/2/1`；
+- 从 B3-valid train 内划 10% source-disjoint calibration；
+- eventness threshold 只在 calibration 候选集合上按 micro Event-F1 选择；
+- activity threshold 固定为 0.5；
 - evaluation tIoU gate 为 0.3。
 
 命令行可以覆盖服务器路径，以及 `--steps`、`--seed`、`--n-slots`、
-`--disable-temporal-embedding`、`--positive-weight-scale` 和 `--activity-weight`。所有覆盖后的值都会
-写入 `run_manifest.json`，不会只存在于 shell history。
+`--disable-temporal-embedding`、`--positive-weight-scale`、`--activity-weight`、
+`--boundary-weight`、`--activity-cost-weight`、`--boundary-cost-weight` 和
+`--primary-decode-mode`。所有覆盖后的值都会写入 `run_manifest.json`，
+不会只存在于 shell history。
 
 ## 5. 输出契约
 
@@ -99,12 +118,14 @@ STAGE=evaluate MODEL_DIR=/models/moss bash scripts/run_s1_valid.sh
 |---|---|
 | `features/cache_manifest.json` | 特征缓存的数据、模型和样本身份 |
 | `model/run_manifest.json` | 最终配置、git commit、运行时、随机种子和数据数量 |
-| `model/split.json` | 实际 train/val sample IDs；`source_leakage_count` 必须为 0 |
-| `model/best.pt` | 最低 validation loss checkpoint |
+| `model/split.json` | 实际 train/calibration/val sample IDs；三者 source leakage 必须为 0 |
+| `model/best.pt` | 最低 calibration loss checkpoint |
 | `model/last.pt` | 可恢复的最后 checkpoint |
 | `model/val_predictions.jsonl` | S1a 事件预测，保留多个 spans |
 | `model/val_references.jsonl` | 本次评测实际使用的 reference |
-| `model/val_metrics.json` | 全量 per-sample、per-type 和总体指标 |
+| `model/threshold_selection.json` | calibration 阈值候选、选择目标与最终阈值 |
+| `model/val_metrics_{activity,boundary,hybrid}.json` | 三种解码的完整指标 |
+| `model/val_metrics.json` | primary decode mode 的兼容指标入口 |
 | `model/run_summary.json` | 便于汇总表读取的关键结果与阈值 |
 
 正式记录结果时，以 `run_summary.json` 与 `run_manifest.json` 为准，不从终端日志手工抄数字。
@@ -121,15 +142,16 @@ bash scripts/run_s1_ablation.sh
 ```
 
 默认运行：`main`、`slots8`、`slots16`、`slots32`、`no_temporal_embedding`、
-`no_positive_weight`、`no_activity_loss`。也可以只运行指定子集：
+`no_positive_weight`、`activity_only`、`boundary_only`。也可以只运行指定子集：
 
 ```bash
 bash scripts/run_s1_ablation.sh main slots8 no_temporal_embedding
 ```
 
-比较时重点报告 Event-F1、SegF1@100ms、onset/offset MAE、hallucination、omission，并按
-overlap ratio、source count 和事件类型分层。`no_activity_loss` 是时间定位负对照；它不应被当成
-可竞争模型。slot 数消融用于判断容量不足与过多 null slots 的权衡。
+比较时重点报告 Event-F1、SegF1@100ms、onset/offset MAE 及其 reference coverage、
+hallucination、omission，并按 overlap ratio、source count 和事件类型分层。`activity_only` 与
+`boundary_only` 判断两种时间头是否互补；两项消融同时把对应 loss 与 Hungarian cost 置零，避免
+“未训练的 head 仍改变匹配结果”这一混杂变量。slot 数消融判断容量不足与过多 null slots 的权衡。
 
 消融完成后生成统一 JSON/CSV 表：
 
@@ -157,9 +179,9 @@ WER、歌词 CER 或 pointer accuracy 与 B3 比较。当前阶段有效的结�
 比较。S1a 结果不佳时，先检查 per-type recall、缓存身份、source leakage 和 slot eventness，不直接
 据此否定完整 Hybrid Track--Event Ledger。
 
-当前 validation fold 用于 checkpoint 选择和阶段性 go/no-go，不是论文最终测试集。方法与阈值
-冻结后，必须另建 source-disjoint test/WildMix-Cap，并且只运行一次最终评测；不能把这里的
-validation 数字改名为 test result。
+checkpoint 与 eventness threshold 只由 train 内的 calibration fold 决定，B3-valid validation
+只用于本阶段 go/no-go。它仍不是论文最终测试集：方法冻结后必须另建 source-disjoint
+test/WildMix-Cap，并且只运行一次最终评测；不能把这里的 validation 数字改名为 test result。
 
 ## 8. 服务器结果回传
 

@@ -168,7 +168,8 @@ bash scripts/run_s1_valid.sh
 ```
 
 该实验复用 B3-valid 的冻结 train/val manifests 和 MOSS features，训练 permutation-invariant
-event slots，输出事件类型与多段 100 ms activity。实现、消融、输出文件和可声称范围见
+event slots，输出事件类型、多段 100 ms activity 与 boundary envelope；checkpoint 和阈值只由
+train 内 source-disjoint calibration 决定。实现、消融、输出文件和可声称范围见
 `docs/15_s1_event_slot_experiment.md`。它不包含 caption text 或 track identity，不能把事件 F1
 解释为统一 caption 质量。
 

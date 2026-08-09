@@ -97,15 +97,17 @@ runs:
     parent: B3-moss-tac-joint
     change: >-
       Frozen MOSS features, 24 permutation-invariant event slots, explicit
-      temporal embeddings, multi-span 100-ms activity, and normalized
-      Hungarian set loss. No text or track prediction in S1a.
+      temporal embeddings, multi-span 100-ms activity, boundary envelopes,
+      and normalized Hungarian set loss. No text or track prediction in S1a.
     purpose: "Test event set prediction independently of evidence/CARC."
     validity_requirements:
       - "TAG 2021 anchor summary has pass=true"
       - "exact B3-valid train/validation manifests"
+      - "source-disjoint calibration split made only from the training fold"
       - "source leakage count is zero"
       - "feature cache binds model and manifest hashes"
       - "thresholds and full config are persisted with metrics"
+      - "boundary MAE is always paired with matched-reference coverage"
 
   - id: S2-evidence
     parent: S1-ledger
@@ -128,7 +130,8 @@ required_ablations:
   - S1-slots-32
   - S1-no-temporal-embedding
   - S1-no-positive-weight
-  - S1-no-activity-loss
+  - S1-activity-only
+  - S1-boundary-only
   - S2-no-local-evidence
   - S2-unrestricted-global-context
   - S2-no-source-loss

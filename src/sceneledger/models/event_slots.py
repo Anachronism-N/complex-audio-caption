@@ -2,15 +2,19 @@
 
 A lightweight DETR-like set predictor on top of frozen MOSS audio encoder
 features. K learned event queries cross-attend to temporal features and each
-predict: eventness (null/active), type (speech/lys/music/sfx), and a 100ms
-activity mask. One event may contain multiple disjoint spans; decoding keeps
-those spans instead of collapsing the mask to its first and last active frame.
+predict: eventness (null/active), type (speech/lys/music/sfx), a 100ms activity
+mask, and an onset/offset envelope. The dual temporal heads make the new
+boundary-regression result a controlled ablation instead of a separate,
+incomparable pipeline. One event may contain multiple disjoint spans; activity
+decoding keeps those spans instead of filling the gaps.
 
 This is S1a (event-only, no text). Text decoding (S1e) comes later by
 conditioning the shared LLM on slot-local evidence.
 """
 
 from __future__ import annotations
+
+from typing import Literal
 
 import torch
 import torch.nn as nn
@@ -20,6 +24,7 @@ from sceneledger.data.schema import TIME_RESOLUTION_SEC
 
 EVENT_TYPES = ("speech", "lys", "music", "sfx")
 N_EVENT_TYPES = 4
+DecodeMode = Literal["activity", "boundary", "hybrid"]
 
 
 class EventSlotDecoder(nn.Module):
@@ -38,6 +43,7 @@ class EventSlotDecoder(nn.Module):
         super().__init__()
         self.n_slots = n_slots
         self.hidden_dim = hidden_dim
+        self.max_duration_sec = max_duration_sec
         self.max_frames = int(round(max_duration_sec / TIME_RESOLUTION_SEC))  # 300
 
         # project frozen features to hidden_dim
@@ -69,10 +75,15 @@ class EventSlotDecoder(nn.Module):
             nn.ReLU(),
             nn.Linear(hidden_dim, self.max_frames),
         )
+        self.boundary_head = nn.Sequential(
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, 2),
+        )
 
     def forward(
         self, audio_features: torch.Tensor, feature_mask: torch.Tensor | None = None
-    ) -> dict[str, torch.Tensor]:
+    ) -> dict[str, torch.Tensor | int]:
         """Forward pass.
 
         Args:
@@ -81,7 +92,7 @@ class EventSlotDecoder(nn.Module):
 
         Returns:
             dict with eventness_logits [B, K], type_logits [B, K, 4],
-            activity_logits [B, K, T_100].
+            activity_logits [B, K, T_100], onset/offset [B, K].
         """
         batch_size = audio_features.shape[0]
         n_feature_frames = audio_features.shape[1]
@@ -128,6 +139,11 @@ class EventSlotDecoder(nn.Module):
         eventness_logits = self.eventness_head(decoded).squeeze(-1)  # [B, K]
         type_logits = self.type_head(decoded)  # [B, K, 4]
         activity_logits = self.activity_head(decoded)  # [B, K, max_frames]
+        boundary_fraction = self.boundary_head(decoded).sigmoid()
+        boundary_min = boundary_fraction.min(dim=-1).values
+        boundary_max = boundary_fraction.max(dim=-1).values
+        onset = boundary_min * self.max_duration_sec
+        offset = boundary_max * self.max_duration_sec
 
         # truncate activity to T_100
         activity_logits = activity_logits[:, :, :n_activity_frames]
@@ -136,6 +152,8 @@ class EventSlotDecoder(nn.Module):
             "eventness_logits": eventness_logits,
             "type_logits": type_logits,
             "activity_logits": activity_logits,
+            "onset": onset,
+            "offset": offset,
             "n_frames": n_activity_frames,
         }
 
@@ -146,16 +164,26 @@ class EventSlotDecoder(nn.Module):
         *,
         eventness_threshold: float = 0.5,
         activity_threshold: float = 0.5,
+        decode_mode: DecodeMode = "activity",
     ) -> list[list[dict]]:
         """Decode slot outputs into a list of predicted events (for evaluation).
 
         Thresholds are explicit experiment parameters and must be recorded in
         the run metadata. Returns one event list per batch item.
         """
+        if decode_mode not in {"activity", "boundary", "hybrid"}:
+            raise ValueError(f"unsupported decode mode: {decode_mode}")
         out = self.forward(audio_features, feature_mask)
         eventness = out["eventness_logits"].sigmoid()
         type_probs = out["type_logits"].softmax(-1)
         activity = out["activity_logits"].sigmoid()
+        onsets = out["onset"]
+        offsets = out["offset"]
+        if not all(
+            isinstance(value, torch.Tensor)
+            for value in (eventness, type_probs, activity, onsets, offsets)
+        ):
+            raise TypeError("slot decoder outputs must be tensors")
 
         batch_size, n_slots = eventness.shape
         results: list[list[dict]] = []
@@ -168,7 +196,18 @@ class EventSlotDecoder(nn.Module):
                 t_idx = type_probs[batch_index, slot_index].argmax().item()
                 etype = EVENT_TYPES[t_idx]
                 act = activity[batch_index, slot_index] >= activity_threshold
-                spans = activity_mask_to_spans(act)
+                activity_spans = activity_mask_to_spans(act)
+                boundary_span = boundary_to_span(
+                    onsets[batch_index, slot_index].item(),
+                    offsets[batch_index, slot_index].item(),
+                    self.max_duration_sec,
+                )
+                if decode_mode == "activity":
+                    spans = activity_spans
+                elif decode_mode == "boundary":
+                    spans = [boundary_span] if boundary_span else []
+                else:
+                    spans = hybridize_spans(activity_spans, boundary_span)
                 if not spans:
                     continue
                 events.append(
@@ -176,6 +215,7 @@ class EventSlotDecoder(nn.Module):
                         "type": etype,
                         "spans": spans,
                         "activity_mask": act.cpu().numpy(),
+                        "boundary_span": boundary_span,
                         "confidence": round(confidence, 6),
                     }
                 )
@@ -210,9 +250,43 @@ def activity_mask_to_spans(mask: torch.Tensor) -> list[dict[str, float]]:
     return spans
 
 
+def boundary_to_span(
+    onset: float, offset: float, max_duration_sec: float
+) -> dict[str, float] | None:
+    """Clip and quantize a continuous boundary envelope to the output grid."""
+    start = max(0.0, min(float(onset), max_duration_sec))
+    end = max(0.0, min(float(offset), max_duration_sec))
+    start = round(round(start / TIME_RESOLUTION_SEC) * TIME_RESOLUTION_SEC, 1)
+    end = round(round(end / TIME_RESOLUTION_SEC) * TIME_RESOLUTION_SEC, 1)
+    if end <= start:
+        return None
+    return {"start_sec": start, "end_sec": end}
+
+
+def hybridize_spans(
+    activity_spans: list[dict[str, float]],
+    boundary_span: dict[str, float] | None,
+) -> list[dict[str, float]]:
+    """Use the boundary head as an envelope while retaining activity gaps."""
+    if boundary_span is None:
+        return list(activity_spans)
+    if not activity_spans:
+        return [boundary_span]
+
+    clipped = []
+    for span in activity_spans:
+        start = max(span["start_sec"], boundary_span["start_sec"])
+        end = min(span["end_sec"], boundary_span["end_sec"])
+        if end > start:
+            clipped.append({"start_sec": start, "end_sec": end})
+    return clipped or [boundary_span]
+
+
 __all__ = [
     "EVENT_TYPES",
     "EventSlotDecoder",
     "N_EVENT_TYPES",
     "activity_mask_to_spans",
+    "boundary_to_span",
+    "hybridize_spans",
 ]

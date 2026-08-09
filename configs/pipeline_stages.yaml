@@ -22,7 +22,7 @@ status_snapshot:
   p3_b2_weighted_timestamps: atomic_registration_code_ready_gpu_pending
   p4_b3_historical_artifact: superseded_invalid_lyrics_and_evaluation
   p4_b3_valid_pipeline: code_ready_real_catalog_and_gpu_pending
-  p7_s1a_event_probe: code_ready_torch_server_execution_pending
+  p7_s1a_event_probe: dual_temporal_head_code_ready_torch_server_execution_pending
   tag2021_anchor: code_ready_server_execution_pending
   real_public_source_pool: not_server_verified
   web_unlabeled_teacher_pipeline: not_integrated
@@ -168,4 +168,3 @@ stages:
 paper_minimum:
   required: [B2_tac_paper_spec, B3_unified_ar, S1_track_event_slots, S2_local_evidence, S3_exact_carc]
   optional: [SAM_Audio_teacher, audio_editor, GRPO, AV_verifier]
-

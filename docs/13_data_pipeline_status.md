@@ -1,6 +1,6 @@
 # 数据管线复现状态与下一步实验
 
-状态更新日期：2026-08-09。这里区分“代码已实现”“CPU 已验证”“GPU/真实数据已验证”，避免把存在脚本误写成已经完成实验。当前唯一服务器总入口是
+状态更新日期：2026-08-10。这里区分“代码已实现”“CPU 已验证”“GPU/真实数据已验证”，避免把存在脚本误写成已经完成实验。当前唯一服务器总入口是
 `docs/14_valid_experiment_pipeline.md`；S1a 见 `docs/15_s1_event_slot_experiment.md`。
 
 ## 1. 当前结论
@@ -26,7 +26,7 @@ TAC-style 合成数据的最小闭环已经实现：scene graph → source rende
 | B1 MOSS static SFT | 官方格式导出和启动脚本已实现 | CPU 只验证数据导出 | GPU checkpoint、完整 val 指标待服务器运行 |
 | B2 TAC-style weighted CE | 301 个原子时间 token、PEFT embedding rows 和 reload 校验已实现 | CPU tokenizer/loss tests 已验证 | GPU B2 数字待服务器运行 |
 | B3-valid | file-backed catalog、真实歌词 fail-closed、统一 target 和执行脚本已实现 | CPU renderer/export 已验证 | 完整真实 source catalog 与 GPU 结果待服务器完成 |
-| S1a-valid event slots | leakage-safe split、MOSS cache、Hungarian loss、checkpoint/eval/消融已实现 | CPU 契约测试通过，Torch 模型测试待服务器 | 当前只做事件类型/activity，不含 track/text |
+| S1a-valid event slots | train/calibration/val 无泄漏划分、activity+boundary 双头、coverage-aware eval/消融已实现 | CPU 契约测试通过，Torch 模型测试待服务器 | 当前只做事件类型/时间，不含 track/text |
 | 真实公开单源数据 | LibriSpeech 下载/catalog 脚本已实现；受限 singing 数据手工登记 | 未在目标服务器完整下载/审计 | 许可证、路径、checksum 和配额待确认 |
 | B站/Instagram/TikTok 数据 | 原始无标注数据可用 | 未进入训练闭环 | 必须先做授权索引、去重、AV 切片和 teacher 置信度分层 |
 | WildMix-Cap 200 条人工集 | 规范已设计 | 未标注 | 这是论文真实性结论的关键阻塞项 |

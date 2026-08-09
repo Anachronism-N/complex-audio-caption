@@ -19,11 +19,18 @@ FIELDS = (
     "macro_event_f1",
     "macro_event_precision",
     "macro_event_recall",
+    "micro_event_f1",
+    "micro_event_precision",
+    "micro_event_recall",
     "macro_seg_f1_100ms",
     "mean_onset_mae",
     "mean_offset_mae",
     "total_hallucination",
     "total_omission",
+    "matched_boundary_count",
+    "boundary_reference_coverage",
+    "matched_onset_mae",
+    "matched_offset_mae",
 )
 
 

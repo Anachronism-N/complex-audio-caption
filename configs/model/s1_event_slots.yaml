@@ -24,9 +24,12 @@ train:
   learning_rate: 1.0e-4
   weight_decay: 0.01
   max_grad_norm: 1.0
+  warmup_steps: 500
   eval_every: 500
   log_every: 100
   deterministic: true
+  # Split only the B3-valid training fold; the original val fold stays untouched.
+  calibration_fraction: 0.1
   seed: 20260808
   output_dir: runs/s1_valid/model
 
@@ -34,6 +37,9 @@ loss:
   eventness_weight: 1.0
   type_weight: 1.0
   activity_weight: 2.0
+  boundary_weight: 1.0
+  activity_cost_weight: 2.0
+  boundary_cost_weight: 1.0
   positive_weight_scale: 1.0
   max_positive_weight: 20.0
 
@@ -42,3 +48,7 @@ evaluation:
   eventness_threshold: 0.5
   activity_threshold: 0.5
   tiou_threshold: 0.3
+  primary_decode_mode: hybrid
+  decode_modes: [activity, boundary, hybrid]
+  # Selected by calibration micro event-F1, never by conditional boundary MAE.
+  calibration_thresholds: [0.10, 0.20, 0.30, 0.40, 0.50, 0.60]

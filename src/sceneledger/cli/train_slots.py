@@ -9,6 +9,7 @@ source leakage so server results remain auditable.
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import os
@@ -22,6 +23,11 @@ from pathlib import Path
 import numpy as np
 import torch
 import yaml
+
+from sceneledger.eval.selection import (
+    coverage_aware_metrics,
+    select_eventness_threshold,
+)
 
 CACHE_VERSION = "s1-moss-features-v2"
 
@@ -263,27 +269,52 @@ def _split_entries(cfg: dict):
     train_path = data_cfg.get("train_manifest_path")
     val_path = data_cfg.get("val_manifest_path")
     if train_path and val_path:
-        train_entries = read_manifest(train_path)
+        base_train_entries = read_manifest(train_path)
         val_entries = read_manifest(val_path)
     else:
         entries = read_manifest(data_cfg["manifest_path"])
-        train_entries, val_entries = group_split(
+        base_train_entries, val_entries = group_split(
             entries,
             val_fraction=float(cfg["train"].get("val_fraction", 0.1)),
             group_key=data_cfg.get("group_key", "source_id"),
             seed=int(cfg["train"]["seed"]),
         )
 
-    for name, entries in (("train", train_entries), ("val", val_entries)):
+    calibration_fraction = float(cfg["train"].get("calibration_fraction", 0.0))
+    if not 0.0 < calibration_fraction < 1.0:
+        raise ValueError(
+            "train.calibration_fraction must be between 0 and 1; "
+            "the reported validation fold cannot select checkpoints or thresholds"
+        )
+    train_entries, calibration_entries = group_split(
+        base_train_entries,
+        val_fraction=calibration_fraction,
+        group_key=data_cfg.get("group_key", "source_id"),
+        seed=int(cfg["train"]["seed"]) + 1,
+    )
+
+    for name, entries in (
+        ("train", train_entries),
+        ("calibration", calibration_entries),
+        ("val", val_entries),
+    ):
         audit = audit_manifest_structure(entries)
         if not audit.ok():
             raise ValueError(f"{name} manifest failed audit: {audit.errors[:5]}")
-    if not train_entries or not val_entries:
-        raise ValueError("S1 requires non-empty train and validation folds")
-    leakage = source_leakage(train_entries, val_entries)
-    if leakage:
-        raise ValueError(f"source leakage between S1 folds: {sorted(leakage)[:10]}")
-    return train_entries, val_entries
+    if not train_entries or not calibration_entries or not val_entries:
+        raise ValueError("S1 requires non-empty train, calibration, and validation folds")
+    fold_pairs = (
+        ("train/calibration", train_entries, calibration_entries),
+        ("train/val", train_entries, val_entries),
+        ("calibration/val", calibration_entries, val_entries),
+    )
+    for label, left, right in fold_pairs:
+        leakage = source_leakage(left, right)
+        if leakage:
+            raise ValueError(
+                f"source leakage between {label} folds: {sorted(leakage)[:10]}"
+            )
+    return train_entries, calibration_entries, val_entries
 
 
 def _event_targets(entry) -> list[dict]:
@@ -327,6 +358,9 @@ def _loss_kwargs(cfg: dict) -> dict[str, float]:
         "eventness_weight": float(loss_cfg.get("eventness_weight", 1.0)),
         "type_weight": float(loss_cfg.get("type_weight", 1.0)),
         "activity_weight": float(loss_cfg.get("activity_weight", 2.0)),
+        "boundary_weight": float(loss_cfg.get("boundary_weight", 1.0)),
+        "activity_cost_weight": float(loss_cfg.get("activity_cost_weight", 2.0)),
+        "boundary_cost_weight": float(loss_cfg.get("boundary_cost_weight", 1.0)),
         "positive_weight_scale": float(loss_cfg.get("positive_weight_scale", 1.0)),
         "max_positive_weight": float(loss_cfg.get("max_positive_weight", 20.0)),
     }
@@ -353,6 +387,20 @@ def _validation_loss(model, dataset: list[dict], device: str, loss_kwargs: dict)
     return sum(losses) / len(losses)
 
 
+def _warmup_cosine_multiplier(
+    step: int, *, warmup_steps: int, total_steps: int
+) -> float:
+    """Linear warmup followed by cosine decay, expressed as an LR multiplier."""
+    if total_steps <= 0:
+        raise ValueError("total_steps must be positive")
+    warmup_steps = max(0, min(warmup_steps, total_steps))
+    if warmup_steps and step < warmup_steps:
+        return max(1e-8, (step + 1) / warmup_steps)
+    decay_steps = max(1, total_steps - warmup_steps)
+    progress = min(1.0, max(0.0, (step - warmup_steps) / decay_steps))
+    return 0.5 * (1.0 + np.cos(np.pi * progress))
+
+
 def _git_commit() -> str | None:
     try:
         return subprocess.check_output(
@@ -369,18 +417,18 @@ def _save_checkpoint(
     optimizer,
     scheduler,
     step: int,
-    best_val_loss: float,
+    best_calibration_loss: float,
     rng: random.Random,
     config_hash: str,
 ) -> None:
     torch.save(
         {
-            "checkpoint_version": 2,
+            "checkpoint_version": 3,
             "model": model.state_dict(),
             "optimizer": optimizer.state_dict(),
             "scheduler": scheduler.state_dict(),
             "step": step,
-            "best_val_loss": best_val_loss,
+            "best_calibration_loss": best_calibration_loss,
             "python_rng_state": rng.getstate(),
             "torch_rng_state": torch.get_rng_state(),
             "cuda_rng_state": torch.cuda.get_rng_state_all()
@@ -402,6 +450,12 @@ def _load_checkpoint(
     expected_config_hash: str | None = None,
 ) -> dict:
     payload = torch.load(path, map_location="cpu", weights_only=False)
+    checkpoint_version = payload.get("checkpoint_version")
+    if checkpoint_version != 3:
+        raise ValueError(
+            f"checkpoint version {checkpoint_version!r} is incompatible with the "
+            "dual-head S1 runner (expected 3); retrain with the current protocol"
+        )
     checkpoint_hash = payload.get("config_sha256")
     if expected_config_hash and checkpoint_hash != expected_config_hash:
         raise ValueError(
@@ -447,43 +501,41 @@ def _write_jsonl(path: Path, rows: list[dict]) -> None:
             handle.write(json.dumps(row, ensure_ascii=False) + "\n")
 
 
-def evaluate_slots(
-    cfg: dict,
-    *,
-    model,
-    val_data: list[dict],
-    out_dir: Path,
-    checkpoint_path: Path,
-) -> dict:
-    """Evaluate event-only predictions and persist machine-readable evidence."""
-    from sceneledger.eval.metrics import evaluate_corpus
+def _clip_event_spans(events: list[dict], duration: float) -> list[dict]:
+    clipped_events = []
+    for event in events:
+        spans = []
+        for span in event["spans"]:
+            start = max(0.0, float(span["start_sec"]))
+            end = min(duration, float(span["end_sec"]))
+            if end > start:
+                spans.append({"start_sec": start, "end_sec": end})
+        if spans:
+            event["spans"] = spans
+            clipped_events.append(event)
+    return clipped_events
 
-    device = cfg["model"]["device"]
-    eval_cfg = cfg.get("evaluation", {})
-    eventness_threshold = float(eval_cfg.get("eventness_threshold", 0.5))
-    activity_threshold = float(eval_cfg.get("activity_threshold", 0.5))
-    tiou_threshold = float(eval_cfg.get("tiou_threshold", 0.3))
-    model.eval()
+
+def _prediction_rows(
+    model,
+    dataset: list[dict],
+    *,
+    device: str,
+    decode_mode: str,
+    eventness_threshold: float,
+    activity_threshold: float,
+) -> list[dict]:
     predictions = []
-    references = []
     with torch.inference_mode():
-        for sample in val_data:
+        for sample in dataset:
             features = sample["features"].unsqueeze(0).to(device)
             events = model.predict(
                 features,
                 eventness_threshold=eventness_threshold,
                 activity_threshold=activity_threshold,
+                decode_mode=decode_mode,
             )[0]
-            for event in events:
-                event["spans"] = [
-                    {
-                        "start_sec": span["start_sec"],
-                        "end_sec": min(sample["duration"], span["end_sec"]),
-                    }
-                    for span in event["spans"]
-                    if span["start_sec"] < sample["duration"]
-                ]
-            events = [event for event in events if event["spans"]]
+            events = _clip_event_spans(events, sample["duration"])
             events.sort(key=lambda event: event["spans"][0]["start_sec"])
             prediction_events = [
                 {
@@ -506,35 +558,70 @@ def evaluate_slots(
                     "events": prediction_events,
                 }
             )
-            references.append(sample["target_ledger"])
+    return predictions
 
-    prediction_path = out_dir / "val_predictions.jsonl"
-    reference_path = out_dir / "val_references.jsonl"
-    _write_jsonl(prediction_path, predictions)
+
+def evaluate_slots(
+    cfg: dict,
+    *,
+    model,
+    val_data: list[dict],
+    out_dir: Path,
+    checkpoint_path: Path,
+    split_name: str = "val",
+    eventness_threshold_override: float | None = None,
+) -> dict:
+    """Evaluate event-only predictions and persist machine-readable evidence."""
+    from sceneledger.eval.metrics import evaluate_corpus
+
+    device = cfg["model"]["device"]
+    eval_cfg = cfg.get("evaluation", {})
+    eventness_threshold = (
+        float(eventness_threshold_override)
+        if eventness_threshold_override is not None
+        else float(eval_cfg.get("eventness_threshold", 0.5))
+    )
+    activity_threshold = float(eval_cfg.get("activity_threshold", 0.5))
+    tiou_threshold = float(eval_cfg.get("tiou_threshold", 0.3))
+    primary_decode_mode = str(eval_cfg.get("primary_decode_mode", "hybrid"))
+    decode_modes = list(eval_cfg.get("decode_modes", [primary_decode_mode]))
+    if primary_decode_mode not in decode_modes:
+        decode_modes.insert(0, primary_decode_mode)
+    decode_modes = list(dict.fromkeys(decode_modes))
+    invalid_modes = set(decode_modes) - {"activity", "boundary", "hybrid"}
+    if invalid_modes:
+        raise ValueError(f"unsupported evaluation decode modes: {sorted(invalid_modes)}")
+
+    model.eval()
+    references = [sample["target_ledger"] for sample in val_data]
+    reference_path = out_dir / f"{split_name}_references.jsonl"
     _write_jsonl(reference_path, references)
-    corpus = evaluate_corpus(
-        prediction_path,
-        reference_path,
-        tiou_threshold=tiou_threshold,
-        min_text_similarity=0.0,
-    )
-    metrics = corpus.to_dict()
-    (out_dir / "val_metrics.json").write_text(
-        json.dumps(metrics, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-    )
-    summary = {
-        "experiment": "S1a-event-only",
-        "status": "completed",
-        "scope": "event type and 100 ms multi-span activity; no caption text or tracks",
-        "checkpoint": str(checkpoint_path.resolve()),
-        "git_commit": _git_commit(),
-        "config_sha256": _json_hash(cfg),
-        "n_validation": len(val_data),
-        "eventness_threshold": eventness_threshold,
-        "activity_threshold": activity_threshold,
-        "tiou_threshold": tiou_threshold,
-        "metrics_path": str((out_dir / "val_metrics.json").resolve()),
-        "metrics": {
+    metrics_by_decode = {}
+    full_metrics_by_decode = {}
+    for decode_mode in decode_modes:
+        predictions = _prediction_rows(
+            model,
+            val_data,
+            device=device,
+            decode_mode=decode_mode,
+            eventness_threshold=eventness_threshold,
+            activity_threshold=activity_threshold,
+        )
+        prediction_path = out_dir / f"{split_name}_predictions_{decode_mode}.jsonl"
+        metric_path = out_dir / f"{split_name}_metrics_{decode_mode}.json"
+        _write_jsonl(prediction_path, predictions)
+        corpus = evaluate_corpus(
+            prediction_path,
+            reference_path,
+            tiou_threshold=tiou_threshold,
+            min_text_similarity=0.0,
+        )
+        metrics = corpus.to_dict()
+        metric_path.write_text(
+            json.dumps(metrics, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        compact = {
             "macro_event_f1": metrics["macro_event_f1"],
             "macro_event_precision": metrics["macro_event_precision"],
             "macro_event_recall": metrics["macro_event_recall"],
@@ -543,8 +630,143 @@ def evaluate_slots(
             "mean_offset_mae": metrics["mean_offset_mae"],
             "total_hallucination": metrics["total_hallucination"],
             "total_omission": metrics["total_omission"],
-        },
+            **coverage_aware_metrics(metrics),
+        }
+        metrics_by_decode[decode_mode] = compact
+        full_metrics_by_decode[decode_mode] = metrics
+
+    primary_metrics = full_metrics_by_decode[primary_decode_mode]
+    primary_predictions = (
+        out_dir / f"{split_name}_predictions_{primary_decode_mode}.jsonl"
+    )
+    (out_dir / f"{split_name}_predictions.jsonl").write_text(
+        primary_predictions.read_text(encoding="utf-8"), encoding="utf-8"
+    )
+    (out_dir / f"{split_name}_metrics.json").write_text(
+        json.dumps(primary_metrics, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    summary = {
+        "experiment": "S1a-dual-temporal-head",
+        "status": "completed",
+        "scope": (
+            "event type, 100 ms multi-span activity, and boundary envelope; "
+            "no caption text or tracks"
+        ),
+        "checkpoint": str(checkpoint_path.resolve()),
+        "git_commit": _git_commit(),
+        "config_sha256": _json_hash(cfg),
+        "n_validation": len(val_data),
+        "split_name": split_name,
+        "n_samples": len(val_data),
+        "eventness_threshold": eventness_threshold,
+        "activity_threshold": activity_threshold,
+        "tiou_threshold": tiou_threshold,
+        "primary_decode_mode": primary_decode_mode,
+        "decode_modes": decode_modes,
+        "metrics_path": str(
+            (out_dir / f"{split_name}_metrics.json").resolve()
+        ),
+        "metrics": metrics_by_decode[primary_decode_mode],
+        "metrics_by_decode": metrics_by_decode,
     }
+    summary_name = "run_summary.json" if split_name == "val" else f"{split_name}_summary.json"
+    (out_dir / summary_name).write_text(
+        json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    return summary
+
+
+def calibrate_eventness_threshold(
+    cfg: dict,
+    *,
+    model,
+    calibration_data: list[dict],
+    out_dir: Path,
+    checkpoint_path: Path,
+) -> float:
+    """Tune eventness only on a source-disjoint calibration fold."""
+    eval_cfg = cfg.get("evaluation", {})
+    thresholds = sorted(
+        {float(value) for value in eval_cfg.get("calibration_thresholds", [0.5])}
+    )
+    if not thresholds or any(not 0.0 < value < 1.0 for value in thresholds):
+        raise ValueError("evaluation.calibration_thresholds must lie within (0, 1)")
+    primary_mode = str(eval_cfg.get("primary_decode_mode", "hybrid"))
+    sweep_cfg = copy.deepcopy(cfg)
+    sweep_cfg.setdefault("evaluation", {})["decode_modes"] = [primary_mode]
+    sweep_root = out_dir / "calibration_sweep"
+    sweep_root.mkdir(parents=True, exist_ok=True)
+    rows = []
+    for threshold in thresholds:
+        threshold_dir = sweep_root / f"eventness_{threshold:.3f}"
+        threshold_dir.mkdir(parents=True, exist_ok=True)
+        summary = evaluate_slots(
+            sweep_cfg,
+            model=model,
+            val_data=calibration_data,
+            out_dir=threshold_dir,
+            checkpoint_path=checkpoint_path,
+            split_name="calibration",
+            eventness_threshold_override=threshold,
+        )
+        row = {
+            "threshold": threshold,
+            **summary["metrics_by_decode"][primary_mode],
+        }
+        rows.append(row)
+    selected = select_eventness_threshold(rows)
+    artifact = {
+        "selection_split": "calibration",
+        "selection_metric": "micro_event_f1",
+        "tie_breakers": [
+            "micro_event_recall",
+            "negative_total_hallucination",
+            "higher_threshold",
+        ],
+        "primary_decode_mode": primary_mode,
+        "selected_threshold": selected["threshold"],
+        "candidates": rows,
+        "warning": (
+            "boundary MAE is conditional on matched events and is never the "
+            "threshold-selection objective"
+        ),
+    }
+    (out_dir / "threshold_selection.json").write_text(
+        json.dumps(artifact, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    return float(selected["threshold"])
+
+
+def _evaluate_with_calibrated_threshold(
+    cfg: dict,
+    *,
+    model,
+    calibration_data: list[dict],
+    val_data: list[dict],
+    out_dir: Path,
+    checkpoint_path: Path,
+) -> dict:
+    selected_threshold = calibrate_eventness_threshold(
+        cfg,
+        model=model,
+        calibration_data=calibration_data,
+        out_dir=out_dir,
+        checkpoint_path=checkpoint_path,
+    )
+    summary = evaluate_slots(
+        cfg,
+        model=model,
+        val_data=val_data,
+        out_dir=out_dir,
+        checkpoint_path=checkpoint_path,
+        split_name="val",
+        eventness_threshold_override=selected_threshold,
+    )
+    summary["threshold_selected_on"] = "calibration"
+    summary["threshold_selection_path"] = str(
+        (out_dir / "threshold_selection.json").resolve()
+    )
     (out_dir / "run_summary.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
@@ -559,8 +781,9 @@ def train_slots(
     evaluate_checkpoint: str | Path | None = None,
 ) -> dict:
     """Train S1a with leakage-safe folds, validation, and resumable checkpoints."""
-    train_entries, val_entries = _split_entries(cfg)
+    train_entries, calibration_entries, val_entries = _split_entries(cfg)
     train_data = _load_fold(train_entries, cache_dir)
+    calibration_data = _load_fold(calibration_entries, cache_dir)
     val_data = _load_fold(val_entries, cache_dir)
     train_cfg = cfg["train"]
     seed = int(train_cfg["seed"])
@@ -577,6 +800,7 @@ def train_slots(
         "group_key": cfg["data"].get("group_key", "source_id"),
         "source_leakage_count": 0,
         "train": [sample["sample_id"] for sample in train_data],
+        "calibration": [sample["sample_id"] for sample in calibration_data],
         "val": [sample["sample_id"] for sample in val_data],
     }
     (out_dir / "split.json").write_text(
@@ -584,7 +808,7 @@ def train_slots(
         encoding="utf-8",
     )
     run_manifest = {
-        "experiment": "S1a-event-only",
+        "experiment": "S1a-dual-temporal-head",
         "git_commit": _git_commit(),
         "config": cfg,
         "config_sha256": config_hash,
@@ -592,6 +816,7 @@ def train_slots(
         "seed": seed,
         "deterministic_algorithms": deterministic,
         "n_train": len(train_data),
+        "n_calibration": len(calibration_data),
         "n_val": len(val_data),
         "python": platform.python_version(),
         "torch": torch.__version__,
@@ -609,9 +834,10 @@ def train_slots(
             model=model,
             expected_config_hash=config_hash,
         )
-        return evaluate_slots(
+        return _evaluate_with_calibrated_threshold(
             cfg,
             model=model,
+            calibration_data=calibration_data,
             val_data=val_data,
             out_dir=out_dir,
             checkpoint_path=checkpoint_path,
@@ -623,12 +849,18 @@ def train_slots(
         weight_decay=float(train_cfg.get("weight_decay", 0.01)),
     )
     total_steps = int(train_cfg["steps"])
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-        optimizer, T_max=total_steps
+    warmup_steps = int(train_cfg.get("warmup_steps", 0))
+    scheduler = torch.optim.lr_scheduler.LambdaLR(
+        optimizer,
+        lr_lambda=lambda current_step: _warmup_cosine_multiplier(
+            current_step,
+            warmup_steps=warmup_steps,
+            total_steps=total_steps,
+        ),
     )
     rng = random.Random(seed)
     start_step = 0
-    best_val_loss = float("inf")
+    best_calibration_loss = float("inf")
     if resume_from:
         resumed = _load_checkpoint(
             Path(resume_from).resolve(),
@@ -639,7 +871,7 @@ def train_slots(
             expected_config_hash=config_hash,
         )
         start_step = int(resumed["step"])
-        best_val_loss = float(resumed["best_val_loss"])
+        best_calibration_loss = float(resumed["best_calibration_loss"])
         print(f"[s1] resumed at step {start_step}", file=sys.stderr)
 
     loss_kwargs = _loss_kwargs(cfg)
@@ -675,22 +907,28 @@ def train_slots(
                     f"eventness={float(loss_values['eventness_loss']):.4f} "
                     f"type={float(loss_values['type_loss']):.4f} "
                     f"activity={float(loss_values['activity_loss']):.4f} "
+                    f"boundary={float(loss_values['boundary_loss']):.4f} "
                     f"elapsed={time.time() - started:.0f}s",
                     file=sys.stderr,
                     flush=True,
                 )
             if step % eval_every == 0 or step == total_steps:
-                val_loss = _validation_loss(model, val_data, device, loss_kwargs)
-                print(f"[s1] step={step} val_loss={val_loss:.6f}", file=sys.stderr)
-                if val_loss < best_val_loss:
-                    best_val_loss = val_loss
+                calibration_loss = _validation_loss(
+                    model, calibration_data, device, loss_kwargs
+                )
+                print(
+                    f"[s1] step={step} calibration_loss={calibration_loss:.6f}",
+                    file=sys.stderr,
+                )
+                if calibration_loss < best_calibration_loss:
+                    best_calibration_loss = calibration_loss
                     _save_checkpoint(
                         best_path,
                         model=model,
                         optimizer=optimizer,
                         scheduler=scheduler,
                         step=step,
-                        best_val_loss=best_val_loss,
+                        best_calibration_loss=best_calibration_loss,
                         rng=rng,
                         config_hash=config_hash,
                     )
@@ -700,7 +938,7 @@ def train_slots(
                     optimizer=optimizer,
                     scheduler=scheduler,
                     step=step,
-                    best_val_loss=best_val_loss,
+                    best_calibration_loss=best_calibration_loss,
                     rng=rng,
                     config_hash=config_hash,
                 )
@@ -708,9 +946,10 @@ def train_slots(
     if not best_path.is_file():
         raise RuntimeError("training completed without producing a best checkpoint")
     _load_checkpoint(best_path, model=model, expected_config_hash=config_hash)
-    return evaluate_slots(
+    return _evaluate_with_calibrated_threshold(
         cfg,
         model=model,
+        calibration_data=calibration_data,
         val_data=val_data,
         out_dir=out_dir,
         checkpoint_path=best_path,
@@ -744,6 +983,20 @@ def _apply_overrides(cfg: dict, args: argparse.Namespace) -> dict:
         cfg.setdefault("loss", {})["positive_weight_scale"] = args.positive_weight_scale
     if args.activity_weight is not None:
         cfg.setdefault("loss", {})["activity_weight"] = args.activity_weight
+    if args.boundary_weight is not None:
+        cfg.setdefault("loss", {})["boundary_weight"] = args.boundary_weight
+    if args.activity_cost_weight is not None:
+        cfg.setdefault("loss", {})[
+            "activity_cost_weight"
+        ] = args.activity_cost_weight
+    if args.boundary_cost_weight is not None:
+        cfg.setdefault("loss", {})[
+            "boundary_cost_weight"
+        ] = args.boundary_cost_weight
+    if args.primary_decode_mode:
+        cfg.setdefault("evaluation", {})[
+            "primary_decode_mode"
+        ] = args.primary_decode_mode
     return cfg
 
 
@@ -763,6 +1016,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--disable-temporal-embedding", action="store_true")
     parser.add_argument("--positive-weight-scale", type=float)
     parser.add_argument("--activity-weight", type=float)
+    parser.add_argument("--boundary-weight", type=float)
+    parser.add_argument("--activity-cost-weight", type=float)
+    parser.add_argument("--boundary-cost-weight", type=float)
+    parser.add_argument(
+        "--primary-decode-mode",
+        choices=("activity", "boundary", "hybrid"),
+    )
     parser.add_argument("--force-cache", action="store_true")
     parser.add_argument("--cache-only", action="store_true")
     parser.add_argument("--resume")

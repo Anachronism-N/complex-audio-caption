@@ -18,7 +18,17 @@ def test_s1_config_uses_explicit_leakage_safe_folds() -> None:
     assert data["val_manifest_path"].endswith("sft/val_manifest.jsonl")
     assert data["group_key"] == "source_id"
     assert config["train"]["deterministic"] is True
+    assert config["train"]["calibration_fraction"] == 0.1
     assert config["evaluation"]["eventness_threshold"] == 0.5
+    assert config["evaluation"]["primary_decode_mode"] == "hybrid"
+    assert config["evaluation"]["decode_modes"] == [
+        "activity",
+        "boundary",
+        "hybrid",
+    ]
+    assert len(config["evaluation"]["calibration_thresholds"]) > 1
+    assert config["loss"]["activity_cost_weight"] > 0
+    assert config["loss"]["boundary_cost_weight"] > 0
 
 
 def test_s1_runner_fails_closed_and_supports_resumption() -> None:
@@ -29,6 +39,7 @@ def test_s1_runner_fails_closed_and_supports_resumption() -> None:
     assert "--val-manifest" in script
     assert "--resume" in script
     assert "--evaluate-checkpoint" in script
+    assert "activity_only" not in script  # ablations belong to the matrix runner
 
 
 def test_downstream_server_runners_enforce_anchor_gate() -> None:
@@ -36,3 +47,9 @@ def test_downstream_server_runners_enforce_anchor_gate() -> None:
         script = (ROOT / "scripts" / name).read_text(encoding="utf-8")
         assert "require_anchor_pass.py" in script
         assert "TAG_SUMMARY" in script
+
+
+def test_single_head_ablations_disable_loss_and_matching_cost() -> None:
+    script = (ROOT / "scripts/run_s1_ablation.sh").read_text(encoding="utf-8")
+    assert "activity_only --boundary-weight 0 --boundary-cost-weight 0" in script
+    assert "boundary_only --activity-weight 0 --activity-cost-weight 0" in script

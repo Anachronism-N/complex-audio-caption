@@ -17,11 +17,18 @@ def _write_run(root: Path, *, leakage: int = 0) -> None:
         "macro_event_f1": 0.4,
         "macro_event_precision": 0.5,
         "macro_event_recall": 0.3,
+        "micro_event_f1": 0.38,
+        "micro_event_precision": 0.45,
+        "micro_event_recall": 0.33,
         "macro_seg_f1_100ms": 0.35,
         "mean_onset_mae": 0.2,
         "mean_offset_mae": 0.3,
         "total_hallucination": 4,
         "total_omission": 5,
+        "matched_boundary_count": 7,
+        "boundary_reference_coverage": 0.33,
+        "matched_onset_mae": 0.21,
+        "matched_offset_mae": 0.31,
     }
     summary = {
         "git_commit": "abc",

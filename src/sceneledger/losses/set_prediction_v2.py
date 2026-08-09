@@ -1,4 +1,11 @@
-"""Set prediction loss v2: boundary regression (L1) instead of activity Dice."""
+"""Compatibility boundary-only loss for historical S1a-v2 imports.
+
+The primary experiment uses :mod:`sceneledger.losses.set_prediction`, which
+jointly trains activity and boundary heads. This module keeps old imports
+working while applying the corrected positive weighting and match
+normalization. Historical standalone checkpoints are not architecture-compatible
+with the unified dual-head runner and must be retrained.
+"""
 
 from __future__ import annotations
 
@@ -6,107 +13,140 @@ import torch
 import torch.nn.functional as F
 from scipy.optimize import linear_sum_assignment
 
-N_EVENT_TYPES = 4
+EVENT_TYPE_TO_INDEX = {"speech": 0, "lys": 1, "music": 2, "sfx": 3}
 
 
-def _events_to_targets_v2(events: list[dict], max_slots: int) -> dict[str, torch.Tensor]:
-    n_events = min(len(events), max_slots)
+def _events_to_targets_v2(
+    events: list[dict], max_slots: int
+) -> dict[str, torch.Tensor | int]:
     type_targets = torch.zeros(max_slots, dtype=torch.long)
-    boundary_targets = torch.zeros(max_slots, 2)  # [onset, offset]
+    boundary_targets = torch.zeros(max_slots, 2)
     valid = torch.zeros(max_slots, dtype=torch.bool)
-    for i in range(n_events):
-        ev = events[i]
-        type_idx = {"speech": 0, "lys": 1, "music": 2, "sfx": 3}.get(ev["type"], 0)
-        type_targets[i] = type_idx
-        boundary_targets[i, 0] = ev["onset"]
-        boundary_targets[i, 1] = ev["offset"]
-        valid[i] = True
-    return {"type_targets": type_targets, "boundary_targets": boundary_targets, "valid_mask": valid, "n_events": n_events}
+    n_events = 0
+    for event in events:
+        if n_events >= max_slots or event.get("type") not in EVENT_TYPE_TO_INDEX:
+            continue
+        type_targets[n_events] = EVENT_TYPE_TO_INDEX[event["type"]]
+        boundary_targets[n_events] = torch.tensor(
+            [float(event["onset"]), float(event["offset"])]
+        )
+        valid[n_events] = True
+        n_events += 1
+    return {
+        "type_targets": type_targets,
+        "boundary_targets": boundary_targets,
+        "valid_mask": valid,
+        "n_events": n_events,
+    }
 
 
-def _hungarian_match_v2(
-    type_logits, onset, offset, type_targets, boundary_targets, valid_mask,
-):
-    K_pred = type_logits.shape[0]
-    K_target = valid_mask.sum().item()
-    if K_target == 0:
-        return [], list(range(K_pred)), []
-
-    type_probs = type_logits.softmax(-1)
-    cost = torch.zeros(K_pred, K_target)
-    for i in range(K_pred):
-        for j in range(K_target):
-            if not valid_mask[j]:
-                continue
-            type_cost = 1.0 - type_probs[i, type_targets[j]].item()
-            # boundary cost: normalized L1
-            t_onset = boundary_targets[j, 0].item()
-            t_offset = boundary_targets[j, 1].item()
-            p_onset = onset[i].item()
-            p_offset = offset[i].item()
-            dur = max(0.1, t_offset - t_onset)
-            bnd_cost = (abs(p_onset - t_onset) + abs(p_offset - t_offset)) / (2 * dur)
-            cost[i, j] = type_cost + bnd_cost
-
-    row_ind, col_ind = linear_sum_assignment(cost.detach().cpu().numpy())
+def _match(
+    type_logits: torch.Tensor,
+    onset: torch.Tensor,
+    offset: torch.Tensor,
+    type_targets: torch.Tensor,
+    boundary_targets: torch.Tensor,
+    valid_mask: torch.Tensor,
+) -> list[tuple[int, int]]:
     valid_indices = valid_mask.nonzero(as_tuple=True)[0]
-    matched = [(int(row_ind[k]), int(valid_indices[col_ind[k]])) for k in range(len(row_ind))]
-    matched_pred = {r for r, _ in matched}
-    matched_tgt = {t for _, t in matched}
-    unmatched_pred = [i for i in range(K_pred) if i not in matched_pred]
-    unmatched_tgt = [int(valid_indices[j]) for j in range(K_target) if int(valid_indices[j]) not in matched_tgt]
-    return matched, unmatched_pred, unmatched_tgt
+    if len(valid_indices) == 0:
+        return []
+    selected_types = type_targets[valid_indices]
+    type_cost = -torch.log(
+        type_logits.softmax(-1)[:, selected_types].clamp_min(1e-8)
+    )
+    predicted = torch.stack([onset, offset], dim=-1)[:, None, :]
+    expected = boundary_targets[valid_indices][None, :, :]
+    normalizer = max(0.1, float(expected.max().item()))
+    boundary_cost = (predicted - expected).abs().mean(dim=-1) / normalizer
+    rows, columns = linear_sum_assignment(
+        (type_cost + boundary_cost).detach().cpu().numpy()
+    )
+    return [
+        (int(row), int(valid_indices[column]))
+        for row, column in zip(rows, columns, strict=True)
+    ]
 
 
-def set_prediction_loss_v2(outputs, targets, boundary_weight=5.0):
+def set_prediction_loss_v2(
+    outputs: dict[str, torch.Tensor],
+    targets: list[dict[str, torch.Tensor | int]],
+    boundary_weight: float = 5.0,
+) -> dict[str, torch.Tensor]:
     eventness_logits = outputs["eventness_logits"]
     type_logits = outputs["type_logits"]
     onsets = outputs["onset"]
     offsets = outputs["offset"]
-    B, K = eventness_logits.shape
-    device = eventness_logits.device
+    _, n_slots = eventness_logits.shape
+    eventness_losses = []
+    type_losses = []
+    boundary_losses = []
 
-    total_ev = torch.tensor(0.0, device=device)
-    total_type = torch.tensor(0.0, device=device)
-    total_bnd = torch.tensor(0.0, device=device)
-
-    for b in range(B):
-        tgt = targets[b]
-        type_targets = tgt["type_targets"].to(device)
-        boundary_targets = tgt["boundary_targets"].to(device)
-        valid_mask = tgt["valid_mask"].to(device)
-
-        matched, _, _ = _hungarian_match_v2(
-            type_logits[b], onsets[b], offsets[b],
-            type_targets, boundary_targets, valid_mask,
+    for batch_index, target in enumerate(targets):
+        device = eventness_logits.device
+        type_target = target["type_targets"]
+        boundary_target = target["boundary_targets"]
+        valid_mask = target["valid_mask"]
+        if not all(
+            isinstance(value, torch.Tensor)
+            for value in (type_target, boundary_target, valid_mask)
+        ):
+            raise TypeError("legacy S1a-v2 targets must be tensors")
+        type_target = type_target.to(device)
+        boundary_target = boundary_target.to(device)
+        valid_mask = valid_mask.to(device)
+        matched = _match(
+            type_logits[batch_index],
+            onsets[batch_index],
+            offsets[batch_index],
+            type_target,
+            boundary_target,
+            valid_mask,
         )
 
-        # eventness with pos_weight
-        ev_target = torch.zeros(K, device=device)
-        for pi, _ in matched:
-            ev_target[pi] = 1.0
-        pos_weight = torch.tensor([max(1.0, len(matched) / max(1, K - len(matched)) * 3.0)], device=device)
-        total_ev += F.binary_cross_entropy_with_logits(
-            eventness_logits[b], ev_target, reduction="mean", pos_weight=pos_weight
+        eventness_target = torch.zeros(n_slots, device=device)
+        for prediction_index, _ in matched:
+            eventness_target[prediction_index] = 1.0
+        n_positive = len(matched)
+        positive_weight = (
+            max(1.0, (n_slots - n_positive) / n_positive)
+            if n_positive
+            else 1.0
         )
-
-        for pi, ti in matched:
-            total_type += F.cross_entropy(
-                type_logits[b, pi:pi+1],
-                torch.tensor([type_targets[ti]], device=device),
+        eventness_losses.append(
+            F.binary_cross_entropy_with_logits(
+                eventness_logits[batch_index],
+                eventness_target,
+                pos_weight=torch.tensor(positive_weight, device=device),
             )
-            # L1 boundary loss
-            pred_bnd = torch.stack([onsets[b, pi], offsets[b, pi]])
-            tgt_bnd = boundary_targets[ti]
-            total_bnd += F.l1_loss(pred_bnd, tgt_bnd)
+        )
+        for prediction_index, target_index in matched:
+            type_losses.append(
+                F.cross_entropy(
+                    type_logits[batch_index, prediction_index].unsqueeze(0),
+                    type_target[target_index].unsqueeze(0),
+                )
+            )
+            predicted_boundary = torch.stack(
+                [
+                    onsets[batch_index, prediction_index],
+                    offsets[batch_index, prediction_index],
+                ]
+            )
+            boundary_losses.append(
+                F.l1_loss(predicted_boundary, boundary_target[target_index])
+            )
 
-    total_loss = total_ev + total_type + boundary_weight * total_bnd
+    zero = eventness_logits.sum() * 0.0
+    eventness_loss = torch.stack(eventness_losses).mean()
+    type_loss = torch.stack(type_losses).mean() if type_losses else zero
+    boundary_loss = torch.stack(boundary_losses).mean() if boundary_losses else zero
     return {
-        "loss": total_loss / max(1, B),
-        "eventness_loss": total_ev / max(1, B),
-        "type_loss": total_type / max(1, B),
-        "boundary_loss": total_bnd / max(1, B),
+        "loss": eventness_loss + type_loss + boundary_weight * boundary_loss,
+        "eventness_loss": eventness_loss,
+        "type_loss": type_loss,
+        "boundary_loss": boundary_loss,
     }
 
 
-__all__ = ["set_prediction_loss_v2", "_events_to_targets_v2"]
+__all__ = ["_events_to_targets_v2", "set_prediction_loss_v2"]
