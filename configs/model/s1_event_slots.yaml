@@ -1,0 +1,26 @@
+# S1a: event-only slot decoder (no text).
+# Core SceneLedger contribution: permutation-invariant set prediction.
+# Trains on frozen MOSS audio encoder features -> lightweight slot decoder.
+# Tests: does set prediction beat autoregressive (B3) on complex scenes?
+
+model:
+  path: /tmp/moss_weights
+  device: cuda:0
+  dtype: bfloat16
+  hidden_dim: 768
+  n_slots: 8
+  n_heads: 8
+  n_layers: 4
+
+data:
+  manifest_path: data/derived/b3_unified/manifest.jsonl
+  audio_base_dir: /tmp/b3_unified
+  feature_cache: /tmp/s1_features
+  max_audio_seconds: 30.0
+
+train:
+  steps: 5000
+  learning_rate: 1.0e-4
+  val_fraction: 0.1
+  seed: 20260808
+  output_dir: outputs/s1_event_slots
