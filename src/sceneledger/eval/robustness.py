@@ -17,7 +17,6 @@ import json
 from collections import defaultdict
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Iterable
 
 from sceneledger.eval.metrics import SampleMetrics, _macro
 
@@ -57,7 +56,7 @@ def _bucket(value: float | None, edges: list[float]) -> str:
     """Assign ``value`` to a bucket defined by ``edges`` (lower-inclusive)."""
     if value is None:
         return "unknown"
-    for i, e in enumerate(edges):
+    for e in edges:
         if value < e:
             return f"<{e}"
     return f">={edges[-1]}"

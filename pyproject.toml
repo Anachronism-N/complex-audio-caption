@@ -23,16 +23,25 @@ dev = [
   "pytest-cov>=4.0",
   "ruff>=0.4",
 ]
+audio = [
+  "soundfile>=0.12",
+]
 moss = [
-  # MOSS-Audio adapter deps are intentionally optional; pin at P1.
+  "accelerate>=1.0",
+  "librosa>=0.10",
+  "peft>=0.13",
+  "soundfile>=0.12",
   "torch>=2.1",
   "torchaudio>=2.1",
-  "soundfile>=0.12",
+  "transformers>=4.57,<4.58",
 ]
 
 [project.scripts]
 sceneledger-evaluate = "sceneledger.cli.evaluate:main"
 sceneledger-tag-repro = "sceneledger.repro.tag2021:main"
+sceneledger-infer = "sceneledger.cli.infer:main"
+sceneledger-prepare-moss-sft = "sceneledger.cli.prepare_moss_sft:main"
+sceneledger-render = "sceneledger.cli.render:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

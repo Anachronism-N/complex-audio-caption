@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import pytest
+from fixtures.factory import ev, ledger, t, tr
 from pydantic import ValidationError
 
-from sceneledger.data.schema import Event, Ledger, Span, Track
-from fixtures.factory import ev, ledger, t, tr
+from sceneledger.data.schema import Event, Span, Track
 
 
 def test_span_quantizes_to_01_grid():

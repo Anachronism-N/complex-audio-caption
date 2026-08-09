@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from fixtures.factory import ev, ledger, t, tr
+
 from sceneledger.data.schema import Ledger
 from sceneledger.models.target_formatter import (
     T_TOKEN_COUNT,
@@ -13,7 +15,6 @@ from sceneledger.models.target_formatter import (
     time_to_token,
     token_to_time,
 )
-from fixtures.factory import ev, ledger, t, tr
 
 
 def _sample_ledger() -> Ledger:
@@ -105,6 +106,13 @@ def test_canonical_prompt_includes_lyrics_toggle():
     assert "<lys>" not in no_ly
     assert "<lys>" in with_ly
     assert "style=brief" in no_ly
+
+
+def test_canonical_prompt_can_specify_atomic_grammar():
+    prompt = canonical_prompt(output_mode="atomic")
+    assert "Atomic grammar" in prompt
+    assert "<|t_SSS|>" in prompt
+    assert "no prose or Markdown" in prompt
 
 
 def test_token_count_matches_config():

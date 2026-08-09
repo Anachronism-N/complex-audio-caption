@@ -1,5 +1,9 @@
 # Complex Audio Caption / SceneLedger
 
+> 最新的数据管线验收状态、服务器重渲染命令和 B1 go/no-go gate 见
+> [数据管线复现状态与下一步实验](docs/13_data_pipeline_status.md)。仓库中旧的
+> 500 条 TAC-mini manifest 已被判定为过期，正式训练前必须重新渲染。
+
 面向真实复杂声景的统一、细粒度、带时间戳音频描述研究方案（调研冻结日期：2026-08-08）。
 
 ## 一句话结论

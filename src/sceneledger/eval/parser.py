@@ -147,7 +147,6 @@ def parse_model_output(
 
     # 2. tolerant regex scan
     recovered: list[RecoveredEvent] = []
-    rejected: list[str] = []
 
     for m in _TAG_RE.finditer(text):
         tag = m.group("tag").lower()

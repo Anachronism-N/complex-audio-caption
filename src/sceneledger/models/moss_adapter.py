@@ -31,7 +31,6 @@ import numpy as np
 from sceneledger.data.schema import Event, Ledger, Span
 from sceneledger.models.target_formatter import (
     format_atomic_caption,
-    canonical_prompt,
 )
 
 
@@ -107,7 +106,7 @@ class MossAdapter:
         self._torch = torch
 
     @staticmethod
-    def _load_audio_native(path: str, sample_rate: int) -> "np.ndarray":
+    def _load_audio_native(path: str, sample_rate: int) -> np.ndarray:
         """Load audio as 1D float32 numpy array at ``sample_rate`` (mono).
 
         Uses soundfile + scipy resample to avoid torchaudio's torchcodec

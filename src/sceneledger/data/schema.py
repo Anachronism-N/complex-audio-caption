@@ -110,7 +110,7 @@ class Track(BaseModel):
     @model_validator(mode="after")
     def _spans_disjoint(self) -> Track:
         spans = sorted(self.spans, key=lambda s: s.start_sec)
-        for prev, cur in zip(spans, spans[1:]):
+        for prev, cur in zip(spans, spans[1:], strict=False):
             if cur.start_sec < prev.end_sec - TIME_GRID_TOLERANCE:
                 raise ValueError(
                     f"track {self.id} has overlapping spans: "
@@ -153,7 +153,7 @@ class Event(BaseModel):
     @model_validator(mode="after")
     def _spans_disjoint(self) -> Event:
         spans = sorted(self.spans, key=lambda s: s.start_sec)
-        for prev, cur in zip(spans, spans[1:]):
+        for prev, cur in zip(spans, spans[1:], strict=False):
             if cur.start_sec < prev.end_sec - TIME_GRID_TOLERANCE:
                 raise ValueError(
                     f"event {self.id} has overlapping spans: "
