@@ -55,6 +55,8 @@ class MossAdapterConfig:
     top_p: float = 1.0
     top_k: int = 50
     enable_time_marker: bool = True
+    lora_path: str | None = None  # path to trained LoRA adapter (B1/B2)
+    greedy: bool = False  # greedy decoding for eval (faster, deterministic)
 
 
 class MossAdapter:
@@ -91,6 +93,11 @@ class MossAdapter:
             dtype=self.config.dtype,
             device_map=self.config.device,
         )
+        # load LoRA adapter if specified (B1/B2 trained checkpoint)
+        if self.config.lora_path is not None:
+            from peft import PeftModel
+            self._model = PeftModel.from_pretrained(self._model, self.config.lora_path)
+            print(f"[moss_adapter] loaded LoRA from {self.config.lora_path}", flush=True)
         self._model.eval()
         self._processor = MossAudioProcessor.from_pretrained(
             self.config.model_path,
@@ -134,16 +141,20 @@ class MossAdapter:
             inputs["audio_data"] = inputs["audio_data"].to(self._model.dtype)
         inputs["audio_input_mask"] = inputs["input_ids"] == self._processor.audio_token_id
         with torch.no_grad():
-            gen = self._model.generate(
+            gen_kwargs = dict(
                 **inputs,
                 max_new_tokens=self.config.max_new_tokens,
-                do_sample=True,
                 num_beams=1,
-                temperature=self.config.temperature,
-                top_p=self.config.top_p,
-                top_k=self.config.top_k,
                 use_cache=True,
             )
+            if self.config.greedy:
+                gen_kwargs["do_sample"] = False
+            else:
+                gen_kwargs["do_sample"] = True
+                gen_kwargs["temperature"] = self.config.temperature
+                gen_kwargs["top_p"] = self.config.top_p
+                gen_kwargs["top_k"] = self.config.top_k
+            gen = self._model.generate(**gen_kwargs)
         input_len = inputs["input_ids"].shape[1]
         return self._processor.decode(gen[0, input_len:], skip_special_tokens=True)
 

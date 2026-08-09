@@ -11,6 +11,9 @@ dist/
 # Third-party clones (MOSS-Audio is cloned separately; see README)
 third_party/
 
+# Training outputs (LoRA checkpoints, large, regenerable)
+outputs/
+
 # Rendered datasets: audio is regenerable from the manifest via
 # `sceneledger-render` (deterministic). Keep manifests / data cards / listen
 # lists (small text). Audio lives on local disk.

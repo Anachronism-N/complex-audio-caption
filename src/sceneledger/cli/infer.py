@@ -48,6 +48,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--dtype", default="bfloat16")
     parser.add_argument("--max-new-tokens", type=int, default=1024)
+    parser.add_argument("--lora-path", default=None, help="path to trained LoRA adapter (B1/B2)")
+    parser.add_argument("--greedy", action="store_true", help="greedy decoding (faster, deterministic)")
     parser.add_argument("--output", required=True, help="predictions JSONL path")
     parser.add_argument("--report", default=None, help="parse report JSON path")
     parser.add_argument("--limit", type=int, default=None)
@@ -66,6 +68,9 @@ def main(argv: list[str] | None = None) -> int:
         cfg.device = args.device
         cfg.dtype = args.dtype
         cfg.max_new_tokens = args.max_new_tokens
+        if args.lora_path:
+            cfg.lora_path = args.lora_path
+        cfg.greedy = args.greedy
         adapter = MossAdapter(cfg)
     else:
         adapter = MockMossAdapter(MockMossAdapterConfig())
