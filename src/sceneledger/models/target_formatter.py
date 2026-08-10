@@ -21,10 +21,11 @@ output, so the parser/evaluator can round-trip either mode.
 
 from __future__ import annotations
 
+import html
 import re
 from dataclasses import dataclass
 
-from sceneledger.data.schema import Event, Ledger, TIME_RESOLUTION_SEC
+from sceneledger.data.schema import TIME_RESOLUTION_SEC, Event, Ledger, Span, Track
 
 # Atomic timestamp token vocabulary (configs/experiment_matrix.yaml).
 T_TOKEN_FIRST = "<|t_000|>"
@@ -112,7 +113,13 @@ def format_xml_caption(ledger: Ledger, style: str = "brief", cfg: StyleConfig | 
 # --------------------------------------------------------------------------- #
 # atomic-token (B2) target
 # --------------------------------------------------------------------------- #
-def format_atomic_caption(ledger: Ledger, style: str = "brief", cfg: StyleConfig | None = None) -> str:
+def format_atomic_caption(
+    ledger: Ledger,
+    style: str = "brief",
+    cfg: StyleConfig | None = None,
+    *,
+    include_tracks: bool = False,
+) -> str:
     """B2 target: atomic timestamp tokens interleaved with text.
 
     Each event: ``<type><|t_s1|>text<|t_e1|><|t_s2|>text2<|t_e2|></type>``.
@@ -125,9 +132,17 @@ def format_atomic_caption(ledger: Ledger, style: str = "brief", cfg: StyleConfig
     if not events:
         return "<empty/>"
     out: list[str] = []
+    tracks = {track.id: track for track in ledger.tracks}
     for e in events:
         text = _style_text(e.text, style, cfg)
-        parts: list[str] = [f"<{e.type}>"]
+        attrs: list[str] = []
+        if include_tracks and e.track_id is not None:
+            attrs.append(f'track="{html.escape(e.track_id, quote=True)}"')
+            identity = tracks.get(e.track_id).identity if e.track_id in tracks else None
+            if identity:
+                attrs.append(f'identity="{html.escape(identity, quote=True)}"')
+        opening = f"<{e.type}{' ' + ' '.join(attrs) if attrs else ''}>"
+        parts: list[str] = [opening]
         for i, sp in enumerate(e.spans):
             parts.append(time_to_token(sp.start_sec))
             if i == 0:
@@ -141,8 +156,72 @@ def format_atomic_caption(ledger: Ledger, style: str = "brief", cfg: StyleConfig
 # --------------------------------------------------------------------------- #
 # atomic-token parser (so the evaluator can consume B2 output)
 # --------------------------------------------------------------------------- #
-_TAG_OPEN_RE = re.compile(r"<(speech|lys|music|sfx)>")
-_TAG_CLOSE_RE = re.compile(r"</(speech|lys|music|sfx)>")
+_ATOMIC_EVENT_RE = re.compile(
+    r"<(?P<type>speech|lys|music|sfx)(?P<attrs>\s+[^>]*)?>"
+    r"(?P<body>.*?)</(?P=type)>",
+    re.DOTALL | re.IGNORECASE,
+)
+_ATTR_RE = re.compile(r'(?P<key>[\w-]+)\s*=\s*"(?P<value>[^"]*)"')
+
+
+@dataclass(frozen=True)
+class ParsedAtomicEvent:
+    type: str
+    spans: list[tuple[float, float]]
+    text: str
+    track_id: str | None = None
+    identity: str | None = None
+
+
+def parse_atomic_events(text: str) -> list[ParsedAtomicEvent]:
+    """Parse atomic events while retaining optional source attributes."""
+    text = text.strip()
+    if text == "<empty/>":
+        return []
+    results: list[ParsedAtomicEvent] = []
+    for match in _ATOMIC_EVENT_RE.finditer(text):
+        etype = match.group("type").lower()
+        body = match.group("body")
+        attrs = {
+            item.group("key").lower(): html.unescape(item.group("value"))
+            for item in _ATTR_RE.finditer(match.group("attrs") or "")
+        }
+        tokens = list(_T_TOKEN_RE.finditer(body))
+        if len(tokens) < 2:
+            continue
+        body_text = _T_TOKEN_RE.sub("", body).strip()
+        spans: list[tuple[float, float]] = []
+        for index in range(0, len(tokens) - 1, 2):
+            start = round(int(tokens[index].group(1)) * TIME_RESOLUTION_SEC, 6)
+            end = round(int(tokens[index + 1].group(1)) * TIME_RESOLUTION_SEC, 6)
+            if end > start:
+                spans.append((start, end))
+        if spans:
+            results.append(
+                ParsedAtomicEvent(
+                    type=etype,
+                    spans=spans,
+                    text=body_text,
+                    track_id=attrs.get("track") or attrs.get("track_id"),
+                    identity=attrs.get("identity") or attrs.get("speaker"),
+                )
+            )
+    return results
+
+
+def is_strict_atomic_caption(text: str) -> bool:
+    """Return true only when the whole output obeys the atomic grammar."""
+    stripped = text.strip()
+    if stripped == "<empty/>":
+        return True
+    matches = list(_ATOMIC_EVENT_RE.finditer(stripped))
+    if not matches or "".join(match.group(0) for match in matches) != stripped:
+        return False
+    for match in matches:
+        tokens = list(_T_TOKEN_RE.finditer(match.group("body")))
+        if len(tokens) < 2 or len(tokens) % 2:
+            return False
+    return len(parse_atomic_events(stripped)) == len(matches)
 
 
 def parse_atomic_caption(text: str) -> list[tuple[str, list[tuple[float, float]], str]]:
@@ -150,79 +229,99 @@ def parse_atomic_caption(text: str) -> list[tuple[str, list[tuple[float, float]]
 
     Tolerant: ignores surrounding prose. Returns [] for ``<empty/>`` or no tags.
     """
-    text = text.strip()
-    if text == "<empty/>":
+    return [(event.type, event.spans, event.text) for event in parse_atomic_events(text)]
+
+
+def _merge_spans(spans: list[Span]) -> list[Span]:
+    if not spans:
         return []
-    results: list[tuple[str, list[tuple[float, float]], str]] = []
-    pos = 0
-    while pos < len(text):
-        m_open = _TAG_OPEN_RE.search(text, pos)
-        if not m_open:
-            break
-        etype = m_open.group(1)
-        start = m_open.end()
-        m_close = _TAG_CLOSE_RE.search(text, start)
-        if not m_close:
-            break
-        body = text[start:m_close.start()]
-        # extract token positions and text
-        tokens = list(_T_TOKEN_RE.finditer(body))
-        if len(tokens) < 2:
-            pos = m_close.end()
-            continue
-        # text = body with tokens stripped
-        body_text = _T_TOKEN_RE.sub("", body).strip()
-        # pair tokens into (start, end) spans
-        spans: list[tuple[float, float]] = []
-        i = 0
-        while i + 1 < len(tokens):
-            s = round(int(tokens[i].group(1)) * TIME_RESOLUTION_SEC, 6)
-            e = round(int(tokens[i + 1].group(1)) * TIME_RESOLUTION_SEC, 6)
-            if e > s:
-                spans.append((s, e))
-            i += 2
-        if spans:
-            results.append((etype, spans, body_text))
-        pos = m_close.end()
-    return results
+    ordered = sorted(spans, key=lambda span: (span.start_sec, span.end_sec))
+    merged = [ordered[0]]
+    for current in ordered[1:]:
+        previous = merged[-1]
+        if current.start_sec <= previous.end_sec + 1e-6:
+            merged[-1] = Span(
+                start_sec=previous.start_sec,
+                end_sec=max(previous.end_sec, current.end_sec),
+            )
+        else:
+            merged.append(current)
+    return merged
 
 
 def atomic_to_ledger(
-    text: str, sample_id: str, duration_sec: float
+    text: str,
+    sample_id: str,
+    duration_sec: float,
+    *,
+    clip_to_duration: bool = False,
 ) -> Ledger:
-    """Parse an atomic-token caption back into a :class:`Ledger`."""
-    from sceneledger.data.schema import Span
+    """Parse an atomic-token caption back into a source-aware Ledger.
 
-    parsed = parse_atomic_caption(text)
+    Legacy targets without ``track`` attributes remain supported and are
+    grouped by event type. Source-aware targets preserve multiple concurrent
+    speech or vocal tracks.
+    """
+    parsed = parse_atomic_events(text)
     events: list[Event] = []
-    tracks: list = []
+    track_kind: dict[str, str] = {}
+    track_identity: dict[str, str | None] = {}
+    track_spans: dict[str, list[Span]] = {}
     track_id_by_type: dict[str, str] = {}
-    for i, (etype, spans, ev_text) in enumerate(parsed):
-        if etype not in track_id_by_type:
-            tid = f"T{len(track_id_by_type) + 1}"
-            track_id_by_type[etype] = tid
-            kind = etype if etype != "lys" else "vocal"
-            tracks.append(
-                __import__(
-                    "sceneledger.data.schema", fromlist=["Track"]
-                ).Track(
-                    id=tid,
-                    kind=kind,  # type: ignore[arg-type]
-                    spans=[Span(start_sec=s, end_sec=e) for s, e in spans],
-                    confidence=0.9,
-                )
-            )
-        tid = track_id_by_type[etype]
+    for parsed_event in parsed:
+        etype = parsed_event.type
+        expected_kind = etype if etype != "lys" else "vocal"
+        explicit_tid = parsed_event.track_id
+        if explicit_tid is not None and not re.fullmatch(r"T[0-9]+", explicit_tid):
+            explicit_tid = None
+        if explicit_tid is not None and explicit_tid in track_kind:
+            if track_kind[explicit_tid] != expected_kind:
+                explicit_tid = None
+        if explicit_tid is None:
+            if etype not in track_id_by_type:
+                used = set(track_kind) | set(track_id_by_type.values())
+                next_index = 1
+                while f"T{next_index}" in used:
+                    next_index += 1
+                track_id_by_type[etype] = f"T{next_index}"
+            tid = track_id_by_type[etype]
+        else:
+            tid = explicit_tid
+
+        span_objects: list[Span] = []
+        for start, end in parsed_event.spans:
+            if clip_to_duration:
+                start = min(max(0.0, start), duration_sec)
+                end = min(max(0.0, end), duration_sec)
+            if end > start:
+                span_objects.append(Span(start_sec=start, end_sec=end))
+        if not span_objects:
+            continue
+        track_kind.setdefault(tid, expected_kind)
+        if parsed_event.identity:
+            track_identity.setdefault(tid, parsed_event.identity)
+        track_spans.setdefault(tid, []).extend(span_objects)
         events.append(
             Event(
-                id=f"E{i + 1:03d}",
+                id=f"E{len(events) + 1:03d}",
                 type=etype,  # type: ignore[arg-type]
                 track_id=tid,
-                spans=[Span(start_sec=s, end_sec=e) for s, e in spans],
-                text=ev_text or "undescribed event",
+                spans=span_objects,
+                text=parsed_event.text or "undescribed event",
+                verbatim=True if etype == "lys" else None,
                 confidence=0.9,
             )
         )
+    tracks = [
+        Track(
+            id=tid,
+            kind=track_kind[tid],  # type: ignore[arg-type]
+            identity=track_identity.get(tid),
+            spans=_merge_spans(track_spans[tid]),
+            confidence=0.9,
+        )
+        for tid in sorted(track_kind, key=lambda value: int(value[1:]))
+    ]
     return Ledger(
         sample_id=sample_id,
         duration_sec=duration_sec,
@@ -240,7 +339,11 @@ def canonical_prompt(
     activity: float = 0.05,
     resolution_s: float = 0.1,
     include_lyrics: bool = False,
+    include_tracks: bool = False,
+    output_mode: str | None = None,
 ) -> str:
+    if output_mode not in {None, "atomic", "xml"}:
+        raise ValueError("output_mode must be one of: atomic, xml, or None")
     lyrics_line = (
         "Return sung lyrics as <lys> events; if lyrics are not clearly "
         'intelligible, describe them inside <music> as "unclear vocals" '
@@ -248,18 +351,49 @@ def canonical_prompt(
         if include_lyrics
         else ""
     )
+    grammar = ""
+    if output_mode == "atomic":
+        source_attrs = (
+            ' Add track="Tn" and optional identity="Sn" attributes to every '
+            "event tag; reuse a track ID for the same audible source."
+            if include_tracks
+            else ""
+        )
+        grammar = (
+            "Return only concatenated tagged events, with no prose or Markdown.\n"
+            "Atomic grammar: <TYPE><|t_SSS|>event text<|t_EEE|></TYPE>, where "
+            "TYPE is speech, music, sfx"
+            + (", or lys" if include_lyrics else "")
+            + " and SSS/EEE are decisecond indices from 000 to 300.\n"
+            + source_attrs
+            + "\nExample: "
+            + (
+                '<speech track="T1" identity="S1"><|t_007|>a person says hello'
+                "<|t_029|></speech>\n"
+                if include_tracks
+                else "<speech><|t_007|>a person says hello<|t_029|></speech>\n"
+            )
+        )
+    elif output_mode == "xml":
+        grammar = (
+            "Return only one tagged event per line, with no prose or Markdown.\n"
+            'XML grammar: <TYPE t="START-END">event text</TYPE>; use comma-separated '
+            "START-END pairs for repeated spans.\n"
+        )
     return (
         "Describe every audible event in the audio.\n"
         "Return speech, sung lyrics, music, and sound effects as separate typed events.\n"
         "Events may overlap and may contain multiple time spans.\n"
         f"[style={style}, merge={merge_s}s, activity={activity}, resolution={resolution_s}s]\n"
         f"{lyrics_line}"
+        f"{grammar}"
         "Do not infer events that are not acoustically supported."
     ).strip()
 
 
 __all__ = [
     "MAX_TIMESTAMP_SEC",
+    "ParsedAtomicEvent",
     "StyleConfig",
     "T_TOKEN_COUNT",
     "T_TOKEN_FIRST",
@@ -268,7 +402,9 @@ __all__ = [
     "canonical_prompt",
     "format_atomic_caption",
     "format_xml_caption",
+    "is_strict_atomic_caption",
     "parse_atomic_caption",
+    "parse_atomic_events",
     "time_to_token",
     "token_to_time",
 ]

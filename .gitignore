@@ -11,6 +11,10 @@ dist/
 # Third-party clones (MOSS-Audio is cloned separately; see README)
 third_party/
 
+# External reproduction data and run artifacts
+external/
+runs/
+
 # Training outputs (LoRA checkpoints, large, regenerable)
 outputs/
 

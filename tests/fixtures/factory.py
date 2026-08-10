@@ -9,7 +9,6 @@ from __future__ import annotations
 from sceneledger.data.schema import (
     Conditions,
     Event,
-    Evidence,
     Ledger,
     Provenance,
     Span,

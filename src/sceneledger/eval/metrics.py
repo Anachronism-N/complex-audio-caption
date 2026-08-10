@@ -53,6 +53,8 @@ class SampleMetrics:
     omission: int  # ref events with no match
     source_count_mae: float
     pointer_accuracy: float
+    mean_matched_text_similarity: float = 0.0
+    zero_text_match_rate: float = 0.0
     per_type: dict[str, dict[str, float]] = field(default_factory=dict)
     strict_format_success: bool = True
     warnings: list[str] = field(default_factory=list)
@@ -64,6 +66,8 @@ class SampleMetrics:
 @dataclass
 class CorpusMetrics:
     n_samples: int
+    tiou_threshold: float
+    min_text_similarity: float
     strict_format_success_rate: float
     macro_event_precision: float
     macro_event_recall: float
@@ -81,6 +85,8 @@ class CorpusMetrics:
     total_omission: int
     mean_source_count_mae: float
     mean_pointer_accuracy: float
+    mean_matched_text_similarity: float
+    macro_zero_text_match_rate: float
     per_type: dict[str, dict[str, float]] = field(default_factory=dict)
     samples: list[dict] = field(default_factory=list)
 
@@ -112,9 +118,20 @@ def _per_type_breakdown(matches: list[EventMatch]) -> dict[str, dict[str, float]
 
 
 def evaluate_sample(
-    ref: Ledger, hyp: Ledger, strict_format_success: bool = True
+    ref: Ledger,
+    hyp: Ledger,
+    strict_format_success: bool = True,
+    *,
+    tiou_threshold: float = 0.3,
+    min_text_similarity: float = 0.0,
+    warnings: list[str] | None = None,
 ) -> SampleMetrics:
-    matches = match_events(ref.events, hyp.events)
+    matches = match_events(
+        ref.events,
+        hyp.events,
+        tiou_threshold=tiou_threshold,
+        min_text_similarity=min_text_similarity,
+    )
     pairs = matched_pairs(matches, ref.events, hyp.events)
 
     n_ref = len(ref.events)
@@ -145,6 +162,15 @@ def evaluate_sample(
         )
     else:
         pointer_accuracy = 1.0
+    text_scores = [match.text_sim for match in pointer_matches]
+    mean_text_similarity = (
+        sum(text_scores) / len(text_scores) if text_scores else 0.0
+    )
+    zero_text_match_rate = (
+        sum(score == 0.0 for score in text_scores) / len(text_scores)
+        if text_scores
+        else 0.0
+    )
 
     hallucination = sum(1 for m in matches if m.ref_id is None)
     omission = sum(1 for m in matches if m.hyp_id is None)
@@ -170,8 +196,11 @@ def evaluate_sample(
         omission=omission,
         source_count_mae=round(float(source_count_mae), 6),
         pointer_accuracy=round(pointer_accuracy, 6),
+        mean_matched_text_similarity=round(mean_text_similarity, 6),
+        zero_text_match_rate=round(zero_text_match_rate, 6),
         per_type=_per_type_breakdown(matches),
         strict_format_success=strict_format_success,
+        warnings=list(warnings or []),
     )
 
 
@@ -179,11 +208,18 @@ def _macro(values: list[float]) -> float:
     return round(sum(values) / len(values), 6) if values else 0.0
 
 
-def aggregate(samples: list[SampleMetrics]) -> CorpusMetrics:
+def aggregate(
+    samples: list[SampleMetrics],
+    *,
+    tiou_threshold: float = 0.3,
+    min_text_similarity: float = 0.0,
+) -> CorpusMetrics:
     n = len(samples)
     if n == 0:
         return CorpusMetrics(
             n_samples=0,
+            tiou_threshold=tiou_threshold,
+            min_text_similarity=min_text_similarity,
             strict_format_success_rate=0.0,
             macro_event_precision=0.0,
             macro_event_recall=0.0,
@@ -201,19 +237,35 @@ def aggregate(samples: list[SampleMetrics]) -> CorpusMetrics:
             total_omission=0,
             mean_source_count_mae=0.0,
             mean_pointer_accuracy=0.0,
+            mean_matched_text_similarity=0.0,
+            macro_zero_text_match_rate=0.0,
         )
 
-    # macro per-type
+    # Micro-aggregate per type.  Averaging only samples where a type appears
+    # hides complete omissions; accumulating TP/FP/FN does not.
     types = sorted({t for s in samples for t in s.per_type})
     macro_per_type: dict[str, dict[str, float]] = {}
     for t in types:
         rows = [s.per_type[t] for s in samples if t in s.per_type]
+        tp = sum(row.get("tp", 0.0) for row in rows)
+        fp = sum(row.get("fp", 0.0) for row in rows)
+        fn = sum(row.get("fn", 0.0) for row in rows)
+        precision = tp / (tp + fp) if tp + fp else 1.0
+        recall = tp / (tp + fn) if tp + fn else 1.0
+        f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
         macro_per_type[t] = {
-            k: _macro([r[k] for r in rows]) for k in ("precision", "recall", "f1")
+            "precision": round(precision, 6),
+            "recall": round(recall, 6),
+            "f1": round(f1, 6),
+            "tp": int(tp),
+            "fp": int(fp),
+            "fn": int(fn),
         }
 
     return CorpusMetrics(
         n_samples=n,
+        tiou_threshold=tiou_threshold,
+        min_text_similarity=min_text_similarity,
         strict_format_success_rate=_macro(
             [1.0 if s.strict_format_success else 0.0 for s in samples]
         ),
@@ -233,6 +285,10 @@ def aggregate(samples: list[SampleMetrics]) -> CorpusMetrics:
         total_omission=sum(s.omission for s in samples),
         mean_source_count_mae=_macro([s.source_count_mae for s in samples]),
         mean_pointer_accuracy=_macro([s.pointer_accuracy for s in samples]),
+        mean_matched_text_similarity=_macro(
+            [s.mean_matched_text_similarity for s in samples]
+        ),
+        macro_zero_text_match_rate=_macro([s.zero_text_match_rate for s in samples]),
         per_type=macro_per_type,
         samples=[s.to_dict() for s in samples],
     )
@@ -258,6 +314,10 @@ def _load_ledger_jsonl(path: str | Path) -> dict[str, Ledger]:
 def evaluate_corpus(
     predictions: str | Path | dict[str, Ledger],
     references: str | Path | dict[str, Ledger],
+    *,
+    parse_reports: str | Path | dict[str, dict] | None = None,
+    tiou_threshold: float = 0.3,
+    min_text_similarity: float = 0.0,
 ) -> CorpusMetrics:
     """Evaluate predictions against references.
 
@@ -275,6 +335,13 @@ def evaluate_corpus(
         if isinstance(predictions, (str, Path))
         else dict(predictions)
     )
+    if isinstance(parse_reports, (str, Path)):
+        report_payload = json.loads(Path(parse_reports).read_text(encoding="utf-8"))
+        report_map = {
+            row["sample_id"]: row for row in report_payload.get("samples", [])
+        }
+    else:
+        report_map = dict(parse_reports or {})
 
     samples: list[SampleMetrics] = []
     for sid in sorted(refs):
@@ -302,13 +369,34 @@ def evaluate_corpus(
                 omission=len(ref.events),
                 source_count_mae=float(len(ref.tracks)),
                 pointer_accuracy=0.0,
+                mean_matched_text_similarity=0.0,
+                zero_text_match_rate=0.0,
                 strict_format_success=False,
                 warnings=["prediction missing"],
             )
         else:
-            sm = evaluate_sample(ref, hyp)
+            parse_report = report_map.get(sid)
+            strict = (
+                bool(parse_report.get("strict_format_success", False))
+                if parse_report is not None
+                else True
+            )
+            sm = evaluate_sample(
+                ref,
+                hyp,
+                strict_format_success=strict,
+                tiou_threshold=tiou_threshold,
+                min_text_similarity=min_text_similarity,
+                warnings=list(parse_report.get("warnings", []))
+                if parse_report is not None
+                else None,
+            )
         samples.append(sm)
-    return aggregate(samples)
+    return aggregate(
+        samples,
+        tiou_threshold=tiou_threshold,
+        min_text_similarity=min_text_similarity,
+    )
 
 
 __all__ = [

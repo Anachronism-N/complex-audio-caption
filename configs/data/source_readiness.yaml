@@ -1,0 +1,32 @@
+# Versioned go/no-go requirements for the real B3 source pool.
+# These are project acceptance thresholds, not claims copied from TAC.
+audio:
+  min_rms_dbfs: -70.0
+  max_clipped_fraction: 0.10
+  per_kind:
+    speech: {min_duration_sec: 0.3, max_duration_sec: 30.0}
+    vocal: {min_duration_sec: 1.0, max_duration_sec: 60.0}
+    music: {min_duration_sec: 3.0, max_duration_sec: 120.0}
+    sfx: {min_duration_sec: 0.05, max_duration_sec: 30.0}
+    ambience: {min_duration_sec: 3.0, max_duration_sec: 120.0}
+
+profiles:
+  # Enough diversity to validate catalog/render/export mechanics and listening.
+  # Smoke data is never a paper training set.
+  smoke:
+    kinds:
+      speech: {min_sources: 20, min_source_groups: 10, min_total_duration_sec: 30}
+      vocal: {min_sources: 20, min_source_groups: 10, min_total_duration_sec: 40}
+      music: {min_sources: 20, min_source_groups: 10, min_total_duration_sec: 120}
+      sfx: {min_sources: 40, min_source_groups: 20, min_total_duration_sec: 20}
+      ambience: {min_sources: 20, min_source_groups: 10, min_total_duration_sec: 120}
+
+  # Minimum pool for the planned 10k release. Revise this file intentionally if
+  # pilot source-reuse statistics show a stronger requirement.
+  release:
+    kinds:
+      speech: {min_sources: 1000, min_source_groups: 500, min_total_duration_sec: 1800}
+      vocal: {min_sources: 500, min_source_groups: 100, min_total_duration_sec: 1500}
+      music: {min_sources: 500, min_source_groups: 100, min_total_duration_sec: 6000}
+      sfx: {min_sources: 1000, min_source_groups: 500, min_total_duration_sec: 1000}
+      ambience: {min_sources: 300, min_source_groups: 100, min_total_duration_sec: 3600}

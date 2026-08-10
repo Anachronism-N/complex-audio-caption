@@ -1,3 +1,5 @@
+# HISTORICAL SMOKE TEST ONLY. Synthetic vocal tones contain no lexical lyrics;
+# do not export this dataset for training. Use configs/data/b3_real.yaml.
 # B3 data: extends TAC-mini with lyrics and overlapping speakers.
 # 9 templates: 6 from B2 + 3 new (lyrics, lyrics+speech+music+sfx, overlap).
 pool:

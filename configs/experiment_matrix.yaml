@@ -86,11 +86,32 @@ runs:
     parent: B2-moss-tac
     change: "Joint lyrics and overlapping speaker targets; no external Whisper."
     purpose: "Strongest autoregressive unified-caption baseline."
+    validity_requirements:
+      - "source readiness report has pass=true and a frozen source_pool_id"
+      - "B3 data reproduction summary has pass=true and a frozen dataset_id"
+      - "file-backed vocal audio with verbatim lyrics"
+      - "renderer replay, persisted hashes, and stem reconstruction all pass"
+      - "source-group connected-component split"
+      - "source-aware atomic track attributes"
+      - "validation-only inference with parse report"
+      - "temporal-only and text-gated metrics reported separately"
 
   - id: S1-ledger
     parent: B3-moss-tac-joint
-    change: "Permutation-invariant slots, activity masks, and boundary heads."
-    purpose: "Test set prediction independently of evidence/CARC."
+    change: >-
+      Frozen MOSS features, 24 permutation-invariant event slots, explicit
+      temporal embeddings, multi-span 100-ms activity, boundary envelopes,
+      and normalized Hungarian set loss. No text or track prediction in S1a.
+    purpose: "Test event set prediction independently of evidence/CARC."
+    validity_requirements:
+      - "TAG 2021 anchor summary has pass=true"
+      - "B3 data reproduction summary has pass=true and the dataset_id is recorded"
+      - "exact B3-valid train/validation manifests"
+      - "source-disjoint calibration split made only from the training fold"
+      - "source leakage count is zero"
+      - "feature cache binds model and manifest hashes"
+      - "thresholds and full config are persisted with metrics"
+      - "boundary MAE is always paired with matched-reference coverage"
 
   - id: S2-evidence
     parent: S1-ledger
@@ -108,8 +129,13 @@ required_ablations:
   - B2-time-weight-10
   - B2-no-TACOS
   - B2-10k-steps
-  - S1-slots-12
-  - S1-slots-36
+  - S1-slots-8
+  - S1-slots-16
+  - S1-slots-32
+  - S1-no-temporal-embedding
+  - S1-no-positive-weight
+  - S1-activity-only
+  - S1-boundary-only
   - S2-no-local-evidence
   - S2-unrestricted-global-context
   - S2-no-source-loss

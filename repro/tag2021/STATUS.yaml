@@ -1,0 +1,19 @@
+updated_at: "2026-08-09"
+implementation:
+  upstream_lock: complete
+  downloader: complete_not_executed
+  archive_provenance: complete_not_executed
+  data_resolver: complete_not_executed
+  data_audit: unit_tested
+  feature_extraction_wrapper: complete_not_executed
+  training_wrapper: complete_not_executed
+  official_evaluator_wrapper: complete_not_executed
+  random_query_diagnostic: unit_tested
+  metric_acceptance: unit_tested
+execution:
+  R0_data: pending_server_run
+  R1_single_seed: pending_gpu
+  R2_diagnostic: pending_R1_checkpoint
+  R3_multiseed: pending_R1
+claims_allowed: false
+blocker: "This machine has no experiment compute and the 2021 audio archive was not downloaded."

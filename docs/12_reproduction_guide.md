@@ -1,5 +1,13 @@
 # 复现指南
 
+> **范围说明（2026-08-09）：** 本文只复现项目自建 TAC-mini 工程管线，不能作为论文
+> 锚点。当前主复现任务是官方 TAG 2021，见
+> [Anchor-first TAG 复现协议](13_anchor_first_tag_reproduction.md)。
+>
+> 2026-08-09 更新：仓库中旧的 500 条 TAC-mini manifest 是 renderer v0.2
+> 历史产物，只用于追溯 B0，不可继续训练。请按本文重新渲染 v0.3；详细状态见
+> `docs/13_data_pipeline_status.md`。
+
 > 本文档说明如何从空环境复现 TAC-mini 数据集和 B0 基线。所有步骤均可确定性重放。
 
 ## 1. 环境准备
@@ -18,15 +26,16 @@ MOSS-Audio-4B 需要独立的 conda 环境（pin `transformers==4.57.1` / `numpy
 
 ```bash
 # 克隆 MOSS-Audio 仓库（不安装，只读引用）
-git clone --depth 1 https://github.com/OpenMOSS/MOSS-Audio.git third_party/MOSS-Audio
+git clone https://github.com/OpenMOSS/MOSS-Audio.git third_party/MOSS-Audio
+git -C third_party/MOSS-Audio checkout 5cbb1d823937cd5b5de3d8fa4d3a7253ebd3b883
 
 # 建独立环境
-conda create -n moss-audio python=3.10 -y
+conda create -n moss-audio python=3.12 -y
 conda run -n moss-audio pip install torch==2.9.1 torchaudio==2.9.1 \
     --index-url https://download.pytorch.org/whl/cu128
 conda run -n moss-audio pip install \
     "transformers==4.57.1" "numpy>=2.0" safetensors soundfile tiktoken \
-    einops scipy tqdm packaging accelerate "pydantic>=2.6"
+    einops scipy tqdm packaging accelerate peft librosa "pydantic>=2.6"
 conda run -n moss-audio pip install --no-deps -e third_party/MOSS-Audio
 conda run -n moss-audio pip install --no-deps -e .
 

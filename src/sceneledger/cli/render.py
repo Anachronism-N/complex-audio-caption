@@ -14,16 +14,21 @@ and ledger validity.
 from __future__ import annotations
 
 import argparse
+import glob
 import json
+import os
 import sys
+from dataclasses import asdict
+from datetime import datetime, timezone
 from pathlib import Path
 
 import yaml
 
 from sceneledger.data.manifests import (
     ManifestEntry,
+    audit_manifest_structure,
+    file_hash,
     persist_render,
-    read_manifest,
     validate_manifest,
     write_manifest,
 )
@@ -34,6 +39,7 @@ from sceneledger.data.scene_graph_sampler import (
     SceneSamplerConfig,
     SyntheticSourcePool,
 )
+from sceneledger.data.source_catalog import load_source_catalog
 
 
 def _build_pool(cfg: dict) -> object:
@@ -44,9 +50,41 @@ def _build_pool(cfg: dict) -> object:
             sample_rate=pcfg.get("sample_rate", 24000),
             seed=pcfg.get("seed", 20260808),
         )
-    elif kind == "file":
+    if kind == "file":
+        catalog_path = pcfg.get("source_catalog")
+        if catalog_path:
+            catalog_path = os.path.expandvars(os.path.expanduser(str(catalog_path)))
+            audio_root = pcfg.get("audio_root")
+            if audio_root:
+                audio_root = os.path.expandvars(os.path.expanduser(str(audio_root)))
+            records = load_source_catalog(catalog_path, audio_root=audio_root)
+            by_kind: dict[str, list[str]] = {}
+            metadata_by_path: dict[str, dict] = {}
+            for record in records:
+                by_kind.setdefault(record.kind, []).append(record.path)
+                metadata_by_path[record.path] = record.to_dict()
+            return FileSourcePool(
+                by_kind={key: sorted(values) for key, values in by_kind.items()},
+                metadata_by_path=metadata_by_path,
+                strict_metadata=True,
+            )
         mapping = pcfg.get("file_pool", {})
-        return FileSourcePool(by_kind={k: list(v) for k, v in mapping.items()})
+        expanded: dict[str, list[str]] = {}
+        for source_kind, patterns in mapping.items():
+            paths = sorted(
+                {
+                    str(Path(path).resolve())
+                    for pattern in patterns
+                    for path in glob.glob(str(pattern), recursive=True)
+                    if Path(path).is_file()
+                }
+            )
+            if not paths:
+                raise ValueError(
+                    f"file pool pattern(s) for {source_kind!r} matched no files: {patterns}"
+                )
+            expanded[source_kind] = paths
+        return FileSourcePool(by_kind=expanded)
     raise ValueError(f"unknown pool kind {kind!r}")
 
 
@@ -92,8 +130,20 @@ def _weighted_templates(weights: dict[str, float], n: int) -> list[str]:
     return chosen
 
 
-def render_dataset(config_path: str, output_dir: str, limit: int | None = None) -> int:
+def render_dataset(
+    config_path: str,
+    output_dir: str,
+    limit: int | None = None,
+    *,
+    source_catalog: str | None = None,
+    audio_root: str | None = None,
+) -> int:
     cfg = yaml.safe_load(Path(config_path).read_text(encoding="utf-8"))
+    if source_catalog:
+        cfg.setdefault("pool", {})["kind"] = "file"
+        cfg["pool"]["source_catalog"] = source_catalog
+    if audio_root:
+        cfg.setdefault("pool", {})["audio_root"] = audio_root
     pool = _build_pool(cfg)
     sampler = _build_sampler(cfg, pool)
 
@@ -119,6 +169,10 @@ def render_dataset(config_path: str, output_dir: str, limit: int | None = None) 
 
     manifest_path = odir / "manifest.jsonl"
     write_manifest(manifest_path, entries)
+    structure_report = audit_manifest_structure(entries)
+    if not structure_report.ok():
+        preview = "\n".join(structure_report.errors[:20])
+        raise RuntimeError(f"rendered manifest failed structural audit:\n{preview}")
     _write_data_card(odir, cfg, entries)
     _write_listen_list(odir, entries)
     print(
@@ -137,7 +191,7 @@ def _write_data_card(odir: Path, cfg: dict, entries: list[ManifestEntry]) -> Non
     lines = [
         "# TAC-mini data card",
         "",
-        f"- generated: synthetic pool, {len(entries)} clips",
+        f"- generated: {cfg.get('pool', {}).get('kind', 'synthetic')} pool, {len(entries)} clips",
         f"- sample_rate: {entries[0].sample_rate if entries else 'n/a'} Hz",
         f"- duration range: {min(durations):.1f}–{max(durations):.1f} s"
         if durations
@@ -176,30 +230,96 @@ def _write_listen_list(odir: Path, entries: list[ManifestEntry]) -> None:
             )
 
 
+def validate_rendered_dataset(
+    *,
+    config_path: str | Path,
+    output_dir: str | Path,
+    source_catalog: str | None = None,
+    audio_root: str | None = None,
+    report_path: str | Path | None = None,
+) -> dict:
+    """Replay a rendered dataset and persist its machine-readable identity."""
+    config = Path(config_path).resolve()
+    destination = Path(output_dir).resolve()
+    validation_cfg = yaml.safe_load(config.read_text(encoding="utf-8"))
+    if source_catalog:
+        validation_cfg.setdefault("pool", {})["kind"] = "file"
+        validation_cfg["pool"]["source_catalog"] = source_catalog
+    if audio_root:
+        validation_cfg.setdefault("pool", {})["audio_root"] = audio_root
+    pool = _build_pool(validation_cfg)
+    manifest = destination / "manifest.jsonl"
+    report = validate_manifest(manifest, pool, check_audio=True)
+    source_path = Path(source_catalog).resolve() if source_catalog else None
+    payload = {
+        "schema_version": "b3-render-validation-v1",
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "pass": report.ok(),
+        "config_path": str(config),
+        "config_sha256": file_hash(config),
+        "manifest_path": str(manifest),
+        "manifest_sha256": file_hash(manifest),
+        "source_catalog_path": str(source_path) if source_path else None,
+        "source_catalog_sha256": (
+            file_hash(source_path) if source_path and source_path.is_file() else None
+        ),
+        "audio_root": str(Path(audio_root).resolve()) if audio_root else None,
+        **asdict(report),
+    }
+    destination_report = (
+        Path(report_path).resolve()
+        if report_path
+        else destination / "validation_report.json"
+    )
+    destination_report.parent.mkdir(parents=True, exist_ok=True)
+    destination_report.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    print(
+        f"[validate] replay ok={report.n_replay_ok}/{report.n_entries} "
+        f"stems_sum ok={report.n_stems_sum_ok} ledger_valid={report.n_ledger_valid} "
+        f"saved_reconstruction={report.n_saved_reconstruction_ok} "
+        f"failures={len(report.failures)} report={destination_report}",
+        file=sys.stderr,
+    )
+    if report.failures:
+        for line in report.failures[:20]:
+            print(f"  FAIL {line}", file=sys.stderr)
+    return payload
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="sceneledger-render")
     parser.add_argument("--config", required=True)
     parser.add_argument("--output-dir", required=True)
     parser.add_argument("--limit", type=int, default=None, help="cap sample count (smoke test)")
+    parser.add_argument("--source-catalog", default=None, help="override pool.source_catalog")
+    parser.add_argument("--audio-root", default=None, help="base for relative catalog paths")
     parser.add_argument("--validate", action="store_true", help="validate after rendering")
+    parser.add_argument(
+        "--validation-report",
+        default=None,
+        help="validation JSON path (default: OUTPUT_DIR/validation_report.json)",
+    )
     args = parser.parse_args(argv)
 
-    n = render_dataset(args.config, args.output_dir, limit=args.limit)
+    render_dataset(
+        args.config,
+        args.output_dir,
+        limit=args.limit,
+        source_catalog=args.source_catalog,
+        audio_root=args.audio_root,
+    )
 
     if args.validate:
-        pool = _build_pool(yaml.safe_load(Path(args.config).read_text(encoding="utf-8")))
-        manifest = Path(args.output_dir) / "manifest.jsonl"
-        rep = validate_manifest(manifest, pool, check_audio=True)
-        print(
-            f"[validate] replay ok={rep.n_replay_ok}/{rep.n_entries} "
-            f"stems_sum ok={rep.n_stems_sum_ok} ledger_valid={rep.n_ledger_valid} "
-            f"failures={len(rep.failures)}",
-            file=sys.stderr,
+        report = validate_rendered_dataset(
+            config_path=args.config,
+            output_dir=args.output_dir,
+            source_catalog=args.source_catalog,
+            audio_root=args.audio_root,
+            report_path=args.validation_report,
         )
-        if rep.failures:
-            for line in rep.failures[:20]:
-                print(f"  FAIL {line}", file=sys.stderr)
-        return 0 if rep.ok() else 1
+        return 0 if report["pass"] else 1
     return 0
 
 

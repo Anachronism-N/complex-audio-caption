@@ -12,6 +12,22 @@ defaults:
   event_slots: 24
   seed: 20260808
 
+status_snapshot:
+  frozen_at: "2026-08-09"
+  p0_protocol: cpu_verified
+  p1_b0_moss: completed_on_superseded_tac_mini
+  p2_tac_mini_code: cpu_smoke_verified_v0.3.0
+  p2_tac_mini_500_artifact: rerender_required
+  p3_b1_official_pipeline: code_ready_gpu_pending
+  p3_b2_weighted_timestamps: atomic_registration_code_ready_gpu_pending
+  p4_b3_historical_artifact: superseded_invalid_lyrics_and_evaluation
+  p4_b3_valid_pipeline: source_readiness_code_ready_real_source_pool_pending
+  p7_s1a_event_probe: dual_temporal_head_code_ready_torch_server_execution_pending
+  tag2021_anchor: code_ready_server_execution_pending
+  real_public_source_pool: not_server_verified
+  web_unlabeled_teacher_pipeline: not_integrated
+  wildmix_cap_human_benchmark: not_annotated
+
 stages:
   p0_protocol:
     depends_on: []
@@ -58,7 +74,11 @@ stages:
       - reports/tac_mini_data_card.md
     gates:
       - deterministic_replay
-      - sample_accurate_manifest
+      - unique_source_ids
+      - saved_semantic_stems_plus_residual_reconstruct_mixture
+      - persisted_audio_sha256_verified
+      - transitive_raw_source_split_has_zero_leakage
+      - supervision_resolution_overlap_audited
       - fifty_clip_listening_check
 
   p3_b1_b2_baselines:
@@ -66,7 +86,9 @@ stages:
     duration_days: 10
     experiments: [B1_static_sft, B2_tac_paper_spec]
     gates:
+      - official_moss_conversation_export_audited
       - single_batch_overfit
+      - b1_strict_format_success_at_least_0_99
       - b2_beats_b1_on_synthetic_temporal_metrics
       - real_pilot_regression_checked
 
@@ -108,6 +130,8 @@ stages:
     duration_days: 14
     order: [event_activity, track_activity, event_track_pointer, identity, text]
     gates:
+      - s1a_event_only_probe_completed_on_b3_valid_fold
+      - s1a_machine_readable_run_evidence_complete
       - thirty_two_sample_overfit
       - source_count_mae_beats_b3_parser
       - overlap_event_recall_improves
@@ -144,4 +168,3 @@ stages:
 paper_minimum:
   required: [B2_tac_paper_spec, B3_unified_ar, S1_track_event_slots, S2_local_evidence, S3_exact_carc]
   optional: [SAM_Audio_teacher, audio_editor, GRPO, AV_verifier]
-

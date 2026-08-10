@@ -1,7 +1,8 @@
-"""``sceneledger-train`` CLI: LoRA SFT on MOSS-Audio-4B.
+"""Experimental single-process trainer for MOSS-Audio-4B.
 
-B1 (static SFT): ordinary token CE on atomic-token captions.
-B2 (TAC paper-spec): time-weighted CE (``timestamp_weight=5.0``).
+The reproducible B1 path uses ``scripts/run_b1_official.sh`` and the upstream
+MOSS trainer. B2/B3 use this harness because they require a custom weighted
+loss and an explicitly registered decisecond vocabulary.
 
 ::
 
@@ -46,7 +47,7 @@ def _set_seed(seed: int) -> None:
 def _load_model_and_processor(cfg: dict):
     import sys as _sys
 
-    repo = Path(__file__).resolve().parents[2] / "third_party" / "MOSS-Audio"
+    repo = Path(__file__).resolve().parents[3] / "third_party" / "MOSS-Audio"
     if str(repo) not in _sys.path:
         _sys.path.insert(0, str(repo))
     from src.modeling_moss_audio import MossAudioModel
@@ -69,26 +70,50 @@ def _load_model_and_processor(cfg: dict):
     return model, processor, dtype
 
 
-def _apply_lora(model, lora_cfg: dict):
+def _apply_lora(
+    model,
+    lora_cfg: dict,
+    *,
+    trainable_token_ids: set[int] | None = None,
+    embedding_module: str | None = None,
+):
+    import inspect
+
     from peft import LoraConfig, get_peft_model
 
-    config = LoraConfig(
+    kwargs = dict(
         r=lora_cfg["rank"],
         lora_alpha=lora_cfg["alpha"],
         lora_dropout=lora_cfg.get("dropout", 0.05),
         target_modules=lora_cfg["target_modules"],
+        modules_to_save=lora_cfg.get("modules_to_save"),
         bias="none",
         task_type="CAUSAL_LM",
     )
+    if trainable_token_ids:
+        if "trainable_token_indices" not in inspect.signature(LoraConfig).parameters:
+            raise RuntimeError(
+                "installed PEFT lacks trainable_token_indices; install peft>=0.15 "
+                "instead of training the full embedding matrix"
+            )
+        if not embedding_module:
+            raise RuntimeError("embedding module name is required for new timestamp tokens")
+        kwargs["trainable_token_indices"] = {
+            embedding_module: sorted(trainable_token_ids)
+        }
+        if "ensure_weight_tying" in inspect.signature(LoraConfig).parameters:
+            kwargs["ensure_weight_tying"] = True
+    config = LoraConfig(**kwargs)
     model = get_peft_model(model, config)
     model.print_trainable_parameters()
     return model
 
 
 def _load_audio(path: str, sample_rate: int, max_seconds: float) -> np.ndarray:
+    from math import gcd
+
     import soundfile as sf
     from scipy.signal import resample_poly
-    from math import gcd
 
     wav, sr = sf.read(path, dtype="float32", always_2d=False)
     if wav.ndim == 2:
@@ -166,16 +191,65 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--config", required=True)
     parser.add_argument("--smoke-test", action="store_true", help="1 step, no save")
     parser.add_argument("--max-steps", type=int, default=None, help="override config steps")
+    parser.add_argument("--model-path", default=None)
+    parser.add_argument("--manifest", default=None)
+    parser.add_argument(
+        "--train-manifest",
+        default=None,
+        help="use every row in an already frozen train manifest; do not split again",
+    )
+    parser.add_argument("--audio-base", default=None)
+    parser.add_argument("--output-dir", default=None)
     args = parser.parse_args(argv)
+    if args.manifest and args.train_manifest:
+        parser.error("--manifest and --train-manifest are mutually exclusive")
 
     cfg = _load_config(args.config)
+    if args.model_path:
+        cfg["model"]["path"] = args.model_path
+    if args.manifest:
+        cfg["data"]["manifest_path"] = args.manifest
+    if args.train_manifest:
+        cfg["data"]["manifest_path"] = args.train_manifest
+    if args.audio_base:
+        cfg["data"]["audio_base_dir"] = args.audio_base
+    if args.output_dir:
+        cfg["train"]["output_dir"] = args.output_dir
     _set_seed(cfg["train"]["seed"])
     tcfg = cfg["train"]
+    if tcfg.get("shuffle_events", False):
+        raise ValueError(
+            "train.shuffle_events is unsupported: the canonical formatter sorts "
+            "events again, so the previous B3-permuted experiment changed no targets"
+        )
     steps = args.max_steps or tcfg["steps"]
 
     print("[train] loading model ...", file=sys.stderr, flush=True)
     model, processor, dtype = _load_model_and_processor(cfg)
     device = cfg["model"]["device"]
+    timestamp_weight = cfg["loss"].get("timestamp_weight", 1.0)
+    ts_token_ids = None
+    added_timestamp_tokens = 0
+    embedding_module: str | None = None
+    if timestamp_weight != 1.0:
+        from sceneledger.models.tokenizer_utils import (
+            ensure_atomic_timestamp_tokens,
+            input_embedding_module_name,
+        )
+
+        ts_token_ids, added_timestamp_tokens = ensure_atomic_timestamp_tokens(
+            processor.tokenizer,
+            model,
+            register_missing=cfg["model"].get("register_timestamp_tokens", False),
+        )
+        if added_timestamp_tokens:
+            embedding_module = input_embedding_module_name(model)
+        print(
+            f"[train] time-weighted CE: {len(ts_token_ids)} atomic timestamp IDs, "
+            f"added={added_timestamp_tokens}, weight={timestamp_weight}",
+            file=sys.stderr,
+            flush=True,
+        )
 
     # gradient checkpointing
     if tcfg.get("gradient_checkpointing", True):
@@ -183,33 +257,51 @@ def main(argv: list[str] | None = None) -> int:
         if hasattr(model, "enable_input_require_grads"):
             model.enable_input_require_grads()
 
-    model = _apply_lora(model, cfg["lora"])
+    model = _apply_lora(
+        model,
+        cfg["lora"],
+        trainable_token_ids=ts_token_ids if added_timestamp_tokens else None,
+        embedding_module=embedding_module,
+    )
     model.train()
 
     # dataset
-    from sceneledger.data.manifests import read_manifest
-    from sceneledger.data.datamodule import group_split, MOSS_INPUT_SAMPLE_RATE
+    from sceneledger.data.datamodule import MOSS_INPUT_SAMPLE_RATE, group_split
+    from sceneledger.data.manifests import file_hash, read_manifest
     from sceneledger.models.target_formatter import (
+        StyleConfig,
         canonical_prompt,
         format_atomic_caption,
-        StyleConfig,
     )
 
     entries = read_manifest(cfg["data"]["manifest_path"])
-    train_entries, _ = group_split(
-        entries, val_fraction=cfg["data"].get("val_fraction", 0.1),
-        group_key=cfg["data"].get("group_key", "source_id"),
-        seed=cfg["train"]["seed"],
-    )
+    if cfg["data"].get("include_lyrics", False):
+        placeholder_scenes = [
+            entry.scene["scene_id"]
+            for entry in entries
+            if any(
+                source.get("kind") == "vocal"
+                and str(source.get("path", "")).startswith("vocal:")
+                for source in entry.scene.get("sources", [])
+            )
+        ]
+        if placeholder_scenes and not cfg["data"].get("allow_placeholder_lyrics", False):
+            raise RuntimeError(
+                f"refusing {len(placeholder_scenes)} synthetic vocal scene(s) as lyric "
+                "supervision; render configs/data/b3_real.yaml from a source catalog"
+            )
+    if args.train_manifest:
+        train_entries = entries
+    else:
+        train_entries, _ = group_split(
+            entries,
+            val_fraction=cfg["data"].get("val_fraction", 0.1),
+            group_key=cfg["data"].get("group_key", "source_id"),
+            seed=cfg["train"]["seed"],
+        )
+    if not train_entries:
+        raise ValueError("training manifest produced no training samples")
     print(f"[train] {len(train_entries)} training samples", file=sys.stderr, flush=True)
-
-    # precompute timestamp token IDs for B2
-    timestamp_weight = cfg["loss"].get("timestamp_weight", 1.0)
-    ts_token_ids = None
-    if timestamp_weight != 1.0:
-        from sceneledger.losses.weighted_ce import compute_timestamp_token_ids
-        ts_token_ids = compute_timestamp_token_ids(processor.tokenizer)
-        print(f"[train] time-weighted CE: {len(ts_token_ids)} timestamp token IDs, weight={timestamp_weight}", file=sys.stderr, flush=True)
 
     # optimizer
     from torch.optim import AdamW
@@ -222,9 +314,12 @@ def main(argv: list[str] | None = None) -> int:
 
     grad_accum = tcfg["global_effective_batch"] // tcfg["micro_batch_size"]
     style_cfg = StyleConfig()
+    target_mode = cfg["data"].get("target_mode", "atomic")
     prompt_text = canonical_prompt(
         style=cfg["data"].get("style", "brief"),
         include_lyrics=cfg["data"].get("include_lyrics", False),
+        include_tracks=cfg["data"].get("include_tracks", False),
+        output_mode=target_mode,
     )
     audio_base = cfg["data"]["audio_base_dir"]
     sr = cfg["data"].get("sample_rate", MOSS_INPUT_SAMPLE_RATE)
@@ -251,12 +346,14 @@ def main(argv: list[str] | None = None) -> int:
 
             from sceneledger.data.schema import Ledger
             ledger = Ledger.model_validate(entry.target_ledger)
-            # optionally shuffle event order for permutation-invariant training
-            if tcfg.get("shuffle_events", False):
-                events = list(ledger.events)
-                rng.shuffle(events)
-                ledger = ledger.model_copy(update={"events": events})
-            target = format_atomic_caption(ledger, style=cfg["data"].get("style", "brief"), cfg=style_cfg)
+            if target_mode != "atomic":
+                raise ValueError("experimental trainer currently supports target_mode=atomic only")
+            target = format_atomic_caption(
+                ledger,
+                style=cfg["data"].get("style", "brief"),
+                cfg=style_cfg,
+                include_tracks=cfg["data"].get("include_tracks", False),
+            )
 
             try:
                 batch = _build_training_sample(
@@ -323,9 +420,31 @@ def main(argv: list[str] | None = None) -> int:
     # save checkpoint
     out_dir = Path(tcfg.get("output_dir", cfg.get("train", {}).get("output_dir", "outputs/b1")))
     out_dir.mkdir(parents=True, exist_ok=True)
-    model.save_pretrained(out_dir / "lora")
+    model.save_pretrained(
+        out_dir / "lora",
+        save_embedding_layers=False if added_timestamp_tokens else "auto",
+    )
     processor.tokenizer.save_pretrained(out_dir / "lora")
-    cfg_out = {"config_path": str(args.config), "steps": step, "train_samples": len(train_entries)}
+    if ts_token_ids is not None:
+        token_metadata = {
+            "count": len(ts_token_ids),
+            "ids": sorted(ts_token_ids),
+            "added_count": added_timestamp_tokens,
+        }
+        (out_dir / "lora" / "atomic_timestamp_tokens.json").write_text(
+            json.dumps(token_metadata, indent=2) + "\n", encoding="utf-8"
+        )
+    cfg_out = {
+        "config_path": str(args.config),
+        "train_manifest_path": str(Path(cfg["data"]["manifest_path"]).resolve()),
+        "train_manifest_sha256": file_hash(cfg["data"]["manifest_path"]),
+        "used_frozen_train_manifest": bool(args.train_manifest),
+        "steps": step,
+        "train_samples": len(train_entries),
+        "timestamp_weight": timestamp_weight,
+        "atomic_timestamp_token_count": len(ts_token_ids or []),
+        "added_timestamp_tokens": added_timestamp_tokens,
+    }
     (out_dir / "train_config.json").write_text(json.dumps(cfg_out, indent=2), encoding="utf-8")
     print(f"[train] saved LoRA checkpoint to {out_dir / 'lora'}", file=sys.stderr, flush=True)
     print(f"[train] done in {time.time()-t0:.0f}s", file=sys.stderr, flush=True)
