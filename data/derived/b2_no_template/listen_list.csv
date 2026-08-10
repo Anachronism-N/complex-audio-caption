@@ -1,0 +1,501 @@
+scene_id,template,mixture_path,duration,n_events,first_event_text
+mix_000001,random_mix,audio/mix_000001.wav,24.6,3,电子伴奏循环播放。
+mix_000002,random_mix,audio/mix_000002.wav,11.3,2,一次玻璃破碎声。
+mix_000003,random_mix,audio/mix_000003.wav,15.4,2,"""la la la, dancing in the rain"""
+mix_000004,random_mix,audio/mix_000004.wav,17.6,3,A speaker is talking.
+mix_000005,random_mix,audio/mix_000005.wav,10.0,2,A speaker is talking.
+mix_000006,random_mix,audio/mix_000006.wav,16.0,4,Background music plays steadily.
+mix_000007,random_mix,audio/mix_000007.wav,10.8,4,"""月亮代表我的心"""
+mix_000008,random_mix,audio/mix_000008.wav,15.9,4,Background music plays steadily.
+mix_000009,random_mix,audio/mix_000009.wav,23.4,2,"""take me home tonight"""
+mix_000010,random_mix,audio/mix_000010.wav,11.6,3,A glass breaking sound.
+mix_000011,random_mix,audio/mix_000011.wav,10.7,4,电子伴奏循环播放。
+mix_000012,random_mix,audio/mix_000012.wav,22.5,2,一次玻璃破碎声。
+mix_000013,random_mix,audio/mix_000013.wav,12.5,4,说话者描述当前场景。
+mix_000014,random_mix,audio/mix_000014.wav,21.8,4,Background music plays steadily.
+mix_000015,random_mix,audio/mix_000015.wav,14.2,4,说话者描述当前场景。
+mix_000016,random_mix,audio/mix_000016.wav,16.8,3,说话者描述当前场景。
+mix_000017,random_mix,audio/mix_000017.wav,18.6,4,Background music plays steadily.
+mix_000018,random_mix,audio/mix_000018.wav,26.3,3,电子伴奏循环播放。
+mix_000019,random_mix,audio/mix_000019.wav,27.2,4,背景音乐持续播放，节奏平稳。
+mix_000020,random_mix,audio/mix_000020.wav,18.4,4,"""月亮代表我的心"""
+mix_000021,random_mix,audio/mix_000021.wav,25.8,3,"""take me home tonight"""
+mix_000022,random_mix,audio/mix_000022.wav,24.6,3,"""don't stop believing, hold on to that feeling"""
+mix_000023,random_mix,audio/mix_000023.wav,28.6,2,"""don't stop believing, hold on to that feeling"""
+mix_000024,random_mix,audio/mix_000024.wav,12.1,3,背景音乐持续播放，节奏平稳。
+mix_000025,random_mix,audio/mix_000025.wav,17.1,4,一名说话者正在讲话。
+mix_000026,random_mix,audio/mix_000026.wav,16.0,2,一次玻璃破碎声。
+mix_000027,random_mix,audio/mix_000027.wav,14.2,2,背景音乐持续播放，节奏平稳。
+mix_000028,random_mix,audio/mix_000028.wav,12.3,4,短促的撞击声。
+mix_000029,random_mix,audio/mix_000029.wav,25.7,4,A speaker is talking.
+mix_000030,random_mix,audio/mix_000030.wav,17.5,2,"""take me home tonight"""
+mix_000031,random_mix,audio/mix_000031.wav,17.6,2,背景音乐持续播放，节奏平稳。
+mix_000032,random_mix,audio/mix_000032.wav,24.1,2,"""月亮代表我的心"""
+mix_000033,random_mix,audio/mix_000033.wav,28.4,3,电子伴奏循环播放。
+mix_000034,random_mix,audio/mix_000034.wav,26.0,3,背景音乐持续播放，节奏平稳。
+mix_000035,random_mix,audio/mix_000035.wav,15.8,2,一次玻璃破碎声。
+mix_000036,random_mix,audio/mix_000036.wav,13.7,4,说话者描述当前场景。
+mix_000037,random_mix,audio/mix_000037.wav,15.5,2,说话者描述当前场景。
+mix_000038,random_mix,audio/mix_000038.wav,21.5,4,一名说话者正在讲话。
+mix_000039,random_mix,audio/mix_000039.wav,12.4,3,说话者描述当前场景。
+mix_000040,random_mix,audio/mix_000040.wav,24.0,3,一名说话者正在讲话。
+mix_000041,random_mix,audio/mix_000041.wav,20.9,3,"""月亮代表我的心"""
+mix_000042,random_mix,audio/mix_000042.wav,13.0,2,说话者描述当前场景。
+mix_000043,random_mix,audio/mix_000043.wav,28.4,4,短促的撞击声。
+mix_000044,random_mix,audio/mix_000044.wav,10.3,4,A glass breaking sound.
+mix_000045,random_mix,audio/mix_000045.wav,14.8,2,Background music plays steadily.
+mix_000046,random_mix,audio/mix_000046.wav,22.7,2,"""月亮代表我的心"""
+mix_000047,random_mix,audio/mix_000047.wav,22.2,4,远处的犬吠。
+mix_000048,random_mix,audio/mix_000048.wav,29.7,3,"""月亮代表我的心"""
+mix_000049,random_mix,audio/mix_000049.wav,10.1,2,A speaker is talking.
+mix_000050,random_mix,audio/mix_000050.wav,17.6,3,"""don't stop believing, hold on to that feeling"""
+mix_000051,random_mix,audio/mix_000051.wav,23.2,4,"""月亮代表我的心"""
+mix_000052,random_mix,audio/mix_000052.wav,20.6,2,说话者描述当前场景。
+mix_000053,random_mix,audio/mix_000053.wav,13.9,4,"""take me home tonight"""
+mix_000054,random_mix,audio/mix_000054.wav,10.4,2,Background music plays steadily.
+mix_000055,random_mix,audio/mix_000055.wav,16.9,2,说话者描述当前场景。
+mix_000056,random_mix,audio/mix_000056.wav,19.2,3,"""la la la, dancing in the rain"""
+mix_000057,random_mix,audio/mix_000057.wav,27.0,4,A speaker is talking.
+mix_000058,random_mix,audio/mix_000058.wav,25.2,4,"""don't stop believing, hold on to that feeling"""
+mix_000059,random_mix,audio/mix_000059.wav,13.9,4,Background music plays steadily.
+mix_000060,random_mix,audio/mix_000060.wav,21.6,4,"""don't stop believing, hold on to that feeling"""
+mix_000061,random_mix,audio/mix_000061.wav,28.3,2,"""月亮代表我的心"""
+mix_000062,random_mix,audio/mix_000062.wav,13.7,3,一次玻璃破碎声。
+mix_000063,random_mix,audio/mix_000063.wav,17.5,3,"""la la la, dancing in the rain"""
+mix_000064,random_mix,audio/mix_000064.wav,11.3,2,说话者描述当前场景。
+mix_000065,random_mix,audio/mix_000065.wav,24.8,3,一名说话者正在讲话。
+mix_000066,random_mix,audio/mix_000066.wav,13.8,3,Background music plays steadily.
+mix_000067,random_mix,audio/mix_000067.wav,28.6,2,短促的撞击声。
+mix_000068,random_mix,audio/mix_000068.wav,16.9,4,远处的犬吠。
+mix_000069,random_mix,audio/mix_000069.wav,25.9,2,Background music plays steadily.
+mix_000070,random_mix,audio/mix_000070.wav,12.0,3,Background music plays steadily.
+mix_000071,random_mix,audio/mix_000071.wav,27.1,4,"""la la la, dancing in the rain"""
+mix_000072,random_mix,audio/mix_000072.wav,14.1,4,一名说话者正在讲话。
+mix_000073,random_mix,audio/mix_000073.wav,28.0,2,一次玻璃破碎声。
+mix_000074,random_mix,audio/mix_000074.wav,13.5,3,说话者描述当前场景。
+mix_000075,random_mix,audio/mix_000075.wav,13.3,4,"""take me home tonight"""
+mix_000076,random_mix,audio/mix_000076.wav,10.5,3,Background music plays steadily.
+mix_000077,random_mix,audio/mix_000077.wav,25.8,2,远处的犬吠。
+mix_000078,random_mix,audio/mix_000078.wav,10.4,4,一名说话者正在讲话。
+mix_000079,random_mix,audio/mix_000079.wav,15.3,3,说话者描述当前场景。
+mix_000080,random_mix,audio/mix_000080.wav,16.6,2,一次玻璃破碎声。
+mix_000081,random_mix,audio/mix_000081.wav,17.2,4,A speaker is talking.
+mix_000082,random_mix,audio/mix_000082.wav,12.2,3,一名说话者正在讲话。
+mix_000083,random_mix,audio/mix_000083.wav,20.3,4,A glass breaking sound.
+mix_000084,random_mix,audio/mix_000084.wav,10.7,3,远处的犬吠。
+mix_000085,random_mix,audio/mix_000085.wav,24.7,3,"""don't stop believing, hold on to that feeling"""
+mix_000086,random_mix,audio/mix_000086.wav,25.0,4,短促的撞击声。
+mix_000087,random_mix,audio/mix_000087.wav,10.7,3,A speaker is talking.
+mix_000088,random_mix,audio/mix_000088.wav,15.3,2,"""don't stop believing, hold on to that feeling"""
+mix_000089,random_mix,audio/mix_000089.wav,22.8,2,A speaker is talking.
+mix_000090,random_mix,audio/mix_000090.wav,23.9,2,"""la la la, dancing in the rain"""
+mix_000091,random_mix,audio/mix_000091.wav,17.1,4,一名说话者正在讲话。
+mix_000092,random_mix,audio/mix_000092.wav,25.4,2,"""don't stop believing, hold on to that feeling"""
+mix_000093,random_mix,audio/mix_000093.wav,19.1,2,电子伴奏循环播放。
+mix_000094,random_mix,audio/mix_000094.wav,11.5,2,"""don't stop believing, hold on to that feeling"""
+mix_000095,random_mix,audio/mix_000095.wav,28.5,2,"""la la la, dancing in the rain"""
+mix_000096,random_mix,audio/mix_000096.wav,23.3,4,背景音乐持续播放，节奏平稳。
+mix_000097,random_mix,audio/mix_000097.wav,14.5,4,一次玻璃破碎声。
+mix_000098,random_mix,audio/mix_000098.wav,19.6,2,"""take me home tonight"""
+mix_000099,random_mix,audio/mix_000099.wav,19.7,3,A glass breaking sound.
+mix_000100,random_mix,audio/mix_000100.wav,26.3,3,远处的犬吠。
+mix_000101,random_mix,audio/mix_000101.wav,29.7,3,"""don't stop believing, hold on to that feeling"""
+mix_000102,random_mix,audio/mix_000102.wav,19.0,3,电子伴奏循环播放。
+mix_000103,random_mix,audio/mix_000103.wav,17.7,2,A glass breaking sound.
+mix_000104,random_mix,audio/mix_000104.wav,20.5,4,电子伴奏循环播放。
+mix_000105,random_mix,audio/mix_000105.wav,27.3,3,短促的撞击声。
+mix_000106,random_mix,audio/mix_000106.wav,26.0,3,远处的犬吠。
+mix_000107,random_mix,audio/mix_000107.wav,19.2,4,Background music plays steadily.
+mix_000108,random_mix,audio/mix_000108.wav,20.0,3,"""don't stop believing, hold on to that feeling"""
+mix_000109,random_mix,audio/mix_000109.wav,29.2,4,"""take me home tonight"""
+mix_000110,random_mix,audio/mix_000110.wav,16.7,2,"""don't stop believing, hold on to that feeling"""
+mix_000111,random_mix,audio/mix_000111.wav,25.9,2,"""take me home tonight"""
+mix_000112,random_mix,audio/mix_000112.wav,20.4,4,远处的犬吠。
+mix_000113,random_mix,audio/mix_000113.wav,10.6,3,电子伴奏循环播放。
+mix_000114,random_mix,audio/mix_000114.wav,27.8,3,"""don't stop believing, hold on to that feeling"""
+mix_000115,random_mix,audio/mix_000115.wav,16.8,4,A speaker is talking.
+mix_000116,random_mix,audio/mix_000116.wav,19.6,4,远处的犬吠。
+mix_000117,random_mix,audio/mix_000117.wav,13.7,2,背景音乐持续播放，节奏平稳。
+mix_000118,random_mix,audio/mix_000118.wav,22.9,2,远处的犬吠。
+mix_000119,random_mix,audio/mix_000119.wav,12.4,3,一名说话者正在讲话。
+mix_000120,random_mix,audio/mix_000120.wav,21.7,4,"""don't stop believing, hold on to that feeling"""
+mix_000121,random_mix,audio/mix_000121.wav,13.6,4,一名说话者正在讲话。
+mix_000122,random_mix,audio/mix_000122.wav,21.4,4,一名说话者正在讲话。
+mix_000123,random_mix,audio/mix_000123.wav,16.1,3,电子伴奏循环播放。
+mix_000124,random_mix,audio/mix_000124.wav,13.7,2,Background music plays steadily.
+mix_000125,random_mix,audio/mix_000125.wav,17.9,4,"""月亮代表我的心"""
+mix_000126,random_mix,audio/mix_000126.wav,24.1,2,"""la la la, dancing in the rain"""
+mix_000127,random_mix,audio/mix_000127.wav,17.6,4,"""take me home tonight"""
+mix_000128,random_mix,audio/mix_000128.wav,15.4,4,背景音乐持续播放，节奏平稳。
+mix_000129,random_mix,audio/mix_000129.wav,17.1,4,背景音乐持续播放，节奏平稳。
+mix_000130,random_mix,audio/mix_000130.wav,29.6,4,A speaker is talking.
+mix_000131,random_mix,audio/mix_000131.wav,18.2,4,A speaker is talking.
+mix_000132,random_mix,audio/mix_000132.wav,28.6,4,Background music plays steadily.
+mix_000133,random_mix,audio/mix_000133.wav,21.8,4,一次玻璃破碎声。
+mix_000134,random_mix,audio/mix_000134.wav,14.1,3,"""take me home tonight"""
+mix_000135,random_mix,audio/mix_000135.wav,18.2,2,"""月亮代表我的心"""
+mix_000136,random_mix,audio/mix_000136.wav,13.5,2,A speaker is talking.
+mix_000137,random_mix,audio/mix_000137.wav,17.6,4,A speaker is talking.
+mix_000138,random_mix,audio/mix_000138.wav,27.9,3,"""la la la, dancing in the rain"""
+mix_000139,random_mix,audio/mix_000139.wav,29.8,3,一名说话者正在讲话。
+mix_000140,random_mix,audio/mix_000140.wav,14.4,4,电子伴奏循环播放。
+mix_000141,random_mix,audio/mix_000141.wav,10.3,3,背景音乐持续播放，节奏平稳。
+mix_000142,random_mix,audio/mix_000142.wav,29.0,2,"""月亮代表我的心"""
+mix_000143,random_mix,audio/mix_000143.wav,14.0,2,背景音乐持续播放，节奏平稳。
+mix_000144,random_mix,audio/mix_000144.wav,27.6,4,A glass breaking sound.
+mix_000145,random_mix,audio/mix_000145.wav,19.2,4,"""la la la, dancing in the rain"""
+mix_000146,random_mix,audio/mix_000146.wav,25.7,4,Background music plays steadily.
+mix_000147,random_mix,audio/mix_000147.wav,17.8,3,背景音乐持续播放，节奏平稳。
+mix_000148,random_mix,audio/mix_000148.wav,21.4,2,"""la la la, dancing in the rain"""
+mix_000149,random_mix,audio/mix_000149.wav,29.9,3,短促的撞击声。
+mix_000150,random_mix,audio/mix_000150.wav,17.2,2,电子伴奏循环播放。
+mix_000151,random_mix,audio/mix_000151.wav,18.9,4,短促的撞击声。
+mix_000152,random_mix,audio/mix_000152.wav,21.4,3,电子伴奏循环播放。
+mix_000153,random_mix,audio/mix_000153.wav,13.7,4,电子伴奏循环播放。
+mix_000154,random_mix,audio/mix_000154.wav,20.6,2,说话者描述当前场景。
+mix_000155,random_mix,audio/mix_000155.wav,23.9,3,一名说话者正在讲话。
+mix_000156,random_mix,audio/mix_000156.wav,17.1,2,一名说话者正在讲话。
+mix_000157,random_mix,audio/mix_000157.wav,22.7,3,一名说话者正在讲话。
+mix_000158,random_mix,audio/mix_000158.wav,24.4,4,"""月亮代表我的心"""
+mix_000159,random_mix,audio/mix_000159.wav,14.7,4,背景音乐持续播放，节奏平稳。
+mix_000160,random_mix,audio/mix_000160.wav,18.0,3,说话者描述当前场景。
+mix_000161,random_mix,audio/mix_000161.wav,28.4,3,说话者描述当前场景。
+mix_000162,random_mix,audio/mix_000162.wav,26.6,3,"""月亮代表我的心"""
+mix_000163,random_mix,audio/mix_000163.wav,11.4,2,远处的犬吠。
+mix_000164,random_mix,audio/mix_000164.wav,16.4,4,A speaker is talking.
+mix_000165,random_mix,audio/mix_000165.wav,16.3,4,说话者描述当前场景。
+mix_000166,random_mix,audio/mix_000166.wav,28.8,2,"""la la la, dancing in the rain"""
+mix_000167,random_mix,audio/mix_000167.wav,17.8,4,A speaker is talking.
+mix_000168,random_mix,audio/mix_000168.wav,26.0,2,"""月亮代表我的心"""
+mix_000169,random_mix,audio/mix_000169.wav,28.4,3,Background music plays steadily.
+mix_000170,random_mix,audio/mix_000170.wav,11.8,4,电子伴奏循环播放。
+mix_000171,random_mix,audio/mix_000171.wav,25.9,4,"""la la la, dancing in the rain"""
+mix_000172,random_mix,audio/mix_000172.wav,22.7,3,短促的撞击声。
+mix_000173,random_mix,audio/mix_000173.wav,27.5,3,一名说话者正在讲话。
+mix_000174,random_mix,audio/mix_000174.wav,13.7,4,远处的犬吠。
+mix_000175,random_mix,audio/mix_000175.wav,18.0,2,A glass breaking sound.
+mix_000176,random_mix,audio/mix_000176.wav,21.6,3,电子伴奏循环播放。
+mix_000177,random_mix,audio/mix_000177.wav,10.1,3,Background music plays steadily.
+mix_000178,random_mix,audio/mix_000178.wav,23.7,4,电子伴奏循环播放。
+mix_000179,random_mix,audio/mix_000179.wav,25.6,2,一名说话者正在讲话。
+mix_000180,random_mix,audio/mix_000180.wav,29.4,4,A speaker is talking.
+mix_000181,random_mix,audio/mix_000181.wav,13.4,2,Background music plays steadily.
+mix_000182,random_mix,audio/mix_000182.wav,20.4,2,"""月亮代表我的心"""
+mix_000183,random_mix,audio/mix_000183.wav,14.8,3,电子伴奏循环播放。
+mix_000184,random_mix,audio/mix_000184.wav,26.2,4,"""take me home tonight"""
+mix_000185,random_mix,audio/mix_000185.wav,13.1,4,短促的撞击声。
+mix_000186,random_mix,audio/mix_000186.wav,11.3,3,一次玻璃破碎声。
+mix_000187,random_mix,audio/mix_000187.wav,15.2,3,远处的犬吠。
+mix_000188,random_mix,audio/mix_000188.wav,24.5,2,说话者描述当前场景。
+mix_000189,random_mix,audio/mix_000189.wav,19.4,2,一次玻璃破碎声。
+mix_000190,random_mix,audio/mix_000190.wav,12.0,4,远处的犬吠。
+mix_000191,random_mix,audio/mix_000191.wav,24.7,2,说话者描述当前场景。
+mix_000192,random_mix,audio/mix_000192.wav,10.8,2,一名说话者正在讲话。
+mix_000193,random_mix,audio/mix_000193.wav,27.5,4,远处的犬吠。
+mix_000194,random_mix,audio/mix_000194.wav,26.6,3,一次玻璃破碎声。
+mix_000195,random_mix,audio/mix_000195.wav,20.4,4,说话者描述当前场景。
+mix_000196,random_mix,audio/mix_000196.wav,12.7,2,A speaker is talking.
+mix_000197,random_mix,audio/mix_000197.wav,12.9,2,"""la la la, dancing in the rain"""
+mix_000198,random_mix,audio/mix_000198.wav,28.3,3,A glass breaking sound.
+mix_000199,random_mix,audio/mix_000199.wav,15.7,4,A glass breaking sound.
+mix_000200,random_mix,audio/mix_000200.wav,13.3,4,一次玻璃破碎声。
+mix_000201,random_mix,audio/mix_000201.wav,27.5,2,A glass breaking sound.
+mix_000202,random_mix,audio/mix_000202.wav,19.7,3,一次玻璃破碎声。
+mix_000203,random_mix,audio/mix_000203.wav,14.3,4,"""月亮代表我的心"""
+mix_000204,random_mix,audio/mix_000204.wav,20.8,3,说话者描述当前场景。
+mix_000205,random_mix,audio/mix_000205.wav,11.1,2,A glass breaking sound.
+mix_000206,random_mix,audio/mix_000206.wav,20.5,4,一名说话者正在讲话。
+mix_000207,random_mix,audio/mix_000207.wav,10.7,2,"""月亮代表我的心"""
+mix_000208,random_mix,audio/mix_000208.wav,22.2,3,电子伴奏循环播放。
+mix_000209,random_mix,audio/mix_000209.wav,13.9,4,一名说话者正在讲话。
+mix_000210,random_mix,audio/mix_000210.wav,27.2,3,电子伴奏循环播放。
+mix_000211,random_mix,audio/mix_000211.wav,23.9,4,A glass breaking sound.
+mix_000212,random_mix,audio/mix_000212.wav,14.5,2,短促的撞击声。
+mix_000213,random_mix,audio/mix_000213.wav,27.1,5,一名说话者正在讲话。
+mix_000214,random_mix,audio/mix_000214.wav,22.1,2,"""月亮代表我的心"""
+mix_000215,random_mix,audio/mix_000215.wav,28.6,2,"""take me home tonight"""
+mix_000216,random_mix,audio/mix_000216.wav,16.2,2,"""don't stop believing, hold on to that feeling"""
+mix_000217,random_mix,audio/mix_000217.wav,12.6,2,A speaker is talking.
+mix_000218,random_mix,audio/mix_000218.wav,10.7,2,A speaker is talking.
+mix_000219,random_mix,audio/mix_000219.wav,11.9,3,电子伴奏循环播放。
+mix_000220,random_mix,audio/mix_000220.wav,20.5,3,A speaker is talking.
+mix_000221,random_mix,audio/mix_000221.wav,12.9,3,一次玻璃破碎声。
+mix_000222,random_mix,audio/mix_000222.wav,10.9,4,一名说话者正在讲话。
+mix_000223,random_mix,audio/mix_000223.wav,28.8,3,一名说话者正在讲话。
+mix_000224,random_mix,audio/mix_000224.wav,10.3,3,"""don't stop believing, hold on to that feeling"""
+mix_000225,random_mix,audio/mix_000225.wav,17.5,3,远处的犬吠。
+mix_000226,random_mix,audio/mix_000226.wav,21.2,2,一名说话者正在讲话。
+mix_000227,random_mix,audio/mix_000227.wav,15.6,4,一名说话者正在讲话。
+mix_000228,random_mix,audio/mix_000228.wav,20.3,4,"""don't stop believing, hold on to that feeling"""
+mix_000229,random_mix,audio/mix_000229.wav,22.9,3,A speaker is talking.
+mix_000230,random_mix,audio/mix_000230.wav,20.8,3,A glass breaking sound.
+mix_000231,random_mix,audio/mix_000231.wav,12.2,4,一名说话者正在讲话。
+mix_000232,random_mix,audio/mix_000232.wav,23.2,3,电子伴奏循环播放。
+mix_000233,random_mix,audio/mix_000233.wav,21.2,4,一名说话者正在讲话。
+mix_000234,random_mix,audio/mix_000234.wav,29.7,2,短促的撞击声。
+mix_000235,random_mix,audio/mix_000235.wav,25.1,2,说话者描述当前场景。
+mix_000236,random_mix,audio/mix_000236.wav,26.1,3,A speaker is talking.
+mix_000237,random_mix,audio/mix_000237.wav,27.1,2,说话者描述当前场景。
+mix_000238,random_mix,audio/mix_000238.wav,20.9,3,一次玻璃破碎声。
+mix_000239,random_mix,audio/mix_000239.wav,11.6,2,"""take me home tonight"""
+mix_000240,random_mix,audio/mix_000240.wav,11.0,4,说话者描述当前场景。
+mix_000241,random_mix,audio/mix_000241.wav,13.8,2,A speaker is talking.
+mix_000242,random_mix,audio/mix_000242.wav,13.8,2,A speaker is talking.
+mix_000243,random_mix,audio/mix_000243.wav,14.2,3,A speaker is talking.
+mix_000244,random_mix,audio/mix_000244.wav,29.4,3,"""take me home tonight"""
+mix_000245,random_mix,audio/mix_000245.wav,26.6,3,背景音乐持续播放，节奏平稳。
+mix_000246,random_mix,audio/mix_000246.wav,11.6,4,说话者描述当前场景。
+mix_000247,random_mix,audio/mix_000247.wav,11.4,2,A speaker is talking.
+mix_000248,random_mix,audio/mix_000248.wav,17.5,4,说话者描述当前场景。
+mix_000249,random_mix,audio/mix_000249.wav,21.2,2,远处的犬吠。
+mix_000250,random_mix,audio/mix_000250.wav,21.1,2,"""la la la, dancing in the rain"""
+mix_000251,random_mix,audio/mix_000251.wav,18.1,3,"""take me home tonight"""
+mix_000252,random_mix,audio/mix_000252.wav,12.5,4,"""月亮代表我的心"""
+mix_000253,random_mix,audio/mix_000253.wav,25.0,4,A glass breaking sound.
+mix_000254,random_mix,audio/mix_000254.wav,22.7,3,背景音乐持续播放，节奏平稳。
+mix_000255,random_mix,audio/mix_000255.wav,26.5,4,说话者描述当前场景。
+mix_000256,random_mix,audio/mix_000256.wav,26.0,3,"""take me home tonight"""
+mix_000257,random_mix,audio/mix_000257.wav,18.0,2,"""la la la, dancing in the rain"""
+mix_000258,random_mix,audio/mix_000258.wav,14.8,2,Background music plays steadily.
+mix_000259,random_mix,audio/mix_000259.wav,18.6,4,电子伴奏循环播放。
+mix_000260,random_mix,audio/mix_000260.wav,22.4,3,"""la la la, dancing in the rain"""
+mix_000261,random_mix,audio/mix_000261.wav,15.1,3,远处的犬吠。
+mix_000262,random_mix,audio/mix_000262.wav,11.8,4,A speaker is talking.
+mix_000263,random_mix,audio/mix_000263.wav,16.3,2,背景音乐持续播放，节奏平稳。
+mix_000264,random_mix,audio/mix_000264.wav,27.8,2,短促的撞击声。
+mix_000265,random_mix,audio/mix_000265.wav,26.1,2,电子伴奏循环播放。
+mix_000266,random_mix,audio/mix_000266.wav,29.3,3,A glass breaking sound.
+mix_000267,random_mix,audio/mix_000267.wav,11.6,3,A glass breaking sound.
+mix_000268,random_mix,audio/mix_000268.wav,16.2,3,"""take me home tonight"""
+mix_000269,random_mix,audio/mix_000269.wav,14.4,2,远处的犬吠。
+mix_000270,random_mix,audio/mix_000270.wav,26.4,2,电子伴奏循环播放。
+mix_000271,random_mix,audio/mix_000271.wav,19.1,2,"""月亮代表我的心"""
+mix_000272,random_mix,audio/mix_000272.wav,19.6,2,A speaker is talking.
+mix_000273,random_mix,audio/mix_000273.wav,17.1,3,说话者描述当前场景。
+mix_000274,random_mix,audio/mix_000274.wav,18.2,3,Background music plays steadily.
+mix_000275,random_mix,audio/mix_000275.wav,10.5,2,短促的撞击声。
+mix_000276,random_mix,audio/mix_000276.wav,12.2,3,电子伴奏循环播放。
+mix_000277,random_mix,audio/mix_000277.wav,19.1,3,A speaker is talking.
+mix_000278,random_mix,audio/mix_000278.wav,26.2,3,"""la la la, dancing in the rain"""
+mix_000279,random_mix,audio/mix_000279.wav,24.8,2,"""take me home tonight"""
+mix_000280,random_mix,audio/mix_000280.wav,11.5,2,一次玻璃破碎声。
+mix_000281,random_mix,audio/mix_000281.wav,19.6,4,说话者描述当前场景。
+mix_000282,random_mix,audio/mix_000282.wav,20.9,4,远处的犬吠。
+mix_000283,random_mix,audio/mix_000283.wav,18.7,3,"""月亮代表我的心"""
+mix_000284,random_mix,audio/mix_000284.wav,13.4,4,说话者描述当前场景。
+mix_000285,random_mix,audio/mix_000285.wav,26.0,3,"""take me home tonight"""
+mix_000286,random_mix,audio/mix_000286.wav,20.6,3,A glass breaking sound.
+mix_000287,random_mix,audio/mix_000287.wav,11.6,3,A speaker is talking.
+mix_000288,random_mix,audio/mix_000288.wav,17.9,3,说话者描述当前场景。
+mix_000289,random_mix,audio/mix_000289.wav,26.5,3,"""don't stop believing, hold on to that feeling"""
+mix_000290,random_mix,audio/mix_000290.wav,17.4,2,说话者描述当前场景。
+mix_000291,random_mix,audio/mix_000291.wav,25.2,4,A glass breaking sound.
+mix_000292,random_mix,audio/mix_000292.wav,27.1,4,电子伴奏循环播放。
+mix_000293,random_mix,audio/mix_000293.wav,13.1,3,A glass breaking sound.
+mix_000294,random_mix,audio/mix_000294.wav,24.2,4,说话者描述当前场景。
+mix_000295,random_mix,audio/mix_000295.wav,15.2,4,说话者描述当前场景。
+mix_000296,random_mix,audio/mix_000296.wav,17.9,3,A speaker is talking.
+mix_000297,random_mix,audio/mix_000297.wav,10.1,4,说话者描述当前场景。
+mix_000298,random_mix,audio/mix_000298.wav,15.0,3,背景音乐持续播放，节奏平稳。
+mix_000299,random_mix,audio/mix_000299.wav,26.3,2,"""don't stop believing, hold on to that feeling"""
+mix_000300,random_mix,audio/mix_000300.wav,24.5,2,电子伴奏循环播放。
+mix_000301,random_mix,audio/mix_000301.wav,28.8,2,远处的犬吠。
+mix_000302,random_mix,audio/mix_000302.wav,23.1,3,"""don't stop believing, hold on to that feeling"""
+mix_000303,random_mix,audio/mix_000303.wav,11.1,4,一名说话者正在讲话。
+mix_000304,random_mix,audio/mix_000304.wav,17.5,3,A speaker is talking.
+mix_000305,random_mix,audio/mix_000305.wav,27.6,4,一名说话者正在讲话。
+mix_000306,random_mix,audio/mix_000306.wav,13.8,3,A speaker is talking.
+mix_000307,random_mix,audio/mix_000307.wav,15.7,3,一名说话者正在讲话。
+mix_000308,random_mix,audio/mix_000308.wav,14.2,4,Background music plays steadily.
+mix_000309,random_mix,audio/mix_000309.wav,24.1,2,背景音乐持续播放，节奏平稳。
+mix_000310,random_mix,audio/mix_000310.wav,29.9,3,A speaker is talking.
+mix_000311,random_mix,audio/mix_000311.wav,21.9,4,说话者描述当前场景。
+mix_000312,random_mix,audio/mix_000312.wav,14.6,2,"""don't stop believing, hold on to that feeling"""
+mix_000313,random_mix,audio/mix_000313.wav,20.6,2,短促的撞击声。
+mix_000314,random_mix,audio/mix_000314.wav,11.8,2,"""don't stop believing, hold on to that feeling"""
+mix_000315,random_mix,audio/mix_000315.wav,27.0,4,一次玻璃破碎声。
+mix_000316,random_mix,audio/mix_000316.wav,20.9,4,一名说话者正在讲话。
+mix_000317,random_mix,audio/mix_000317.wav,15.6,4,"""la la la, dancing in the rain"""
+mix_000318,random_mix,audio/mix_000318.wav,21.3,2,A glass breaking sound.
+mix_000319,random_mix,audio/mix_000319.wav,11.1,3,短促的撞击声。
+mix_000320,random_mix,audio/mix_000320.wav,12.7,3,一名说话者正在讲话。
+mix_000321,random_mix,audio/mix_000321.wav,18.3,2,一名说话者正在讲话。
+mix_000322,random_mix,audio/mix_000322.wav,14.1,4,说话者描述当前场景。
+mix_000323,random_mix,audio/mix_000323.wav,20.6,4,背景音乐持续播放，节奏平稳。
+mix_000324,random_mix,audio/mix_000324.wav,27.4,2,短促的撞击声。
+mix_000325,random_mix,audio/mix_000325.wav,24.7,4,一名说话者正在讲话。
+mix_000326,random_mix,audio/mix_000326.wav,26.5,4,Background music plays steadily.
+mix_000327,random_mix,audio/mix_000327.wav,16.9,4,短促的撞击声。
+mix_000328,random_mix,audio/mix_000328.wav,23.5,2,说话者描述当前场景。
+mix_000329,random_mix,audio/mix_000329.wav,12.6,4,背景音乐持续播放，节奏平稳。
+mix_000330,random_mix,audio/mix_000330.wav,14.0,3,"""月亮代表我的心"""
+mix_000331,random_mix,audio/mix_000331.wav,25.2,4,A speaker is talking.
+mix_000332,random_mix,audio/mix_000332.wav,17.1,3,"""take me home tonight"""
+mix_000333,random_mix,audio/mix_000333.wav,26.3,2,"""月亮代表我的心"""
+mix_000334,random_mix,audio/mix_000334.wav,18.1,4,"""don't stop believing, hold on to that feeling"""
+mix_000335,random_mix,audio/mix_000335.wav,15.8,3,远处的犬吠。
+mix_000336,random_mix,audio/mix_000336.wav,26.9,4,A glass breaking sound.
+mix_000337,random_mix,audio/mix_000337.wav,23.7,2,"""don't stop believing, hold on to that feeling"""
+mix_000338,random_mix,audio/mix_000338.wav,25.9,2,电子伴奏循环播放。
+mix_000339,random_mix,audio/mix_000339.wav,21.3,3,短促的撞击声。
+mix_000340,random_mix,audio/mix_000340.wav,28.4,4,说话者描述当前场景。
+mix_000341,random_mix,audio/mix_000341.wav,18.8,3,"""月亮代表我的心"""
+mix_000342,random_mix,audio/mix_000342.wav,26.5,4,一名说话者正在讲话。
+mix_000343,random_mix,audio/mix_000343.wav,25.4,3,一名说话者正在讲话。
+mix_000344,random_mix,audio/mix_000344.wav,25.8,4,A speaker is talking.
+mix_000345,random_mix,audio/mix_000345.wav,14.8,3,"""月亮代表我的心"""
+mix_000346,random_mix,audio/mix_000346.wav,20.6,4,"""take me home tonight"""
+mix_000347,random_mix,audio/mix_000347.wav,26.9,4,短促的撞击声。
+mix_000348,random_mix,audio/mix_000348.wav,20.5,2,说话者描述当前场景。
+mix_000349,random_mix,audio/mix_000349.wav,21.1,2,A glass breaking sound.
+mix_000350,random_mix,audio/mix_000350.wav,21.3,2,A glass breaking sound.
+mix_000351,random_mix,audio/mix_000351.wav,11.9,2,"""月亮代表我的心"""
+mix_000352,random_mix,audio/mix_000352.wav,18.3,2,远处的犬吠。
+mix_000353,random_mix,audio/mix_000353.wav,16.9,4,"""don't stop believing, hold on to that feeling"""
+mix_000354,random_mix,audio/mix_000354.wav,22.1,4,A speaker is talking.
+mix_000355,random_mix,audio/mix_000355.wav,23.1,3,"""月亮代表我的心"""
+mix_000356,random_mix,audio/mix_000356.wav,11.3,2,"""la la la, dancing in the rain"""
+mix_000357,random_mix,audio/mix_000357.wav,15.7,2,Background music plays steadily.
+mix_000358,random_mix,audio/mix_000358.wav,19.3,4,一名说话者正在讲话。
+mix_000359,random_mix,audio/mix_000359.wav,12.8,4,一名说话者正在讲话。
+mix_000360,random_mix,audio/mix_000360.wav,13.9,2,说话者描述当前场景。
+mix_000361,random_mix,audio/mix_000361.wav,14.7,4,电子伴奏循环播放。
+mix_000362,random_mix,audio/mix_000362.wav,14.8,2,电子伴奏循环播放。
+mix_000363,random_mix,audio/mix_000363.wav,22.7,2,"""don't stop believing, hold on to that feeling"""
+mix_000364,random_mix,audio/mix_000364.wav,14.0,2,"""月亮代表我的心"""
+mix_000365,random_mix,audio/mix_000365.wav,11.0,4,"""take me home tonight"""
+mix_000366,random_mix,audio/mix_000366.wav,12.6,2,短促的撞击声。
+mix_000367,random_mix,audio/mix_000367.wav,12.3,2,说话者描述当前场景。
+mix_000368,random_mix,audio/mix_000368.wav,11.3,3,短促的撞击声。
+mix_000369,random_mix,audio/mix_000369.wav,24.1,4,"""月亮代表我的心"""
+mix_000370,random_mix,audio/mix_000370.wav,13.9,4,远处的犬吠。
+mix_000371,random_mix,audio/mix_000371.wav,15.1,2,A speaker is talking.
+mix_000372,random_mix,audio/mix_000372.wav,20.2,4,远处的犬吠。
+mix_000373,random_mix,audio/mix_000373.wav,22.5,3,A speaker is talking.
+mix_000374,random_mix,audio/mix_000374.wav,21.3,2,短促的撞击声。
+mix_000375,random_mix,audio/mix_000375.wav,20.9,4,一名说话者正在讲话。
+mix_000376,random_mix,audio/mix_000376.wav,12.9,2,"""la la la, dancing in the rain"""
+mix_000377,random_mix,audio/mix_000377.wav,26.5,2,短促的撞击声。
+mix_000378,random_mix,audio/mix_000378.wav,10.6,2,一名说话者正在讲话。
+mix_000379,random_mix,audio/mix_000379.wav,18.6,3,说话者描述当前场景。
+mix_000380,random_mix,audio/mix_000380.wav,13.7,4,说话者描述当前场景。
+mix_000381,random_mix,audio/mix_000381.wav,18.9,3,"""don't stop believing, hold on to that feeling"""
+mix_000382,random_mix,audio/mix_000382.wav,21.8,4,"""don't stop believing, hold on to that feeling"""
+mix_000383,random_mix,audio/mix_000383.wav,29.1,2,Background music plays steadily.
+mix_000384,random_mix,audio/mix_000384.wav,23.5,3,Background music plays steadily.
+mix_000385,random_mix,audio/mix_000385.wav,20.2,4,"""take me home tonight"""
+mix_000386,random_mix,audio/mix_000386.wav,25.1,2,短促的撞击声。
+mix_000387,random_mix,audio/mix_000387.wav,27.4,3,"""la la la, dancing in the rain"""
+mix_000388,random_mix,audio/mix_000388.wav,19.9,2,一次玻璃破碎声。
+mix_000389,random_mix,audio/mix_000389.wav,12.7,2,说话者描述当前场景。
+mix_000390,random_mix,audio/mix_000390.wav,14.4,3,背景音乐持续播放，节奏平稳。
+mix_000391,random_mix,audio/mix_000391.wav,24.5,3,一次玻璃破碎声。
+mix_000392,random_mix,audio/mix_000392.wav,13.7,4,"""la la la, dancing in the rain"""
+mix_000393,random_mix,audio/mix_000393.wav,12.4,4,"""la la la, dancing in the rain"""
+mix_000394,random_mix,audio/mix_000394.wav,18.7,2,Background music plays steadily.
+mix_000395,random_mix,audio/mix_000395.wav,18.6,2,电子伴奏循环播放。
+mix_000396,random_mix,audio/mix_000396.wav,24.7,4,一名说话者正在讲话。
+mix_000397,random_mix,audio/mix_000397.wav,11.5,3,A glass breaking sound.
+mix_000398,random_mix,audio/mix_000398.wav,12.5,4,说话者描述当前场景。
+mix_000399,random_mix,audio/mix_000399.wav,16.3,3,电子伴奏循环播放。
+mix_000400,random_mix,audio/mix_000400.wav,21.3,4,一名说话者正在讲话。
+mix_000401,random_mix,audio/mix_000401.wav,20.1,3,说话者描述当前场景。
+mix_000402,random_mix,audio/mix_000402.wav,28.6,2,Background music plays steadily.
+mix_000403,random_mix,audio/mix_000403.wav,23.3,2,说话者描述当前场景。
+mix_000404,random_mix,audio/mix_000404.wav,28.4,2,说话者描述当前场景。
+mix_000405,random_mix,audio/mix_000405.wav,27.6,3,Background music plays steadily.
+mix_000406,random_mix,audio/mix_000406.wav,10.7,3,A speaker is talking.
+mix_000407,random_mix,audio/mix_000407.wav,24.8,4,"""take me home tonight"""
+mix_000408,random_mix,audio/mix_000408.wav,20.1,4,Background music plays steadily.
+mix_000409,random_mix,audio/mix_000409.wav,27.3,4,背景音乐持续播放，节奏平稳。
+mix_000410,random_mix,audio/mix_000410.wav,26.1,3,A speaker is talking.
+mix_000411,random_mix,audio/mix_000411.wav,11.9,4,"""la la la, dancing in the rain"""
+mix_000412,random_mix,audio/mix_000412.wav,14.3,4,"""take me home tonight"""
+mix_000413,random_mix,audio/mix_000413.wav,14.5,4,"""take me home tonight"""
+mix_000414,random_mix,audio/mix_000414.wav,11.9,3,远处的犬吠。
+mix_000415,random_mix,audio/mix_000415.wav,23.2,3,远处的犬吠。
+mix_000416,random_mix,audio/mix_000416.wav,21.2,3,远处的犬吠。
+mix_000417,random_mix,audio/mix_000417.wav,11.9,2,A glass breaking sound.
+mix_000418,random_mix,audio/mix_000418.wav,12.0,3,"""don't stop believing, hold on to that feeling"""
+mix_000419,random_mix,audio/mix_000419.wav,22.8,2,"""la la la, dancing in the rain"""
+mix_000420,random_mix,audio/mix_000420.wav,21.8,4,背景音乐持续播放，节奏平稳。
+mix_000421,random_mix,audio/mix_000421.wav,28.0,4,背景音乐持续播放，节奏平稳。
+mix_000422,random_mix,audio/mix_000422.wav,20.4,4,一名说话者正在讲话。
+mix_000423,random_mix,audio/mix_000423.wav,17.9,4,电子伴奏循环播放。
+mix_000424,random_mix,audio/mix_000424.wav,16.5,3,Background music plays steadily.
+mix_000425,random_mix,audio/mix_000425.wav,23.2,4,"""don't stop believing, hold on to that feeling"""
+mix_000426,random_mix,audio/mix_000426.wav,25.9,4,Background music plays steadily.
+mix_000427,random_mix,audio/mix_000427.wav,23.1,3,一次玻璃破碎声。
+mix_000428,random_mix,audio/mix_000428.wav,25.8,2,"""月亮代表我的心"""
+mix_000429,random_mix,audio/mix_000429.wav,21.5,4,Background music plays steadily.
+mix_000430,random_mix,audio/mix_000430.wav,10.4,2,A speaker is talking.
+mix_000431,random_mix,audio/mix_000431.wav,10.5,2,"""月亮代表我的心"""
+mix_000432,random_mix,audio/mix_000432.wav,12.2,4,短促的撞击声。
+mix_000433,random_mix,audio/mix_000433.wav,26.0,2,A speaker is talking.
+mix_000434,random_mix,audio/mix_000434.wav,22.2,4,"""take me home tonight"""
+mix_000435,random_mix,audio/mix_000435.wav,18.9,4,一次玻璃破碎声。
+mix_000436,random_mix,audio/mix_000436.wav,29.2,2,Background music plays steadily.
+mix_000437,random_mix,audio/mix_000437.wav,13.2,2,Background music plays steadily.
+mix_000438,random_mix,audio/mix_000438.wav,10.3,4,A glass breaking sound.
+mix_000439,random_mix,audio/mix_000439.wav,24.4,3,Background music plays steadily.
+mix_000440,random_mix,audio/mix_000440.wav,28.9,4,电子伴奏循环播放。
+mix_000441,random_mix,audio/mix_000441.wav,24.1,4,"""take me home tonight"""
+mix_000442,random_mix,audio/mix_000442.wav,17.2,4,A glass breaking sound.
+mix_000443,random_mix,audio/mix_000443.wav,20.7,4,说话者描述当前场景。
+mix_000444,random_mix,audio/mix_000444.wav,10.6,3,背景音乐持续播放，节奏平稳。
+mix_000445,random_mix,audio/mix_000445.wav,20.3,4,一次玻璃破碎声。
+mix_000446,random_mix,audio/mix_000446.wav,17.6,3,A speaker is talking.
+mix_000447,random_mix,audio/mix_000447.wav,24.1,4,说话者描述当前场景。
+mix_000448,random_mix,audio/mix_000448.wav,24.1,3,"""don't stop believing, hold on to that feeling"""
+mix_000449,random_mix,audio/mix_000449.wav,10.4,3,电子伴奏循环播放。
+mix_000450,random_mix,audio/mix_000450.wav,17.4,4,一名说话者正在讲话。
+mix_000451,random_mix,audio/mix_000451.wav,20.9,2,Background music plays steadily.
+mix_000452,random_mix,audio/mix_000452.wav,21.5,2,背景音乐持续播放，节奏平稳。
+mix_000453,random_mix,audio/mix_000453.wav,19.3,3,A speaker is talking.
+mix_000454,random_mix,audio/mix_000454.wav,12.0,2,"""月亮代表我的心"""
+mix_000455,random_mix,audio/mix_000455.wav,14.1,3,短促的撞击声。
+mix_000456,random_mix,audio/mix_000456.wav,17.9,3,电子伴奏循环播放。
+mix_000457,random_mix,audio/mix_000457.wav,13.0,2,Background music plays steadily.
+mix_000458,random_mix,audio/mix_000458.wav,26.3,3,短促的撞击声。
+mix_000459,random_mix,audio/mix_000459.wav,18.7,3,"""take me home tonight"""
+mix_000460,random_mix,audio/mix_000460.wav,14.5,2,远处的犬吠。
+mix_000461,random_mix,audio/mix_000461.wav,15.1,2,"""take me home tonight"""
+mix_000462,random_mix,audio/mix_000462.wav,28.7,3,Background music plays steadily.
+mix_000463,random_mix,audio/mix_000463.wav,16.4,4,"""la la la, dancing in the rain"""
+mix_000464,random_mix,audio/mix_000464.wav,28.4,4,"""月亮代表我的心"""
+mix_000465,random_mix,audio/mix_000465.wav,23.1,2,一名说话者正在讲话。
+mix_000466,random_mix,audio/mix_000466.wav,19.2,3,一次玻璃破碎声。
+mix_000467,random_mix,audio/mix_000467.wav,17.1,4,说话者描述当前场景。
+mix_000468,random_mix,audio/mix_000468.wav,22.2,4,电子伴奏循环播放。
+mix_000469,random_mix,audio/mix_000469.wav,26.2,3,A glass breaking sound.
+mix_000470,random_mix,audio/mix_000470.wav,15.9,2,远处的犬吠。
+mix_000471,random_mix,audio/mix_000471.wav,21.8,2,"""月亮代表我的心"""
+mix_000472,random_mix,audio/mix_000472.wav,26.5,2,"""don't stop believing, hold on to that feeling"""
+mix_000473,random_mix,audio/mix_000473.wav,29.2,3,背景音乐持续播放，节奏平稳。
+mix_000474,random_mix,audio/mix_000474.wav,29.9,2,"""take me home tonight"""
+mix_000475,random_mix,audio/mix_000475.wav,29.6,2,电子伴奏循环播放。
+mix_000476,random_mix,audio/mix_000476.wav,19.7,2,电子伴奏循环播放。
+mix_000477,random_mix,audio/mix_000477.wav,12.7,4,"""la la la, dancing in the rain"""
+mix_000478,random_mix,audio/mix_000478.wav,15.2,4,背景音乐持续播放，节奏平稳。
+mix_000479,random_mix,audio/mix_000479.wav,29.9,4,"""don't stop believing, hold on to that feeling"""
+mix_000480,random_mix,audio/mix_000480.wav,23.8,2,"""la la la, dancing in the rain"""
+mix_000481,random_mix,audio/mix_000481.wav,28.0,3,电子伴奏循环播放。
+mix_000482,random_mix,audio/mix_000482.wav,16.8,3,"""don't stop believing, hold on to that feeling"""
+mix_000483,random_mix,audio/mix_000483.wav,14.9,3,说话者描述当前场景。
+mix_000484,random_mix,audio/mix_000484.wav,10.9,4,"""月亮代表我的心"""
+mix_000485,random_mix,audio/mix_000485.wav,21.7,3,短促的撞击声。
+mix_000486,random_mix,audio/mix_000486.wav,12.2,4,电子伴奏循环播放。
+mix_000487,random_mix,audio/mix_000487.wav,11.1,3,背景音乐持续播放，节奏平稳。
+mix_000488,random_mix,audio/mix_000488.wav,17.0,3,电子伴奏循环播放。
+mix_000489,random_mix,audio/mix_000489.wav,25.0,2,"""la la la, dancing in the rain"""
+mix_000490,random_mix,audio/mix_000490.wav,17.2,2,A speaker is talking.
+mix_000491,random_mix,audio/mix_000491.wav,12.7,3,一次玻璃破碎声。
+mix_000492,random_mix,audio/mix_000492.wav,17.7,4,短促的撞击声。
+mix_000493,random_mix,audio/mix_000493.wav,20.1,3,Background music plays steadily.
+mix_000494,random_mix,audio/mix_000494.wav,26.0,3,一次玻璃破碎声。
+mix_000495,random_mix,audio/mix_000495.wav,16.0,4,一名说话者正在讲话。
+mix_000496,random_mix,audio/mix_000496.wav,29.3,4,电子伴奏循环播放。
+mix_000497,random_mix,audio/mix_000497.wav,14.8,4,说话者描述当前场景。
+mix_000498,random_mix,audio/mix_000498.wav,16.9,4,Background music plays steadily.
+mix_000499,random_mix,audio/mix_000499.wav,11.5,2,背景音乐持续播放，节奏平稳。
+mix_000500,random_mix,audio/mix_000500.wav,13.7,2,说话者描述当前场景。

@@ -1,0 +1,42 @@
+# B2-10k-steps: same B2 config but 10000 steps (vs B2's 1000).
+# Tests: does more training help or cause overfitting on 500 clips?
+model:
+  path: /tmp/moss_weights
+  device: cuda:0
+  dtype: bfloat16
+  freeze_audio_encoder: true
+  freeze_base_llm: true
+
+lora:
+  rank: 128
+  alpha: 256
+  dropout: 0.05
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+data:
+  manifest_path: data/derived/tac_mini/manifest.jsonl
+  audio_base_dir: /tmp/tac_mini
+  sample_rate: 16000
+  max_audio_seconds: 30.0
+  style: brief
+  target_mode: atomic
+  group_key: source_id
+  val_fraction: 0.1
+
+train:
+  steps: 10000                    # 10x B2's 1000 steps
+  global_effective_batch: 8
+  micro_batch_size: 1
+  learning_rate: 5.0e-5
+  schedule: cosine
+  warmup_steps: 50
+  weight_decay: 0.0
+  max_grad_norm: 1.0
+  gradient_checkpointing: true
+  seed: 20260808
+  output_dir: outputs/b2_10k
+
+loss:
+  text_weight: 1.0
+  type_weight: 2.0
+  timestamp_weight: 5.0
