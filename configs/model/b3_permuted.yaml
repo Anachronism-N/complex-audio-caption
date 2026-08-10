@@ -1,6 +1,7 @@
-# B3-permuted: permutation-invariant training (shuffle event order).
-# Tests: does random event ordering help the model handle overlap better?
-# Same as B3 but events are shuffled in the target during training.
+# INVALIDATED historical config. The canonical formatter re-sorted shuffled
+# events, so the reported run changed 0/500 targets and was not permutation
+# invariant. The trainer now rejects shuffle_events instead of silently running
+# another sample-order variant. Do not use this config for paper experiments.
 model:
   path: /tmp/moss_weights
   device: cuda:0

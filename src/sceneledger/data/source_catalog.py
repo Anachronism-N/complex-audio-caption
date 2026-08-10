@@ -95,8 +95,10 @@ def load_source_catalog(
             raise ValueError(f"catalog row {index}: duplicate path {key}")
         if require_files and not resolved.is_file():
             raise FileNotFoundError(f"catalog row {index}: audio file not found: {resolved}")
-        if kind in {"speech", "vocal"} and not text:
-            raise ValueError(f"catalog row {index}: {kind} requires acoustically supported text")
+        if not text:
+            raise ValueError(
+                f"catalog row {index}: {kind} requires an acoustically supported label"
+            )
         verbatim = _coerce_bool(row.get("verbatim"))
         if kind == "vocal" and verbatim is not True:
             raise ValueError(
@@ -112,7 +114,7 @@ def load_source_catalog(
             SourceRecord(
                 path=key,
                 kind=kind,  # type: ignore[arg-type]
-                text=text or f"an audible {kind} event",
+                text=text,
                 source_group=source_group,
                 identity=str(row.get("identity", "")).strip() or None,
                 language=str(row.get("language", "")).strip() or None,

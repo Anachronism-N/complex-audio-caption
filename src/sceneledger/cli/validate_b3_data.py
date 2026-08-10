@@ -22,6 +22,7 @@ def _git_commit() -> str | None:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="sceneledger-validate-b3-data")
     parser.add_argument("--source-report", required=True)
+    parser.add_argument("--source-readiness-report", required=True)
     parser.add_argument("--render-report", required=True)
     parser.add_argument("--sft-metadata", required=True)
     parser.add_argument("--train-manifest", required=True)
@@ -33,6 +34,7 @@ def main(argv: list[str] | None = None) -> int:
 
     summary = validate_b3_data_release(
         source_report_path=args.source_report,
+        source_readiness_report_path=args.source_readiness_report,
         render_report_path=args.render_report,
         sft_metadata_path=args.sft_metadata,
         train_manifest_path=args.train_manifest,

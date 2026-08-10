@@ -87,6 +87,7 @@ runs:
     change: "Joint lyrics and overlapping speaker targets; no external Whisper."
     purpose: "Strongest autoregressive unified-caption baseline."
     validity_requirements:
+      - "source readiness report has pass=true and a frozen source_pool_id"
       - "B3 data reproduction summary has pass=true and a frozen dataset_id"
       - "file-backed vocal audio with verbatim lyrics"
       - "renderer replay, persisted hashes, and stem reconstruction all pass"

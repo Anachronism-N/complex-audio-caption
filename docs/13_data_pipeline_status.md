@@ -26,7 +26,7 @@ TAC-style 合成数据的最小闭环已经实现：scene graph → source rende
 | B0 MOSS zero-shot | 已运行旧 500 条 | 有 500 条 raw output | 旧运行不是完整 deterministic protocol，需在修复数据上 greedy 重跑 |
 | B1 MOSS static SFT | 官方格式导出和启动脚本已实现 | CPU 只验证数据导出 | GPU checkpoint、完整 val 指标待服务器运行 |
 | B2 TAC-style weighted CE | 301 个原子时间 token、PEFT embedding rows 和 reload 校验已实现 | CPU tokenizer/loss tests 已验证 | GPU B2 数字待服务器运行 |
-| B3-valid | 分阶段 catalog/render/export/audit、真实歌词 fail-closed、统一 target、dataset ID gate 已实现 | CPU renderer/export/acceptance fixtures 已验证 | 100 条真实 smoke、完整 source catalog 与 10k 正式数据待服务器完成 |
+| B3-valid | 分阶段 source-readiness/render/export/audit、真实歌词 fail-closed、统一 target、dataset ID gate 已实现 | CPU 音频 probe/去重/配额与 renderer/export/acceptance fixtures 已验证 | 服务器尚无真实 `source_pool_id`；在它通过前禁止 render 和训练 |
 | S1a-valid event slots | train/calibration/val 无泄漏划分、activity+boundary 双头、coverage-aware eval/消融已实现 | CPU 契约测试通过，Torch 模型测试待服务器 | 当前只做事件类型/时间，不含 track/text |
 | 真实公开单源数据 | LibriSpeech 下载/catalog 脚本已实现；受限 singing 数据手工登记 | 未在目标服务器完整下载/审计 | 许可证、路径、checksum 和配额待确认 |
 | B站/Instagram/TikTok 数据 | 原始无标注数据可用 | 未进入训练闭环 | 必须先做授权索引、去重、AV 切片和 teacher 置信度分层 |
@@ -105,19 +105,23 @@ bash scripts/run_b1_official.sh
 
 ### 3.5 冻结 B3-valid 数据
 
-先运行 100 条真实音源 smoke：
+先只验收真实音源池，不渲染：
 
 ```bash
 SOURCE_CATALOG=/data/b3/source_catalog.csv \
 SOURCE_AUDIO_ROOT=/data/b3/audio \
+SOURCE_PROFILE=smoke \
 WORK_DIR=/data/runs/b3_smoke \
 N_SAMPLES=100 \
+STAGE=sources \
 bash scripts/run_b3_data.sh
 ```
 
-只有 `data_reproduction_summary.json` 的 `pass=true` 且人工试听通过，才在新目录渲染 10k。
+只有 `source_readiness_report.json` 的 `pass=true`、`source_pool_id` 已冻结且单源人工试听通过，
+才运行 `STAGE=render`。之后按 `render → export → audit` 逐环验收；不要一次启动训练。
+只有 `data_reproduction_summary.json` 的 `pass=true` 且 mixture 人工试听通过，才在新目录渲染 10k。
 下游 B3/S1 runner 会拒绝没有通过该 gate 的数据。分阶段恢复、artifact contract 和失败检查见
-`docs/16_b3_data_reproduction.md`。
+`docs/16_b3_data_reproduction.md`；当前唯一应执行的步骤见 `docs/17_source_pool_readiness.md`。
 
 ## 4. B1 go/no-go gate
 

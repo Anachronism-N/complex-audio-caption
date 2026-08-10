@@ -44,18 +44,22 @@ MOSS 输入音频中每 2 秒插入的 time marker。训练器会：
 
 ### B3-valid：统一 speech / lyrics / music / sfx
 
-先只复现数据并生成 acceptance summary：
+先只验收真实 source pool；这一环未通过时不要渲染或训练：
 
 ```bash
 SOURCE_CATALOG=/path/to/source_catalog.csv \
 SOURCE_AUDIO_ROOT=/path/to/source_audio \
+SOURCE_PROFILE=smoke \
 WORK_DIR=/path/to/runs/b3_smoke \
 N_SAMPLES=100 \
+STAGE=sources \
 bash scripts/run_b3_data.sh
 ```
 
-脚本顺序为：source catalog 审计、真实音源混合、确定性验证、无泄漏划分、MOSS SFT 导出和
-最终数据验收。`data_reproduction_summary.json` 中 `pass=true` 后，才运行 B3 训练：
+`source_readiness_report.json` 必须通过音频解码/质量、decoded hash 去重、license、歌词、类型和
+source-group 配额，并生成冻结 `source_pool_id`。人工抽听单源通过后，才逐步运行
+`STAGE=render`、`STAGE=export` 和 `STAGE=audit`。`data_reproduction_summary.json` 中
+`pass=true` 后，才运行 B3 训练：
 
 ```bash
 STAGE=train WORK_DIR=/path/to/runs/b3_smoke \
@@ -65,7 +69,8 @@ bash scripts/run_b3_valid.sh
 ```
 
 smoke 通过并试听后，再在新目录使用 `N_SAMPLES=10000` 和 `MAX_STEPS=10000`。数据脚本支持
-`STAGE=sources/render/export/audit` 分段恢复；B3 脚本支持 `STAGE=data/train/infer/evaluate`。
+`STAGE=sources/source-audit/render/export/audit` 分段恢复；B3 脚本支持
+`STAGE=data/train/infer/evaluate`。
 完整产物、检查项和 `dataset_id` 冻结规则见 `docs/16_b3_data_reproduction.md`。
 
 ## 2. Source catalog 契约

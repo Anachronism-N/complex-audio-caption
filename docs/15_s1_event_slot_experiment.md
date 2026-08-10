@@ -63,6 +63,10 @@ eventness BCE、type CE、activity Dice 和按 clip duration 归一化的 bounda
 update-based warmup/cosine 与随机种子。它仍缺少本协议的 calibration checkpoint/threshold
 选择，因此服务器数字只能记为 exploratory，不能和 primary S1 表直接合并。
 
+历史 `configs/model/b3_permuted.yaml` 同样不能作为方法证据：训练器 shuffle 后，canonical
+formatter 会再次按 onset/type/id 排序，500/500 个 target 都未变化；共用 RNG 只改变了后续 epoch
+的样本顺序。训练入口现在会拒绝 `shuffle_events=true`，真实音源池通过前不再开展该消融。
+
 ## 3. 一次完整运行
 
 服务器应先安装项目和 MOSS 依赖，并把 MOSS-Audio 放在仓库的 `third_party/MOSS-Audio`；

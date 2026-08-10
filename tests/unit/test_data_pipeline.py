@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 import json
+import math
+import wave
+from array import array
 from pathlib import Path
 
 from sceneledger.cli.prepare_moss_sft import export_moss_sft
@@ -21,6 +24,160 @@ from sceneledger.data.reproduction import (
 )
 from sceneledger.data.schema import Ledger
 from sceneledger.data.source_catalog import load_source_catalog
+from sceneledger.data.source_readiness import (
+    audit_source_pool,
+    load_readiness_profile,
+    require_source_readiness_summary,
+)
+
+
+def _write_test_wav(
+    path: Path, *, frequency: float, duration: float = 0.2, amplitude: float = 0.2
+) -> None:
+    sample_rate = 8000
+    samples = array(
+        "h",
+        (
+            int(amplitude * 32767 * math.sin(2 * math.pi * frequency * i / sample_rate))
+            for i in range(int(sample_rate * duration))
+        ),
+    )
+    with wave.open(str(path), "wb") as handle:
+        handle.setnchannels(1)
+        handle.setsampwidth(2)
+        handle.setframerate(sample_rate)
+        handle.writeframes(samples.tobytes())
+
+
+def _write_real_source_fixture(tmp_path: Path, *, duplicate_audio: bool = False) -> Path:
+    rows = []
+    for index, kind in enumerate(("speech", "vocal", "music", "sfx", "ambience"), 1):
+        path = tmp_path / f"{kind}.wav"
+        frequency = 200.0 if duplicate_audio and kind in {"speech", "vocal"} else 200.0 + index * 40
+        _write_test_wav(path, frequency=frequency)
+        rows.append(
+            {
+                "path": str(path),
+                "kind": kind,
+                "text": "verbatim words" if kind in {"speech", "vocal"} else f"real {kind}",
+                "source_group": f"group-{index}",
+                "verbatim": True if kind == "vocal" else None,
+                "license": "CC0-1.0",
+                "dataset": "cpu-fixture",
+            }
+        )
+    catalog = tmp_path / "real_sources.jsonl"
+    catalog.write_text(
+        "".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8"
+    )
+    return catalog
+
+
+def _fixture_readiness_profile() -> dict:
+    return {
+        "audio": {
+            "min_rms_dbfs": -70.0,
+            "max_clipped_fraction": 0.1,
+            "per_kind": {
+                kind: {"min_duration_sec": 0.05, "max_duration_sec": 1.0}
+                for kind in ("speech", "vocal", "music", "sfx", "ambience")
+            },
+        },
+        "kinds": {
+            kind: {
+                "min_sources": 1,
+                "min_source_groups": 1,
+                "min_total_duration_sec": 0.1,
+            }
+            for kind in ("speech", "vocal", "music", "sfx", "ambience")
+        },
+    }
+
+
+def test_source_readiness_freezes_audio_identity_and_quality(tmp_path: Path):
+    catalog = _write_real_source_fixture(tmp_path)
+    inventory = tmp_path / "inventory.jsonl"
+    report = tmp_path / "readiness.json"
+    summary = audit_source_pool(
+        catalog_path=catalog,
+        inventory_path=inventory,
+        report_path=report,
+        profile_name="fixture",
+        profile_config=_fixture_readiness_profile(),
+        config_sha256="fixture-config",
+    )
+    assert summary["pass"] is True
+    assert summary["n_sources"] == summary["n_audio_ok"] == 5
+    assert summary["n_unique_decoded_audio"] == 5
+    assert summary["source_pool_id"]
+    assert require_source_readiness_summary(
+        report, expected_profile="fixture"
+    )["source_pool_id"] == summary["source_pool_id"]
+    rows = [json.loads(line) for line in inventory.read_text(encoding="utf-8").splitlines()]
+    assert all(row["byte_sha256"] and row["decoded_sha256"] for row in rows)
+    assert all(row["ok"] for row in rows)
+
+
+def test_versioned_source_readiness_profiles_cover_all_kinds() -> None:
+    config = Path(__file__).resolve().parents[2] / "configs/data/source_readiness.yaml"
+    for name in ("smoke", "release"):
+        profile, config_hash = load_readiness_profile(config, name)
+        assert set(profile["kinds"]) == {
+            "speech",
+            "vocal",
+            "music",
+            "sfx",
+            "ambience",
+        }
+        assert config_hash
+
+
+def test_source_readiness_rejects_duplicate_decoded_audio(tmp_path: Path):
+    catalog = _write_real_source_fixture(tmp_path, duplicate_audio=True)
+    summary = audit_source_pool(
+        catalog_path=catalog,
+        inventory_path=tmp_path / "inventory.jsonl",
+        report_path=tmp_path / "readiness.json",
+        profile_name="fixture",
+        profile_config=_fixture_readiness_profile(),
+        config_sha256="fixture-config",
+    )
+    assert summary["pass"] is False
+    assert "decoded_audio_unique" in summary["failed_checks"]
+
+
+def test_source_readiness_rejects_silent_audio(tmp_path: Path):
+    catalog = _write_real_source_fixture(tmp_path)
+    _write_test_wav(tmp_path / "sfx.wav", frequency=400.0, amplitude=0.0)
+    summary = audit_source_pool(
+        catalog_path=catalog,
+        inventory_path=tmp_path / "inventory.jsonl",
+        report_path=tmp_path / "readiness.json",
+        profile_name="fixture",
+        profile_config=_fixture_readiness_profile(),
+        config_sha256="fixture-config",
+    )
+    assert summary["pass"] is False
+    assert "all_audio_decoded_and_quality_checked" in summary["failed_checks"]
+
+
+def test_source_readiness_rejects_placeholder_license(tmp_path: Path):
+    catalog = _write_real_source_fixture(tmp_path)
+    rows = [json.loads(line) for line in catalog.read_text(encoding="utf-8").splitlines()]
+    rows[0]["license"] = "REPLACE_WITH_DATASET_LICENSE"
+    catalog.write_text(
+        "".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8"
+    )
+    summary = audit_source_pool(
+        catalog_path=catalog,
+        inventory_path=tmp_path / "inventory.jsonl",
+        report_path=tmp_path / "readiness.json",
+        profile_name="fixture",
+        profile_config=_fixture_readiness_profile(),
+        config_sha256="fixture-config",
+    )
+    assert summary["pass"] is False
+    assert "all_licenses_known" in summary["failed_checks"]
 
 
 def _entry(scene_id: str, paths: list[str]) -> ManifestEntry:
@@ -151,6 +308,26 @@ def test_source_catalog_requires_verbatim_real_lyrics(tmp_path: Path):
         load_source_catalog(catalog, require_files=False)
 
 
+def test_source_catalog_requires_real_label_for_every_kind(tmp_path: Path):
+    catalog = tmp_path / "sources.jsonl"
+    catalog.write_text(
+        json.dumps(
+            {
+                "path": "unlabeled.wav",
+                "kind": "sfx",
+                "text": "",
+                "source_group": "recording-1",
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    import pytest
+
+    with pytest.raises(ValueError, match="acoustically supported label"):
+        load_source_catalog(catalog, require_files=False)
+
+
 def test_sft_export_rejects_synthetic_vocal_lyrics(tmp_path: Path):
     entry = _entry("fake_lyrics", ["vocal:001"])
     entry.scene["sources"][0]["kind"] = "vocal"
@@ -267,6 +444,25 @@ def _write_valid_b3_acceptance_fixture(tmp_path: Path) -> dict[str, Path]:
         ),
         encoding="utf-8",
     )
+    source_inventory = tmp_path / "source_inventory.jsonl"
+    source_inventory.write_text("fixture-inventory\n", encoding="utf-8")
+    source_readiness_report = tmp_path / "source_readiness_report.json"
+    source_readiness_report.write_text(
+        json.dumps(
+            {
+                "pass": True,
+                "failed_checks": [],
+                "profile": "fixture",
+                "source_pool_id": "pool-fixture",
+                "source_catalog_sha256": file_hash(source_catalog),
+                "inventory_path": str(source_inventory),
+                "inventory_sha256": file_hash(source_inventory),
+                "n_sources": 5,
+                "n_audio_ok": 5,
+            }
+        ),
+        encoding="utf-8",
+    )
 
     entries = [_entry("s1", ["a.wav"]), _entry("s2", ["b.wav"]), _entry("s3", ["c.wav"])]
     full_manifest = tmp_path / "manifest.jsonl"
@@ -323,6 +519,7 @@ def _write_valid_b3_acceptance_fixture(tmp_path: Path) -> dict[str, Path]:
     )
     return {
         "source_report": source_report,
+        "source_readiness_report": source_readiness_report,
         "render_report": render_report,
         "sft_metadata": sft_metadata,
         "train_manifest": train_manifest,
@@ -334,6 +531,7 @@ def test_b3_data_release_summary_passes_only_complete_artifacts(tmp_path: Path):
     paths = _write_valid_b3_acceptance_fixture(tmp_path)
     summary = validate_b3_data_release(
         source_report_path=paths["source_report"],
+        source_readiness_report_path=paths["source_readiness_report"],
         render_report_path=paths["render_report"],
         sft_metadata_path=paths["sft_metadata"],
         train_manifest_path=paths["train_manifest"],
@@ -346,6 +544,7 @@ def test_b3_data_release_summary_passes_only_complete_artifacts(tmp_path: Path):
     assert summary["dataset_id"]
     repeated = validate_b3_data_release(
         source_report_path=paths["source_report"],
+        source_readiness_report_path=paths["source_readiness_report"],
         render_report_path=paths["render_report"],
         sft_metadata_path=paths["sft_metadata"],
         train_manifest_path=paths["train_manifest"],
@@ -365,6 +564,7 @@ def test_b3_data_release_summary_recomputes_source_leakage(tmp_path: Path):
     paths["sft_metadata"].write_text(json.dumps(metadata), encoding="utf-8")
     summary = validate_b3_data_release(
         source_report_path=paths["source_report"],
+        source_readiness_report_path=paths["source_readiness_report"],
         render_report_path=paths["render_report"],
         sft_metadata_path=paths["sft_metadata"],
         train_manifest_path=paths["train_manifest"],

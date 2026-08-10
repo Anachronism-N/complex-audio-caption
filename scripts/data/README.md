@@ -87,23 +87,33 @@ the connected-component splitter keeps the song in one fold.
 
 ## Reproduce and freeze B3-valid
 
-Use the staged runner after the combined catalog is ready. Start with 100 scenes:
+First run only the source-pool gate; do not render yet:
 
 ```bash
 SOURCE_CATALOG=/data/b3/source_catalog.jsonl \
 SOURCE_AUDIO_ROOT=/data/b3/audio \
+SOURCE_PROFILE=smoke \
 WORK_DIR=/data/runs/b3_smoke \
 N_SAMPLES=100 \
+STAGE=sources \
 bash scripts/run_b3_data.sh
 ```
 
-The runner writes source and manifest hashes, a full replay/PCM reconstruction
-report, leakage-safe MOSS splits, and `data_reproduction_summary.json`. The last
-file must contain `pass=true` and a non-empty `dataset_id`. Resume an interrupted
-run with `STAGE=sources`, `render`, `export`, or `audit`.
+This decodes every waveform and writes `source_inventory.jsonl` plus
+`source_readiness_report.json`. The report must contain `pass=true`, no failed
+checks, and a non-empty `source_pool_id`. It enforces the versioned `smoke`
+quotas in `configs/data/source_readiness.yaml`, known licenses, real labels,
+verbatim lyrics, exact decoded-audio deduplication, duration, RMS, and clipping
+limits. Re-run only this audit with `STAGE=source-audit`.
+
+After the source report passes and its stratified manual listening audit is
+recorded, continue one stage at a time with `STAGE=render`, `export`, and
+`audit`. The final stage writes `data_reproduction_summary.json`, which must
+contain `pass=true` and a non-empty `dataset_id`.
 
 After automated checks pass, listen to the stratified rows in
 `data/listen_list.csv`. Render the 10k release in a new directory; do not overwrite
 the accepted smoke directory with a different catalog or sample count. The full
 artifact and acceptance contract is documented in
-`docs/16_b3_data_reproduction.md`.
+`docs/16_b3_data_reproduction.md`; the immediate source-only procedure is
+`docs/17_source_pool_readiness.md`.

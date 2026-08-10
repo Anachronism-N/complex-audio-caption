@@ -55,6 +55,7 @@ def require_b3_data_summary(
 def validate_b3_data_release(
     *,
     source_report_path: str | Path,
+    source_readiness_report_path: str | Path,
     render_report_path: str | Path,
     sft_metadata_path: str | Path,
     train_manifest_path: str | Path,
@@ -69,6 +70,7 @@ def validate_b3_data_release(
 
     paths = {
         "source_report": Path(source_report_path).resolve(),
+        "source_readiness_report": Path(source_readiness_report_path).resolve(),
         "render_report": Path(render_report_path).resolve(),
         "sft_metadata": Path(sft_metadata_path).resolve(),
         "train_manifest": Path(train_manifest_path).resolve(),
@@ -80,7 +82,12 @@ def validate_b3_data_release(
         checks.append({"name": name, "pass": bool(passed), "detail": detail})
 
     documents: dict[str, dict] = {}
-    for name in ("source_report", "render_report", "sft_metadata"):
+    for name in (
+        "source_report",
+        "source_readiness_report",
+        "render_report",
+        "sft_metadata",
+    ):
         path = paths[name]
         check(f"{name}_exists", path.is_file(), str(path))
         if path.is_file():
@@ -133,6 +140,48 @@ def validate_b3_data_release(
                 "canonical_source_catalog_hash_matches",
                 source.get("output_sha256") == actual_hash,
                 {"reported": source.get("output_sha256"), "actual": actual_hash},
+            )
+
+    readiness = documents.get("source_readiness_report", {})
+    if readiness:
+        check(
+            "source_readiness_passed",
+            readiness.get("pass") is True and not readiness.get("failed_checks"),
+            readiness.get("failed_checks", []),
+        )
+        check(
+            "source_pool_id_present",
+            bool(readiness.get("source_pool_id")),
+            readiness.get("source_pool_id"),
+        )
+        check(
+            "all_source_audio_audited",
+            _safe_int(readiness.get("n_audio_ok"))
+            == _safe_int(readiness.get("n_sources"))
+            and _safe_int(readiness.get("n_sources")) > 0,
+            {
+                "n_audio_ok": readiness.get("n_audio_ok"),
+                "n_sources": readiness.get("n_sources"),
+            },
+        )
+        inventory_path = Path(str(readiness.get("inventory_path", "")))
+        inventory_exists = inventory_path.is_file()
+        check("source_inventory_exists", inventory_exists, str(inventory_path))
+        if inventory_exists:
+            actual_hash = file_hash(inventory_path)
+            check(
+                "source_inventory_hash_matches",
+                readiness.get("inventory_sha256") == actual_hash,
+                {"reported": readiness.get("inventory_sha256"), "actual": actual_hash},
+            )
+        if source:
+            check(
+                "readiness_uses_canonical_source_catalog",
+                readiness.get("source_catalog_sha256") == source.get("output_sha256"),
+                {
+                    "readiness": readiness.get("source_catalog_sha256"),
+                    "source": source.get("output_sha256"),
+                },
             )
 
     render = documents.get("render_report", {})
@@ -264,11 +313,16 @@ def validate_b3_data_release(
         source_catalog = Path(str(source.get("output", "")))
         if source_catalog.is_file():
             artifact_hashes["source_catalog"] = file_hash(source_catalog)
+    if readiness:
+        source_inventory = Path(str(readiness.get("inventory_path", "")))
+        if source_inventory.is_file():
+            artifact_hashes["source_inventory"] = file_hash(source_inventory)
 
     identity_hashes = {
         key: artifact_hashes[key]
         for key in (
             "source_catalog",
+            "source_inventory",
             "render_manifest",
             "train_manifest",
             "val_manifest",
@@ -277,7 +331,7 @@ def validate_b3_data_release(
     }
     passed = bool(checks) and all(item["pass"] is True for item in checks)
     return {
-        "schema_version": "b3-data-reproduction-v1",
+        "schema_version": "b3-data-reproduction-v2",
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "pass": passed,
         "status": "passed" if passed else "failed",
@@ -286,8 +340,9 @@ def validate_b3_data_release(
         "n_train": len(train_entries),
         "n_val": len(val_entries),
         "dataset_id": (
-            _identity_hash(identity_hashes) if len(identity_hashes) == 4 else None
+            _identity_hash(identity_hashes) if len(identity_hashes) == 5 else None
         ),
+        "source_pool_id": readiness.get("source_pool_id") if readiness else None,
         "artifact_hashes": artifact_hashes,
         "checks": checks,
         "failed_checks": [item["name"] for item in checks if item["pass"] is not True],

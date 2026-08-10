@@ -21,7 +21,7 @@ status_snapshot:
   p3_b1_official_pipeline: code_ready_gpu_pending
   p3_b2_weighted_timestamps: atomic_registration_code_ready_gpu_pending
   p4_b3_historical_artifact: superseded_invalid_lyrics_and_evaluation
-  p4_b3_valid_pipeline: staged_data_acceptance_code_ready_real_smoke_pending
+  p4_b3_valid_pipeline: source_readiness_code_ready_real_source_pool_pending
   p7_s1a_event_probe: dual_temporal_head_code_ready_torch_server_execution_pending
   tag2021_anchor: code_ready_server_execution_pending
   real_public_source_pool: not_server_verified

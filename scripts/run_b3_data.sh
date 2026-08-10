@@ -6,20 +6,29 @@ export PYTHONPATH="${PROJECT_ROOT}/src${PYTHONPATH:+:${PYTHONPATH}}"
 
 WORK_DIR="${WORK_DIR:-${PROJECT_ROOT}/runs/b3_valid}"
 DATA_CONFIG="${DATA_CONFIG:-${PROJECT_ROOT}/configs/data/b3_real.yaml}"
+SOURCE_READINESS_CONFIG="${SOURCE_READINESS_CONFIG:-${PROJECT_ROOT}/configs/data/source_readiness.yaml}"
 N_SAMPLES="${N_SAMPLES:-10000}"
 VAL_FRACTION="${VAL_FRACTION:-0.1}"
 SPLIT_SEED="${SPLIT_SEED:-20260808}"
 STAGE="${STAGE:-all}"
 TAG_SUMMARY="${TAG_SUMMARY:-${PROJECT_ROOT}/runs/tag2021/reproduction_summary.json}"
+if [[ -z "${SOURCE_PROFILE:-}" ]]; then
+  if (( N_SAMPLES <= 100 )); then
+    SOURCE_PROFILE="smoke"
+  else
+    SOURCE_PROFILE="release"
+  fi
+fi
 
 CANONICAL_CATALOG="${WORK_DIR}/source_catalog.jsonl"
 SOURCE_REPORT="${WORK_DIR}/source_catalog_report.json"
+SOURCE_INVENTORY="${WORK_DIR}/source_inventory.jsonl"
+SOURCE_READINESS_REPORT="${WORK_DIR}/source_readiness_report.json"
 DATA_DIR="${WORK_DIR}/data"
 RENDER_REPORT="${DATA_DIR}/validation_report.json"
 SFT_DIR="${WORK_DIR}/sft"
 DATA_SUMMARY="${WORK_DIR}/data_reproduction_summary.json"
 
-python "${PROJECT_ROOT}/scripts/repro/require_anchor_pass.py" "${TAG_SUMMARY}"
 mkdir -p "${WORK_DIR}"
 
 require_file() {
@@ -27,6 +36,10 @@ require_file() {
     echo "missing required data artifact: $1" >&2
     exit 2
   fi
+}
+
+require_anchor() {
+  python "${PROJECT_ROOT}/scripts/repro/require_anchor_pass.py" "${TAG_SUMMARY}"
 }
 
 run_sources() {
@@ -42,11 +55,31 @@ run_sources() {
     --require-kind music \
     --require-kind sfx \
     --require-kind ambience
+
+  run_source_audit
+}
+
+run_source_audit() {
+  require_file "${CANONICAL_CATALOG}"
+  python -m sceneledger.cli.audit_sources \
+    --catalog "${CANONICAL_CATALOG}" \
+    --config "${SOURCE_READINESS_CONFIG}" \
+    --profile "${SOURCE_PROFILE}" \
+    --inventory "${SOURCE_INVENTORY}" \
+    --report "${SOURCE_READINESS_REPORT}"
+}
+
+require_source_readiness() {
+  python "${PROJECT_ROOT}/scripts/data/require_source_readiness_pass.py" \
+    "${SOURCE_READINESS_REPORT}" \
+    --profile "${SOURCE_PROFILE}"
 }
 
 run_render() {
+  require_anchor
   require_file "${CANONICAL_CATALOG}"
   require_file "${SOURCE_REPORT}"
+  require_source_readiness
   python -m sceneledger.cli.render \
     --config "${DATA_CONFIG}" \
     --source-catalog "${CANONICAL_CATALOG}" \
@@ -57,6 +90,7 @@ run_render() {
 }
 
 run_export() {
+  require_anchor
   require_file "${DATA_DIR}/manifest.jsonl"
   require_file "${RENDER_REPORT}"
   python -m sceneledger.cli.prepare_moss_sft \
@@ -73,7 +107,9 @@ run_export() {
 }
 
 run_audit() {
+  require_anchor
   require_file "${SOURCE_REPORT}"
+  require_source_readiness
   require_file "${RENDER_REPORT}"
   require_file "${SFT_DIR}/metadata.json"
   require_file "${SFT_DIR}/train_manifest.jsonl"
@@ -84,6 +120,7 @@ run_audit() {
   fi
   python -m sceneledger.cli.validate_b3_data \
     --source-report "${SOURCE_REPORT}" \
+    --source-readiness-report "${SOURCE_READINESS_REPORT}" \
     --render-report "${RENDER_REPORT}" \
     --sft-metadata "${SFT_DIR}/metadata.json" \
     --train-manifest "${SFT_DIR}/train_manifest.jsonl" \
@@ -95,6 +132,7 @@ run_audit() {
 
 case "${STAGE}" in
   sources) run_sources ;;
+  source-audit) run_source_audit ;;
   render) run_render ;;
   export) run_export ;;
   audit) run_audit ;;
@@ -105,7 +143,7 @@ case "${STAGE}" in
     run_audit
     ;;
   *)
-    echo "STAGE must be one of: sources, render, export, audit, all" >&2
+    echo "STAGE must be one of: sources, source-audit, render, export, audit, all" >&2
     exit 2
     ;;
 esac

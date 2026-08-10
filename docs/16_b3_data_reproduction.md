@@ -6,19 +6,21 @@ synthetic vocal 数据不满足本协议。
 
 ## 1. 数据身份链
 
-一次 B3-valid 发布由四个稳定哈希共同确定：
+一次 B3-valid 发布由五个稳定哈希共同确定：
 
 1. canonical source catalog；
-2. renderer `manifest.jsonl`；
-3. frozen `train_manifest.jsonl`；
-4. frozen `val_manifest.jsonl`。
+2. decoded-audio `source_inventory.jsonl`；
+3. renderer `manifest.jsonl`；
+4. frozen `train_manifest.jsonl`；
+5. frozen `val_manifest.jsonl`。
 
 验收器将它们组合为 `dataset_id`。重新运行验证不会改变 `dataset_id`；任何音源、scene、target
 或 split 改动都会产生新的 ID。checkpoint、prediction 和论文表格必须同时记录这个 ID。
 
 ## 2. 前置条件
 
-- TAG 2021 锚点已经生成 `runs/tag2021/reproduction_summary.json`，且 `pass=true`；
+- source gate 可独立运行；进入 render 前，TAG 2021 锚点必须已经生成
+  `runs/tag2021/reproduction_summary.json`，且 `pass=true`；
 - 五类 catalog 均已准备：`speech/vocal/music/sfx/ambience`；
 - 每条 vocal 的 `text` 是音频实际包含的歌词，且 `verbatim=true`；
 - 每条数据有明确 license/内部授权状态；
@@ -39,10 +41,12 @@ N_SAMPLES=100 \
 bash scripts/run_b3_data.sh
 ```
 
-完整流程依次执行 `sources → render → export → audit`。中断后可单独恢复：
+完整流程依次执行 `sources → render → export → audit`。其中 `sources` 包含 catalog 规范化和
+逐音频 readiness audit；它不通过时 render 会 fail closed。中断后可单独恢复：
 
 ```bash
 STAGE=sources bash scripts/run_b3_data.sh
+STAGE=source-audit bash scripts/run_b3_data.sh
 STAGE=render  bash scripts/run_b3_data.sh
 STAGE=export  bash scripts/run_b3_data.sh
 STAGE=audit   bash scripts/run_b3_data.sh
@@ -67,6 +71,8 @@ bash scripts/run_b3_data.sh
 |---|---|
 | `source_catalog.jsonl` | 规范化的五类真实单源 catalog |
 | `source_catalog_report.json` | 输入/输出 hash、kind、license、source group 与歌词统计 |
+| `source_inventory.jsonl` | 每条真实音频的 decoded hash、时长、采样率和质量统计 |
+| `source_readiness_report.json` | profile 配额、音频质量、去重检查与 `source_pool_id` |
 | `data/manifest.jsonl` | mixture、components、Ledger 与 renderer identity |
 | `data/validation_report.json` | replay、stem、落盘 PCM、hash、Ledger 的逐批验收总结 |
 | `sft/train_manifest.jsonl` | 冻结训练 scenes |
@@ -76,7 +82,8 @@ bash scripts/run_b3_data.sh
 
 最终 summary 必须同时满足：
 
-- 五类 source 数量均大于 0；
+- 五类 source/source group/总时长均达到 versioned profile 配额；
+- 所有音频可解码、非静音、质量合格且 decoded waveform 不重复；
 - 所有 vocal 都有 verbatim lyrics；
 - 未允许缺文件，unknown license 数量为 0；
 - rendered sample 数等于 `N_SAMPLES`；
@@ -88,9 +95,8 @@ bash scripts/run_b3_data.sh
 - train+val 恰好覆盖全部 scenes；
 - split manifest hash 与 `metadata.json` 一致。
 
-验收器会重新读取两个 split 并重新计算 leakage，不信任 metadata 中自报的 0。若确有只能内部
-使用且暂未补写 license 的 smoke 数据，可设置 `ALLOW_UNKNOWN_LICENSE=1`；这种数据不得作为论文
-正式数据发布。
+验收器会重新读取两个 split 并重新计算 leakage，不信任 metadata 中自报的 0。缺少 license 的
+数据连 smoke readiness 都不能通过；内部数据应明确填写 `internal-authorized` 并保存授权记录。
 
 ## 5. 人工检查
 
@@ -133,7 +139,9 @@ bash scripts/run_b3_valid.sh
 
 ## 7. 当前状态边界
 
-代码和 CPU fixture 已覆盖 catalog、renderer、SFT split 与最终 acceptance gate；服务器尚未产生
-正式 source catalog、100 条真实 smoke summary 或 10000 条正式 `dataset_id`。因此当前状态是
+代码和 CPU fixture 已覆盖 source audio readiness、renderer、SFT split 与最终 acceptance gate；
+服务器尚未产生正式 `source_pool_id`、100 条真实 smoke summary 或 10000 条正式 `dataset_id`。因此当前状态是
 “复现代码就绪”，不是“数据复现完成”。最新 S1a-v3 在旧 synthetic B3 上得到的结果只作为
 探索记录，不能用来决定架构去留。
+
+当前只应执行 source gate，逐步命令和停止条件见 `docs/17_source_pool_readiness.md`。

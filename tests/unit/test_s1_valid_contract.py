@@ -51,8 +51,11 @@ def test_downstream_server_runners_enforce_anchor_gate() -> None:
 
 def test_b3_data_runner_is_staged_and_persists_acceptance_summary() -> None:
     script = (ROOT / "scripts/run_b3_data.sh").read_text(encoding="utf-8")
-    for stage in ("sources", "render", "export", "audit", "all"):
+    for stage in ("sources", "source-audit", "render", "export", "audit", "all"):
         assert stage in script
+    assert "source_readiness_report.json" in script
+    assert "require_source_readiness_pass.py" in script
+    assert "sceneledger.cli.audit_sources" in script
     assert "validation_report.json" in script
     assert "data_reproduction_summary.json" in script
     assert "sceneledger.cli.validate_b3_data" in script
@@ -73,3 +76,10 @@ def test_single_head_ablations_disable_loss_and_matching_cost() -> None:
     script = (ROOT / "scripts/run_s1_ablation.sh").read_text(encoding="utf-8")
     assert "activity_only --boundary-weight 0 --boundary-cost-weight 0" in script
     assert "boundary_only --activity-weight 0 --activity-cost-weight 0" in script
+
+
+def test_invalid_permutation_experiment_is_fail_closed() -> None:
+    trainer = (ROOT / "src/sceneledger/cli/train.py").read_text(encoding="utf-8")
+    config = (ROOT / "configs/model/b3_permuted.yaml").read_text(encoding="utf-8")
+    assert "train.shuffle_events is unsupported" in trainer
+    assert "INVALIDATED historical config" in config
