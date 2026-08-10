@@ -84,3 +84,26 @@ python -m sceneledger.cli.prepare_sources \
 Duplicate waveform paths across inputs are rejected. If vocal and instrumental
 stems originate from the same song, give both rows the same `source_group` so
 the connected-component splitter keeps the song in one fold.
+
+## Reproduce and freeze B3-valid
+
+Use the staged runner after the combined catalog is ready. Start with 100 scenes:
+
+```bash
+SOURCE_CATALOG=/data/b3/source_catalog.jsonl \
+SOURCE_AUDIO_ROOT=/data/b3/audio \
+WORK_DIR=/data/runs/b3_smoke \
+N_SAMPLES=100 \
+bash scripts/run_b3_data.sh
+```
+
+The runner writes source and manifest hashes, a full replay/PCM reconstruction
+report, leakage-safe MOSS splits, and `data_reproduction_summary.json`. The last
+file must contain `pass=true` and a non-empty `dataset_id`. Resume an interrupted
+run with `STAGE=sources`, `render`, `export`, or `audit`.
+
+After automated checks pass, listen to the stratified rows in
+`data/listen_list.csv`. Render the 10k release in a new directory; do not overwrite
+the accepted smoke directory with a different catalog or sample count. The full
+artifact and acceptance contract is documented in
+`docs/16_b3_data_reproduction.md`.

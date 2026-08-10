@@ -15,8 +15,11 @@ from __future__ import annotations
 
 import argparse
 import glob
+import json
 import os
 import sys
+from dataclasses import asdict
+from datetime import datetime, timezone
 from pathlib import Path
 
 import yaml
@@ -24,6 +27,7 @@ import yaml
 from sceneledger.data.manifests import (
     ManifestEntry,
     audit_manifest_structure,
+    file_hash,
     persist_render,
     validate_manifest,
     write_manifest,
@@ -226,6 +230,64 @@ def _write_listen_list(odir: Path, entries: list[ManifestEntry]) -> None:
             )
 
 
+def validate_rendered_dataset(
+    *,
+    config_path: str | Path,
+    output_dir: str | Path,
+    source_catalog: str | None = None,
+    audio_root: str | None = None,
+    report_path: str | Path | None = None,
+) -> dict:
+    """Replay a rendered dataset and persist its machine-readable identity."""
+    config = Path(config_path).resolve()
+    destination = Path(output_dir).resolve()
+    validation_cfg = yaml.safe_load(config.read_text(encoding="utf-8"))
+    if source_catalog:
+        validation_cfg.setdefault("pool", {})["kind"] = "file"
+        validation_cfg["pool"]["source_catalog"] = source_catalog
+    if audio_root:
+        validation_cfg.setdefault("pool", {})["audio_root"] = audio_root
+    pool = _build_pool(validation_cfg)
+    manifest = destination / "manifest.jsonl"
+    report = validate_manifest(manifest, pool, check_audio=True)
+    source_path = Path(source_catalog).resolve() if source_catalog else None
+    payload = {
+        "schema_version": "b3-render-validation-v1",
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "pass": report.ok(),
+        "config_path": str(config),
+        "config_sha256": file_hash(config),
+        "manifest_path": str(manifest),
+        "manifest_sha256": file_hash(manifest),
+        "source_catalog_path": str(source_path) if source_path else None,
+        "source_catalog_sha256": (
+            file_hash(source_path) if source_path and source_path.is_file() else None
+        ),
+        "audio_root": str(Path(audio_root).resolve()) if audio_root else None,
+        **asdict(report),
+    }
+    destination_report = (
+        Path(report_path).resolve()
+        if report_path
+        else destination / "validation_report.json"
+    )
+    destination_report.parent.mkdir(parents=True, exist_ok=True)
+    destination_report.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    print(
+        f"[validate] replay ok={report.n_replay_ok}/{report.n_entries} "
+        f"stems_sum ok={report.n_stems_sum_ok} ledger_valid={report.n_ledger_valid} "
+        f"saved_reconstruction={report.n_saved_reconstruction_ok} "
+        f"failures={len(report.failures)} report={destination_report}",
+        file=sys.stderr,
+    )
+    if report.failures:
+        for line in report.failures[:20]:
+            print(f"  FAIL {line}", file=sys.stderr)
+    return payload
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="sceneledger-render")
     parser.add_argument("--config", required=True)
@@ -234,6 +296,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--source-catalog", default=None, help="override pool.source_catalog")
     parser.add_argument("--audio-root", default=None, help="base for relative catalog paths")
     parser.add_argument("--validate", action="store_true", help="validate after rendering")
+    parser.add_argument(
+        "--validation-report",
+        default=None,
+        help="validation JSON path (default: OUTPUT_DIR/validation_report.json)",
+    )
     args = parser.parse_args(argv)
 
     render_dataset(
@@ -245,26 +312,14 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     if args.validate:
-        validation_cfg = yaml.safe_load(Path(args.config).read_text(encoding="utf-8"))
-        if args.source_catalog:
-            validation_cfg.setdefault("pool", {})["kind"] = "file"
-            validation_cfg["pool"]["source_catalog"] = args.source_catalog
-        if args.audio_root:
-            validation_cfg.setdefault("pool", {})["audio_root"] = args.audio_root
-        pool = _build_pool(validation_cfg)
-        manifest = Path(args.output_dir) / "manifest.jsonl"
-        rep = validate_manifest(manifest, pool, check_audio=True)
-        print(
-            f"[validate] replay ok={rep.n_replay_ok}/{rep.n_entries} "
-            f"stems_sum ok={rep.n_stems_sum_ok} ledger_valid={rep.n_ledger_valid} "
-            f"saved_reconstruction={rep.n_saved_reconstruction_ok} "
-            f"failures={len(rep.failures)}",
-            file=sys.stderr,
+        report = validate_rendered_dataset(
+            config_path=args.config,
+            output_dir=args.output_dir,
+            source_catalog=args.source_catalog,
+            audio_root=args.audio_root,
+            report_path=args.validation_report,
         )
-        if rep.failures:
-            for line in rep.failures[:20]:
-                print(f"  FAIL {line}", file=sys.stderr)
-        return 0 if rep.ok() else 1
+        return 0 if report["pass"] else 1
     return 0
 
 

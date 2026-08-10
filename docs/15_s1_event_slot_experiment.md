@@ -56,6 +56,13 @@ eventness BCE、type CE、activity Dice 和按 clip duration 归一化的 bounda
 历史 `scripts/train_s1v2.py` 和 `s1v2_threshold_sweep.py` 现为兼容入口，内部调用本协议，不再
 读取过期 B3 synthetic manifest 或在最终 validation 上选择阈值。
 
+最新 `scripts/train_s1v3_joint.py` 仍是 joint-encoder 探索入口，不是 primary S1 runner。旧提交
+中的 gradient accumulation 会在每个 micro-step 清零梯度，warmup 也没有落在 optimizer update
+上；其 F1=0.100 不能证明 differential LR 或 slot architecture 失败。当前入口已改为只读取通过
+`data_reproduction_summary.json` gate 的 B3-valid train/val manifests，并修正 accumulation、
+update-based warmup/cosine 与随机种子。它仍缺少本协议的 calibration checkpoint/threshold
+选择，因此服务器数字只能记为 exploratory，不能和 primary S1 表直接合并。
+
 ## 3. 一次完整运行
 
 服务器应先安装项目和 MOSS 依赖，并把 MOSS-Audio 放在仓库的 `third_party/MOSS-Audio`；

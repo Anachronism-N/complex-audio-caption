@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import numpy as np
 import pytest
 
+from sceneledger.cli.render import render_dataset, validate_rendered_dataset
 from sceneledger.data.activity import ActivityResult
 from sceneledger.data.manifests import (
     persist_render,
@@ -235,6 +237,38 @@ def test_validate_manifest_detects_tampered_audio_file(tmp_path: Path, pool, sam
     rep = validate_manifest(manifest, pool, check_audio=True)
     assert rep.n_audio_files_fail >= 1
     assert not rep.ok()
+
+
+def test_render_cli_persists_validation_identity(tmp_path: Path):
+    config = tmp_path / "render.yaml"
+    config.write_text(
+        """
+pool:
+  kind: synthetic
+  sample_rate: 24000
+  seed: 20260808
+sampler:
+  sample_rate: 24000
+  duration_range: [1.0, 1.2]
+  resolutions: [0.1]
+render:
+  sample_count: 2
+  template_weights:
+    isolated_sfx: 1
+  seed_base: 1947
+""".strip()
+        + "\n",
+        encoding="utf-8",
+    )
+    output = tmp_path / "rendered"
+    assert render_dataset(str(config), str(output)) == 2
+    report = validate_rendered_dataset(config_path=config, output_dir=output)
+    persisted = json.loads(
+        (output / "validation_report.json").read_text(encoding="utf-8")
+    )
+    assert report["pass"] is True
+    assert persisted["manifest_sha256"] == report["manifest_sha256"]
+    assert persisted["n_saved_reconstruction_ok"] == 2
 
 
 def test_mixture_no_clipping(pool, sampler):

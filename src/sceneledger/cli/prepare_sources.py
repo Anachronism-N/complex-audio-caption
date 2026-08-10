@@ -7,6 +7,7 @@ import json
 from collections import Counter
 from pathlib import Path
 
+from sceneledger.data.manifests import file_hash
 from sceneledger.data.source_catalog import load_source_catalog, write_source_catalog
 
 
@@ -56,9 +57,15 @@ def main(argv: list[str] | None = None) -> int:
     if missing_kinds:
         raise ValueError(f"source catalog is missing required kinds: {missing_kinds}")
     write_source_catalog(args.output, records)
+    input_paths = [Path(path).resolve() for path in args.inputs]
+    output_path = Path(args.output).resolve()
     summary = {
-        "inputs": [str(Path(path).resolve()) for path in args.inputs],
-        "output": str(Path(args.output).resolve()),
+        "schema_version": "b3-source-catalog-v1",
+        "inputs": [str(path) for path in input_paths],
+        "input_sha256": {str(path): file_hash(path) for path in input_paths},
+        "output": str(output_path),
+        "output_sha256": file_hash(output_path),
+        "audio_root": str(Path(args.audio_root).resolve()) if args.audio_root else None,
         "n_sources": len(records),
         "kinds": dict(sorted(kind_counts.items())),
         "required_kinds": sorted(set(args.require_kind)),
@@ -70,6 +77,7 @@ def main(argv: list[str] | None = None) -> int:
             sorted(Counter(record.license or "unknown" for record in records).items())
         ),
         "missing_files_allowed": args.allow_missing,
+        "all_files_verified": not args.allow_missing,
     }
     if args.report:
         report = Path(args.report)

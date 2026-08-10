@@ -87,7 +87,9 @@ runs:
     change: "Joint lyrics and overlapping speaker targets; no external Whisper."
     purpose: "Strongest autoregressive unified-caption baseline."
     validity_requirements:
+      - "B3 data reproduction summary has pass=true and a frozen dataset_id"
       - "file-backed vocal audio with verbatim lyrics"
+      - "renderer replay, persisted hashes, and stem reconstruction all pass"
       - "source-group connected-component split"
       - "source-aware atomic track attributes"
       - "validation-only inference with parse report"
@@ -102,6 +104,7 @@ runs:
     purpose: "Test event set prediction independently of evidence/CARC."
     validity_requirements:
       - "TAG 2021 anchor summary has pass=true"
+      - "B3 data reproduction summary has pass=true and the dataset_id is recorded"
       - "exact B3-valid train/validation manifests"
       - "source-disjoint calibration split made only from the training fold"
       - "source leakage count is zero"

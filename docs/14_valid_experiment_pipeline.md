@@ -44,17 +44,29 @@ MOSS 输入音频中每 2 秒插入的 time marker。训练器会：
 
 ### B3-valid：统一 speech / lyrics / music / sfx
 
+先只复现数据并生成 acceptance summary：
+
 ```bash
 SOURCE_CATALOG=/path/to/source_catalog.csv \
 SOURCE_AUDIO_ROOT=/path/to/source_audio \
+WORK_DIR=/path/to/runs/b3_smoke \
+N_SAMPLES=100 \
+bash scripts/run_b3_data.sh
+```
+
+脚本顺序为：source catalog 审计、真实音源混合、确定性验证、无泄漏划分、MOSS SFT 导出和
+最终数据验收。`data_reproduction_summary.json` 中 `pass=true` 后，才运行 B3 训练：
+
+```bash
+STAGE=train WORK_DIR=/path/to/runs/b3_smoke \
 MODEL_DIR=/path/to/MOSS-Audio-4B-Instruct \
-N_SAMPLES=10000 \
-MAX_STEPS=10000 \
+MAX_STEPS=100 \
 bash scripts/run_b3_valid.sh
 ```
 
-脚本顺序为：source catalog 审计、真实音源混合、确定性验证、无泄漏划分、MOSS SFT
-导出、B3 训练、验证集推理、temporal-only 与 text-gated 两套评价。任何阶段失败都会停止。
+smoke 通过并试听后，再在新目录使用 `N_SAMPLES=10000` 和 `MAX_STEPS=10000`。数据脚本支持
+`STAGE=sources/render/export/audit` 分段恢复；B3 脚本支持 `STAGE=data/train/infer/evaluate`。
+完整产物、检查项和 `dataset_id` 冻结规则见 `docs/16_b3_data_reproduction.md`。
 
 ## 2. Source catalog 契约
 
@@ -142,6 +154,8 @@ track，不能用于多说话人实验。新的 formatter/parser round-trip 必�
 - `split.json`、`metadata.json`。
 
 `metadata.json` 的 `source_leakage_count` 必须为 0。禁止对全部 manifest 推理后报告指标。
+最终验收器还会重新读取 train/val manifests 并计算 leakage，同时核对 renderer manifest、split
+和 source catalog 的 SHA-256；不会只信任 metadata 自报值。
 
 ## 5. 评价与论文报告
 

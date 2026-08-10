@@ -193,15 +193,24 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--max-steps", type=int, default=None, help="override config steps")
     parser.add_argument("--model-path", default=None)
     parser.add_argument("--manifest", default=None)
+    parser.add_argument(
+        "--train-manifest",
+        default=None,
+        help="use every row in an already frozen train manifest; do not split again",
+    )
     parser.add_argument("--audio-base", default=None)
     parser.add_argument("--output-dir", default=None)
     args = parser.parse_args(argv)
+    if args.manifest and args.train_manifest:
+        parser.error("--manifest and --train-manifest are mutually exclusive")
 
     cfg = _load_config(args.config)
     if args.model_path:
         cfg["model"]["path"] = args.model_path
     if args.manifest:
         cfg["data"]["manifest_path"] = args.manifest
+    if args.train_manifest:
+        cfg["data"]["manifest_path"] = args.train_manifest
     if args.audio_base:
         cfg["data"]["audio_base_dir"] = args.audio_base
     if args.output_dir:
@@ -253,7 +262,7 @@ def main(argv: list[str] | None = None) -> int:
 
     # dataset
     from sceneledger.data.datamodule import MOSS_INPUT_SAMPLE_RATE, group_split
-    from sceneledger.data.manifests import read_manifest
+    from sceneledger.data.manifests import file_hash, read_manifest
     from sceneledger.models.target_formatter import (
         StyleConfig,
         canonical_prompt,
@@ -276,11 +285,17 @@ def main(argv: list[str] | None = None) -> int:
                 f"refusing {len(placeholder_scenes)} synthetic vocal scene(s) as lyric "
                 "supervision; render configs/data/b3_real.yaml from a source catalog"
             )
-    train_entries, _ = group_split(
-        entries, val_fraction=cfg["data"].get("val_fraction", 0.1),
-        group_key=cfg["data"].get("group_key", "source_id"),
-        seed=cfg["train"]["seed"],
-    )
+    if args.train_manifest:
+        train_entries = entries
+    else:
+        train_entries, _ = group_split(
+            entries,
+            val_fraction=cfg["data"].get("val_fraction", 0.1),
+            group_key=cfg["data"].get("group_key", "source_id"),
+            seed=cfg["train"]["seed"],
+        )
+    if not train_entries:
+        raise ValueError("training manifest produced no training samples")
     print(f"[train] {len(train_entries)} training samples", file=sys.stderr, flush=True)
 
     # optimizer
@@ -416,6 +431,9 @@ def main(argv: list[str] | None = None) -> int:
         )
     cfg_out = {
         "config_path": str(args.config),
+        "train_manifest_path": str(Path(cfg["data"]["manifest_path"]).resolve()),
+        "train_manifest_sha256": file_hash(cfg["data"]["manifest_path"]),
+        "used_frozen_train_manifest": bool(args.train_manifest),
         "steps": step,
         "train_samples": len(train_entries),
         "timestamp_weight": timestamp_weight,

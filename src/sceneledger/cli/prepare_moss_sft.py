@@ -152,17 +152,26 @@ def export_moss_sft(
         [entry.target_ledger for entry in val_entries],
     )
 
+    train_manifest_path = destination / "train_manifest.jsonl"
+    val_manifest_path = destination / "val_manifest.jsonl"
+    split_path = destination / "split.json"
     split = {
         "train": [entry.scene["scene_id"] for entry in train_entries],
         "val": [entry.scene["scene_id"] for entry in val_entries],
     }
-    (destination / "split.json").write_text(
+    split_path.write_text(
         json.dumps(split, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
     metadata = {
         "schema_version": SCHEMA_VERSION,
         "manifest_path": str(manifest),
         "manifest_sha256": file_hash(manifest),
+        "train_manifest_path": str(train_manifest_path.resolve()),
+        "train_manifest_sha256": file_hash(train_manifest_path),
+        "val_manifest_path": str(val_manifest_path.resolve()),
+        "val_manifest_sha256": file_hash(val_manifest_path),
+        "split_path": str(split_path.resolve()),
+        "split_sha256": file_hash(split_path),
         "renderer_versions": sorted(
             {entry.renderer_version or "unknown" for entry in entries}
         ),

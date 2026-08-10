@@ -49,6 +49,26 @@ def test_downstream_server_runners_enforce_anchor_gate() -> None:
         assert "TAG_SUMMARY" in script
 
 
+def test_b3_data_runner_is_staged_and_persists_acceptance_summary() -> None:
+    script = (ROOT / "scripts/run_b3_data.sh").read_text(encoding="utf-8")
+    for stage in ("sources", "render", "export", "audit", "all"):
+        assert stage in script
+    assert "validation_report.json" in script
+    assert "data_reproduction_summary.json" in script
+    assert "sceneledger.cli.validate_b3_data" in script
+
+
+def test_model_runners_require_passed_b3_data() -> None:
+    for name in ("run_b3_valid.sh", "run_s1_valid.sh"):
+        script = (ROOT / "scripts" / name).read_text(encoding="utf-8")
+        assert "require_b3_data_pass.py" in script
+        assert "data_reproduction_summary.json" in script
+        assert "B3_DATASET_ID" in script
+    b3_script = (ROOT / "scripts/run_b3_valid.sh").read_text(encoding="utf-8")
+    assert "--train-manifest" in b3_script
+    assert 'sft/train_manifest.jsonl' in b3_script
+
+
 def test_single_head_ablations_disable_loss_and_matching_cost() -> None:
     script = (ROOT / "scripts/run_s1_ablation.sh").read_text(encoding="utf-8")
     assert "activity_only --boundary-weight 0 --boundary-cost-weight 0" in script

@@ -11,8 +11,14 @@ S1_CONFIG="${S1_CONFIG:-${PROJECT_ROOT}/configs/model/s1_event_slots.yaml}"
 DEVICE="${DEVICE:-cuda:0}"
 STAGE="${STAGE:-all}"
 TAG_SUMMARY="${TAG_SUMMARY:-${PROJECT_ROOT}/runs/tag2021/reproduction_summary.json}"
+B3_DATA_SUMMARY="${B3_DATA_SUMMARY:-${B3_WORK_DIR}/data_reproduction_summary.json}"
 
 python "${PROJECT_ROOT}/scripts/repro/require_anchor_pass.py" "${TAG_SUMMARY}"
+data_gate_args=("${B3_DATA_SUMMARY}")
+if [[ -n "${B3_DATASET_ID:-}" ]]; then
+  data_gate_args+=(--dataset-id "${B3_DATASET_ID}")
+fi
+python "${PROJECT_ROOT}/scripts/data/require_b3_data_pass.py" "${data_gate_args[@]}"
 
 TRAIN_MANIFEST="${B3_WORK_DIR}/sft/train_manifest.jsonl"
 VAL_MANIFEST="${B3_WORK_DIR}/sft/val_manifest.jsonl"

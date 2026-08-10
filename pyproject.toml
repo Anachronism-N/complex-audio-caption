@@ -46,6 +46,7 @@ sceneledger-prepare-sources = "sceneledger.cli.prepare_sources:main"
 sceneledger-catalog-librispeech = "sceneledger.cli.catalog_librispeech:main"
 sceneledger-render = "sceneledger.cli.render:main"
 sceneledger-train-slots = "sceneledger.cli.train_slots:main"
+sceneledger-validate-b3-data = "sceneledger.cli.validate_b3_data:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

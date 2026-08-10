@@ -8,6 +8,9 @@
 > [数据管线复现状态与下一步实验](docs/13_data_pipeline_status.md)。仓库中旧的
 > 500 条 TAC-mini manifest 已被判定为过期，正式训练前必须重新渲染。
 
+> B3-valid 已提供分阶段数据 runner、机器可读 render validation 和最终 `dataset_id` gate；
+> 服务器执行与冻结标准见 [B3-valid 数据复现协议](docs/16_b3_data_reproduction.md)。
+
 > S1a event-slot 原型已整理为 leakage-safe、可恢复、机器可读的服务器实验；运行与消融协议见
 > [S1a-valid 实验文档](docs/15_s1_event_slot_experiment.md)。该阶段仅评价事件类型、100 ms
 > activity 与 boundary envelope，不代表最终统一 caption 已完成。
@@ -60,6 +63,7 @@
 - [Anchor-first：TAG 2021 完整复现协议](docs/13_anchor_first_tag_reproduction.md)
 - [Anchor-first 与 B3-valid 执行手册](docs/14_valid_experiment_pipeline.md)
 - [S1a-valid 事件槽实验与消融](docs/15_s1_event_slot_experiment.md)
+- [B3-valid 数据复现与冻结协议](docs/16_b3_data_reproduction.md)
 - [机器可读实验矩阵](configs/experiment_matrix.yaml)
 - [机器可读复现锚点与门槛](configs/reproduction_anchor.yaml)
 - [机器可读开发阶段](configs/pipeline_stages.yaml)
