@@ -65,6 +65,7 @@
 - [S1a-valid 事件槽实验与消融](docs/15_s1_event_slot_experiment.md)
 - [B3-valid 数据复现与冻结协议](docs/16_b3_data_reproduction.md)
 - [B3 第一步：真实音源池验收](docs/17_source_pool_readiness.md)
+- [下一步实验：D0-SOURCE-SMOKE-v1 执行手册](docs/18_next_experiment_source_smoke.md)
 - [机器可读实验矩阵](configs/experiment_matrix.yaml)
 - [机器可读复现锚点与门槛](configs/reproduction_anchor.yaml)
 - [机器可读开发阶段](configs/pipeline_stages.yaml)
