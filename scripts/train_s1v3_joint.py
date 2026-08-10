@@ -62,10 +62,17 @@ def main():
     n_train = sum(p.numel() for p in trainable)
     print(f"[s1v3] trainable params: {n_train/1e6:.1f}M", file=sys.stderr, flush=True)
 
-    optimizer = torch.optim.AdamW(trainable, lr=5e-5, weight_decay=0.01)
+    # differential LR: encoder layers get 10x lower LR for stability
+    enc_params = [p for p in model.parameters() if p.requires_grad]
+    dec_params = list(slot_decoder.parameters())
+    optimizer = torch.optim.AdamW([
+        {"params": enc_params, "lr": 1e-5},   # encoder: gentle
+        {"params": dec_params, "lr": 1e-4},   # decoder: aggressive
+    ], weight_decay=0.01)
     total_steps = 3000
-    warmup = 200
+    warmup = 500  # longer warmup for stability
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=total_steps)
+    grad_accum = 4  # gradient accumulation for stability
 
     # load data
     entries = read_manifest("data/derived/b3_unified/manifest.jsonl")
@@ -108,17 +115,17 @@ def main():
             outputs = slot_decoder(features)
             targets = [_events_to_targets_v2(sample["events"], 8)]
             loss_dict = set_prediction_loss_v2(outputs, targets, boundary_weight=5.0)
-            loss = loss_dict["loss"]
-
+            loss = loss_dict["loss"] / grad_accum
             optimizer.zero_grad()
             loss.backward()
-            torch.nn.utils.clip_grad_norm_(trainable, 0.5)
-            if step < warmup:
-                lr = 5e-5 * (step + 1) / warmup
-                for pg in optimizer.param_groups:
-                    pg["lr"] = lr
-            optimizer.step()
-            scheduler.step()
+            if (step + 1) % grad_accum == 0:
+                torch.nn.utils.clip_grad_norm_(trainable, 0.5)
+                if step < warmup:
+                    lr_scale = (step + 1) / warmup
+                    for pg in optimizer.param_groups:
+                        pg["lr"] = pg["lr"] * lr_scale if step == 0 else pg["lr"]
+                optimizer.step()
+                scheduler.step()
 
             if (step + 1) % 100 == 0:
                 print(f"[s1v3] step {step+1}/{total_steps} loss={loss.item():.4f} "
