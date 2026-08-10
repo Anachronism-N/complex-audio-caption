@@ -217,6 +217,11 @@ def main(argv: list[str] | None = None) -> int:
         cfg["train"]["output_dir"] = args.output_dir
     _set_seed(cfg["train"]["seed"])
     tcfg = cfg["train"]
+    if tcfg.get("shuffle_events", False):
+        raise ValueError(
+            "train.shuffle_events is unsupported: the canonical formatter sorts "
+            "events again, so the previous B3-permuted experiment changed no targets"
+        )
     steps = args.max_steps or tcfg["steps"]
 
     print("[train] loading model ...", file=sys.stderr, flush=True)

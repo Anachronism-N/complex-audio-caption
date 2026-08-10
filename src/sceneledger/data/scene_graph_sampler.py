@@ -40,6 +40,7 @@ TemplateID = Literal[
     "lyrics_over_music",
     "speech_music_lyrics_sfx",
     "overlapping_speakers",
+    "random_mix",
 ]
 
 # Sampling ranges (docs/06 §3.3). These are project choices, not TAC values.
@@ -600,6 +601,23 @@ class SceneGraphSampler:
                 _src("speech", fg=True, identity="S1"),
                 _src("speech", fg=True, identity="S2"),
             ]
+        if template == "random_mix":
+            # B2-no-template ablation: fully random source selection + placement
+            n_sources = rng.randint(2, 4)
+            kinds_pool = ["speech", "music", "sfx", "vocal"]
+            sources = []
+            for _ in range(n_sources):
+                kind = rng.choice(kinds_pool)
+                identity = None
+                if kind == "speech":
+                    identity = f"S{len([s for s in sources if s.kind=='speech'])+1}"
+                elif kind == "vocal":
+                    identity = f"V{len([s for s in sources if s.kind=='vocal'])+1}"
+                # override onset to be fully random (not template-structured)
+                s = _src(kind, fg=True, identity=identity)
+                s.onset = round(rng.uniform(0.0, max(0.1, duration * 0.5)) / TIME_RESOLUTION_SEC) * TIME_RESOLUTION_SEC
+                sources.append(s)
+            return sources
         raise ValueError(f"unknown template {template!r}")
 
     def _sample_conditions(
