@@ -251,6 +251,11 @@ def main(argv: list[str] | None = None) -> int:
 
             from sceneledger.data.schema import Ledger
             ledger = Ledger.model_validate(entry.target_ledger)
+            # optionally shuffle event order for permutation-invariant training
+            if tcfg.get("shuffle_events", False):
+                events = list(ledger.events)
+                rng.shuffle(events)
+                ledger = ledger.model_copy(update={"events": events})
             target = format_atomic_caption(ledger, style=cfg["data"].get("style", "brief"), cfg=style_cfg)
 
             try:
