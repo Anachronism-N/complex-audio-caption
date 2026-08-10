@@ -139,6 +139,40 @@ def format_atomic_caption(ledger: Ledger, style: str = "brief", cfg: StyleConfig
 
 
 # --------------------------------------------------------------------------- #
+# slot-aware target (S1-inspired autoregressive)
+# --------------------------------------------------------------------------- #
+def format_slot_aware_caption(
+    ledger: Ledger, style: str = "brief", cfg: StyleConfig | None = None
+) -> str:
+    """Slot-aware target: event count prefix + slot-wrapped events.
+
+    Format: ``<n>N</n><slot><type>...</type></slot><slot>...</slot>...``
+
+    The count prefix teaches the model to predict how many events to generate
+    (reducing hallucination/omission). The slot wrappers give explicit event
+    boundary structure. Combined with shuffle_events in training, this is a
+    lightweight autoregressive approximation of S1 set prediction.
+    """
+    cfg = cfg or StyleConfig()
+    events = _ordered_events(ledger)
+    if not events:
+        return "<n>0</n><empty/>"
+    n = len(events)
+    out: list[str] = [f"<n>{n}</n>"]
+    for e in events:
+        text = _style_text(e.text, style, cfg)
+        parts: list[str] = [f"<{e.type}>"]
+        for i, sp in enumerate(e.spans):
+            parts.append(time_to_token(sp.start_sec))
+            if i == 0:
+                parts.append(text)
+            parts.append(time_to_token(sp.end_sec))
+        parts.append(f"</{e.type}>")
+        out.append(f"<slot>{''.join(parts)}</slot>")
+    return "".join(out)
+
+
+# --------------------------------------------------------------------------- #
 # atomic-token parser (so the evaluator can consume B2 output)
 # --------------------------------------------------------------------------- #
 _TAG_OPEN_RE = re.compile(r"<(speech|lys|music|sfx)>")

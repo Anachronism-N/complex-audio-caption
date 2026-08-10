@@ -192,6 +192,7 @@ def main(argv: list[str] | None = None) -> int:
     from sceneledger.models.target_formatter import (
         canonical_prompt,
         format_atomic_caption,
+        format_slot_aware_caption,
         StyleConfig,
     )
 
@@ -256,7 +257,10 @@ def main(argv: list[str] | None = None) -> int:
                 events = list(ledger.events)
                 rng.shuffle(events)
                 ledger = ledger.model_copy(update={"events": events})
-            target = format_atomic_caption(ledger, style=cfg["data"].get("style", "brief"), cfg=style_cfg)
+            if cfg["data"].get("slot_aware", False):
+                target = format_slot_aware_caption(ledger, style=cfg["data"].get("style", "brief"), cfg=style_cfg)
+            else:
+                target = format_atomic_caption(ledger, style=cfg["data"].get("style", "brief"), cfg=style_cfg)
 
             try:
                 batch = _build_training_sample(
