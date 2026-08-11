@@ -15,10 +15,11 @@ third_party/
 outputs/
 
 # Rendered datasets: audio is regenerable from the manifest via
-# `sceneledger-render` (deterministic). Keep manifests / data cards / listen
-# lists (small text). Audio lives on local disk.
+# `sceneledger-render` (deterministic) or by extracting audio.tar.
+# Keep manifests / data cards / listen lists (small text).
 data/derived/*/audio/
 data/derived/*/stems/
+data/derived/*/audio.tar
 
 # Generated predictions (regenerable from the manifest + model)
 reports/*.jsonl
