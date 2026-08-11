@@ -59,9 +59,9 @@ def main():
     t0 = time.time()
 
     for i, entry in enumerate(val_entries):
-        sid = entry["scene"]["scene_id"]
-        duration = float(entry["scene"]["duration"])
-        gt_ledger = entry["target_ledger"]
+        sid = entry.scene["scene_id"]
+        duration = float(entry.scene["duration"])
+        gt_ledger = entry.target_ledger
 
         # 1. Demucs separation
         mix_path = f"{audio_base}/{sid}.wav"
