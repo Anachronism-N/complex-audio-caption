@@ -1,0 +1,75 @@
+version: 1
+frozen_at: "2026-08-09"
+policy: anchor_first
+
+primary_anchor:
+  id: TAG-ICASSP-2021
+  paper: "Text-to-Audio Grounding: Building Correspondence Between Captions and Sound Events"
+  paper_url: "https://arxiv.org/abs/2102.11474"
+  repository: "https://github.com/wsntxxn/TextToAudioGrounding"
+  commit: "048f7af3d5167eeee0b7fd59aa877f46f245ff36"
+  dataset_profile: paper2021
+  why: >-
+    It supplies a closed, objective phrase-to-time grounding problem, paper-era
+    labels, source code, training entry point, and an official evaluation path.
+
+gates:
+  R0_data:
+    requires:
+      - exact_paper_label_counts
+      - no_missing_audio
+      - no_cross_split_audio
+      - archive_sha256_recorded
+      - annotation_schema_valid
+  R1_single_seed:
+    seed: 1
+    expected:
+      event_f1: {value: 0.283, absolute_tolerance: 0.03}
+      psds: {value: 0.147, absolute_tolerance: 0.03}
+  R2_diagnostic:
+    change: random_query_within_same_audio
+    seed: 1
+    expected:
+      event_f1: {value: 0.196, absolute_tolerance: 0.04}
+  R3_multiseed:
+    seeds: [1, 2, 3]
+    requires:
+      - report_each_seed
+      - report_mean_and_std
+      - mean_within_R1_tolerances
+      - preserve_raw_predictions_and_logs
+
+innovation_freeze:
+  until: R3_multiseed
+  frozen_runs:
+    - B1-moss-static-sft
+    - B2-moss-tac
+    - B2-time-weight-10
+  allowed_before_gate:
+    - compatibility_fixes_with_patch_log
+    - data_integrity_fixes
+    - reproduction_tests
+  forbidden_before_gate:
+    - new_loss
+    - reinforcement_learning
+    - agent_rewriting
+    - new_synthetic_mixture_claims
+
+post_anchor_ladder:
+  - id: E0-TAG-official
+    change: none
+  - id: E1-TAG-modern-backbone
+    parent: E0-TAG-official
+    change: replace_model_only_keep_data_and_evaluator
+  - id: E2-multi-query
+    parent: E1-TAG-modern-backbone
+    change: single_query_to_multi_query_only
+  - id: E3-joint-event-ledger
+    parent: E2-multi-query
+    change: multi_query_to_joint_structured_sfx_output_only
+  - id: E4-unified-modalities
+    parent: E3-joint-event-ledger
+    change: add_speech_music_lyrics_types
+  - id: E5-complex-acoustics
+    parent: E4-unified-modalities
+    change: add_sceneledger_realistic_mixture_curriculum

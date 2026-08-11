@@ -1,5 +1,9 @@
 # TAC-style 基线复现协议
 
+> **路线状态（2026-08-09）：暂停。** 本文保留为 TAG 2021 锚点通过后的 TAC
+> paper-spec 对照方案；当前第一优先级与验收标准见
+> [Anchor-first TAG 复现协议](13_anchor_first_tag_reproduction.md)。
+
 > 目标：得到一个可审计、可重复、可被 SceneLedger 公平超过的 timestamp-token baseline。由于 TAC 未公开代码、checkpoint 和其 licensed single-source corpus，本协议明确称为 **TAC paper-spec reimplementation**，不声称 exact reproduction。
 
 ## 1. 复现边界
