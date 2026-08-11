@@ -1,0 +1,4510 @@
+{
+  "backend": "moss",
+  "n_samples": 500,
+  "n_ok": 500,
+  "strict_format_success_rate": 1.0,
+  "mean_events_recovered": 2.12,
+  "total_events_rejected": 0,
+  "samples": [
+    {
+      "sample_id": "mix_000001",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>电子伴奏循环播放。<|t_090|></music></slot><slot><speech><|t_050|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000002",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><lys><|t_000|>\"take me home tonight\"<|t_040|></lys></slot><slot><speech><|t_020|>一名说话者正在讲话。<|t_060|></speech></slot><slot><sfx><|t_030|>一次玻璃破碎声。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000003",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_025|>远处的犬吠。<|t_030|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000004",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_145|></music></slot><slot><sfx><|t_005|>远处的犬吠。<|t_010|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000005",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_007|>远处的犬吠。<|t_011|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000006",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_037|>远处的犬吠。<|t_041|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000007",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><speech><|t_000|>一名说话者正在讲话。<|t_040|></speech></slot><slot><lys><|t_030|>\"take me home tonight\"<|t_070|></lys></slot><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot><slot><sfx><|t_030|>远处的犬吠。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000008",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><speech><|t_010|>一名说话者正在讲话。<|t_060|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000009",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_040|>一次玻璃破碎声。<|t_070|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000010",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_110|></sfx></slot><slot><sfx><|t_040|>远处的犬吠。<|t_050|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000011",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_010|>一名说话者正在讲话。<|t_040|></speech></slot><slot><speech><|t_020|>一名说话者正在讲话。<|t_060|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000012",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_077|>一次玻璃破碎声。<|t_079|><|t_086|><|t_088|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000013",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><speech><|t_010|>一名说话者正在讲话。<|t_040|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000014",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><sfx><|t_030|>远处的犬吠。<|t_040|></sfx></slot><slot><speech><|t_070|>一名说话者正在讲话。<|t_120|></speech></slot><slot><lys><|t_070|>\"take me home tonight\"<|t_140|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000015",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><lys><|t_050|>\"take me home tonight\"<|t_100|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000016",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><sfx><|t_040|>远处的犬吠。<|t_050|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000017",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><speech><|t_035|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000018",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_060|>一名说话者正在讲话。<|t_080|></speech></slot><slot><speech><|t_100|>一名说话者正在讲话。<|t_140|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000019",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_145|></music></slot><slot><sfx><|t_005|>远处的犬吠。<|t_010|></sfx></slot><slot><lys><|t_025|>\"take me home tonight\"<|t_085|></lys></slot><slot><speech><|t_055|>一名说话者正在讲话。<|t_085|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000020",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><speech><|t_005|>一名说话者正在讲话。<|t_065|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000021",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><sfx><|t_000|>远处的犬吠。<|t_010|></sfx></slot><slot><speech><|t_050|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000022",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_145|></music></slot><slot><lys><|t_015|>\"take me home tonight\"<|t_050|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000023",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_025|>一名说话者正在讲话。<|t_060|></speech></slot><slot><speech><|t_065|>一名说话者正在讲话。<|t_095|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000024",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><lys><|t_035|>\"take me home tonight\"<|t_075|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000025",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_060|>一次玻璃破碎声。<|t_070|><|t_070|>一次玻璃破碎声。<|t_080|><|t_080|>一次玻璃破碎声。<|t_090|><|t_090|>一次玻璃破碎声。<|t_110|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000026",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><speech><|t_060|>一名说话者正在讲话。<|t_085|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000027",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_010|>远处的犬吠。<|t_020|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000028",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><lys><|t_020|>\"take me home tonight\"<|t_080|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000029",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_050|>一名说话者正在讲话。<|t_095|></speech></slot><slot><speech><|t_070|>一名说话者正在讲话。<|t_095|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000030",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_055|>一名说话者正在讲话。<|t_105|></speech></slot><slot><speech><|t_065|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000031",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_040|>远处的犬吠。<|t_050|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000032",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_090|></music></slot><slot><speech><|t_010|>一名说话者正在讲话。<|t_050|></speech></slot><slot><lys><|t_020|>\"take me home tonight\"<|t_080|></lys></slot><slot><sfx><|t_050|>远处的犬吠。<|t_060|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000033",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><sfx><|t_040|>远处的犬吠。<|t_050|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000034",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><lys><|t_005|>\"take me home tonight\"<|t_060|></lys></slot><slot><sfx><|t_065|>远处的犬吠。<|t_075|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000035",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_100|></sfx></slot><slot><sfx><|t_055|>远处的犬吠。<|t_065|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000036",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><speech><|t_040|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000037",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_150|></music></slot><slot><lys><|t_020|>\"take me home tonight\"<|t_045|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000038",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><sfx><|t_000|>远处的犬吠。<|t_020|></sfx></slot><slot><speech><|t_070|>一名说话者正在讲话。<|t_110|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000039",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><sfx><|t_000|>远处的犬吠。<|t_010|></sfx></slot><slot><lys><|t_035|>\"take me home tonight\"<|t_080|></lys></slot><slot><speech><|t_045|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000040",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_130|></music></slot><slot><lys><|t_020|>\"take me home tonight\"<|t_060|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000041",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_125|></music></slot><slot><speech><|t_060|>一名说话者正在讲话。<|t_085|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000042",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_020|>一次玻璃破碎声。<|t_045|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000043",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><speech><|t_010|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000044",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>电子伴奏循环播放。<|t_090|></music></slot><slot><sfx><|t_000|>远处的犬吠。<|t_010|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000045",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_085|></music></slot><slot><speech><|t_005|>一名说话者正在讲话。<|t_030|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000046",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_035|>一名说话者正在讲话。<|t_080|></speech></slot><slot><speech><|t_060|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000047",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><sfx><|t_020|>远处的犬吠。<|t_030|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000048",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_115|></sfx></slot><slot><sfx><|t_055|>远处的犬吠。<|t_065|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000049",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot><slot><sfx><|t_030|>远处的犬吠。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000050",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_005|>一名说话者正在讲话。<|t_040|></speech></slot><slot><speech><|t_050|>一名说话者正在讲话。<|t_075|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000051",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><speech><|t_010|>一名说话者正在讲话。<|t_020|></speech></slot><slot><lys><|t_020|>\"take me home tonight\"<|t_080|></lys></slot><slot><speech><|t_070|>一名说话者正在讲话。<|t_120|></speech></slot><slot><sfx><|t_010|>远处的犬吠。<|t_020|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000052",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_035|>远处的犬吠。<|t_037|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000053",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_085|></music></slot><slot><speech><|t_025|>一名说话者正在讲话。<|t_055|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000054",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_000|>一名说话者正在讲话。<|t_020|></speech></slot><slot><sfx><|t_030|>远处的犬吠。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000055",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_040|>一次玻璃破碎声。<|t_045|><|t_060|><|t_065|><|t_080|><|t_085|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000056",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_005|>一名说话者正在讲话。<|t_045|></speech></slot><slot><speech><|t_050|>一名说话者正在讲话。<|t_075|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000057",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot><slot><speech><|t_010|>一名说话者正在讲话。<|t_050|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000058",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_190|></sfx></slot><slot><sfx><|t_035|>远处的犬吠。<|t_045|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000059",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>电子伴奏循环播放。<|t_130|></music></slot><slot><lys><|t_010|>\"take me home tonight\"<|t_070|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000060",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_115|></sfx></slot><slot><sfx><|t_020|>远处的犬吠。<|t_025|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000061",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_130|></music></slot><slot><sfx><|t_030|>远处的犬吠。<|t_040|></sfx></slot><slot><speech><|t_080|>一名说话者正在讲话。<|t_140|></speech></slot><slot><lys><|t_080|>\"take me home tonight\"<|t_140|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000062",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_130|></sfx></slot><slot><sfx><|t_040|>远处的犬吠。<|t_045|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000063",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_010|>一名说话者正在讲话。<|t_070|></speech></slot><slot><speech><|t_020|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000064",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><lys><|t_040|>\"take me home tonight\"<|t_075|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000065",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_180|></sfx></slot><slot><sfx><|t_040|>远处的犬吠。<|t_045|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000066",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_010|>远处的犬吠。<|t_020|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000067",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_105|></sfx></slot><slot><sfx><|t_085|>远处的犬吠。<|t_090|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000068",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><sfx><|t_020|>远处的犬吠。<|t_040|></sfx></slot><slot><speech><|t_040|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000069",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_145|></sfx></slot><slot><sfx><|t_025|>远处的犬吠。<|t_027|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000070",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>电子伴奏循环播放。<|t_115|></music></slot><slot><sfx><|t_035|>远处的犬吠。<|t_037|></sfx></slot><slot><speech><|t_045|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000071",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_125|></music></slot><slot><sfx><|t_065|>远处的犬吠。<|t_067|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000072",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><sfx><|t_050|>远处的犬吠。<|t_060|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000073",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><lys><|t_030|>\"take me home tonight\"<|t_080|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000074",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>电子伴奏循环播放。<|t_110|></music></slot><slot><lys><|t_000|>\"take me home tonight\"<|t_040|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000075",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_010|>一次玻璃破碎声。<|t_020|><|t_030|><|t_040|><|t_045|><|t_055|><|t_060|><|t_070|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000076",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot><slot><speech><|t_030|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000077",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>电子伴奏循环播放。<|t_110|></music></slot><slot><sfx><|t_000|>远处的犬吠。<|t_010|></sfx></slot><slot><lys><|t_010|>\"take me home tonight\"<|t_050|></lys></slot><slot><speech><|t_030|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000078",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_025|>一名说话者正在讲话。<|t_080|></speech></slot><slot><speech><|t_035|>一名说话者正在讲话。<|t_075|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000079",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><speech><|t_045|>一名说话者正在讲话。<|t_095|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000080",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>电子伴奏循环播放。<|t_115|></music></slot><slot><sfx><|t_010|>远处的犬吠。<|t_015|></sfx></slot><slot><speech><|t_040|>一名说话者正在讲话。<|t_090|></speech></slot><slot><lys><|t_050|>\"take me home tonight\"<|t_085|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000081",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_015|>一名说话者正在讲话。<|t_040|></speech></slot><slot><speech><|t_055|>一名说话者正在讲话。<|t_115|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000082",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><speech><|t_030|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000083",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_170|></sfx></slot><slot><sfx><|t_040|>远处的犬吠。<|t_045|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000084",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_107|></music></slot><slot><speech><|t_037|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000085",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_145|></music></slot><slot><lys><|t_065|>\"take me home tonight\"<|t_115|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000086",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_145|></music></slot><slot><speech><|t_035|>一名说话者正在讲话。<|t_080|></speech></slot><slot><sfx><|t_072|>远处的犬吠。<|t_077|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000087",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><lys><|t_000|>\"la la la, dancing in the rain\"<|t_040|></lys></slot><slot><speech><|t_010|>一名说话者正在讲话。<|t_040|></speech></slot><slot><sfx><|t_030|>一次玻璃破碎声。<|t_040|></sfx></slot><slot><music><|t_030|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot>"
+    },
+    {
+      "sample_id": "mix_000088",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>电子伴奏循环播放。<|t_100|></music></slot><slot><lys><|t_010|>\"take me home tonight\"<|t_060|></lys></slot><slot><sfx><|t_030|>一次玻璃破碎声。<|t_040|></sfx></slot><slot><speech><|t_050|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000089",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><speech><|t_010|>一名说话者正在讲话。<|t_040|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000090",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_170|></sfx></slot><slot><sfx><|t_050|>远处的犬吠。<|t_060|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000091",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_040|>一名说话者正在讲话。<|t_070|></speech></slot><slot><speech><|t_060|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000092",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_030|>远处的犬吠。<|t_040|></sfx></slot><slot><sfx><|t_050|>远处的犬吠。<|t_060|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000093",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_025|>远处的犬吠。<|t_027|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000094",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_115|></music></slot><slot><lys><|t_010|>\"take me home tonight\"<|t_050|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000095",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_020|>一名说话者正在讲话。<|t_040|></speech></slot><slot><speech><|t_110|>一名说话者正在讲话。<|t_150|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000096",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_040|>一名说话者正在讲话。<|t_080|></speech></slot><slot><speech><|t_080|>一名说话者正在讲话。<|t_120|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000097",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><lys><|t_010|>\"take me home tonight\"<|t_080|></lys></slot><slot><speech><|t_040|>一名说话者正在讲话。<|t_070|></speech></slot><slot><sfx><|t_050|>一次玻璃破碎声。<|t_060|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000098",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_130|></music></slot><slot><speech><|t_005|>一名说话者正在讲话。<|t_025|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000099",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><lys><|t_060|>\"take me home tonight\"<|t_095|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000100",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_037|>一次玻璃破碎声。<|t_042|><|t_052|><|t_057|><|t_067|><|t_072|><|t_082|><|t_087|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000101",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><lys><|t_080|>\"take me home tonight\"<|t_130|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000102",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>电子伴奏循环播放。<|t_110|></music></slot><slot><sfx><|t_050|>一次玻璃破碎声。<|t_060|></sfx></slot><slot><lys><|t_050|>\"take me home tonight\"<|t_110|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000103",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><sfx><|t_020|>远处的犬吠。<|t_025|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000104",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><lys><|t_040|>\"take me home tonight\"<|t_080|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000105",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_115|></music></slot><slot><speech><|t_050|>一名说话者正在讲话。<|t_100|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000106",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><sfx><|t_020|>远处的犬吠。<|t_025|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000107",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><sfx><|t_000|>远处的犬吠。<|t_010|></sfx></slot><slot><speech><|t_050|>一名说话者正在讲话。<|t_090|></speech></slot><slot><lys><|t_070|>\"take me home tonight\"<|t_120|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000108",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><sfx><|t_030|>远处的犬吠。<|t_040|></sfx></slot><slot><speech><|t_060|>一名说话者正在讲话。<|t_100|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000109",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>电子伴奏循环播放。<|t_110|></music></slot><slot><sfx><|t_010|>一次玻璃破碎声。<|t_020|></sfx></slot><slot><speech><|t_080|>一名说话者正在讲话。<|t_120|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000110",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_105|></music></slot><slot><speech><|t_005|>一名说话者正在讲话。<|t_030|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000111",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_085|></music></slot><slot><sfx><|t_065|>远处的犬吠。<|t_075|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000112",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><lys><|t_070|>\"take me home tonight\"<|t_120|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000113",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_105|></music></slot><slot><speech><|t_020|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000114",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_170|></sfx></slot><slot><sfx><|t_060|>远处的犬吠。<|t_070|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000115",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_005|>一名说话者正在讲话。<|t_025|></speech></slot><slot><speech><|t_030|>一名说话者正在讲话。<|t_075|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000116",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_159|></sfx></slot><slot><sfx><|t_054|>远处的犬吠。<|t_059|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000117",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><lys><|t_035|>\"take me home tonight\"<|t_085|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000118",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><speech><|t_035|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000119",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot><slot><lys><|t_020|>\"take me home tonight\"<|t_080|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000120",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><lys><|t_060|>\"take me home tonight\"<|t_110|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000121",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_130|></sfx></slot><slot><sfx><|t_010|>远处的犬吠。<|t_020|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000122",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><sfx><|t_025|>远处的犬吠。<|t_030|></sfx></slot><slot><speech><|t_055|>一名说话者正在讲话。<|t_085|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000123",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><speech><|t_030|>一名说话者正在讲话。<|t_060|></speech></slot><slot><sfx><|t_060|>远处的犬吠。<|t_070|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000124",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><speech><|t_010|>一名说话者正在讲话。<|t_060|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000125",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_150|></music></slot><slot><speech><|t_055|>一名说话者正在讲话。<|t_085|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000126",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_105|></music></slot><slot><speech><|t_035|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000127",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_035|>一名说话者正在讲话。<|t_060|></speech></slot><slot><speech><|t_070|>一名说话者正在讲话。<|t_100|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000128",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_130|></music></slot><slot><sfx><|t_005|>远处的犬吠。<|t_010|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000129",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_125|></music></slot><slot><speech><|t_040|>一名说话者正在讲话。<|t_085|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000130",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><sfx><|t_090|>远处的犬吠。<|t_095|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000131",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><speech><|t_010|>一名说话者正在讲话。<|t_070|></speech></slot><slot><sfx><|t_070|>远处的犬吠。<|t_080|></sfx></slot><slot><lys><|t_070|>\"take me home tonight\"<|t_140|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000132",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_020|>一名说话者正在讲话。<|t_070|></speech></slot><slot><speech><|t_060|>一名说话者正在讲话。<|t_100|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000133",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_082|></music></slot><slot><speech><|t_027|>一名说话者正在讲话。<|t_075|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000134",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_020|>远处的犬吠。<|t_025|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000135",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><speech><|t_050|>一名说话者正在讲话。<|t_085|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000136",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot><slot><sfx><|t_050|>远处的犬吠。<|t_060|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000137",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot>"
+    },
+    {
+      "sample_id": "mix_000138",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_145|></music></slot><slot><lys><|t_055|>\"take me home tonight\"<|t_085|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000139",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><sfx><|t_040|>远处的犬吠。<|t_060|></sfx></slot><slot><speech><|t_050|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000140",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot><slot><sfx><|t_010|>远处的犬吠。<|t_020|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000141",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_030|>远处的犬吠。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000142",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_125|></music></slot><slot><speech><|t_010|>一名说话者正在讲话。<|t_040|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000143",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_000|>一名说话者正在讲话。<|t_040|></speech></slot><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot>"
+    },
+    {
+      "sample_id": "mix_000144",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_040|>一名说话者正在讲话。<|t_090|></speech></slot><slot><speech><|t_070|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000145",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><sfx><|t_020|>远处的犬吠。<|t_030|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000146",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><speech><|t_060|>一名说话者正在讲话。<|t_100|></speech></slot><slot><sfx><|t_060|>远处的犬吠。<|t_070|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000147",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><lys><|t_040|>\"take me home tonight\"<|t_080|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000148",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_145|></music></slot><slot><speech><|t_025|>一名说话者正在讲话。<|t_060|></speech></slot><slot><lys><|t_060|>\"take me home tonight\"<|t_100|></lys></slot><slot><sfx><|t_075|>一次玻璃破碎声。<|t_085|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000149",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_040|>一名说话者正在讲话。<|t_095|></speech></slot><slot><speech><|t_060|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000150",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_085|></music></slot><slot><sfx><|t_045|>远处的犬吠。<|t_047|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000151",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_115|></music></slot><slot><lys><|t_025|>\"take me home tonight\"<|t_055|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000152",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_035|>一名说话者正在讲话。<|t_060|></speech></slot><slot><speech><|t_060|>一名说话者正在讲话。<|t_115|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000153",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_095|></music></slot><slot><speech><|t_010|>一名说话者正在讲话。<|t_045|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000154",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>电子伴奏循环播放。<|t_095|></music></slot><slot><lys><|t_035|>\"take me home tonight\"<|t_085|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000155",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><sfx><|t_020|>远处的犬吠。<|t_025|></sfx></slot><slot><speech><|t_075|>一名说话者正在讲话。<|t_120|></speech></slot><slot><lys><|t_075|>\"take me home tonight\"<|t_115|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000156",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_150|></music></slot><slot><sfx><|t_005|>远处的犬吠。<|t_010|></sfx></slot><slot><speech><|t_035|>一名说话者正在讲话。<|t_055|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000157",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot><slot><sfx><|t_035|>远处的犬吠。<|t_045|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000158",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_195|></sfx></slot><slot><sfx><|t_045|>远处的犬吠。<|t_050|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000159",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_035|>远处的犬吠。<|t_045|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000160",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_105|></music></slot><slot><sfx><|t_035|>远处的犬吠。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000161",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_040|>一次玻璃破碎声。<|t_050|><|t_060|><|t_070|><|t_080|><|t_090|><|t_100|><|t_110|><|t_120|><|t_130|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000162",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_089|>远处的犬吠。<|t_093|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000163",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_110|></sfx></slot><slot><sfx><|t_035|>远处的犬吠。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000164",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_055|>一次玻璃破碎声。<|t_060|><|t_070|><|t_075|><|t_085|><|t_090|><|t_110|><|t_115|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000165",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_085|></music></slot><slot><speech><|t_035|>一名说话者正在讲话。<|t_075|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000166",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><sfx><|t_010|>远处的犬吠。<|t_020|></sfx></slot><slot><speech><|t_050|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000167",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><speech><|t_000|>一名说话者正在讲话。<|t_040|></speech></slot><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><sfx><|t_060|>远处的犬吠。<|t_070|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000168",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot><slot><sfx><|t_050|>远处的犬吠。<|t_060|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000169",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_140|></sfx></slot><slot><sfx><|t_100|>远处的犬吠。<|t_110|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000170",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_090|></music></slot><slot><speech><|t_020|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000171",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_130|></music></slot><slot><lys><|t_050|>\"take me home tonight\"<|t_080|></lys></slot><slot><sfx><|t_080|>远处的犬吠。<|t_090|></sfx></slot><slot><speech><|t_090|>一名说话者正在讲话。<|t_130|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000172",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_090|></music></slot><slot><sfx><|t_000|>远处的犬吠。<|t_010|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000173",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_090|></music></slot><slot><speech><|t_040|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000174",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_090|></music></slot><slot><speech><|t_020|>一名说话者正在讲话。<|t_050|></speech></slot><slot><sfx><|t_050|>远处的犬吠。<|t_060|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000175",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_125|></music></slot><slot><sfx><|t_025|>远处的犬吠。<|t_027|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000176",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><speech><|t_020|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000177",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot><slot><sfx><|t_030|>远处的犬吠。<|t_040|></sfx></slot><slot><speech><|t_035|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000178",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_105|></music></slot><slot><speech><|t_015|>一名说话者正在讲话。<|t_040|></speech></slot><slot><sfx><|t_090|>远处的犬吠。<|t_095|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000179",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_150|></music></slot><slot><speech><|t_035|>一名说话者正在讲话。<|t_070|></speech></slot><slot><sfx><|t_060|>远处的犬吠。<|t_065|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000180",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_040|>一名说话者正在讲话。<|t_080|></speech></slot><slot><speech><|t_090|>一名说话者正在讲话。<|t_130|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000181",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_090|></music></slot><slot><lys><|t_020|>\"take me home tonight\"<|t_080|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000182",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_095|></music></slot><slot><lys><|t_040|>\"take me home tonight\"<|t_075|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000183",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_085|></music></slot><slot><lys><|t_045|>\"take me home tonight\"<|t_085|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000184",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><speech><|t_100|>一名说话者正在讲话。<|t_120|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000185",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_015|>远处的犬吠。<|t_020|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000186",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><lys><|t_010|>\"take me home tonight\"<|t_060|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000187",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><speech><|t_040|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000188",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_082|></music></slot><slot><sfx><|t_045|>远处的犬吠。<|t_047|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000189",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>电子伴奏循环播放。<|t_110|></music></slot><slot><speech><|t_030|>一名说话者正在讲话。<|t_080|></speech></slot><slot><sfx><|t_050|>远处的犬吠。<|t_060|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000190",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><sfx><|t_035|>远处的犬吠。<|t_045|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000191",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><lys><|t_040|>\"take me home tonight\"<|t_080|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000192",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_085|></music></slot><slot><speech><|t_035|>一名说话者正在讲话。<|t_065|></speech></slot><slot><sfx><|t_040|>一次玻璃破碎声。<|t_045|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000193",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_035|>一名说话者正在讲话。<|t_070|></speech></slot><slot><speech><|t_055|>一名说话者正在讲话。<|t_105|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000194",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_120|></sfx></slot><slot><sfx><|t_040|>远处的犬吠。<|t_050|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000195",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_070|>远处的犬吠。<|t_080|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000196",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_044|>远处的犬吠。<|t_046|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000197",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>电子伴奏循环播放。<|t_120|></music></slot><slot><lys><|t_050|>\"take me home tonight\"<|t_095|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000198",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_035|>远处的犬吠。<|t_045|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000199",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><lys><|t_040|>\"take me home tonight\"<|t_080|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000200",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_130|></music></slot><slot><speech><|t_020|>一名说话者正在讲话。<|t_060|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000201",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_069|>远处的犬吠。<|t_074|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000202",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_085|></music></slot><slot><sfx><|t_050|>远处的犬吠。<|t_055|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000203",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_085|></music></slot><slot><sfx><|t_030|>远处的犬吠。<|t_035|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000204",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_070|>一次玻璃破碎声。<|t_080|><|t_080|><|t_090|><|t_090|><|t_100|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000205",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_015|>一次玻璃破碎声。<|t_025|><|t_035|><|t_045|><|t_055|><|t_065|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000206",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_170|></sfx></slot><slot><sfx><|t_035|>远处的犬吠。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000207",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_107|></music></slot><slot><lys><|t_006|>\"take me home tonight\"<|t_035|></lys></slot><slot><speech><|t_037|>一名说话者正在讲话。<|t_054|></speech></slot><slot><sfx><|t_051|>一次玻璃破碎声。<|t_053|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000208",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_020|>一名说话者正在讲话。<|t_070|></speech></slot><slot><speech><|t_060|>一名说话者正在讲话。<|t_100|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000209",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_010|>远处的犬吠。<|t_020|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000210",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><sfx><|t_060|>远处的犬吠。<|t_070|></sfx></slot><slot><speech><|t_070|>一名说话者正在讲话。<|t_120|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000211",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_078|>一次玻璃破碎声。<|t_082|><|t_097|><|t_102|><|t_117|><|t_122|><|t_137|><|t_142|><|t_157|><|t_162|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000212",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><speech><|t_030|>一名说话者正在讲话。<|t_080|></speech></slot><slot><lys><|t_050|>\"take me home tonight\"<|t_110|></lys></slot><slot><sfx><|t_070|>一次玻璃破碎声。<|t_080|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000213",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_010|>一名说话者正在讲话。<|t_040|></speech></slot><slot><speech><|t_080|>一名说话者正在讲话。<|t_120|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000214",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_145|></music></slot><slot><lys><|t_035|>\"take me home tonight\"<|t_065|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000215",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot><slot><sfx><|t_050|>远处的犬吠。<|t_060|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000216",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><speech><|t_015|>一名说话者正在讲话。<|t_055|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000217",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>电子伴奏循环播放。<|t_100|></music></slot><slot><lys><|t_040|>\"take me home tonight\"<|t_080|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000218",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_095|></music></slot><slot><speech><|t_005|>一名说话者正在讲话。<|t_040|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000219",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_115|></music></slot><slot><lys><|t_025|>\"take me home tonight\"<|t_055|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000220",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_015|>一名说话者正在讲话。<|t_070|></speech></slot><slot><speech><|t_030|>一名说话者正在讲话。<|t_065|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000221",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_045|>远处的犬吠。<|t_050|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000222",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_109|></music></slot><slot><lys><|t_037|>\"take me home tonight\"<|t_080|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000223",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><sfx><|t_080|>一次玻璃破碎声。<|t_090|></sfx></slot><slot><speech><|t_110|>一名说话者正在讲话。<|t_140|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000224",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>电子伴奏循环播放。<|t_100|></music></slot><slot><sfx><|t_020|>远处的犬吠。<|t_025|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000225",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_085|></music></slot><slot><lys><|t_035|>\"take me home tonight\"<|t_070|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000226",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_130|></music></slot><slot><speech><|t_040|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000227",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_090|></music></slot><slot><speech><|t_020|>一名说话者正在讲话。<|t_080|></speech></slot><slot><sfx><|t_040|>远处的犬吠。<|t_050|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000228",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_037|>一次玻璃破碎声。<|t_041|><|t_050|><|t_054|><|t_063|><|t_067|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000229",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot><slot><speech><|t_060|>一名说话者正在讲话。<|t_095|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000230",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><speech><|t_060|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000231",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>电子伴奏循环播放。<|t_120|></music></slot><slot><lys><|t_010|>\"take me home tonight\"<|t_070|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000232",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_065|>一名说话者正在讲话。<|t_085|></speech></slot><slot><speech><|t_080|>一名说话者正在讲话。<|t_120|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000233",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_000|>一名说话者正在讲话。<|t_040|></speech></slot><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_090|></music></slot>"
+    },
+    {
+      "sample_id": "mix_000234",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_005|>一名说话者正在讲话。<|t_055|></speech></slot><slot><speech><|t_080|>一名说话者正在讲话。<|t_120|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000235",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><speech><|t_060|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000236",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><lys><|t_020|>\"take me home tonight\"<|t_080|></lys></slot><slot><speech><|t_040|>一名说话者正在讲话。<|t_080|></speech></slot><slot><sfx><|t_100|>远处的犬吠。<|t_110|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000237",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_145|></music></slot><slot><sfx><|t_055|>远处的犬吠。<|t_060|></sfx></slot><slot><speech><|t_075|>一名说话者正在讲话。<|t_100|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000238",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot><slot><speech><|t_070|>一名说话者正在讲话。<|t_100|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000239",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><speech><|t_010|>一名说话者正在讲话。<|t_030|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000240",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_037|>一次玻璃破碎声。<|t_042|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000241",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_130|></music></slot><slot><sfx><|t_030|>远处的犬吠。<|t_040|></sfx></slot><slot><speech><|t_035|>一名说话者正在讲话。<|t_085|></speech></slot><slot><lys><|t_040|>\"take me home tonight\"<|t_085|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000242",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_130|></music></slot><slot><sfx><|t_000|>远处的犬吠。<|t_020|></sfx></slot><slot><speech><|t_040|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000243",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_130|></music></slot><slot><sfx><|t_010|>远处的犬吠。<|t_020|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000244",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_090|>一次玻璃破碎声。<|t_110|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000245",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_125|></music></slot><slot><lys><|t_035|>\"take me home tonight\"<|t_070|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000246",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><sfx><|t_020|>远处的犬吠。<|t_030|></sfx></slot><slot><speech><|t_040|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000247",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><speech><|t_025|>一名说话者正在讲话。<|t_075|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000248",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><sfx><|t_020|>远处的犬吠。<|t_030|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000249",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><speech><|t_080|>一名说话者正在讲话。<|t_110|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000250",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_150|></music></slot><slot><speech><|t_040|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000251",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot><slot><lys><|t_050|>\"take me home tonight\"<|t_100|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000252",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>远处的犬吠。<|t_010|></sfx></slot><slot><sfx><|t_040|>远处的犬吠。<|t_050|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000253",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_050|>一名说话者正在讲话。<|t_100|></speech></slot><slot><speech><|t_090|>一名说话者正在讲话。<|t_110|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000254",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_040|>一名说话者正在讲话。<|t_080|></speech></slot><slot><speech><|t_070|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000255",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_010|>一名说话者正在讲话。<|t_060|></speech></slot><slot><speech><|t_080|>一名说话者正在讲话。<|t_140|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000256",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_145|></music></slot><slot><speech><|t_005|>一名说话者正在讲话。<|t_040|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000257",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_095|></music></slot><slot><lys><|t_015|>\"take me home tonight\"<|t_040|></lys></slot><slot><sfx><|t_045|>短促的撞击声。<|t_047|></sfx></slot><slot><speech><|t_060|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000258",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><lys><|t_040|>\"take me home tonight\"<|t_080|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000259",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_150|></music></slot>"
+    },
+    {
+      "sample_id": "mix_000260",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_130|></music></slot><slot><lys><|t_060|>\"la la la, dancing in the rain\"<|t_090|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000261",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_000|>一名说话者正在讲话。<|t_070|></speech></slot><slot><speech><|t_020|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000262",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><lys><|t_010|>\"take me home tonight\"<|t_070|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000263",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><sfx><|t_020|>远处的犬吠。<|t_030|></sfx></slot><slot><speech><|t_040|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000264",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_180|></sfx></slot><slot><sfx><|t_060|>远处的犬吠。<|t_070|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000265",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_115|></music></slot><slot><sfx><|t_090|>远处的犬吠。<|t_095|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000266",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_185|></sfx></slot><slot><sfx><|t_080|>远处的犬吠。<|t_085|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000267",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><speech><|t_010|>一名说话者正在讲话。<|t_040|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000268",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_145|></music></slot><slot><sfx><|t_060|>远处的犬吠。<|t_065|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000269",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><speech><|t_005|>一名说话者正在讲话。<|t_050|></speech></slot><slot><sfx><|t_035|>远处的犬吠。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000270",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><speech><|t_040|>一名说话者正在讲话。<|t_070|></speech></slot><slot><sfx><|t_060|>远处的犬吠。<|t_070|></sfx></slot><slot><lys><|t_090|>\"take me home tonight\"<|t_140|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000271",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_085|></music></slot><slot><lys><|t_015|>\"take me home tonight\"<|t_060|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000272",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><speech><|t_030|>一名说话者正在讲话。<|t_060|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000273",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><lys><|t_035|>\"take me home tonight\"<|t_085|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000274",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><speech><|t_020|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000275",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot><slot><sfx><|t_030|>远处的犬吠。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000276",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_010|>一名说话者正在讲话。<|t_080|></speech></slot><slot><speech><|t_020|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000277",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_130|></music></slot><slot><sfx><|t_020|>远处的犬吠。<|t_030|></sfx></slot><slot><speech><|t_060|>一名说话者正在讲话。<|t_100|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000278",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><speech><|t_060|>一名说话者正在讲话。<|t_120|></speech></slot><slot><sfx><|t_080|>远处的犬吠。<|t_090|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000279",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_100|></sfx></slot><slot><sfx><|t_075|>远处的犬吠。<|t_085|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000280",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>远处的犬吠。<|t_010|></sfx></slot><slot><speech><|t_005|>一名说话者正在讲话。<|t_045|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000281",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_020|>一次玻璃破碎声。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000282",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><sfx><|t_050|>远处的犬吠。<|t_060|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000283",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><speech><|t_010|>一名说话者正在讲话。<|t_040|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000284",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>电子伴奏循环播放。<|t_120|></music></slot><slot><sfx><|t_035|>远处的犬吠。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000285",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_087|>一次玻璃破碎声。<|t_092|><|t_107|><|t_112|><|t_127|><|t_132|><|t_147|><|t_152|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000286",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_145|></music></slot><slot><speech><|t_035|>一名说话者正在讲话。<|t_085|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000287",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_000|>远处的犬吠。<|t_010|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000288",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_130|></music></slot><slot><sfx><|t_060|>远处的犬吠。<|t_070|></sfx></slot><slot><speech><|t_065|>一名说话者正在讲话。<|t_120|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000289",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_030|>远处的犬吠。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000290",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_090|></music></slot><slot><speech><|t_050|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000291",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_020|>一名说话者正在讲话。<|t_050|></speech></slot><slot><speech><|t_050|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000292",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_070|>一次玻璃破碎声。<|t_080|><|t_080|>一次玻璃破碎声。<|t_090|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000293",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_085|></music></slot><slot><sfx><|t_010|>远处的犬吠。<|t_015|></sfx></slot><slot><lys><|t_015|>\"take me home tonight\"<|t_050|></lys></slot><slot><speech><|t_035|>一名说话者正在讲话。<|t_050|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000294",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_025|>一名说话者正在讲话。<|t_060|></speech></slot><slot><speech><|t_075|>一名说话者正在讲话。<|t_100|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000295",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_150|></music></slot><slot><sfx><|t_040|>短促的撞击声。<|t_045|></sfx></slot><slot><speech><|t_055|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000296",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_000|>一次玻璃破碎声。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000297",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot><slot><lys><|t_030|>\"take me home tonight\"<|t_080|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000298",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_000|>远处的犬吠。<|t_010|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000299",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_130|></music></slot><slot><speech><|t_010|>一名说话者正在讲话。<|t_060|></speech></slot><slot><sfx><|t_060|>远处的犬吠。<|t_070|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000300",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><lys><|t_040|>\"take me home tonight\"<|t_090|></lys></slot><slot><speech><|t_050|>一名说话者正在讲话。<|t_100|></speech></slot><slot><sfx><|t_080|>远处的犬吠。<|t_090|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000301",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><speech><|t_040|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000302",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><speech><|t_075|>一名说话者正在讲话。<|t_125|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000303",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot>"
+    },
+    {
+      "sample_id": "mix_000304",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_125|></music></slot><slot><speech><|t_010|>一名说话者正在讲话。<|t_050|></speech></slot><slot><sfx><|t_050|>远处的犬吠。<|t_055|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000305",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_069|>一名说话者正在讲话。<|t_085|></speech></slot><slot><speech><|t_087|>一名说话者正在讲话。<|t_117|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000306",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>电子伴奏循环播放。<|t_100|></music></slot><slot><lys><|t_000|>\"take me home tonight\"<|t_060|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000307",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><speech><|t_040|>一名说话者正在讲话。<|t_085|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000308",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><speech><|t_050|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000309",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><speech><|t_030|>一名说话者正在讲话。<|t_080|></speech></slot><slot><sfx><|t_030|>远处的犬吠。<|t_040|></sfx></slot><slot><lys><|t_050|>\"take me home tonight\"<|t_100|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000310",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><speech><|t_090|>一名说话者正在讲话。<|t_130|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000311",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_125|></music></slot><slot><speech><|t_015|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000312",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><sfx><|t_000|>远处的犬吠。<|t_020|></sfx></slot><slot><speech><|t_010|>一名说话者正在讲话。<|t_040|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000313",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_000|>一次玻璃破碎声。<|t_050|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000314",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_040|>一次玻璃破碎声。<|t_050|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000315",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_100|>一次玻璃破碎声。<|t_145|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000316",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_165|></sfx></slot><slot><sfx><|t_025|>远处的犬吠。<|t_030|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000317",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>电子伴奏循环播放。<|t_090|></music></slot><slot><lys><|t_010|>\"take me home tonight\"<|t_070|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000318",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_010|>远处的犬吠。<|t_020|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000319",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><speech><|t_005|>一名说话者正在讲话。<|t_040|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000320",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_000|>一名说话者正在讲话。<|t_030|></speech></slot><slot><speech><|t_020|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000321",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_085|></music></slot><slot><sfx><|t_035|>远处的犬吠。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000322",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>电子伴奏循环播放。<|t_110|></music></slot><slot><sfx><|t_010|>短促的撞击声。<|t_020|></sfx></slot><slot><speech><|t_030|>一名说话者正在讲话。<|t_070|></speech></slot><slot><lys><|t_060|>\"take me home tonight\"<|t_110|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000323",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_020|>远处的犬吠。<|t_025|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000324",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_115|></music></slot><slot><speech><|t_025|>一名说话者正在讲话。<|t_045|></speech></slot><slot><sfx><|t_095|>远处的犬吠。<|t_100|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000325",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><speech><|t_050|>一名说话者正在讲话。<|t_095|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000326",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><speech><|t_000|>一名说话者正在讲话。<|t_060|></speech></slot><slot><sfx><|t_070|>远处的犬吠。<|t_080|></sfx></slot><slot><lys><|t_080|>\"take me home tonight\"<|t_120|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000327",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_145|></music></slot><slot><lys><|t_055|>\"take me home tonight\"<|t_095|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000328",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_040|>一名说话者正在讲话。<|t_080|></speech></slot><slot><speech><|t_080|>一名说话者正在讲话。<|t_120|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000329",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_025|>远处的犬吠。<|t_028|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000330",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><music><|t_000|>电子伴奏循环播放。<|t_115|></music></slot>"
+    },
+    {
+      "sample_id": "mix_000331",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_125|></music></slot><slot><speech><|t_070|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000332",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><speech><|t_020|>一名说话者正在讲话。<|t_080|></speech></slot><slot><sfx><|t_050|>远处的犬吠。<|t_060|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000333",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><sfx><|t_005|>远处的犬吠。<|t_010|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000334",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot><slot><speech><|t_060|>一名说话者正在讲话。<|t_100|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000335",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_007|>一名说话者正在讲话。<|t_055|></speech></slot><slot><speech><|t_061|>一名说话者正在讲话。<|t_091|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000336",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_090|></music></slot><slot><sfx><|t_030|>远处的犬吠。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000337",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_155|></music></slot><slot><sfx><|t_045|>远处的犬吠。<|t_050|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000338",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_150|></music></slot><slot><sfx><|t_060|>远处的犬吠。<|t_070|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000339",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_085|></music></slot><slot><sfx><|t_025|>远处的犬吠。<|t_030|></sfx></slot><slot><speech><|t_060|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000340",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_195|></sfx></slot><slot><sfx><|t_110|>远处的犬吠。<|t_120|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000341",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_115|></music></slot><slot><sfx><|t_015|>远处的犬吠。<|t_020|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000342",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><speech><|t_080|>一名说话者正在讲话。<|t_140|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000343",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_009|>一名说话者正在讲话。<|t_040|></speech></slot><slot><speech><|t_102|>一名说话者正在讲话。<|t_147|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000344",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_090|></music></slot><slot><sfx><|t_020|>远处的犬吠。<|t_025|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000345",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_049|>远处的犬吠。<|t_051|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000346",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><lys><|t_020|>\"take me home tonight\"<|t_070|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000347",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_002|>一名说话者正在讲话。<|t_019|></speech></slot><slot><speech><|t_067|>一名说话者正在讲话。<|t_097|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000348",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_060|>一次玻璃破碎声。<|t_070|><|t_070|><|t_080|><|t_080|><|t_090|><|t_090|><|t_120|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000349",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_025|>一名说话者正在讲话。<|t_070|></speech></slot><slot><speech><|t_075|>一名说话者正在讲话。<|t_095|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000350",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot><slot><sfx><|t_010|>远处的犬吠。<|t_020|></sfx></slot><slot><speech><|t_020|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000351",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_000|>一次玻璃破碎声。<|t_060|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000352",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_050|>一次玻璃破碎声。<|t_060|><|t_070|><|t_080|><|t_090|><|t_100|><|t_110|><|t_130|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000353",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><lys><|t_040|>\"take me home tonight\"<|t_080|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000354",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_105|></music></slot><slot><sfx><|t_005|>远处的犬吠。<|t_015|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000355",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_115|></music></slot><slot><lys><|t_030|>\"take me home tonight\"<|t_070|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000356",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><sfx><|t_030|>远处的犬吠。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000357",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_085|></music></slot><slot><sfx><|t_010|>远处的犬吠。<|t_015|></sfx></slot><slot><speech><|t_045|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000358",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_000|>一名说话者正在讲话。<|t_025|></speech></slot><slot><speech><|t_030|>一名说话者正在讲话。<|t_050|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000359",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><speech><|t_010|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000360",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><lys><|t_020|>\"take me home tonight\"<|t_090|></lys></slot><slot><speech><|t_040|>一名说话者正在讲话。<|t_080|></speech></slot><slot><sfx><|t_080|>一次玻璃破碎声。<|t_090|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000361",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_125|></music></slot><slot><speech><|t_025|>一名说话者正在讲话。<|t_045|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000362",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><sfx><|t_050|>远处的犬吠。<|t_060|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000363",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><sfx><|t_070|>远处的犬吠。<|t_080|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000364",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_085|></music></slot><slot><lys><|t_025|>\"take me home tonight\"<|t_040|></lys></slot><slot><speech><|t_035|>一名说话者正在讲话。<|t_060|></speech></slot><slot><sfx><|t_035|>一次玻璃破碎声。<|t_045|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000365",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><speech><|t_020|>一名说话者正在讲话。<|t_040|></speech></slot><slot><lys><|t_040|>\"take me home tonight\"<|t_070|></lys></slot><slot><sfx><|t_040|>一次玻璃破碎声。<|t_050|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000366",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_120|></sfx></slot><slot><sfx><|t_040|>远处的犬吠。<|t_060|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000367",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot><slot><lys><|t_040|>\"take me home tonight\"<|t_080|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000368",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><sfx><|t_010|>远处的犬吠。<|t_020|></sfx></slot><slot><lys><|t_010|>\"take me home tonight\"<|t_060|></lys></slot><slot><speech><|t_030|>一名说话者正在讲话。<|t_060|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000369",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><speech><|t_040|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000370",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_130|></music></slot><slot><speech><|t_040|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000371",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><speech><|t_030|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000372",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_150|></music></slot><slot><speech><|t_060|>一名说话者正在讲话。<|t_095|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000373",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_090|></music></slot><slot><sfx><|t_030|>远处的犬吠。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000374",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_085|></music></slot><slot><speech><|t_020|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000375",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_125|></music></slot><slot><speech><|t_020|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000376",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>电子伴奏循环播放。<|t_110|></music></slot><slot><lys><|t_000|>\"take me home tonight\"<|t_060|></lys></slot><slot><sfx><|t_030|>远处的犬吠。<|t_040|></sfx></slot><slot><speech><|t_050|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000377",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><sfx><|t_030|>远处的犬吠。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000378",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>电子伴奏循环播放。<|t_090|></music></slot><slot><sfx><|t_020|>远处的犬吠。<|t_025|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000379",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_150|></music></slot><slot><sfx><|t_005|>远处的犬吠。<|t_007|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000380",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_115|></music></slot><slot><lys><|t_020|>\"take me home tonight\"<|t_045|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000381",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_025|>一名说话者正在讲话。<|t_045|></speech></slot><slot><speech><|t_045|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000382",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_065|>一次玻璃破碎声。<|t_075|><|t_085|><|t_095|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000383",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_077|>一名说话者正在讲话。<|t_100|></speech></slot><slot><speech><|t_114|>一名说话者正在讲话。<|t_154|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000384",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_029|>远处的犬吠。<|t_033|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000385",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_165|></sfx></slot><slot><sfx><|t_015|>远处的犬吠。<|t_020|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000386",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><lys><|t_060|>\"take me home tonight\"<|t_085|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000387",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><sfx><|t_020|>远处的犬吠。<|t_025|></sfx></slot><slot><speech><|t_025|>一名说话者正在讲话。<|t_045|></speech></slot><slot><lys><|t_090|>\"take me home tonight\"<|t_120|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000388",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><lys><|t_010|>\"take me home tonight\"<|t_040|></lys></slot><slot><speech><|t_070|>一名说话者正在讲话。<|t_120|></speech></slot><slot><sfx><|t_070|>远处的犬吠。<|t_080|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000389",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_010|>一名说话者正在讲话。<|t_030|></speech></slot><slot><speech><|t_040|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000390",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_085|></music></slot><slot><sfx><|t_025|>远处的犬吠。<|t_030|></sfx></slot><slot><speech><|t_040|>一名说话者正在讲话。<|t_070|></speech></slot><slot><lys><|t_045|>\"take me home tonight\"<|t_080|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000391",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_065|>一名说话者正在讲话。<|t_120|></speech></slot><slot><speech><|t_075|>一名说话者正在讲话。<|t_115|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000392",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><sfx><|t_020|>远处的犬吠。<|t_030|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000393",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_120|></sfx></slot><slot><sfx><|t_010|>远处的犬吠。<|t_020|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000394",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_180|></sfx></slot><slot><sfx><|t_060|>远处的犬吠。<|t_065|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000395",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot><slot><speech><|t_020|>一名说话者正在讲话。<|t_060|></speech></slot><slot><sfx><|t_020|>远处的犬吠。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000396",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_079|>一次玻璃破碎声。<|t_081|><|t_096|><|t_098|><|t_113|><|t_115|><|t_129|><|t_132|><|t_147|><|t_149|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000397",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><lys><|t_010|>\"take me home tonight\"<|t_030|></lys></slot><slot><sfx><|t_020|>一次玻璃破碎声。<|t_040|></sfx></slot><slot><speech><|t_040|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000398",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_105|></music></slot><slot><speech><|t_045|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000399",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_025|>远处的犬吠。<|t_030|></sfx></slot><slot><sfx><|t_025|>远处的犬吠。<|t_030|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000400",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_125|></music></slot><slot><speech><|t_050|>一名说话者正在讲话。<|t_085|></speech></slot><slot><lys><|t_070|>\"take me home tonight\"<|t_115|></lys></slot><slot><sfx><|t_090|>远处的犬吠。<|t_095|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000401",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_085|></music></slot><slot><lys><|t_015|>\"take me home tonight\"<|t_040|></lys></slot><slot><speech><|t_035|>一名说话者正在讲话。<|t_080|></speech></slot><slot><sfx><|t_035|>远处的犬吠。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000402",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_130|></music></slot><slot><lys><|t_030|>\"take me home tonight\"<|t_080|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000403",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><speech><|t_080|>一名说话者正在讲话。<|t_120|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000404",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><sfx><|t_050|>远处的犬吠。<|t_060|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000405",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_080|>一次玻璃破碎声。<|t_084|><|t_100|><|t_104|><|t_120|><|t_124|><|t_140|><|t_144|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000406",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>电子伴奏循环播放。<|t_107|></music></slot><slot><sfx><|t_012|>短促的撞击声。<|t_014|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000407",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><speech><|t_075|>一名说话者正在讲话。<|t_115|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000408",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_090|></music></slot><slot><lys><|t_000|>\"take me home tonight\"<|t_050|></lys></slot><slot><sfx><|t_010|>一次玻璃破碎声。<|t_020|></sfx></slot><slot><speech><|t_030|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000409",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_040|>一名说话者正在讲话。<|t_080|></speech></slot><slot><speech><|t_070|>一名说话者正在讲话。<|t_120|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000410",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_145|></music></slot><slot><speech><|t_090|>一名说话者正在讲话。<|t_125|></speech></slot><slot><sfx><|t_100|>远处的犬吠。<|t_105|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000411",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_036|>远处的犬吠。<|t_038|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000412",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_130|></music></slot><slot><speech><|t_010|>一名说话者正在讲话。<|t_070|></speech></slot><slot><sfx><|t_040|>远处的犬吠。<|t_050|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000413",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_085|></music></slot><slot><speech><|t_015|>一名说话者正在讲话。<|t_040|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000414",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><lys><|t_000|>\"take me home tonight\"<|t_030|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000415",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_105|></music></slot><slot><speech><|t_015|>一名说话者正在讲话。<|t_055|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000416",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><speech><|t_040|>一名说话者正在讲话。<|t_100|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000417",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>电子伴奏循环播放。<|t_090|></music></slot><slot><sfx><|t_010|>远处的犬吠。<|t_020|></sfx></slot><slot><speech><|t_020|>一名说话者正在讲话。<|t_070|></speech></slot><slot><lys><|t_030|>\"take me home tonight\"<|t_070|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000418",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_115|></music></slot><slot><speech><|t_015|>一名说话者正在讲话。<|t_065|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000419",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_125|></music></slot><slot><speech><|t_075|>一名说话者正在讲话。<|t_125|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000420",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_025|>远处的犬吠。<|t_030|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000421",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_010|>一次玻璃破碎声。<|t_020|><|t_030|><|t_040|><|t_050|><|t_060|><|t_070|><|t_080|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000422",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>电子伴奏循环播放。<|t_110|></music></slot><slot><speech><|t_010|>一名说话者正在讲话。<|t_030|></speech></slot><slot><lys><|t_060|>\"take me home tonight\"<|t_120|></lys></slot><slot><sfx><|t_060|>一次玻璃破碎声。<|t_070|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000423",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_150|></music></slot><slot><lys><|t_030|>\"take me home tonight\"<|t_070|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000424",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_145|></music></slot><slot><lys><|t_010|>\"take me home tonight\"<|t_070|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000425",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><sfx><|t_020|>远处的犬吠。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000426",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><speech><|t_055|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000427",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_035|>远处的犬吠。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000428",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_095|></music></slot><slot><lys><|t_040|>\"take me home tonight\"<|t_095|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000429",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><speech><|t_020|>一名说话者正在讲话。<|t_070|></speech></slot><slot><sfx><|t_080|>远处的犬吠。<|t_090|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000430",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_104|></music></slot><slot><speech><|t_019|>一名说话者正在讲话。<|t_044|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000431",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_040|>一次玻璃破碎声。<|t_090|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000432",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>电子伴奏循环播放。<|t_110|></music></slot><slot><sfx><|t_010|>远处的犬吠。<|t_020|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000433",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><speech><|t_080|>一名说话者正在讲话。<|t_120|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000434",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><lys><|t_000|>\"la la la, dancing in the rain\"<|t_040|></lys></slot><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_130|></music></slot>"
+    },
+    {
+      "sample_id": "mix_000435",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_150|></music></slot><slot><lys><|t_030|>\"take me home tonight\"<|t_060|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000436",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><speech><|t_010|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000437",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_130|></sfx></slot><slot><sfx><|t_050|>远处的犬吠。<|t_060|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000438",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot><slot><speech><|t_020|>一名说话者正在讲话。<|t_080|></speech></slot><slot><sfx><|t_030|>远处的犬吠。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000439",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><speech><|t_070|>一名说话者正在讲话。<|t_120|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000440",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_082|></music></slot><slot><sfx><|t_045|>远处的犬吠。<|t_047|></sfx></slot><slot><lys><|t_104|>\"take me home tonight\"<|t_163|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000441",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_035|>一次玻璃破碎声。<|t_040|><|t_045|><|t_050|><|t_055|><|t_060|><|t_065|><|t_070|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000442",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><speech><|t_035|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000443",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_130|></music></slot><slot><lys><|t_055|>\"take me home tonight\"<|t_095|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000444",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_020|>一次玻璃破碎声。<|t_040|><|t_050|><|t_080|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000445",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><lys><|t_070|>\"take me home tonight\"<|t_130|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000446",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_145|></music></slot><slot><sfx><|t_015|>远处的犬吠。<|t_020|></sfx></slot><slot><speech><|t_025|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000447",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><speech><|t_090|>一名说话者正在讲话。<|t_120|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000448",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot><slot><lys><|t_010|>\"take me home tonight\"<|t_060|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000449",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot><slot><lys><|t_020|>\"take me home tonight\"<|t_060|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000450",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_105|></music></slot><slot><sfx><|t_040|>一次玻璃破碎声。<|t_045|></sfx></slot><slot><lys><|t_045|>\"take me home tonight\"<|t_080|></lys></slot><slot><speech><|t_065|>一名说话者正在讲话。<|t_105|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000451",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_090|></music></slot><slot><speech><|t_030|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000452",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_065|>一名说话者正在讲话。<|t_120|></speech></slot><slot><speech><|t_080|>一名说话者正在讲话。<|t_120|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000453",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_130|></music></slot><slot><lys><|t_055|>\"take me home tonight\"<|t_090|></lys></slot><slot><sfx><|t_060|>一次玻璃破碎声。<|t_070|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000454",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><speech><|t_020|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000455",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_000|>一名说话者正在讲话。<|t_050|></speech></slot><slot><speech><|t_020|>一名说话者正在讲话。<|t_040|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000456",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_145|></music></slot><slot><lys><|t_040|>\"take me home tonight\"<|t_090|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000457",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_087|></music></slot><slot><speech><|t_041|>一名说话者正在讲话。<|t_085|></speech></slot><slot><sfx><|t_049|>远处的犬吠。<|t_052|></sfx></slot><slot><lys><|t_066|>\"take me home tonight\"<|t_080|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000458",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_025|>一次玻璃破碎声。<|t_030|><|t_040|><|t_045|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000459",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><lys><|t_010|>\"take me home tonight\"<|t_070|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000460",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><sfx><|t_020|>远处的犬吠。<|t_030|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000461",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><speech><|t_010|>一名说话者正在讲话。<|t_040|></speech></slot><slot><lys><|t_040|>\"take me home tonight\"<|t_080|></lys></slot><slot><sfx><|t_050|>一次玻璃破碎声。<|t_070|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000462",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_040|>远处的犬吠。<|t_050|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000463",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_130|></music></slot><slot><speech><|t_005|>一名说话者正在讲话。<|t_045|></speech></slot><slot><sfx><|t_005|>远处的犬吠。<|t_010|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000464",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_080|>远处的犬吠。<|t_085|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000465",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>电子伴奏循环播放。<|t_085|></music></slot><slot><lys><|t_005|>\"take me home tonight\"<|t_045|></lys></slot><slot><speech><|t_025|>一名说话者正在讲话。<|t_050|></speech></slot><slot><sfx><|t_085|>远处的犬吠。<|t_090|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000466",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><speech><|t_050|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000467",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><speech><|t_060|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000468",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_070|>一名说话者正在讲话。<|t_120|></speech></slot><slot><speech><|t_080|>一名说话者正在讲话。<|t_120|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000469",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_015|>一次玻璃破碎声。<|t_020|><|t_035|><|t_040|><|t_055|><|t_060|><|t_075|><|t_080|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000470",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_030|>一名说话者正在讲话。<|t_080|></speech></slot><slot><speech><|t_050|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000471",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_010|>一名说话者正在讲话。<|t_075|></speech></slot><slot><speech><|t_025|>一名说话者正在讲话。<|t_075|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000472",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><lys><|t_040|>\"take me home tonight\"<|t_080|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000473",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_145|></sfx></slot><slot><sfx><|t_025|>远处的犬吠。<|t_028|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000474",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_100|></music></slot><slot><sfx><|t_035|>远处的犬吠。<|t_045|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000475",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><speech><|t_050|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000476",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_105|></music></slot><slot><sfx><|t_015|>远处的犬吠。<|t_020|></sfx></slot><slot><lys><|t_065|>\"take me home tonight\"<|t_095|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000477",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_020|>一名说话者正在讲话。<|t_070|></speech></slot><slot><speech><|t_040|>一名说话者正在讲话。<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000478",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_130|></music></slot><slot><lys><|t_030|>\"take me home tonight\"<|t_070|></lys></slot><slot><sfx><|t_040|>一次玻璃破碎声。<|t_050|></sfx></slot><slot><speech><|t_070|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000479",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_090|></music></slot><slot><lys><|t_030|>\"take me home tonight\"<|t_070|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000480",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_020|>远处的犬吠。<|t_025|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000481",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_085|></music></slot><slot><sfx><|t_025|>远处的犬吠。<|t_027|></sfx></slot><slot><speech><|t_027|>一名说话者正在讲话。<|t_050|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000482",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><speech><|t_010|>一名说话者正在讲话。<|t_040|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000483",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_050|>远处的犬吠。<|t_060|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000484",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>雨声背景。<|t_109|></sfx></slot><slot><sfx><|t_021|>远处的犬吠。<|t_023|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000485",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><speech><|t_008|>一名说话者正在讲话。<|t_040|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000486",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_015|>一名说话者正在讲话。<|t_080|></speech></slot><slot><speech><|t_035|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000487",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_025|>远处的犬吠。<|t_035|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000488",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_115|></music></slot><slot><speech><|t_030|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000489",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 4,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><speech><|t_020|>一名说话者正在讲话。<|t_060|></speech></slot><slot><sfx><|t_040|>远处的犬吠。<|t_050|></sfx></slot><slot><lys><|t_060|>\"take me home tonight\"<|t_090|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000490",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><speech><|t_000|>一名说话者正在讲话。<|t_070|></speech></slot><slot><sfx><|t_000|>远处的犬吠。<|t_010|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000491",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><speech><|t_000|>一名说话者正在讲话。<|t_040|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000492",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_030|>远处的犬吠。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000493",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></music></slot><slot><lys><|t_050|>\"take me home tonight\"<|t_090|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000494",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_110|></music></slot><slot><speech><|t_090|>一名说话者正在讲话。<|t_120|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000495",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_030|>一名说话者正在讲话。<|t_080|></speech></slot><slot><speech><|t_050|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000496",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_075|>一名说话者正在讲话。<|t_095|></speech></slot><slot><speech><|t_095|>一名说话者正在讲话。<|t_135|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000497",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_140|></music></slot><slot><lys><|t_030|>\"take me home tonight\"<|t_070|></lys></slot>"
+    },
+    {
+      "sample_id": "mix_000498",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_095|></music></slot><slot><speech><|t_055|>一名说话者正在讲话。<|t_090|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000499",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_115|></music></slot><slot><speech><|t_030|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    },
+    {
+      "sample_id": "mix_000500",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_130|></music></slot><slot><sfx><|t_040|>远处的犬吠。<|t_050|></sfx></slot><slot><speech><|t_050|>一名说话者正在讲话。<|t_080|></speech></slot>"
+    }
+  ]
+}
