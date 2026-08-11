@@ -45,6 +45,7 @@
 - [训练课程、偏好对齐与可验证奖励](docs/10_training_rl_and_rewards.md)
 - [逐步开发计划与验收标准](docs/11_development_plan.md)
 - [复现指南](docs/12_reproduction_guide.md)
+- [实验结果综合报告](docs/13_results_summary.md)
 - [B3-complex-v2 有效数据与无泄漏评测协议](docs/20_valid_data_protocol_v2.md)
 - [设计澄清、术语、loss、推理与实现状态](docs/21_design_clarifications_and_status.md)
 - [机器可读实验矩阵](configs/experiment_matrix.yaml)
