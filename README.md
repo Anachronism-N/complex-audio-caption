@@ -46,6 +46,7 @@
 - [逐步开发计划与验收标准](docs/11_development_plan.md)
 - [复现指南](docs/12_reproduction_guide.md)
 - [B3-complex-v2 有效数据与无泄漏评测协议](docs/20_valid_data_protocol_v2.md)
+- [设计澄清、术语、loss、推理与实现状态](docs/21_design_clarifications_and_status.md)
 - [机器可读实验矩阵](configs/experiment_matrix.yaml)
 - [机器可读开发阶段](configs/pipeline_stages.yaml)
 - [规范化事件账本 JSON Schema](schemas/sceneledger.schema.json)
