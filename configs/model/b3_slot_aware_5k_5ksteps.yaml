@@ -1,0 +1,46 @@
+# B3-slot-aware-5k extended: 5000 steps (vs 3000 in original).
+# Current best: slot-aware-5k (3000 steps, <1 epoch) F1=0.948.
+# Question: does more training help on 5k data without overfitting?
+model:
+  path: /tmp/moss_weights
+  device: cuda:0
+  dtype: bfloat16
+  freeze_audio_encoder: true
+  freeze_base_llm: true
+
+lora:
+  rank: 128
+  alpha: 256
+  dropout: 0.05
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+data:
+  manifest_path: data/derived/b3_5k/manifest.jsonl
+  audio_base_dir: /tmp/b3_5k
+  sample_rate: 16000
+  max_audio_seconds: 30.0
+  style: brief
+  target_mode: atomic
+  group_key: source_id
+  val_fraction: 0.1
+  include_lyrics: true
+  slot_aware: true
+
+train:
+  steps: 5000                    # extended from 3000
+  global_effective_batch: 8
+  micro_batch_size: 1
+  learning_rate: 5.0e-5
+  schedule: cosine
+  warmup_steps: 200
+  weight_decay: 0.0
+  max_grad_norm: 1.0
+  gradient_checkpointing: true
+  seed: 20260808
+  output_dir: outputs/b3_slot_aware_5k_5ksteps
+  shuffle_events: true
+
+loss:
+  text_weight: 1.0
+  type_weight: 2.0
+  timestamp_weight: 5.0
