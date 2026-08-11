@@ -67,7 +67,7 @@ def _load_stems_and_maybe_remove(entry, audio_base, sr, max_sec, rng, carc_prob)
         for i, src in enumerate(sources):
             if i == remove_idx:
                 continue
-            stem_path = str(Path(audio_base) / "stems" / f"{sid}_{src['source_id']}.wav")
+            stem_path = str(Path(audio_base) / "audio" / "stems" / f"{sid}_{src['source_id']}.wav")
             try:
                 stem = _load_audio(stem_path, sr, max_sec)
             except Exception:
