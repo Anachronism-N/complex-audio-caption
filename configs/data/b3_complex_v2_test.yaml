@@ -1,0 +1,50 @@
+# B3-complex-v2 TEST fold. Synthetic dry-source IDs 900-999 are test-only.
+pool:
+  kind: synthetic
+  sample_rate: 24000
+  seed: 20260808
+  index_range: [900, 999]
+
+sampler:
+  sample_rate: 24000
+  duration_range: [10.0, 24.0]
+  template_duration_ranges:
+    isolated_sfx: [2.0, 5.0]
+    repeated_event: [8.0, 16.0]
+    overlapping_speakers: [5.0, 10.0]
+  foreground_onset_fraction_range: [0.05, 0.75]
+  loop_background_to_scene: true
+  enforce_speaker_overlap: true
+  dense_repeated_event: true
+  spread_repeated_event: true
+  stable_unique_source_ids: true
+  gain_db_range: [-12.0, 3.0]
+  fg_bg_snr_range: [-10.0, 20.0]
+  t60_range: [0.1, 1.2]
+  echo_delay_ms_range: [80, 500]
+  echo_atten_db_range: [-18.0, -3.0]
+  repeat_range: [2, 5]
+  merge_threshold_range: [0.1, 1.0]
+  resolutions: [0.1]
+  styles: [brief]
+  activity_threshold_range: [0.03, 0.12]
+  p_rir: 0.5
+  p_echo: 0.3
+
+render:
+  sample_count: 500
+  scene_id_prefix: test
+  seed_base: 201947
+  template_seed: 201947
+  template_weights:
+    speech_over_music: 2
+    music_with_sfx: 2
+    speech_music_sfx: 3
+    isolated_sfx: 0.5
+    repeated_event: 1
+    ambient_with_intermittent_sfx: 1
+    lyrics_over_music: 2
+    speech_music_lyrics_sfx: 3
+    overlapping_speakers: 2
+  audio_format:
+    subtype: PCM_16

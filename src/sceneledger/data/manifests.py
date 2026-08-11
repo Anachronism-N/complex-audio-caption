@@ -15,9 +15,9 @@ ledger so downstream training never needs to re-run the renderer.
 from __future__ import annotations
 
 import json
+from collections.abc import Iterable
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Iterable
 
 import numpy as np
 
@@ -50,7 +50,7 @@ class ManifestEntry:
         return json.dumps(asdict(self), ensure_ascii=False)
 
     @classmethod
-    def from_dict(cls, d: dict) -> "ManifestEntry":
+    def from_dict(cls, d: dict) -> ManifestEntry:
         return cls(
             scene=d["scene"],
             mixture_path=d["mixture_path"],
@@ -82,6 +82,7 @@ def scene_from_dict(d: dict) -> Scene:
             rir_id=s.get("rir_id"),
             t60_sec=s.get("t60_sec"),
             is_foreground=s.get("is_foreground", True),
+            loop_to_scene=s.get("loop_to_scene", False),
         )
         for s in d["sources"]
     ]

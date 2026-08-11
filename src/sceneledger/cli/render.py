@@ -14,7 +14,6 @@ and ledger validity.
 from __future__ import annotations
 
 import argparse
-import json
 import sys
 from pathlib import Path
 
@@ -23,7 +22,6 @@ import yaml
 from sceneledger.data.manifests import (
     ManifestEntry,
     persist_render,
-    read_manifest,
     validate_manifest,
     write_manifest,
 )
@@ -43,6 +41,7 @@ def _build_pool(cfg: dict) -> object:
         return SyntheticSourcePool(
             sample_rate=pcfg.get("sample_rate", 24000),
             seed=pcfg.get("seed", 20260808),
+            index_range=tuple(pcfg.get("index_range", (0, 999))),
         )
     elif kind == "file":
         mapping = pcfg.get("file_pool", {})
@@ -55,6 +54,10 @@ def _build_sampler(cfg: dict, pool) -> SceneGraphSampler:
     config = SceneSamplerConfig(
         sample_rate=scfg.get("sample_rate", 24000),
         duration_range=tuple(scfg.get("duration_range", (10.0, 30.0))),
+        template_duration_ranges={
+            name: tuple(value)
+            for name, value in scfg.get("template_duration_ranges", {}).items()
+        },
         gain_db_range=tuple(scfg.get("gain_db_range", (-12.0, 3.0))),
         fg_bg_snr_range=tuple(scfg.get("fg_bg_snr_range", (-10.0, 20.0))),
         t60_range=tuple(scfg.get("t60_range", (0.1, 1.2))),
@@ -65,19 +68,31 @@ def _build_sampler(cfg: dict, pool) -> SceneGraphSampler:
         resolutions=tuple(scfg.get("resolutions", (0.1, 0.5, 1.0))),
         styles=tuple(scfg.get("styles", ("keyword", "brief", "detailed"))),
         activity_threshold_range=tuple(scfg.get("activity_threshold_range", (0.03, 0.12))),
+        foreground_onset_fraction_range=(
+            tuple(scfg["foreground_onset_fraction_range"])
+            if "foreground_onset_fraction_range" in scfg
+            else None
+        ),
+        loop_background_to_scene=scfg.get("loop_background_to_scene", False),
+        enforce_speaker_overlap=scfg.get("enforce_speaker_overlap", False),
+        dense_repeated_event=scfg.get("dense_repeated_event", False),
+        spread_repeated_event=scfg.get("spread_repeated_event", False),
+        stable_unique_source_ids=scfg.get("stable_unique_source_ids", False),
         p_rir=scfg.get("p_rir", 0.5),
         p_echo=scfg.get("p_echo", 0.3),
     )
     return SceneGraphSampler(pool=pool, config=config)
 
 
-def _weighted_templates(weights: dict[str, float], n: int) -> list[str]:
+def _weighted_templates(
+    weights: dict[str, float], n: int, seed: int = 0
+) -> list[str]:
     import random
 
     items = list(weights.items())
     total = sum(w for _, w in items)
     norm = [(k, w / total) for k, w in items]
-    rng = random.Random(0)
+    rng = random.Random(seed)
     chosen: list[str] = []
     for _ in range(n):
         r = rng.random()
@@ -101,14 +116,19 @@ def render_dataset(config_path: str, output_dir: str, limit: int | None = None) 
     n = rcfg.get("sample_count", 500)
     if limit is not None:
         n = min(n, limit)
-    templates = _weighted_templates(rcfg.get("template_weights", {"speech_over_music": 1}), n)
+    templates = _weighted_templates(
+        rcfg.get("template_weights", {"speech_over_music": 1}),
+        n,
+        seed=int(rcfg.get("template_seed", 0)),
+    )
     seed_base = rcfg.get("seed_base", 1947)
+    scene_id_prefix = str(rcfg.get("scene_id_prefix", "mix"))
 
     odir = Path(output_dir)
     odir.mkdir(parents=True, exist_ok=True)
     entries: list[ManifestEntry] = []
     for i, tpl in enumerate(templates):
-        scene_id = f"mix_{i + 1:06d}"
+        scene_id = f"{scene_id_prefix}_{i + 1:06d}"
         seed = seed_base + i * 31
         scene = sampler.sample(scene_id=scene_id, seed=seed, template=tpl)  # type: ignore[arg-type]
         out = render_scene(scene, pool)
@@ -184,7 +204,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--validate", action="store_true", help="validate after rendering")
     args = parser.parse_args(argv)
 
-    n = render_dataset(args.config, args.output_dir, limit=args.limit)
+    render_dataset(args.config, args.output_dir, limit=args.limit)
 
     if args.validate:
         pool = _build_pool(yaml.safe_load(Path(args.config).read_text(encoding="utf-8")))

@@ -16,8 +16,6 @@ The rest of the time (1-p_carc): train on the original (mixture, target).
 from __future__ import annotations
 
 import argparse
-import json
-import math
 import random
 import sys
 import time
@@ -33,11 +31,13 @@ def _load_config(path: str) -> dict:
 
 
 def _load_audio(path, sr_target, max_sec):
+    from math import gcd
+
     import soundfile as sf
     from scipy.signal import resample_poly
-    from math import gcd
     wav, sr = sf.read(path, dtype="float32", always_2d=False)
-    if wav.ndim == 2: wav = wav.mean(axis=1)
+    if wav.ndim == 2:
+        wav = wav.mean(axis=1)
     if sr != sr_target:
         g = gcd(int(sr), int(sr_target))
         wav = resample_poly(wav.astype(np.float64), int(sr_target)//g, int(sr)//g).astype(np.float32)
@@ -50,7 +50,6 @@ def _load_stems_and_maybe_remove(entry, audio_base, sr, max_sec, rng, carc_prob)
     Returns (audio_tensor, ledger, removed_source_id_or_None).
     """
     sid = entry.scene["scene_id"]
-    duration = float(entry.scene["duration"])
     sources = entry.scene["sources"]
     from sceneledger.data.schema import Ledger
 
@@ -109,6 +108,28 @@ def main():
     steps = tcfg["steps"]
     device = cfg["model"]["device"]
 
+    split_contract = cfg.get("data", {}).get("split_contract_path")
+    data_gate_summary = cfg.get("data", {}).get("data_gate_summary_path")
+    expected_split = cfg.get("data", {}).get("expected_split")
+    pre_split = cfg.get("data", {}).get("pre_split", False)
+    if pre_split and (not split_contract or not data_gate_summary):
+        raise ValueError(
+            "data.pre_split=true requires data.split_contract_path and "
+            "data.data_gate_summary_path"
+        )
+    if split_contract:
+        if expected_split != "train":
+            raise ValueError("training requires data.expected_split=train")
+        from sceneledger.data.experiment_data import (
+            require_experiment_data_summary,
+            require_split_manifest,
+        )
+
+        require_experiment_data_summary(data_gate_summary, split_contract)
+        require_split_manifest(
+            split_contract, expected_split, cfg["data"]["manifest_path"]
+        )
+
     import sys as _sys
     repo = Path(__file__).resolve().parents[1] / "third_party" / "MOSS-Audio"
     if str(repo) not in _sys.path:
@@ -140,15 +161,21 @@ def main():
     model.train()
     model.print_trainable_parameters()
 
+    from sceneledger.data.datamodule import MOSS_INPUT_SAMPLE_RATE, group_split
     from sceneledger.data.manifests import read_manifest
-    from sceneledger.data.datamodule import group_split, MOSS_INPUT_SAMPLE_RATE
     from sceneledger.models.target_formatter import (
-        canonical_prompt, format_slot_aware_caption, StyleConfig)
+        StyleConfig,
+        canonical_prompt,
+        format_slot_aware_caption,
+    )
 
     entries = read_manifest(cfg["data"]["manifest_path"])
-    train_entries, _ = group_split(
-        entries, val_fraction=cfg["data"].get("val_fraction", 0.1),
-        group_key=cfg["data"].get("group_key", "source_id"), seed=tcfg["seed"])
+    if pre_split:
+        train_entries = entries
+    else:
+        train_entries, _ = group_split(
+            entries, val_fraction=cfg["data"].get("val_fraction", 0.1),
+            group_key=cfg["data"].get("group_key", "source_id"), seed=tcfg["seed"])
     print(f"[carc] {len(train_entries)} training samples", file=sys.stderr, flush=True)
 
     carc_prob = tcfg.get("carc_probability", 0.3)
@@ -191,8 +218,6 @@ def main():
             if step >= steps:
                 break
             entry = train_entries[idx]
-            sid = entry.scene["scene_id"]
-
             # CARC: load stems, maybe remove one
             mixture_audio, ledger, removed_id = _load_stems_and_maybe_remove(
                 entry, audio_base, sr, max_sec, rng, carc_prob)

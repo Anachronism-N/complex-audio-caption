@@ -23,7 +23,7 @@ import json
 import sys
 from pathlib import Path
 
-from sceneledger.data.manifests import ManifestEntry, read_manifest
+from sceneledger.data.manifests import read_manifest
 from sceneledger.data.schema import Ledger
 from sceneledger.eval.parser import ParseReport, parse_model_output
 from sceneledger.models.moss_adapter import (
@@ -55,10 +55,46 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--style", default="brief")
     parser.add_argument("--include-lyrics", action="store_true")
+    parser.add_argument(
+        "--split-contract",
+        default=None,
+        help="passed split_contract.json; required together with --expected-split",
+    )
+    parser.add_argument(
+        "--expected-split",
+        choices=("train", "val", "test"),
+        default=None,
+        help="assert that --manifest is exactly this frozen split",
+    )
+    parser.add_argument(
+        "--data-gate-summary",
+        default=None,
+        help="passed experiment_data_summary.json for the same split contract",
+    )
     args = parser.parse_args(argv)
+
+    if bool(args.split_contract) != bool(args.expected_split):
+        parser.error("--split-contract and --expected-split must be provided together")
+    if args.split_contract and not args.data_gate_summary:
+        parser.error("--data-gate-summary is required with --split-contract")
+    if args.data_gate_summary and not args.split_contract:
+        parser.error("--data-gate-summary requires --split-contract")
+    split_contract = None
+    if args.split_contract:
+        from sceneledger.data.experiment_data import (
+            require_experiment_data_summary,
+            require_split_manifest,
+        )
+
+        require_experiment_data_summary(args.data_gate_summary, args.split_contract)
+        split_contract = require_split_manifest(
+            args.split_contract, args.expected_split, args.manifest
+        )
 
     entries = read_manifest(args.manifest)
     if args.limit is not None:
+        if split_contract is not None:
+            parser.error("--limit is forbidden when a frozen split contract is active")
         entries = entries[: args.limit]
 
     if args.backend == "moss":
@@ -126,6 +162,17 @@ def main(argv: list[str] | None = None) -> int:
                 sum(r["events_recovered"] for r in reports) / max(1, len(reports)), 3
             ),
             "total_events_rejected": sum(r["events_rejected"] for r in reports),
+            "manifest_path": str(Path(args.manifest).resolve()),
+            "split_contract_path": (
+                str(Path(args.split_contract).resolve()) if args.split_contract else None
+            ),
+            "data_gate_summary_path": (
+                str(Path(args.data_gate_summary).resolve())
+                if args.data_gate_summary
+                else None
+            ),
+            "expected_split": args.expected_split,
+            "dataset_id": split_contract.get("dataset_id") if split_contract else None,
             "samples": reports,
         }
         rp.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")

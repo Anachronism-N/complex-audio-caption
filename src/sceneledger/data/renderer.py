@@ -17,26 +17,23 @@ waveform hash is identical. Validation/test mixes are pre-generated and frozen.
 from __future__ import annotations
 
 import hashlib
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import numpy as np
 
 from sceneledger.data.activity import ActivityResult, compute_activity
+from sceneledger.data.scene_graph_sampler import PlacedSource, Scene, SourcePool
 from sceneledger.data.schema import (
     SCHEMA_VERSION,
     TIME_RESOLUTION_SEC,
-    Conditions as LedgerConditions,
     Event,
     Ledger,
     Provenance,
     Span,
     Track,
 )
-from sceneledger.data.scene_graph_sampler import (
-    Conditions,
-    PlacedSource,
-    Scene,
-    SourcePool,
+from sceneledger.data.schema import (
+    Conditions as LedgerConditions,
 )
 
 # type ordering for stable event serialization (docs/06 §5.2)
@@ -103,6 +100,33 @@ def _repeat_source(wav: np.ndarray, repeat: int, gap_s: float, sample_rate: int)
             parts.append(pad)
         parts.append(wav)
     return np.concatenate(parts)
+
+
+def _loop_to_duration(
+    wav: np.ndarray, duration_s: float, sample_rate: int, crossfade_s: float = 0.05
+) -> np.ndarray:
+    """Loop a background source with short crossfades and crop to duration."""
+    target = max(0, int(round(duration_s * sample_rate)))
+    if target == 0:
+        return np.zeros(0, dtype=np.float32)
+    if wav.size == 0:
+        return np.zeros(target, dtype=np.float32)
+    if wav.shape[-1] >= target:
+        return wav[:target].astype(np.float32, copy=True)
+
+    overlap = min(
+        int(round(crossfade_s * sample_rate)),
+        max(0, wav.shape[-1] // 4),
+    )
+    out = wav.astype(np.float32, copy=True)
+    while out.shape[-1] < target:
+        if overlap <= 0:
+            out = np.concatenate([out, wav])
+            continue
+        ramp = np.linspace(0.0, 1.0, overlap, dtype=np.float32)
+        blended = out[-overlap:] * (1.0 - ramp) + wav[:overlap] * ramp
+        out = np.concatenate([out[:-overlap], blended, wav[overlap:]])
+    return out[:target].astype(np.float32, copy=False)
 
 
 def _synth_rir(sample_rate: int, t60: float, rng: np.random.Generator) -> np.ndarray:
@@ -276,10 +300,6 @@ def _build_ledger(scene: Scene, rendered: list[RenderedSource]) -> Ledger:
 
     # stable order: onset asc, then type order, then source id
     def _sort_key(e: Event) -> tuple:
-        src_idx = next(
-            (i for i, rs in enumerate(rendered) if rs.placed.source_id == e.track_id and False),
-            0,
-        ) if False else 0
         return (
             round(e.start_sec(), 6),
             _TYPE_ORDER.get(e.type, 9),
@@ -345,6 +365,8 @@ def render_scene(scene: Scene, pool: SourcePool) -> RenderOutput:
     for idx, src in enumerate(scene.sources):
         wav, _dur = pool.load(src.path, sr)
         wav = wav.astype(np.float32)
+        if src.loop_to_scene:
+            wav = _loop_to_duration(wav, scene.duration - src.onset, sr)
         wav = _apply_gain(wav, src.gain_db)
         wav = _apply_fade(wav, sr, fade_s=0.01)
         wav = _repeat_source(wav, src.repeat, src.repeat_gap_s, sr)

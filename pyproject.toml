@@ -32,6 +32,8 @@ moss = [
 
 [project.scripts]
 sceneledger-evaluate = "sceneledger.cli.evaluate:main"
+sceneledger-audit-mixtures = "sceneledger.cli.audit_mixtures:main"
+sceneledger-validate-experiment-data = "sceneledger.cli.validate_experiment_data:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -1,0 +1,49 @@
+# Versioned, fail-closed distribution gates for complex timestamped captioning.
+# These are initial engineering acceptance thresholds, not claimed TAC values.
+# Any threshold change must create a new named profile and a new report hash.
+schema_version: sceneledger-mixture-quality-config-v1
+
+profiles:
+  smoke:
+    global:
+      min_active_ratio: 0.25
+      max_single_event_fraction: 0.10
+      max_low_active_fraction: 0.20
+      long_trailing_silence_sec: 5.0
+      max_long_trailing_silence_fraction: 0.20
+      long_silence_sec: 5.0
+      max_long_silence_fraction: 0.20
+      max_duplicate_source_id_fraction: 0.0
+    sparse_templates:
+      names: [isolated_sfx]
+      max_fraction: 0.10
+    repeated_event:
+      template: repeated_event
+      min_sfx_spans: 2
+      max_violation_fraction: 0.0
+    overlapping_speakers:
+      template: overlapping_speakers
+      min_overlap_ratio: 0.05
+      max_violation_fraction: 0.20
+
+  release:
+    global:
+      min_active_ratio: 0.30
+      max_single_event_fraction: 0.05
+      max_low_active_fraction: 0.10
+      long_trailing_silence_sec: 5.0
+      max_long_trailing_silence_fraction: 0.10
+      long_silence_sec: 5.0
+      max_long_silence_fraction: 0.10
+      max_duplicate_source_id_fraction: 0.0
+    sparse_templates:
+      names: [isolated_sfx]
+      max_fraction: 0.05
+    repeated_event:
+      template: repeated_event
+      min_sfx_spans: 2
+      max_violation_fraction: 0.0
+    overlapping_speakers:
+      template: overlapping_speakers
+      min_overlap_ratio: 0.10
+      max_violation_fraction: 0.10

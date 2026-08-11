@@ -20,17 +20,15 @@ The first TAC-mini version (``docs/11`` §5) targets 3 core templates
 
 from __future__ import annotations
 
-import math
 import random
 from dataclasses import dataclass, field
-from pathlib import Path
-from typing import Literal, Protocol, Sequence
+from typing import Literal, Protocol
 
 import numpy as np
 
 from sceneledger.data.schema import TIME_RESOLUTION_SEC
 
-SourceKind = Literal["speech", "music", "sfx", "ambience"]
+SourceKind = Literal["speech", "vocal", "music", "sfx", "ambience"]
 TemplateID = Literal[
     "isolated_sfx",
     "speech_over_music",
@@ -73,6 +71,9 @@ class PlacedSource:
     rir_id: str | None = None
     t60_sec: float | None = None
     is_foreground: bool = True
+    # New manifests can request seamless background extension.  The default
+    # remains False so old frozen manifests replay bit-for-bit.
+    loop_to_scene: bool = False
 
     def event_type(self) -> str:
         """Map source kind to event type tag (speech/lys/music/sfx)."""
@@ -128,7 +129,7 @@ class Scene:
 
 
 def _source_dict(s: PlacedSource) -> dict:
-    return {
+    payload = {
         "source_id": s.source_id,
         "kind": s.kind,
         "path": s.path,
@@ -142,6 +143,9 @@ def _source_dict(s: PlacedSource) -> dict:
         "t60_sec": s.t60_sec,
         "is_foreground": s.is_foreground,
     }
+    if s.loop_to_scene:
+        payload["loop_to_scene"] = True
+    return payload
 
 
 def _conditions_dict(c: Conditions) -> dict:
@@ -213,9 +217,15 @@ class SyntheticSourcePool:
 
     sample_rate: int = 24000
     seed: int = 20260808
+    index_range: tuple[int, int] = (0, 999)
+
+    def __post_init__(self) -> None:
+        low, high = self.index_range
+        if low < 0 or high < low:
+            raise ValueError(f"invalid synthetic source index_range: {self.index_range}")
 
     def pick(self, kind: SourceKind, rng: random.Random) -> str:
-        idx = rng.randint(0, 999)
+        idx = rng.randint(*self.index_range)
         return f"{kind}:{idx:03d}"
 
     def load(self, key: str, sample_rate: int) -> tuple[np.ndarray, float]:
@@ -303,7 +313,6 @@ class SyntheticSourcePool:
     def _synth_music(sr: int, dur: float, rng: np.random.Generator, idx: int) -> np.ndarray:
         """A slow chord progression (root + fifth + octave)."""
         n = int(sr * dur)
-        t = np.arange(n) / sr
         roots = [220.0, 246.94, 196.0, 174.61]
         chord_period = dur / max(1, len(roots))
         sig = np.zeros(n, dtype=np.float64)
@@ -409,6 +418,7 @@ def _caption_for(kind: SourceKind, rng: random.Random) -> str:
 class SceneSamplerConfig:
     sample_rate: int = 24000
     duration_range: tuple[float, float] = DURATION_RANGE
+    template_duration_ranges: dict[str, tuple[float, float]] = field(default_factory=dict)
     gain_db_range: tuple[float, float] = GAIN_DB_RANGE
     fg_bg_snr_range: tuple[float, float] = FG_BG_SNR_RANGE
     t60_range: tuple[float, float] = T60_RANGE
@@ -419,6 +429,12 @@ class SceneSamplerConfig:
     resolutions: tuple[float, ...] = RESOLUTIONS
     styles: tuple[str, ...] = STYLES
     activity_threshold_range: tuple[float, float] = ACTIVITY_THRESHOLD_RANGE
+    foreground_onset_fraction_range: tuple[float, float] | None = None
+    loop_background_to_scene: bool = False
+    enforce_speaker_overlap: bool = False
+    dense_repeated_event: bool = False
+    spread_repeated_event: bool = False
+    stable_unique_source_ids: bool = False
     # probability of applying RIR / echo to a scene
     p_rir: float = 0.5
     p_echo: float = 0.3
@@ -444,7 +460,8 @@ class SceneGraphSampler:
     ) -> Scene:
         rng = random.Random(seed)
         cfg = self.config
-        duration = round(rng.uniform(*cfg.duration_range) / TIME_RESOLUTION_SEC) * TIME_RESOLUTION_SEC
+        duration_range = cfg.template_duration_ranges.get(template, cfg.duration_range)
+        duration = round(rng.uniform(*duration_range) / TIME_RESOLUTION_SEC) * TIME_RESOLUTION_SEC
         duration = round(duration, 6)
 
         sources = self._place_sources(template, duration, rng)
@@ -467,29 +484,55 @@ class SceneGraphSampler:
         cfg = self.config
         fg_gain = rng.uniform(*cfg.gain_db_range)
         bg_gain = _snr_to_gain_db(rng.uniform(*cfg.fg_bg_snr_range), fg_gain)
+        source_serial = 0
 
         def _src(kind: SourceKind, *, fg: bool, identity: str | None = None) -> PlacedSource:
+            nonlocal source_serial
+            source_serial += 1
             key = self.pool.pick(kind, rng)
             gain = fg_gain if fg else bg_gain
-            # onset: foreground sources placed with margin; background at 0
+            # Background starts at zero and may be extended by the renderer.
+            # Foreground is distributed across the clip instead of being
+            # restricted to the first 40%, which previously created long tails.
             if kind in ("music", "ambience"):
                 onset = 0.0
-            else:
+            elif cfg.foreground_onset_fraction_range is None:
                 onset = round(
-                    rng.uniform(0.2, max(0.3, duration * 0.4)) / TIME_RESOLUTION_SEC
+                    rng.uniform(0.2, max(0.3, duration * 0.4))
+                    / TIME_RESOLUTION_SEC
+                ) * TIME_RESOLUTION_SEC
+            else:
+                low_fraction, high_fraction = cfg.foreground_onset_fraction_range
+                onset = round(
+                    rng.uniform(
+                        max(0.1, duration * low_fraction),
+                        max(0.2, duration * high_fraction),
+                    )
+                    / TIME_RESOLUTION_SEC
                 ) * TIME_RESOLUTION_SEC
             repeat = 1
             repeat_gap = 0.0
-            if template == "repeated_event":
+            if template == "repeated_event" and kind == "sfx":
                 repeat = rng.randint(*cfg.repeat_range)
-                repeat_gap = round(rng.uniform(0.2, 1.0), 3)
+                if cfg.spread_repeated_event:
+                    # Spread instances over a meaningful part of the clip instead
+                    # of packing them into the opening seconds.
+                    repeat_gap = round(
+                        rng.uniform(1.2, max(1.3, duration * 0.2)), 3
+                    )
+                else:
+                    repeat_gap = round(rng.uniform(0.2, 1.0), 3)
             rir_id = None
             t60 = None
             if rng.random() < cfg.p_rir:
                 t60 = round(rng.uniform(*cfg.t60_range), 3)
                 rir_id = f"room_{rng.randint(1, 8):02d}"
             return PlacedSource(
-                source_id=f"{kind[0].upper()}{rng.randint(1, 99):02d}",
+                source_id=(
+                    f"{kind[:2].upper()}{source_serial:02d}"
+                    if cfg.stable_unique_source_ids
+                    else f"{kind[0].upper()}{rng.randint(1, 99):02d}"
+                ),
                 kind=kind,
                 path=key,
                 onset=round(onset, 6),
@@ -501,6 +544,8 @@ class SceneGraphSampler:
                 rir_id=rir_id,
                 t60_sec=t60,
                 is_foreground=fg,
+                loop_to_scene=cfg.loop_background_to_scene
+                and kind in ("music", "ambience"),
             )
 
         if template == "isolated_sfx":
@@ -516,6 +561,15 @@ class SceneGraphSampler:
                 _src("sfx", fg=True),
             ]
         if template == "repeated_event":
+            if cfg.dense_repeated_event:
+                # Retain the multi-span repeated SFX target while ensuring the
+                # main distribution is not a long, otherwise-empty clip.
+                sources = [_src("ambience", fg=False), _src("sfx", fg=True)]
+                sources[1].onset = round(
+                    rng.uniform(0.2, max(0.3, duration * 0.15))
+                    / TIME_RESOLUTION_SEC
+                ) * TIME_RESOLUTION_SEC
+                return sources
             return [_src("sfx", fg=True)]
         if template == "ambient_with_intermittent_sfx":
             return [_src("ambience", fg=False), _src("sfx", fg=True)]
@@ -530,10 +584,24 @@ class SceneGraphSampler:
                 _src("sfx", fg=True),
             ]
         if template == "overlapping_speakers":
-            return [
+            speakers = [
                 _src("speech", fg=True, identity="S1"),
                 _src("speech", fg=True, identity="S2"),
             ]
+            if cfg.enforce_speaker_overlap:
+                first_onset = round(
+                    rng.uniform(0.1, max(0.2, min(1.0, duration * 0.15)))
+                    / TIME_RESOLUTION_SEC
+                ) * TIME_RESOLUTION_SEC
+                second_onset = max(
+                    0.0,
+                    first_onset
+                    + round(rng.uniform(-0.3, 0.5) / TIME_RESOLUTION_SEC)
+                    * TIME_RESOLUTION_SEC,
+                )
+                speakers[0].onset = round(first_onset, 6)
+                speakers[1].onset = round(second_onset, 6)
+            return speakers
         if template == "random_mix":
             # B2-no-template ablation: fully random source selection + placement
             n_sources = rng.randint(2, 4)

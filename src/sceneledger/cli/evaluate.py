@@ -43,10 +43,60 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Pretty-print JSON output.",
     )
+    parser.add_argument(
+        "--split-contract",
+        default=None,
+        help="passed split_contract.json; required together with --expected-split",
+    )
+    parser.add_argument(
+        "--expected-split",
+        choices=("train", "val", "test"),
+        default=None,
+        help="require prediction and reference IDs to equal this frozen split",
+    )
+    parser.add_argument(
+        "--data-gate-summary",
+        default=None,
+        help="passed experiment_data_summary.json for the same split contract",
+    )
     args = parser.parse_args(argv)
+
+    if bool(args.split_contract) != bool(args.expected_split):
+        parser.error("--split-contract and --expected-split must be provided together")
+    if args.split_contract and not args.data_gate_summary:
+        parser.error("--data-gate-summary is required with --split-contract")
+    if args.data_gate_summary and not args.split_contract:
+        parser.error("--data-gate-summary requires --split-contract")
+    split_contract = None
+    if args.split_contract:
+        from sceneledger.data.experiment_data import (
+            require_experiment_data_summary,
+            require_ledger_split,
+        )
+
+        require_experiment_data_summary(args.data_gate_summary, args.split_contract)
+        split_contract = require_ledger_split(
+            args.split_contract,
+            args.expected_split,
+            args.reference,
+            role="reference",
+        )
+        require_ledger_split(
+            args.split_contract,
+            args.expected_split,
+            args.prediction,
+            role="prediction",
+        )
 
     corpus: CorpusMetrics = evaluate_corpus(args.prediction, args.reference)
     payload = corpus.to_dict()
+    if split_contract is not None:
+        payload["experiment_contract"] = {
+            "dataset_id": split_contract["dataset_id"],
+            "split": args.expected_split,
+            "split_contract_path": str(Path(args.split_contract).resolve()),
+            "data_gate_summary_path": str(Path(args.data_gate_summary).resolve()),
+        }
     text = json.dumps(payload, indent=2 if args.pretty else None, ensure_ascii=False)
 
     if args.output:

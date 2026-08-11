@@ -86,9 +86,10 @@ def _apply_lora(model, lora_cfg: dict):
 
 
 def _load_audio(path: str, sample_rate: int, max_seconds: float) -> np.ndarray:
+    from math import gcd
+
     import soundfile as sf
     from scipy.signal import resample_poly
-    from math import gcd
 
     wav, sr = sf.read(path, dtype="float32", always_2d=False)
     if wav.ndim == 2:
@@ -173,6 +174,28 @@ def main(argv: list[str] | None = None) -> int:
     tcfg = cfg["train"]
     steps = args.max_steps or tcfg["steps"]
 
+    split_contract = cfg.get("data", {}).get("split_contract_path")
+    data_gate_summary = cfg.get("data", {}).get("data_gate_summary_path")
+    expected_split = cfg.get("data", {}).get("expected_split")
+    pre_split = cfg.get("data", {}).get("pre_split", False)
+    if pre_split and (not split_contract or not data_gate_summary):
+        raise ValueError(
+            "data.pre_split=true requires data.split_contract_path and "
+            "data.data_gate_summary_path"
+        )
+    if split_contract:
+        if expected_split != "train":
+            raise ValueError("training requires data.expected_split=train")
+        from sceneledger.data.experiment_data import (
+            require_experiment_data_summary,
+            require_split_manifest,
+        )
+
+        require_experiment_data_summary(data_gate_summary, split_contract)
+        require_split_manifest(
+            split_contract, expected_split, cfg["data"]["manifest_path"]
+        )
+
     print("[train] loading model ...", file=sys.stderr, flush=True)
     model, processor, dtype = _load_model_and_processor(cfg)
     device = cfg["model"]["device"]
@@ -187,21 +210,24 @@ def main(argv: list[str] | None = None) -> int:
     model.train()
 
     # dataset
+    from sceneledger.data.datamodule import MOSS_INPUT_SAMPLE_RATE, group_split
     from sceneledger.data.manifests import read_manifest
-    from sceneledger.data.datamodule import group_split, MOSS_INPUT_SAMPLE_RATE
     from sceneledger.models.target_formatter import (
+        StyleConfig,
         canonical_prompt,
         format_atomic_caption,
         format_slot_aware_caption,
-        StyleConfig,
     )
 
     entries = read_manifest(cfg["data"]["manifest_path"])
-    train_entries, _ = group_split(
-        entries, val_fraction=cfg["data"].get("val_fraction", 0.1),
-        group_key=cfg["data"].get("group_key", "source_id"),
-        seed=cfg["train"]["seed"],
-    )
+    if pre_split:
+        train_entries = entries
+    else:
+        train_entries, _ = group_split(
+            entries, val_fraction=cfg["data"].get("val_fraction", 0.1),
+            group_key=cfg["data"].get("group_key", "source_id"),
+            seed=cfg["train"]["seed"],
+        )
     print(f"[train] {len(train_entries)} training samples", file=sys.stderr, flush=True)
 
     # precompute timestamp token IDs for B2
