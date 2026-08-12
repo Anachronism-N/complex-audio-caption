@@ -47,6 +47,7 @@
 - [复现指南](docs/12_reproduction_guide.md)
 - [实验结果综合报告](docs/13_results_summary.md)
 - [合成音频质量问题与改进方案](docs/15_synthetic_audio_quality.md)
+- [合成音频根本性问题（第三轮 Review）](docs/16_synthetic_audio_fundamental_issues.md)
 - [机器可读实验矩阵](configs/experiment_matrix.yaml)
 - [机器可读开发阶段](configs/pipeline_stages.yaml)
 - [规范化事件账本 JSON Schema](schemas/sceneledger.schema.json)

@@ -1,0 +1,104 @@
+# 合成音频根本性问题（第三轮 Review，2026-08-12）
+
+## 核心发现：合成音频与 caption 不匹配
+
+人工 review v2 音频后发现**合成音频无法支撑 caption 任务**：
+
+### 问题 9：合成音色与描述文本完全不匹配（CRITICAL）
+- **mix_002294**：caption 标注有 speech，但**完全听不到人声**
+- **mix_003724**：同理，caption 有 speech 但无声音
+- **mix_000767**：caption 标注歌词，但**听不到任何歌词**
+- **mix_000693**：caption 标注"远处的犬吠"，但**听不到犬吠**
+
+**根因**：`SyntheticSourcePool` 生成的"语音"是正弦波+包络，"人声"是带颤音的持续音，
+"音效"是噪声 burst。这些**不是真实的语音/人声/音效**，人耳无法辨认。
+
+**影响**：模型在合成数据上学到的"语音→speech 标签"关联，在真实音频上可能完全不成立。
+
+### 问题 10：caption 过于简单，缺乏语义丰富度
+当前 caption 来自固定短语列表：
+- speech: "一名说话者正在讲话。" / "A speaker is talking."
+- music: "背景音乐持续播放，节奏平稳。"
+- sfx: "短促的撞击声。" / "远处的犬吠。"
+- vocal: '"take me home tonight"'
+
+**缺失**：
+- ❌ 声学环境描述（房间、混响、室内/室外）
+- ❌ 音效详细描述（材质、力度、距离、持续时间）
+- ❌ 音乐风格（流派、节奏、乐器、情绪）
+- ❌ 说话人信息（性别、年龄、语速、情绪、口音）
+- ❌ 说话内容（speech 的实际文字转录）
+- ❌ 歌词内容（vocal 的实际歌词）
+- ❌ 事件间关系（"玻璃声打断了说话"）
+
+### 问题 11：音频种类有限
+当前合成器只有 4 种基础波形：
+- 语音：正弦波+formant+包络（不像真人声）
+- 音乐：和弦+节拍（不像真实乐器）
+- 音效：噪声burst+衰减（不像真实音效）
+- 环境：粉红噪声+调制（不像真实环境音）
+
+**需要**：更丰富的音色库——真实采样或更高级的合成器。
+
+## 根因分析
+
+合成数据的根本矛盾：
+```
+caption 描述的是真实世界声音 → 但合成音频是数学波形 → 人耳无法辨认 → caption 失效
+```
+
+这意味着：
+1. **模型在合成数据上的 F1=0.948 不代表真实场景能力**——它只是在学时间结构
+2. **caption 质量受限于合成器的表达能力**——无法生成真实音色对应的丰富描述
+3. **需要真实音频采样**——合成器无法替代
+
+## 改进方案
+
+### 方案 B：接入真实音效库（推荐，优先级最高）
+
+1. **Freesound CC0**：下载分类音效（雨声、犬吠、玻璃、门响、脚步等）
+2. **LibriSpeech**：真实人声+转录（用于 speech 源）
+3. **MUSDB18**：真实音乐+分轨（用于 music 源）
+4. **FMA dataset**：多样化音乐片段
+
+`FileSourcePool` 已实现，只需配置路径即可切换。
+
+### 方案 D：改进 caption 生成（与方案 B 配合）
+
+使用 LLM 根据音频内容生成丰富 caption：
+```python
+prompt = f"""
+You are an audio captioning expert. Given:
+- Source type: {kind}
+- Duration: {duration}s
+- Acoustic conditions: T60={t60}s, echo={echo}
+Generate a detailed caption including:
+- Sound description (material, force, distance)
+- Acoustic environment (room, reverb)
+- For speech: speaker characteristics + content summary
+- For music: genre, tempo, instruments, mood
+"""
+```
+
+### 方案 E：混合数据策略
+
+| 数据源 | 比例 | 用途 |
+|---|---|---|
+| 真实音效（Freesound CC0） | 40% | sfx/ambience 源 |
+| 真实人声（LibriSpeech） | 20% | speech 源 |
+| 真实音乐（MUSDB18/FMA） | 20% | music/vocal 源 |
+| 合成音频 | 20% | 补充多样性 + 控制实验 |
+
+## 对论文的影响
+
+1. **合成数据实验结果应定位为"格式验证"**——证明模型能学格式和时间结构
+2. **真实数据实验是论文的必要条件**——证明模型在真实场景有效
+3. **当前 F1=0.948 是合成数据上的上限**——真实数据上会显著下降
+4. **论文应诚实区分**：合成数据验证 vs 真实数据验证
+
+## 立即行动
+
+1. **文档化本反馈**（本文档）
+2. **暂停合成数据训练实验**——合成音频质量不足以支撑进一步实验
+3. **优先接入真实音效库**——这是提升数据质量的唯一途径
+4. **改进 caption 生成**——使用 LLM 生成丰富描述
