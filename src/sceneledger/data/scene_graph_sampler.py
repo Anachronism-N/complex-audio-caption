@@ -352,16 +352,46 @@ class SyntheticSourcePool:
 
     @staticmethod
     def _synth_ambience(sr: int, dur: float, rng: np.random.Generator) -> np.ndarray:
-        """Filtered noise ~ wind/rain bed (vectorized one-pole low-pass)."""
-        from scipy.signal import lfilter
+        """Ambience bed with rain/wind/room-tone character.
+
+        Improvements over v1:
+        - Pink noise (not white) for more natural spectral balance
+        - Slow amplitude modulation for natural起伏
+        - Periodic droplet clicks for rain-like character
+        - Low-pass filtered for warmth
+        """
+        from scipy.signal import lfilter, firwin
 
         n = int(sr * dur)
-        sig = rng.standard_normal(n).astype(np.float64)
-        a = 0.99
-        # lfilter implements y[n] = b*x[n] - a*y[n-1] for our one-pole:
-        # prev = a*prev + (1-a)*x  =>  y = (1-a)*x + a*y_prev
-        out = lfilter([1 - a], [1.0, -a], sig)
-        return (out / (np.max(np.abs(out)) + 1e-9)).astype(np.float32)
+        # Pink noise via filtered white noise (Voss-McCartney approximation)
+        white = rng.standard_normal(n).astype(np.float64)
+        # accumulate every 2^k sample for pink spectrum
+        pink = np.zeros(n)
+        prev = 0.0
+        for i in range(n):
+            prev = 0.99 * prev + 0.01 * white[i]
+            pink[i] = prev
+        # Low-pass for warmth (cutoff ~2kHz)
+        try:
+            b = firwin(65, 2000 / (sr / 2))
+            pink = lfilter(b, 1.0, pink)
+        except Exception:
+            pass
+        # Slow amplitude modulation (0.1-0.3 Hz natural起伏)
+        t = np.arange(n) / sr
+        mod_freq = rng.uniform(0.1, 0.3)
+        modulation = 0.7 + 0.3 * np.sin(2 * np.pi * mod_freq * t)
+        sig = pink * modulation
+        # Add periodic droplet clicks for rain character (~2-5 Hz)
+        click_rate = rng.uniform(2, 5)
+        n_clicks = int(dur * click_rate)
+        for _ in range(n_clicks):
+            pos = int(rng.integers(0, max(1, n - int(0.01 * sr))))
+            click_len = int(0.005 * sr)
+            if pos + click_len < n:
+                click = rng.standard_normal(click_len) * np.exp(-np.arange(click_len) / 3)
+                sig[pos:pos + click_len] += 0.05 * click
+        return (sig / (np.max(np.abs(sig)) + 1e-9)).astype(np.float32)
 
 
 # --------------------------------------------------------------------------- #
