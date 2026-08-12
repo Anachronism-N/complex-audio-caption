@@ -380,6 +380,27 @@ def render_scene(scene: Scene, pool: SourcePool) -> RenderOutput:
         mixture += rs.stem
     dry_mixture = mixture.copy()
 
+    # Background ambience fill: add low-gain ambient bed to avoid silence (docs/15 problem 6).
+    # Only if no ambience source already present and clip is >5s with gaps.
+    has_ambience = any(rs.placed.kind == "ambience" for rs in rendered)
+    if not has_ambience and scene.duration > 5.0:
+        import hashlib as _hl
+        bg_seed = int(_hl.sha256(f"{scene.scene_id}_bg".encode()).hexdigest()[:8], 16)
+        bg_rng = np.random.default_rng(bg_seed)
+        from sceneledger.data.scene_graph_sampler import SyntheticSourcePool
+        bg_pool = SyntheticSourcePool(sample_rate=sr, seed=20260808)
+        bg_wav, _ = bg_pool.load("ambience:001", sr)
+        bg_wav = bg_wav.astype(np.float32)
+        # trim/pad to clip length
+        if len(bg_wav) > n_clip:
+            bg_wav = bg_wav[:n_clip]
+        else:
+            bg_wav = np.pad(bg_wav, (0, n_clip - len(bg_wav)))
+        bg_wav = _apply_fade_by_kind(bg_wav, "ambience", sr)
+        bg_gain_db = -18.0  # very low background
+        bg_wav = _apply_gain(bg_wav, bg_gain_db)
+        mixture += bg_wav
+
     # Ducking: reduce music/ambience when speech/vocal is active (docs/15).
     # Randomized depth (2-5dB) and 30% chance of no ducking for diversity.
     import random as _rng
