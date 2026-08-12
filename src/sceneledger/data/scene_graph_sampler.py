@@ -42,6 +42,9 @@ TemplateID = Literal[
     "speech_music_lyrics_sfx",
     "overlapping_speakers",
     "random_mix",
+    "complex_cocktail",
+    "rich_band",
+    "multi_event_dense",
 ]
 
 # Sampling ranges (docs/06 §3.3). These are project choices, not TAC values.
@@ -589,6 +592,31 @@ class SceneGraphSampler:
                 s = _src(kind, fg=True, identity=identity)
                 s.onset = round(rng.uniform(0.0, max(0.1, duration * 0.5)) / TIME_RESOLUTION_SEC) * TIME_RESOLUTION_SEC
                 sources.append(s)
+            return sources
+        # New complex templates for higher data complexity (docs/15 problem 7)
+        if template == "complex_cocktail":
+            # 3-4 speakers + background music + occasional sfx
+            n_speakers = rng.randint(3, 4)
+            sources = [_src("music", fg=False)]
+            for si in range(n_speakers):
+                sources.append(_src("speech", fg=True, identity=f"S{si+1}"))
+            if rng.random() < 0.5:
+                sources.append(_src("sfx", fg=True))
+            return sources
+        if template == "rich_band":
+            # music + vocals + 2 sfx + ambience = 5 sources
+            return [
+                _src("ambience", fg=False),
+                _src("music", fg=False),
+                _src("vocal", fg=True, identity="V1"),
+                _src("sfx", fg=True),
+                _src("sfx", fg=True),
+            ]
+        if template == "multi_event_dense":
+            # 2-3 sfx + speech + music = 4-5 sources, dense events
+            sources = [_src("music", fg=False), _src("speech", fg=True, identity="S1")]
+            for _ in range(rng.randint(2, 3)):
+                sources.append(_src("sfx", fg=True))
             return sources
         raise ValueError(f"unknown template {template!r}")
 

@@ -380,20 +380,27 @@ def render_scene(scene: Scene, pool: SourcePool) -> RenderOutput:
         mixture += rs.stem
     dry_mixture = mixture.copy()
 
-    # Ducking: reduce music/ambience gain when speech/vocal is active (docs/15 fix)
+    # Ducking: reduce music/ambience when speech/vocal is active (docs/15).
+    # Randomized depth (2-5dB) and 30% chance of no ducking for diversity.
+    import random as _rng
+    _duck_rng = _rng.Random(scene.seed)
+    apply_duck = _duck_rng.random() > 0.3  # 70% of clips get ducking
+    duck_depth_db = _duck_rng.uniform(2.0, 5.0)  # 2-5dB, not fixed 6dB
     speech_active = np.zeros(n_clip, dtype=np.float32)
-    for rs in rendered:
-        if rs.placed.kind in ("speech", "vocal"):
-            frame_size = int(0.05 * sr)
-            for i in range(0, len(rs.stem) - frame_size, frame_size):
-                rms = np.sqrt(np.mean(rs.stem[i:i+frame_size]**2))
-                if rms > 0.01:
-                    speech_active[i:i+frame_size] = 1.0
+    if apply_duck:
+        for rs in rendered:
+            if rs.placed.kind in ("speech", "vocal"):
+                frame_size = int(0.05 * sr)
+                for i in range(0, len(rs.stem) - frame_size, frame_size):
+                    rms = np.sqrt(np.mean(rs.stem[i:i+frame_size]**2))
+                    if rms > 0.01:
+                        speech_active[i:i+frame_size] = 1.0
     if speech_active.any():
         from scipy.signal import lfilter
         smooth = lfilter(np.ones(10) / 10, [1.0], speech_active)
         speech_active = np.clip(smooth, 0, 1)
-        duck_gain = 1.0 - 0.4 * speech_active  # -6dB ducking
+        duck_factor = 10.0 ** (-duck_depth_db / 20.0)  # linear gain
+        duck_gain = 1.0 - (1.0 - duck_factor) * speech_active
         for rs in rendered:
             if rs.placed.kind in ("music", "ambience"):
                 mixture[:len(rs.stem)] += rs.stem * (duck_gain[:len(rs.stem)] - 1.0)
