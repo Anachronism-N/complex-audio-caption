@@ -48,6 +48,7 @@
 - [实验结果综合报告](docs/13_results_summary.md)
 - [B3-complex-v2 有效数据与无泄漏评测协议](docs/20_valid_data_protocol_v2.md)
 - [设计澄清、术语、loss、推理与实现状态](docs/21_design_clarifications_and_status.md)
+- [合成音频质量问题与改进方案](docs/15_synthetic_audio_quality.md)
 - [机器可读实验矩阵](configs/experiment_matrix.yaml)
 - [机器可读开发阶段](configs/pipeline_stages.yaml)
 - [规范化事件账本 JSON Schema](schemas/sceneledger.schema.json)
