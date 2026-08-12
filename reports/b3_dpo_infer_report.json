@@ -1,0 +1,5074 @@
+{
+  "backend": "moss",
+  "n_samples": 500,
+  "n_ok": 49,
+  "strict_format_success_rate": 0.098,
+  "mean_events_recovered": 0.186,
+  "total_events_rejected": 491,
+  "samples": [
+    {
+      "sample_id": "mix_000001",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>4</n><slot><sfx></sfx></slot><slot><music><|t_000|>背景音乐持续播放，节奏平稳。<|t_102|></music></slot><slot><sfx><|t_032|>短促的撞击声。<|t_034|></sfx></slot><slot><spx><|t_056|>一名说话者正在讲话。<|t_100|></spx></slot><slot><sfx><|t_072|>一次玻璃破碎声。<|t_075|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000002",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在说话。短促的撞击声穿插其中。"
+    },
+    {
+      "sample_id": "mix_000003",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_028|>短促的撞击声。<|3.18|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000004",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>到。<|t 2.04|></slot><slot><sfx></sfx><|t_045|>到。<|t 4.96|></slot>"
+    },
+    {
+      "sample_id": "mix_000005",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_007|>短促的撞击声。<|1.08|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000006",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_035|>短促的撞击声。<|4.8|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000007",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声在4秒左右出现。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000008",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000009",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_042|>短促的撞击声。<|7.34|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000010",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_116|></slot><slot><sfx></sfx><|t_044|>一次玻璃破碎声。<|t_050|></slot>"
+    },
+    {
+      "sample_id": "mix_000011",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx><|t_012|>短促的撞击声。<|t_240|></sfx></slot><slot><sfx><|t_028|>一次玻璃破碎声。<|t_034|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000012",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_076|>短促的撞击声。<|091|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000013",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在说话。一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000014",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。在第3.44秒出现一次玻璃破碎声。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话"
+    },
+    {
+      "sample_id": "mix_000015",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_120|></slot><slot><sfx></sfx><|t_093|>一次玻璃破碎声。<|t_111|></slot>"
+    },
+    {
+      "sample_id": "mix_000016",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t 000|>。<|t 120|></slot><slot><sfx></sfx><|t 044|>。<|t 046|></slot>"
+    },
+    {
+      "sample_id": "mix_000017",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx><|t_034|>短促的撞击声。<|4.34|></sfx></slot><slot><sfx><|t_055|>一次玻璃破碎声。<|7.94|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000018",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_061|>短促的撞击声。<|t_079|></sfx></slot><slot><sfx><|t_103|>一次玻璃破碎声。<|t_136|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000019",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000020",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_004|>短促的撞击声。<|t_007|></sfx></slot><slot><sfx><|t_029|>一次玻璃破碎声。<|t_032|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000021",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。在0.24秒处有一次玻璃破碎声。说话者正在讲话，语音内容可辨。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000022",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><|t_000|>背景音乐持续播放，节奏平稳。<|t_150|></slot><slot><sfx></s slot><|t_016|>一次玻璃破碎声。<|t_020|></slot>"
+    },
+    {
+      "sample_id": "mix_000023",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx><|t_030|>短促的撞击声。<|t_616|></sfx></slot><slot><sfx><|t_070|>一次玻璃破碎声。<|t_100|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000024",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000025",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_063|>短促的撞击声。<|11.3|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000026",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_151|></slot><slot><sfx></sfx><|t_062|>一次玻璃破碎声。<|t_085|></slot>"
+    },
+    {
+      "sample_id": "mix_000027",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_014|>短促的撞击声。<|2.18|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000028",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000029",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000030",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_057|>短促的撞击声。<|t_066|></sfx></slot><slot><sfx><|t_067|>一次玻璃破碎声。<|t_108|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000031",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_042|>短促的撞击声。<|5.04|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000032",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000033",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t 000|>持续直至。<|t 132|></slot><slot><sfx></sfx><|t 044|>短促的撞击声。<|t 046|></slot>"
+    },
+    {
+      "sample_id": "mix_000034",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。短促的撞击声在中段出现。"
+    },
+    {
+      "sample_id": "mix_000035",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_112|></slot><slot><sfx></sfx><|t_598|>一次玻璃破碎声。<|t632|></slot>"
+    },
+    {
+      "sample_id": "mix_000036",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_136|></slot><slot><sfx></sfx><|t_048|>一次玻璃破碎声。<|t_051|></slot>"
+    },
+    {
+      "sample_id": "mix_000037",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_154|></slot><slot><sfx></sfx><|t_022|>一次玻璃破碎声。<|t_044|></slot>"
+    },
+    {
+      "sample_id": "mix_000038",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。在0.8秒处有一次玻璃破碎声。一名说话者正在讲话。一名说话者正在说话。"
+    },
+    {
+      "sample_id": "mix_000039",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在说话。一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000040",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000041",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_139|></slot><slot><sfx></sfx><|t_063|>一次玻璃破碎声。<|t_088|></slot>"
+    },
+    {
+      "sample_id": "mix_000042",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_021|>短促的撞击声。<|5.16|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000043",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_011|>短促的撞击声。<|t_016|></sfx></slot><slot><sfx><|t_029|>一次玻璃破碎声。<|t_032|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000044",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>到<n>100</n><|t_102|></slot><slot><sfx></sfx><|t_089|>到<n>911</n><|t_913|></slot>"
+    },
+    {
+      "sample_id": "mix_000045",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 3,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_930|></slot><slot><sfx></sfx><|t_089|>一次玻璃破碎声。<|t_093|></slot><slot><sfx></sfx><|t_089|>一次短促的撞击声。<|t_093|></slot>"
+    },
+    {
+      "sample_id": "mix_000046",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_039|>短促的撞击声。<|t_042|></sfx></slot><slot><sfx><|t_039|>一次玻璃破碎声。<|t_042|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000047",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_151|></slot><slot><sfx></sfx><|t022|>一次玻璃破碎声。<|t027|></slot>"
+    },
+    {
+      "sample_id": "mix_000048",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景噪声持续存在，形成稳定的环境基底。在590至625秒区间，一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000049",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>到<t_100|></slot><slot><sfx></sfx><|t_378|>到<t_391|></slot>"
+    },
+    {
+      "sample_id": "mix_000050",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_005|>到。<|t440|></slot><slot><sfx></sfx><|t047|>到。<|t074|></slot>"
+    },
+    {
+      "sample_id": "mix_000051",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一次玻璃破碎声短促出现。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话"
+    },
+    {
+      "sample_id": "mix_000052",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_034|>短促的撞击声。<|4.06|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000053",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><|t_000|>背景音乐持续播放，节奏平稳。<|t_934|></slot><slot><sfx></s slot><|t_267|>一次玻璃破碎声。<|t_271|></slot>"
+    },
+    {
+      "sample_id": "mix_000054",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声在中段出现。"
+    },
+    {
+      "sample_id": "mix_000055",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_042|>短促的撞击声。<|6.74|><|8.22|><|8.62|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000056",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_004|>短促的撞击声。<|t_042|></sfx></slot><slot><sfx><|t_052|>一次玻璃破碎声。<|t_055|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000057",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000058",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音为持续的环境噪声。在4.64秒处，一次玻璃破碎声短暂出现。"
+    },
+    {
+      "sample_id": "mix_000059",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000060",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景噪声持续存在，形成稳定的环境基底。一名说话者正在讲话。短促的撞击声在2.3秒处出现。"
+    },
+    {
+      "sample_id": "mix_000061",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000062",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声在4秒左右出现。"
+    },
+    {
+      "sample_id": "mix_000063",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx><|t_015|>短促的撞击声.<|3.94|></sfx></slot><slot><sfx><|t_028|>一次玻璃破碎声.<|4.10|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000064",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_113|></slot><slot><sfx></sfx><|t_044|>一次玻璃破碎声。<|t_072|></slot>"
+    },
+    {
+      "sample_id": "mix_000065",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>持续直至。<|t_184|></slot><slot><sfx></sfx><|t_041|>短促的撞击声。<|t_043|></slot>"
+    },
+    {
+      "sample_id": "mix_000066",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_012|>短促的撞击声。<|2.04|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000067",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音为持续的环境噪声。在8.76秒时，一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000068",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx></sfx><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></slot><slot><sfx></sfx><|t300|>一次玻璃破碎声。<|t400|></slot><slot><spx></spx><|t490|>一名说话者正在讲话。<|t750|></slot>"
+    },
+    {
+      "sample_id": "mix_000069",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_151|></slot><slot><sfx></sfx><|t_026|>一次玻璃破碎声。<|t_274|></slot>"
+    },
+    {
+      "sample_id": "mix_000070",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000071",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t 000|>持续直至。<|t 140|></slot><slot><sfx></sfx><|t 642|>短促的撞击声。<|t 666|></slot>"
+    },
+    {
+      "sample_id": "mix_000072",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t 000|>背景噪声。<|t 120|></slot><slot><sfx></sfx><|t 511|>一次玻璃破碎声。<|t 535|></slot>"
+    },
+    {
+      "sample_id": "mix_000073",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000074",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>背景噪声。<|t_115|></sfx></slot><slot><sfx><|t_004|>一次玻璃破碎声。<|t_036|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000075",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_013|>短促的撞击声。<|3.54|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000076",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声在4.4秒时出现。"
+    },
+    {
+      "sample_id": "mix_000077",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在说话。短促的撞击声发生一次。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者"
+    },
+    {
+      "sample_id": "mix_000078",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx><|t_028|>短促的撞击声。<|3.92|></sfx></slot><slot><sfx><|t_035|>一次玻璃破碎声。<|4.64|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000079",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_047|>短促的撞击声。<|t_056|></sfx></slot><slot><sfx><|t_049|>一次玻璃破碎声。<|t_056|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000080",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一次玻璃破碎声短促出现。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000081",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_018|>短促的撞击声。<|t_024|></sfx></slot><slot><sfx><|t_059|>一次玻璃破碎声。<|t_073|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000082",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_031|>短促的撞击声。<|t_037|></sfx></slot><slot><sfx><|t_036|>一次玻璃破碎声。<|t_043|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000083",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>持续直至。<|t_176|></slot><slot><sfx></sfx><|t_042|>短促的撞击声。<|t_045|></slot>"
+    },
+    {
+      "sample_id": "mix_000084",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声在4秒左右出现。"
+    },
+    {
+      "sample_id": "mix_000085",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_152|></slot><slot><sfx></sfx><|t_069|>一次玻璃破碎声。<|t_075|></slot>"
+    },
+    {
+      "sample_id": "mix_000086",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。在4.4秒时，一名说话者正在讲话。7.2秒时出现一次玻璃破碎声。"
+    },
+    {
+      "sample_id": "mix_000087",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在说话。短促的撞击声穿插其中。"
+    },
+    {
+      "sample_id": "mix_000088",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 3,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>4</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_114|></slot><slot><sfx></sfx><|t_032|>一次玻璃破碎声。<|t_037|></slot><slot><music></music><|t_000|>背景音乐持续播放，节奏平稳。<|t110|></slot><slot><spx></spx><|t_055|>一名说话者正在讲话。<|t080|></slot>"
+    },
+    {
+      "sample_id": "mix_000089",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_013|>短促的撞击声。<|t_141|></sfx></slot><slot><sfx><|t_017|>一次玻璃破碎声。<|t_022|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000090",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音为持续的环境噪声。在4.96秒时，一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000091",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx><|t_040|>短促的撞击声。<|t_844|></sfx></slot><slot><spt><|t_059|>一名说话者正在讲话。<|t_084|></spt></slot>"
+    },
+    {
+      "sample_id": "mix_000092",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景噪声持续存在，形成稳定的环境基底。在3.14秒处发生一次玻璃破碎声，短促清晰。"
+    },
+    {
+      "sample_id": "mix_000093",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_025|>短促的撞击声。<|3.0|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000094",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在说话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正"
+    },
+    {
+      "sample_id": "mix_000095",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx><|t_020|>短促的撞击声.<|4.0|></sfx></slot><slot><sfx><|t_114|>一次玻璃破碎声.<|14.6|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000096",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_043|>到。<|t_092|></slot><slot><sfx></sfx><|t_084|>到。<|t_130|></slot>"
+    },
+    {
+      "sample_id": "mix_000097",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在说话。短促的撞击声穿插其中。"
+    },
+    {
+      "sample_id": "mix_000098",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，营造出安静的室内氛围。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000099",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><slot><sfx></s slot>"
+    },
+    {
+      "sample_id": "mix_000100",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_037|>短促的撞击声。<|8.24|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000101",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000102",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。在5.32秒时，一次玻璃破碎声短促出现。一名说话者从5.44秒开始讲话，持续至11.24秒。一名说话者从6.00秒开始说话，持续至11.20秒。一名说话者从6.04秒开始说话，持续至11.32秒。一名说话者从6.16秒开始说话，持续至11.40秒。一名说话者从6.16秒开始说话，持续至11.44秒。一名说话者从6.20秒开始说话，持续至11.48秒。一名说话者从6.24秒开始说话，持续至11.52秒。一名说话者从6.32秒开始说话，持续至11.60秒。一名说话者从6.40秒开始说话，持续至11.76秒。一名说话者从6.56秒开始说话，持续至11.92秒。一名说话者从6.64秒开始说话，持续至12.00秒。一名说话者从6.72秒开始说话，持续至12.16秒。一名说话者从6.80秒开始说话，持续至12.24秒。一名说话者从6.96秒开始说话，持续至12.40秒。一名说话者从7.04秒开始说话，持续至12.56秒。一名说话者从7.12秒开始说话，持续至12.64秒。一名说话者从7.20秒开始说话，持续至12.72秒。一名说话者从7.28秒开始说话，持续至12.80"
+    },
+    {
+      "sample_id": "mix_000103",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t 000|>持续直至.<|t 120|></slot><slot><sfx></sfx><|t 219|>短促的撞击声。<|t 223|></slot>"
+    },
+    {
+      "sample_id": "mix_000104",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_144|></slot><slot><sfx></sfx><|t_044|>一次玻璃破碎声。<|t_047|></slot>"
+    },
+    {
+      "sample_id": "mix_000105",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><|t_000|>背景噪声。<|t_120|></slot><slot><sfx></s slot><|t_051|>一次玻璃破碎声。<|t_056|></slot>"
+    },
+    {
+      "sample_id": "mix_000106",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_132|></slot><slot><sfx></sfx><|t_021|>一次玻璃破碎声。<|t_230|></slot>"
+    },
+    {
+      "sample_id": "mix_000107",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000108",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。在4秒左右出现一次玻璃破碎声。说话声从6秒开始，持续至11秒多。"
+    },
+    {
+      "sample_id": "mix_000109",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000110",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><slot><sfx></s slot>"
+    },
+    {
+      "sample_id": "mix_000111",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_930|></slot><slot><sfx></sfx><|t_699|>一次玻璃破碎声。<|t_734|></slot>"
+    },
+    {
+      "sample_id": "mix_000112",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000113",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000114",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><|t_000|>持续的环境噪声。<|t_179|></slot><slot><sfx></s slot><|t_666|>一次玻璃破碎声。<|t_688|></slot>"
+    },
+    {
+      "sample_id": "mix_000115",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx><|t_004|>短促的撞击声。<|t030|></sfx></slot><slot><sfx><|t031|>一次玻璃破碎声。<|t034|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000116",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声在5.4秒时出现。"
+    },
+    {
+      "sample_id": "mix_000117",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_113|></slot><slot><sfx></sfx><|t_039|>一次玻璃破碎声。<|t_046|></slot>"
+    },
+    {
+      "sample_id": "mix_000118",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_120|></slot><slot><sfx></sfx><|t_377|>一次玻璃破碎声。<|t_385|></slot>"
+    },
+    {
+      "sample_id": "mix_000119",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t114|></slot><slot><sfx></sfx><|t040|>一次玻璃破碎声。<|t064|></slot>"
+    },
+    {
+      "sample_id": "mix_000120",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_153|></slot><slot><sfx></sfx><|t_061|>一次玻璃破碎声。<|t_074|></slot>"
+    },
+    {
+      "sample_id": "mix_000121",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_136|></slot><slot><sfx></sfx><|t_017|>一次玻璃破碎声。<|t_201|></slot>"
+    },
+    {
+      "sample_id": "mix_000122",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx></slot><slot><sfx></sfx><slot><sfx></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000123",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 3,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_139|></slot><slot><sfx></sfx><|t_065|>一次玻璃破碎声。<|t072|></slot><slot><sfx></sfx><|t065|>一次短促的撞击声。<|t073|></slot>"
+    },
+    {
+      "sample_id": "mix_000124",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx><|t_014|>短促的撞击声。<|t_140|></sfx></slot><slot><sfx><|t_021|>一次玻璃破碎声。<|t_024|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000125",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><|t_000|>背景噪声。<|t_151|></slot><slot><sfx></s slot><|t_059|>一次玻璃破碎声。<|t_063|></slot>"
+    },
+    {
+      "sample_id": "mix_000126",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。在4.78秒时，一名说话者开始讲话，语音清晰，持续至7.06秒。"
+    },
+    {
+      "sample_id": "mix_000127",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx><|t_038|>短促的撞击声。<|4.22|></sfx></slot><slot><sfx><|t_071|>一次玻璃破碎声。<|10.30|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000128",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t 000|>到<br><|t 154|></slot><slot><sfx></sfx><|t 0.64|>到<br><|t 0.88|></slot>"
+    },
+    {
+      "sample_id": "mix_000129",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><|t_000|>背景音乐持续播放，节奏平稳。<|t_130|></slot><slot><sfx></s slot><|t_043|>一次玻璃破碎声。<|t_051|></slot>"
+    },
+    {
+      "sample_id": "mix_000130",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_120|></slot><slot><sfx></sfx><|t_935|>一次玻璃破碎声。<|t955|></slot>"
+    },
+    {
+      "sample_id": "mix_000131",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声一次出现。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者"
+    },
+    {
+      "sample_id": "mix_000132",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000133",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><slot><sfx></s slot>"
+    },
+    {
+      "sample_id": "mix_000134",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_020|>短促的撞击声。<|3.0|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000135",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><|t_000|>背景音乐持续播放，节奏平稳。<|t_120|></slot><slot><sfx></s slot><|t_051|>一次玻璃破碎声。<|t_054|></slot>"
+    },
+    {
+      "sample_id": "mix_000136",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t111|></slot><slot><sfx></sfx><|t091|>一次玻璃破碎声。<|t961|></slot>"
+    },
+    {
+      "sample_id": "mix_000137",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx></slot><slot><sfx><|t_002|>短促的撞击声。<|t_007|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000138",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000139",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。在0.00秒时开始，持续至13.08秒。5.00秒时一次玻璃破碎声短促出现。5.64秒起，一名说话者开始讲话，语音清晰，持续至9.60秒。"
+    },
+    {
+      "sample_id": "mix_000140",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>到.<|t_111|></slot><slot><sfx></sfx><|t_133|>到.<|t_135|></slot>"
+    },
+    {
+      "sample_id": "mix_000141",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_032|>短促的撞击声。<|3.62|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000142",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在说话。"
+    },
+    {
+      "sample_id": "mix_000143",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000144",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_041|>短促的撞击声。<|t_068|></sfx></slot><slot><sfx><|t_071|>一次玻璃破碎声。<|t_076|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000145",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t 000|>背景噪声。<|t 143|></slot><slot><sfx></sfx><|t 287|>短促的撞击声。<|t 291|></slot>"
+    },
+    {
+      "sample_id": "mix_000146",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_151|></slot><slot><sfx></sfx><|t_063|>一次玻璃破碎声。<|t_066|></slot><slot><spx></spx><|t_062|>一名说话者正在讲话。<|t103|></slot>"
+    },
+    {
+      "sample_id": "mix_000147",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t112|></slot><slot><sfx></sfx><|t089|>一次玻璃破碎声。<|t093|></slot>"
+    },
+    {
+      "sample_id": "mix_000148",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正"
+    },
+    {
+      "sample_id": "mix_000149",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_041|>短促的撞击声。<|t_044|></sfx></slot><slot><sfx><|t_042|>一次玻璃破碎声。<|t_063|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000150",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_944|></slot><slot><sfx></sfx><|t_045|>一次玻璃破碎声。<|t_476|></slot>"
+    },
+    {
+      "sample_id": "mix_000151",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><|t_000|>背景噪声。<|t_120|></slot><slot><sfx></s slot><|t_027|>一次玻璃破碎声。<|t_058|></slot>"
+    },
+    {
+      "sample_id": "mix_000152",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx><|t_037|>短促的撞击声。<|4.40|></sfx></slot><slot><sfx><|t_064|>一次玻璃破碎声。<|7.24|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000153",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000154",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_101|></slot><slot><sfx></sfx><|t_034|>一次玻璃破碎声。<|t_041|></slot>"
+    },
+    {
+      "sample_id": "mix_000155",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。在2.18秒处有一次玻璃破碎声。7.62秒开始，一名说话者正在讲话。8.50秒时，一名说话者正在说话。"
+    },
+    {
+      "sample_id": "mix_000156",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。在4.44秒时，一次玻璃破碎声短促出现。随后从3.36秒开始，一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000157",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t111|></slot><slot><sfx></sfx><|t039|>一次玻璃破碎声。<|t045|></slot>"
+    },
+    {
+      "sample_id": "mix_000158",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景噪声持续存在，形成稳定的环境基底。在4.76秒处出现一次玻璃破碎声，短促清晰。"
+    },
+    {
+      "sample_id": "mix_000159",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_039|>短促的撞击声。<|046|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000160",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_113|></slot><slot><sfx></sfx><|t_036|>一次玻璃破碎声。<|t042|></slot>"
+    },
+    {
+      "sample_id": "mix_000161",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_043|>短促的撞击声。<|7.14|><|8.32|><|9.02|><|1030|><|1110|><|1224|><|1296|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000162",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_049|>短促的撞击声。<|5.56|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000163",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音为持续的环境噪声。一名说话者正在讲话。一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000164",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_059|>短促的撞击声。<|11.4|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000165",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 33,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>4</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_930|></slot><slot><sfx></sfx><|t_020|>一次玻璃破碎声。<|t_240|></slot><slot><sfx></sfx><|t_059|>一次玻璃破碎声。<|t_063|></slot><slot><sfx></sfx><|t_060|>一次玻璃破碎声。<|t_064|></slot><slot><sfx></sfx><|t_061|>一次玻璃破碎声。<|t_065|></slot><slot><sfx></sfx><|t_061|>一次玻璃破碎声。<|t_066|></slot><slot><sfx></sfx><|t_062|>一次玻璃破碎声。<|t_066|></slot><slot><sfx></sfx><|t_063|>一次玻璃破碎声。<|t_067|></slot><slot><sfx></sfx><|t_064|>一次玻璃破碎声。<|t_068|></slot><slot><sfx></sfx><|t_065|>一次玻璃破碎声。<|t_069|></"
+    },
+    {
+      "sample_id": "mix_000166",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，营造出安静的室内氛围。在5.2秒时，一次玻璃破碎声短促出现。约5.1秒起，一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000167",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声穿插其中。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者"
+    },
+    {
+      "sample_id": "mix_000168",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t110|></slot><slot><sfx></sfx><|t052|>一次玻璃破碎声。<|t056|></slot>"
+    },
+    {
+      "sample_id": "mix_000169",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景噪声持续存在，形成稳定的环境基底。一名说话者正在讲话。143秒时，一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000170",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><|t_000|>背景音乐持续播放，节奏平稳。<|t_102|></slot><slot><sfx></s slot><|t_024|>一次玻璃破碎声。<|t_027|></slot>"
+    },
+    {
+      "sample_id": "mix_000171",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 5,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>4</n><slot><sfx></sfx><|t_000|>背景音乐持续播放，节奏平稳。<|t_134|></slot><slot><sfx></sfx><|t_082|>一次玻璃破碎声。<|t_088|></slot><slot><sfx></sfx><|t_083|>一次短促的撞击声。<|t_088|></slot><slot><sfx></sfx><|t_089|>一次玻璃破碎声。<|t_094|></slot><slot><sfx></sfx><|t_092|>一次玻璃破碎声。<|t_096|></slot>"
+    },
+    {
+      "sample_id": "mix_000172",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000173",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><|t_000|>背景噪声。<|t_999|></slot><slot><sfx></s slot><|t_043|>一次玻璃破碎声。<|t_074|></slot>"
+    },
+    {
+      "sample_id": "mix_000174",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx></slot><slot><sfx></sfx></slot><slot><sfx></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000175",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_143|></slot><slot><sfx></sfx><|t_026|>一次玻璃破碎声。<|t_284|></slot>"
+    },
+    {
+      "sample_id": "mix_000176",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_023|>短促的撞击声。<|t_027|></sfx></slot><slot><sfx><|t_034|>一次玻璃破碎声。<|t_038|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000177",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000178",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，营造出安静的室内氛围。一名说话者正在讲话。短促的撞击声在9.04秒时出现。"
+    },
+    {
+      "sample_id": "mix_000179",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 3,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_152|></slot><slot><sfx></sfx><|t_061|>一次玻璃破碎声。<|t_066|></slot><slot><sfx></sfx><|t_062|>一次玻璃破碎声。<|t_067|></slot>"
+    },
+    {
+      "sample_id": "mix_000180",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_044|>短促的撞击声。<|t_073|></sfx></slot><slot><spx><|t_097|>一名说话者正在讲话。<|t_131|></spx></slot>"
+    },
+    {
+      "sample_id": "mix_000181",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_940|></slot><slot><sfx></sfx><|t_020|>一次玻璃破碎声。<|t_040|></slot>"
+    },
+    {
+      "sample_id": "mix_000182",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_118|></slot><slot><sfx></sfx><|t_041|>一次玻璃破碎声。<|t_078|></slot>"
+    },
+    {
+      "sample_id": "mix_000183",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_866|></slot><slot><sfx></sfx><|t_046|>一次玻璃破碎声。<|t_051|></slot>"
+    },
+    {
+      "sample_id": "mix_000184",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_124|></slot><slot><sfx></sfx><|t_104|>一次玻璃破碎声。<|t_107|></slot><slot><spx></spx><|t_106|>一名说话者正在讲话。<|t_125|></slot>"
+    },
+    {
+      "sample_id": "mix_000185",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_015|>短促的撞击声。<|2.04|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000186",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000187",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_120|></slot><slot><sfx></sfx><|t_045|>一次玻璃破碎声。<|t_101|></slot>"
+    },
+    {
+      "sample_id": "mix_000188",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_922|></slot><slot><sfx></sfx><|t_045|>一次玻璃破碎声。<|t_476|></slot>"
+    },
+    {
+      "sample_id": "mix_000189",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx></slot><slot><sfx></sfx></slot><slot><sfx></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000190",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_120|></slot><slot><sfx></sfx><|t_390|>一次玻璃破碎声。<|t444|></slot>"
+    },
+    {
+      "sample_id": "mix_000191",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000192",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声在4秒左右出现。"
+    },
+    {
+      "sample_id": "mix_000193",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx></slot><slot><sfx><|t_039|>短促的撞击声。<|t_043|></sfx><|t_059|>一名说话者正在讲话。<|t111|></slot>"
+    },
+    {
+      "sample_id": "mix_000194",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>持续直至。<|t_130|></slot><slot><sfx></sfx><|t_047|>短促撞击声。<|t_051|></slot>"
+    },
+    {
+      "sample_id": "mix_000195",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_073|>短促的撞击声。<|7.66|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000196",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_044|>短促的撞击声。<|4.76|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000197",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000198",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_039|>短促的撞击声。<|045|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000199",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_157|></slot><slot><sfx></sfx><|t_047|>一次玻璃破碎声。<|t_077|></slot>"
+    },
+    {
+      "sample_id": "mix_000200",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000201",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_070|>短促的撞击声。<|8.8|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000202",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t 000|>背景噪声。<|t 930|></slot><slot><sfx></sfx><|t 521|>一次玻璃破碎声。<|t 535|></slot>"
+    },
+    {
+      "sample_id": "mix_000203",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>到。<|t_940|></slot><slot><sfx></sfx><|t_310|>到。<|t335|></slot>"
+    },
+    {
+      "sample_id": "mix_000204",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_073|>短促的撞击声。<|100|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000205",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_018|>短促的撞击声。<|6.66|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000206",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景噪声持续存在，形成稳定的环境基底。在4.52秒处出现一次玻璃破碎声，短促清晰。"
+    },
+    {
+      "sample_id": "mix_000207",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在说话。一次玻璃破碎声短促出现。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000208",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "一名说话者正在讲话。一名说话者正在讲话。短促的撞击声穿插其中。"
+    },
+    {
+      "sample_id": "mix_000209",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_016|>短促的撞击声。<|2.30|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000210",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。在6.22秒处发生一次玻璃破碎声。7.26秒开始，一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000211",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_078|>短促的撞击声。<|163|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000212",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正"
+    },
+    {
+      "sample_id": "mix_000213",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_011|>短促的撞击声。<|t_036|></sfx></slot><slot><sfx><|t_082|>一次玻璃破碎声。<|t_085|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000214",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正"
+    },
+    {
+      "sample_id": "mix_000215",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t 000|>背景噪声。<|t 110|></slot><slot><sfx></sfx><|t 554|>一次玻璃破碎声。<|t 581|></slot>"
+    },
+    {
+      "sample_id": "mix_000216",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_018|>短促的撞击声。<|t_022|></sfx></slot><slot><sfx><|t_033|>一次玻璃破碎声。<|t_037|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000217",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_112|></slot><slot><sfx></sfx><|t_046|>一次玻璃破碎声。<|t_069|></slot>"
+    },
+    {
+      "sample_id": "mix_000218",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><|t_000|>背景噪声。<|t_101|></slot><slot><sfx></s slot><|t_007|>一次玻璃破碎声。<|t_010|></slot>"
+    },
+    {
+      "sample_id": "mix_000219",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><slot><sfx></s slot>"
+    },
+    {
+      "sample_id": "mix_000220",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000221",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_004|>短促的撞击声。<|1.08|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000222",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在说话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000223",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 3,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_142|></slot><slot><sfx></sfx><|t_081|>一次玻璃破碎声。<|t_088|></slot><slot><sfx></sfx><|t113|>一次短促的撞击声。<|t116|></slot>"
+    },
+    {
+      "sample_id": "mix_000224",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t103|></slot><slot><sfx></sfx><|t022|>一次玻璃破碎声。<|t026|></slot>"
+    },
+    {
+      "sample_id": "mix_000225",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><slot><sfx></s slot>"
+    },
+    {
+      "sample_id": "mix_000226",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><|t_000|>背景噪声。<|t_141|></slot><slot><sfx></s slot><|t_044|>一次玻璃破碎声。<|t_047|></slot>"
+    },
+    {
+      "sample_id": "mix_000227",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声在开始时出现。"
+    },
+    {
+      "sample_id": "mix_000228",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_037|>短促的撞击声。<|7.14|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000229",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。在635秒处，一名说话者开始讲话，语音清晰，持续至1015秒。"
+    },
+    {
+      "sample_id": "mix_000230",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_120|></slot><slot><sfx></sfx><|t_635|>一次玻璃破碎声。<|t_915|></slot>"
+    },
+    {
+      "sample_id": "mix_000231",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><slot><sfx></s slot>"
+    },
+    {
+      "sample_id": "mix_000232",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_069|>短促的撞击声。<|t_073|></sfx></slot><slot><sfx><|t_074|>一次玻璃破碎声。<|t_080|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000233",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 3,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx></sfx><|t_002|>短促的撞击声。<|t_014|></slot><slot><sfx></sfx><|t_008|>一次玻璃破碎声。<|t_118|></slot><slot><sfx></sfx><|t_009|>一次玻璃破碎声。<|t_111|></slot>"
+    },
+    {
+      "sample_id": "mix_000234",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_005|>短促的撞击声.<|t_011|></sfx></slot><slot><sfx><|t_081|>一次玻璃破碎声.<|t_084|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000235",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声在7秒左右出现。"
+    },
+    {
+      "sample_id": "mix_000236",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在说话。短促的撞击声一次出现。"
+    },
+    {
+      "sample_id": "mix_000237",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。在5600秒处出现一次玻璃破碎声。7500秒时一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000238",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 3,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_114|></slot><slot><sfx></sfx><|t_071|>一次玻璃破碎声。<|t_074|></slot><slot><sfx></sfx><|t_099|>一次玻璃破碎声。<|t102|></slot>"
+    },
+    {
+      "sample_id": "mix_000239",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000240",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_037|>短促的撞击声。<|4.64|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000241",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。在4秒左右，一次玻璃破碎声短促出现。约4.8秒时，一名说话者开始讲话，持续至9.04秒。一名说话者在5.16秒开始说话，持续至8.84秒。"
+    },
+    {
+      "sample_id": "mix_000242",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声在4.8秒时出现。"
+    },
+    {
+      "sample_id": "mix_000243",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t142|></slot><slot><sfx></sfx><|t015|>一次玻璃破碎声。<|t230|></slot>"
+    },
+    {
+      "sample_id": "mix_000244",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_092|>短促的撞击声。<|11.4|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000245",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000246",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 3,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx></sfx><|t_000|>背景音乐持续播放，节奏平稳。<|t115|></slot><slot><sfx></sfx><|t290|>一次玻璃破碎声。<|t315|></slot><slot><sfx></sfx><|t402|>一次短促的撞击声。<|t410|></slot>"
+    },
+    {
+      "sample_id": "mix_000247",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>背景噪声。<|t_840|></sfx></slot><slot><sfx><|t_026|>一次玻璃破碎声。<|t_032|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000248",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声在中段出现。"
+    },
+    {
+      "sample_id": "mix_000249",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_115|></slot><slot><sfx></sfx><|t_082|>一次玻璃破碎声。<|t_085|></slot>"
+    },
+    {
+      "sample_id": "mix_000250",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_153|></slot><slot><sfx></sfx><|t_044|>一次玻璃破碎声。<|t_051|></slot>"
+    },
+    {
+      "sample_id": "mix_000251",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000252",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景噪声持续存在，形成稳定的环境基底。一名说话者正在讲话。一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000253",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_054|>短促的撞击声。<|t_061|></sfx></slot><slot><sfx><|t_055|>一次玻璃破碎声。<|t_061|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000254",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_046|>短促的撞击声。<|t_051|></sfx></slot><slot><sfx><|t_072|>一次玻璃破碎声。<|t_076|></sfx></slot><slot><sfx><|t_073|>一次玻璃破碎声。<|t_078|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000255",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx><|t_010|>短促的撞击声。<|t 6.0|></sfx></slot><slot><sfx><|t_088|>一次玻璃破碎声。<|t 10.0|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000256",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_151|></slot><slot><sfx></sfx><|t_006|>一次玻璃破碎声。<|t_010|></slot>"
+    },
+    {
+      "sample_id": "mix_000257",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 5,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>4</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_104|></slot><slot><sfx></sfx><|t_044|>一次玻璃破碎声。<|t_047|></slot><slot><sfx></sfx><|t_066|>一次玻璃破碎声。<|t_069|></slot><slot><sfx></sfx><|t_084|>一次玻璃破碎声。<|t_088|></slot><slot><sfx></sfx><|t_085|>一次玻璃破碎声。<|t_089|></slot>"
+    },
+    {
+      "sample_id": "mix_000258",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_148|></slot><slot><sfx></sfx><|t_067|>一次玻璃破碎声。<|t_073|></slot>"
+    },
+    {
+      "sample_id": "mix_000259",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><slot><sfx></s slot>"
+    },
+    {
+      "sample_id": "mix_000260",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000261",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "一名说话者正在讲话，背景中有持续的环境噪声。"
+    },
+    {
+      "sample_id": "mix_000262",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000263",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx></sfx><|t 000|>背景噪声。<|t 115|></slot><slot><sfx></sfx><|t 266|>一次玻璃破碎声。<|t 269|></slot><slot><spx></spx><|t 045|>一名说话者正在讲话。<|t 064|></slot>"
+    },
+    {
+      "sample_id": "mix_000264",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>持续的环境噪声。<|t_190|></slot><slot><sfx></sfx><|t_650|>一次玻璃破碎声。<|t700|></slot>"
+    },
+    {
+      "sample_id": "mix_000265",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_120|></slot><slot><sfx></sfx><|t_922|>一次玻璃破碎声。<|t_944|></slot>"
+    },
+    {
+      "sample_id": "mix_000266",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音为持续的环境噪声。在8.04秒处出现一次玻璃破碎声。"
+    },
+    {
+      "sample_id": "mix_000267",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000268",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t 000|>持续直至。<|t 151|></slot><slot><sfx></sfx><|t 622|>短促的撞击声。<|t 644|></slot>"
+    },
+    {
+      "sample_id": "mix_000269",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声在中段出现。"
+    },
+    {
+      "sample_id": "mix_000270",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。在4秒左右，一名说话者正在讲话。6秒时出现一次玻璃破碎声。9秒后，一名说话者开始说话，持续至14秒左右。"
+    },
+    {
+      "sample_id": "mix_000271",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><|t_000|>背景噪声。<|t_964|></slot><slot><sfx></s slot><|t_016|>一次玻璃破碎声。<|t_021|></slot>"
+    },
+    {
+      "sample_id": "mix_000272",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_120|></slot><slot><sfx></sfx><|t_035|>一次玻璃破碎声。<|t61|></slot>"
+    },
+    {
+      "sample_id": "mix_000273",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_139|></slot><slot><sfx></sfx><|t_039|>一次玻璃破碎声。<|t_043|></slot>"
+    },
+    {
+      "sample_id": "mix_000274",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_152|></slot><slot><sfx></sfx><|t_2.98|>一次玻璃破碎声。<|t_3.42|></slot>"
+    },
+    {
+      "sample_id": "mix_000275",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>到<n>10.5</n><|t_108|></slot><slot><sfx></sfx><|t_034|>到<n>386</n><|t_398|></slot>"
+    },
+    {
+      "sample_id": "mix_000276",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>背景噪声。<|t_920|></sfx></slot><slot><sfx><|t_012|>一次玻璃破碎声。<|t_015|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000277",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 5,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>4</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_144|></slot><slot><sfx></sfx><|t_026|>一次玻璃破碎声。<|t_029|></slot><slot><sfx></sfx><|t_065|>一次玻璃破碎声。<|t_068|></slot><slot><sfx></sfx><|t_066|>一次玻璃破碎声。<|t_071|></slot><slot><sfx></sfx><|t_081|>一次玻璃破碎声。<|t_085|></slot>"
+    },
+    {
+      "sample_id": "mix_000278",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声在7秒左右出现。"
+    },
+    {
+      "sample_id": "mix_000279",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><|t_000|>持续的环境噪声。<|t111|></slot><slot><sfx></s slot><|t 778|>短促的撞击声。<|t 802|></slot>"
+    },
+    {
+      "sample_id": "mix_000280",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000281",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_023|>短促的撞击声。<|5.00|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000282",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t 000|>持续直至。<|t 133|></slot><slot><sfx></sfx><|t 053|>短促的撞击声。<|t 055|></slot>"
+    },
+    {
+      "sample_id": "mix_000283",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000284",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_134|></slot><slot><sfx></sfx><|t_377|>一次玻璃破碎声。<|t_381|></slot>"
+    },
+    {
+      "sample_id": "mix_000285",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_087|>短促的撞击声。<|12.9|><|142|><|15.3|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000286",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_151|></slot><slot><sfx></sfx><|t_038|>一次玻璃破碎声。<|t_044|></slot>"
+    },
+    {
+      "sample_id": "mix_000287",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_002|>短促的撞击声。<|009|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000288",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx></slot><slot><music></music></slot><slot><sfx></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000289",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_032|>短促的撞击声。<|4.00|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000290",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><|t_000|>背景噪声。<|t_101|></slot><slot><sfx></s slot><|t_051|>一次玻璃破碎声。<|t_074|></slot>"
+    },
+    {
+      "sample_id": "mix_000291",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_024|>短促的撞击声。<|t_051|></sfx></slot><slot><sfx><|t_054|>一次玻璃破碎声。<|t_057|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000292",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_072|>短促的撞击声。<|t_075|><|t_083|><|t_087|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000293",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在说话。一次玻璃破碎声短促出现。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000294",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_027|>短促的撞击声。<|t_056|></sfx></slot><slot><sfx><|t_079|>一次玻璃破碎声。<|t_097|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000295",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。在4秒左右出现一次玻璃破碎声。说话声从5.7秒开始，持续至9.1秒。"
+    },
+    {
+      "sample_id": "mix_000296",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_006|>短促的撞击声。<|034|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000297",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_1005|></slot><slot><sfx></sfx><|t_0408|>一次玻璃破碎声。<|t_0824|></slot>"
+    },
+    {
+      "sample_id": "mix_000298",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_006|>短促的撞击声。<|1.08|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000299",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声一次出现。"
+    },
+    {
+      "sample_id": "mix_000300",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000301",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_041|>短促的撞击声。<|t_046|></sfx></slot><slot><sfx><|t_042|>一次玻璃破碎声。<|t_054|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000302",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_076|>短促的撞击声。<|t_082|></sfx></slot><slot><sfx><|t_090|>一次玻璃破碎声。<|t_093|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000303",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><slot><sfx></s slot>"
+    },
+    {
+      "sample_id": "mix_000304",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声在5秒左右出现。"
+    },
+    {
+      "sample_id": "mix_000305",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx><|t_070|>短促的撞击声.<|8.52|></sfx></slot><slot><sfx><|t_070|>一次玻璃破碎声.<|8.16|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000306",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_112|></slot><slot><sfx></sfx><|t_017|>一次玻璃破碎声。<|t_022|></slot>"
+    },
+    {
+      "sample_id": "mix_000307",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><|t_000|>背景噪声。<|t_120|></slot><slot><sfx></s slot><|t_045|>一次玻璃破碎声。<|t 100|></slot>"
+    },
+    {
+      "sample_id": "mix_000308",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_142|></slot><slot><sfx></sfx><|t_051|>一次玻璃破碎声。<|t_074|></slot>"
+    },
+    {
+      "sample_id": "mix_000309",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。在3.4秒时出现一次玻璃破碎声。4.3秒开始，一名说话者正在讲话。7.6秒时，一名说话者开始说话，持续至10.4秒。"
+    },
+    {
+      "sample_id": "mix_000310",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声在13.1秒时出现。"
+    },
+    {
+      "sample_id": "mix_000311",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000312",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000313",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_006|>短促的撞击声。<|5.34|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000314",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_041|>短促的撞击声。<|5.04|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000315",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_102|>短促的撞击声。<|144|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000316",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>持续直至。<|t_178|></slot><slot><sfx></sfx><|t299|>短促的撞击声。<|t301|></slot>"
+    },
+    {
+      "sample_id": "mix_000317",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在说话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正"
+    },
+    {
+      "sample_id": "mix_000318",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_013|>短促的撞击声。<|1.62|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000319",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000320",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx><|t_005|>短促的撞击声.<|3.14|></sfx></slot><slot><sfx><|t_030|>一次玻璃破碎声.<|3.30|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000321",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_964|></slot><slot><sfx></sfx><|t_037|>一次玻璃破碎声。<|t_412|></slot>"
+    },
+    {
+      "sample_id": "mix_000322",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声在2.02秒出现。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000323",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_020|>短促的撞击声。<|3.10|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000324",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声一次出现。"
+    },
+    {
+      "sample_id": "mix_000325",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。在5.36秒时，一名说话者开始讲话，语音清晰，内容可辨。说话事件持续至9.52秒。"
+    },
+    {
+      "sample_id": "mix_000326",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声一次出现。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000327",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_152|></slot><slot><sfx></sfx><|t_054|>一次玻璃破碎声。<|t_102|></slot>"
+    },
+    {
+      "sample_id": "mix_000328",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_041|>短促的撞击声。<|t_074|></sfx></slot><slot><spx><|t_082|>一名说话者正在讲话。<|t112|></spx></slot>"
+    },
+    {
+      "sample_id": "mix_000329",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_027|>短促的撞击声。<|3.06|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000330",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>背景噪声。<|t_120|></sfx></slot><slot><sfx><|t_009|>一次玻璃破碎声。<|t_013|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000331",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_140|></slot><slot><sfx></sfx><|t_072|>一次玻璃破碎声。<|t_089|></slot><slot><spx></spx><|t_072|>一名说话者正在讲话。<|t_091|></slot>"
+    },
+    {
+      "sample_id": "mix_000332",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 3,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_152|></slot><slot><sfx></sfx><|t_089|>一次玻璃破碎声。<|t_956|></slot><slot><sfx></sfx><|t_129|>一次短促的撞击声。<|t_137|></slot>"
+    },
+    {
+      "sample_id": "mix_000333",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>起始的环境噪声。<|t_141|></slot><slot><sfx></sfx><|t_005|>一次玻璃破碎声。<|t1.24|></slot>"
+    },
+    {
+      "sample_id": "mix_000334",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_114|></slot><slot><sfx></sfx><|t_068|>一次玻璃破碎声。<|t_074|></slot>"
+    },
+    {
+      "sample_id": "mix_000335",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_007|>短促的撞击声。<|t_018|></sfx></slot><slot><sfx><|t_022|>一次玻璃破碎声。<|t_025|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000336",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_101|></slot><slot><sfx></sfx><|t_035|>一次玻璃破碎声。<|t_037|></slot>"
+    },
+    {
+      "sample_id": "mix_000337",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t 000|>持续直至<br /><|t 160|></slot><slot><sfx></sfx><|t 087|>短促的撞击声<br /><|t 091|></slot>"
+    },
+    {
+      "sample_id": "mix_000338",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_152|></slot><slot><sfx></sfx><|t062|>一次玻璃破碎声。<|t065|></slot>"
+    },
+    {
+      "sample_id": "mix_000339",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx></slot><slot><sfx></sfx></slot><slot><sfx></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000340",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景噪声持续存在，形成稳定的环境基底。在11.38秒处出现一次玻璃破碎声，短促清晰。"
+    },
+    {
+      "sample_id": "mix_000341",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t 000|>背景噪声。<|t 120|></slot><slot><sfx></sfx><|t 1.7|>一次玻璃破碎声。<|t 2.2|></slot>"
+    },
+    {
+      "sample_id": "mix_000342",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_081|>短促的撞击声。<|t_086|></sfx></slot><slot><sfx><|t_099|>一次玻璃破碎声。<|t_103|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000343",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000344",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_101|></slot><slot><sfx></sfx><|t021|>一次玻璃破碎声。<|t025|></slot>"
+    },
+    {
+      "sample_id": "mix_000345",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_048|>短促的撞击声。<|5.16|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000346",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><slot><sfx></s slot>"
+    },
+    {
+      "sample_id": "mix_000347",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_002|>短促的撞击声.<|t_021|></sfx></slot><slot><sfx><|t_068|>一次玻璃破碎声.<|t_071|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000348",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_062|>短促的撞击声。<|12.2|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000349",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx><|t_028|>短促的撞击声。<|711|></sfx></slot><slot><sfx><|t_077|>一次玻璃破碎声。<|934|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000350",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000351",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_006|>短促的撞击声。<|5.62|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000352",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_052|>短促的撞击声。<|150|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000353",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_120|></slot><slot><sfx></sfx><|t_045|>一次玻璃破碎声。<|t_80|></slot>"
+    },
+    {
+      "sample_id": "mix_000354",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>到。<|t 2.14|></slot><slot><sfx></sfx><|t_008|>到。<|t 1.46|></slot>"
+    },
+    {
+      "sample_id": "mix_000355",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000356",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>到<br><|t_113|></slot><slot><sfx></sfx><|t_355|>到<br><|t_357|></slot>"
+    },
+    {
+      "sample_id": "mix_000357",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 3,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx></sfx><|t_000|>~<|t_920|></slot><slot><sfx></sfx><|t_111|>~<|t_113|></slot><slot><sfx></sfx><|t_131|>~<|t_134|></slot>"
+    },
+    {
+      "sample_id": "mix_000358",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_007|>短促的撞击声。<|t_026|></sfx></slot><slot><sfx><|t_031|>一次玻璃破碎声。<|t_054|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000359",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_013|>短促的撞击声。<|t_113|></sfx></slot><slot><sfx><|t_014|>一次玻璃破碎声。<|t_021|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000360",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在说话。短促的撞击声穿插其中。"
+    },
+    {
+      "sample_id": "mix_000361",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_140|></slot><slot><sfx></sfx><|t_242|>一次玻璃破碎声。<|t_248|></slot>"
+    },
+    {
+      "sample_id": "mix_000362",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_115|></slot><slot><sfx></sfx><|t_522|>一次玻璃破碎声。<|t_544|></slot>"
+    },
+    {
+      "sample_id": "mix_000363",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t111|></slot><slot><sfx></sfx><|t072|>一次玻璃破碎声。<|t075|></slot>"
+    },
+    {
+      "sample_id": "mix_000364",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在说话。一次玻璃破碎声短促出现。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000365",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正"
+    },
+    {
+      "sample_id": "mix_000366",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声在中段出现。"
+    },
+    {
+      "sample_id": "mix_000367",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><slot><sfx></s slot>"
+    },
+    {
+      "sample_id": "mix_000368",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一次玻璃破碎声短促出现。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000369",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_130|></slot><slot><sfx></sfx><|t_084|>一次玻璃破碎声。<|t_088|></slot>"
+    },
+    {
+      "sample_id": "mix_000370",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000371",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx><|t_033|>短促的撞击声。<|4.42|></sfx></slot><slot><sfx><|t_034|>一次玻璃破碎声。<|3.90|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000372",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_152|></slot><slot><sfx></sfx><|t_646|>一次玻璃破碎声。<|t_678|></slot>"
+    },
+    {
+      "sample_id": "mix_000373",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_999|></slot><slot><sfx></sfx><|t_329|>一次玻璃破碎声。<|t_333|></slot>"
+    },
+    {
+      "sample_id": "mix_000374",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><|t_000|>背景噪声。<|t_940|></slot><slot><sfx></s slot><|t_023|>一次玻璃破碎声。<|t_027|></slot>"
+    },
+    {
+      "sample_id": "mix_000375",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声在10秒左右出现。"
+    },
+    {
+      "sample_id": "mix_000376",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在说话。一次玻璃破碎声短促出现。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000377",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。在4秒左右出现一次玻璃破碎声。说话者正在讲话，语音内容可辨。"
+    },
+    {
+      "sample_id": "mix_000378",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t105|></slot><slot><sfx></sfx><|t021|>一次玻璃破碎声。<|t024|></slot>"
+    },
+    {
+      "sample_id": "mix_000379",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>到。<|t_152|></slot><slot><sfx></sfx><|t_005|>到。<|t008|></slot>"
+    },
+    {
+      "sample_id": "mix_000380",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000381",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000382",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_069|>短促的撞击声。<|075|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000383",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_076|>短促的撞击声。<|t_103|></sfx></slot><slot><sfx><|t_113|>一次玻璃破碎声。<|t_116|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000384",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_030|>短促的撞击声。<|4.50|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000385",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_203|></slot><slot><sfx></sfx><|t_178|>一次玻璃破碎声。<|t_184|></slot>"
+    },
+    {
+      "sample_id": "mix_000386",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_120|></slot><slot><sfx></sfx><|t_062|>一次玻璃破碎声。<|t_084|></slot>"
+    },
+    {
+      "sample_id": "mix_000387",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。在2.06秒处发生一次玻璃破碎声。随后一名说话者开始讲话，持续至8.42秒。短促的犬吠在9.26秒出现。一名说话者从9.22秒开始讲话，持续至11.50秒。"
+    },
+    {
+      "sample_id": "mix_000388",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000389",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx><|t_000|>背景噪声。<|t_840|></sfx></slot><slot><sfx><|t_011|>一次玻璃破碎声。<|t_033|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000390",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。在4秒时一次玻璃破碎声。说话声从4.08秒开始，持续至8.44秒。短促的电子提示音在6.66秒出现，持续至7.30秒。"
+    },
+    {
+      "sample_id": "mix_000391",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_066|>短促的撞击声。<|t_071|></sfx></slot><slot><sfx><|t_066|>一次玻璃破碎声。<|t_072|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000392",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_140|></slot><slot><sfx></sfx><|t_265|>一次玻璃破碎声。<|t_270|></slot>"
+    },
+    {
+      "sample_id": "mix_000393",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_124|></slot><slot><sfx></sfx><|t_013|>一次玻璃破碎声。<|t_136|></slot>"
+    },
+    {
+      "sample_id": "mix_000394",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声在6.18秒时出现。"
+    },
+    {
+      "sample_id": "mix_000395",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声在中段出现。"
+    },
+    {
+      "sample_id": "mix_000396",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_079|>短促的撞击声。<|10.14|><|11.42|><|11.74|><|13.06|><|13.54|><|15.06|><|15.34|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000397",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在说话。一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000398",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_113|></slot><slot><sfx></sfx><|t_088|>一次玻璃破碎声。<|t_092|></slot><slot><spx></spx><|t_047|>一名说话者正在讲话。<|t_070|></slot>"
+    },
+    {
+      "sample_id": "mix_000399",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景噪声持续存在，形成稳定的环境基底。在2.86秒处发生一次玻璃破碎声，短促清晰。"
+    },
+    {
+      "sample_id": "mix_000400",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。在4.96秒时出现一次玻璃破碎声。5.04秒开始，一名说话者正在讲话。7.16秒时，一名说话者开始唱歌，持续至12.16秒。"
+    },
+    {
+      "sample_id": "mix_000401",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在说话。短促的撞击声穿插其中。"
+    },
+    {
+      "sample_id": "mix_000402",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000403",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_138|></slot><slot><sfx></sfx><|t_081|>一次玻璃破碎声。<|t_084|></slot>"
+    },
+    {
+      "sample_id": "mix_000404",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t 000|>背景噪声。<|t 113|></slot><slot><sfx></sfx><|t 578|>一次玻璃破碎声。<|t 602|></slot>"
+    },
+    {
+      "sample_id": "mix_000405",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>1</n><slot><sfx><|t_080|>短促的撞击声。<|11.0|><|t_120|><|13.0|><|t_141|><|14.8|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000406",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_107|></slot><slot><sfx></sfx><|t_012|>一次玻璃破碎声。<|t_136|></slot>"
+    },
+    {
+      "sample_id": "mix_000407",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_120|></slot><slot><sfx></sfx><|t_798|>一次玻璃破碎声。<|t_814|></slot>"
+    },
+    {
+      "sample_id": "mix_000408",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在说话。一次玻璃破碎声短促出现。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000409",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx><|t_047|>短促的撞击声。<|t073|></sfx></slot><slot><sfx><|t075|>一次玻璃破碎声。<|t081|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000410",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_152|></slot><slot><sfx></sfx><|t102|>短促的撞击声。<|t106|></slot><slot><spx></spx><|t091|>一名说话者正在讲话。<|t127|></slot>"
+    },
+    {
+      "sample_id": "mix_000411",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_035|>短促的撞击声。<|4.0|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000412",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在说话。一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000413",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_930|></slot><slot><sfx></sfx><|t_199|>一次玻璃破碎声。<|t_203|></slot>"
+    },
+    {
+      "sample_id": "mix_000414",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在说话。"
+    },
+    {
+      "sample_id": "mix_000415",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声一次出现。"
+    },
+    {
+      "sample_id": "mix_000416",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 3,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx></sfx><|t_000|>背景噪声。<|t115|></slot><slot><sfx></sfx><|t050|>一次玻璃破碎声。<|t065|></slot><slot><sfx></sfx><|t064|>一次玻璃破碎声。<|t068|></slot>"
+    },
+    {
+      "sample_id": "mix_000417",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一次玻璃破碎声短促出现。一名说话者正在说话。"
+    },
+    {
+      "sample_id": "mix_000418",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000419",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_130|></slot><slot><sfx></sfx><|t_073|>一次玻璃破碎声。<|t_076|></slot>"
+    },
+    {
+      "sample_id": "mix_000420",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_028|>短促的撞击声。<|3.18|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000421",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_017|>短促的撞击声。<|6.94|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000422",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一次玻璃破碎声短促出现。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000423",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_152|></slot><slot><sfx></sfx><|t_034|>一次玻璃破碎声。<|t_064|></slot>"
+    },
+    {
+      "sample_id": "mix_000424",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_151|></slot><slot><sfx></sfx><|t_012|>一次玻璃破碎声。<|t_029|></slot>"
+    },
+    {
+      "sample_id": "mix_000425",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t 000|>背景噪声。<|t 143|></slot><slot><sfx></sfx><|t 309|>一次玻璃破碎声。<|t 311|></slot>"
+    },
+    {
+      "sample_id": "mix_000426",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_056|>短促的撞击声。<|t_061|></sfx></slot><slot><sfx><|t_069|>一次玻璃破碎声。<|t_073|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000427",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_034|>短促的撞击声。<|4.20|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000428",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_119|></slot><slot><sfx></sfx><|t_041|>一次玻璃破碎声。<|t_058|></slot>"
+    },
+    {
+      "sample_id": "mix_000429",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声在8秒左右出现。"
+    },
+    {
+      "sample_id": "mix_000430",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><|t_000|>背景音乐持续播放，节奏平稳。<|t104|></slot><slot><sfx></s slot><|t019|>一次玻璃破碎声。<|t024|></slot>"
+    },
+    {
+      "sample_id": "mix_000431",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_041|>短促的撞击声。<|9.14|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000432",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t 000|>到。<|t 115|></slot><slot><sfx></sfx><|t 1.1|>到。<|t 1.4|></slot>"
+    },
+    {
+      "sample_id": "mix_000433",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_130|></slot><slot><sfx></sfx><|t 089|>一次玻璃破碎声。<|t 092|></slot>"
+    },
+    {
+      "sample_id": "mix_000434",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><slot><sfx></s slot>"
+    },
+    {
+      "sample_id": "mix_000435",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_152|></slot><slot><sfx></sfx><|t_031|>一次玻璃破碎声。<|t_059|></slot>"
+    },
+    {
+      "sample_id": "mix_000436",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000437",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声在中段出现。"
+    },
+    {
+      "sample_id": "mix_000438",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声在中段出现。"
+    },
+    {
+      "sample_id": "mix_000439",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。在4秒时一次玻璃破碎声短促出现。8.96秒起，一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000440",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。在4.52秒时出现一次玻璃破碎声。1050秒开始，一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000441",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_034|>短促的撞击声。<|667|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000442",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx><|t_039|>短促的撞击声。<|4.24|></sfx></slot><slot><sfx><|t_046|>一次玻璃破碎声。<|7.88|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000443",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_140|></slot><slot><sfx></sfx><|t_059|>一次玻璃破碎声。<|t_063|></slot>"
+    },
+    {
+      "sample_id": "mix_000444",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_021|>短促的撞击声。<|7.62|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000445",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_122|></slot><slot><sfx></sfx><|t_079|>一次玻璃破碎声。<|t_083|></slot>"
+    },
+    {
+      "sample_id": "mix_000446",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000447",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_123|></slot><slot><sfx></sfx><|t_096|>一次玻璃破碎声。<|t_101|></slot>"
+    },
+    {
+      "sample_id": "mix_000448",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><slot><sfx></s slot>"
+    },
+    {
+      "sample_id": "mix_000449",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在说话。"
+    },
+    {
+      "sample_id": "mix_000450",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一次玻璃破碎声短促出现。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000451",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_101|></slot><slot><sfx></sfx><|t_033|>一次玻璃破碎声。<|t_036|></slot>"
+    },
+    {
+      "sample_id": "mix_000452",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_069|>短促的撞击声。<|t_076|></sfx></slot><slot><sfx><|t_085|>一次玻璃破碎声。<|t_091|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000453",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正"
+    },
+    {
+      "sample_id": "mix_000454",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_021|>短促的撞击声。<|t_053|></sfx></slot><slot><sfx><|t_022|>一次玻璃破碎声。<|t_026|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000455",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_003|>短促的撞击声。<|t_020|></sfx></slot><slot><sfx><|t_020|>一次玻璃破碎声。<|t_032|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000456",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_151|></slot><slot><sfx></sfx><|t_069|>一次玻璃破碎声。<|t_093|></slot>"
+    },
+    {
+      "sample_id": "mix_000457",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 3,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>4</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_986|></slot><slot><music></music><|t_000|>背景音乐持续播放，节奏平稳。<|t_999|></slot><slot><sfx></sfx><|t_089|>一次玻璃破碎声。<|t_093|></slot><slot><spx></spx><|t_066|>一名说话者正在讲话。<|t_090|></slot>"
+    },
+    {
+      "sample_id": "mix_000458",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_029|>短促的撞击声。<|4.56|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000459",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正"
+    },
+    {
+      "sample_id": "mix_000460",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>到。<|t_440|></slot><slot><sfx></sfx><|t_021|>到。<|t_248|></slot>"
+    },
+    {
+      "sample_id": "mix_000461",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。一名说话者正"
+    },
+    {
+      "sample_id": "mix_000462",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_043|>短促的撞击声。<|4.64|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000463",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。短促的撞击声发生一次。"
+    },
+    {
+      "sample_id": "mix_000464",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_080|>短促的撞击声。<|9.04|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000465",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。短促的撞击声发生一次。"
+    },
+    {
+      "sample_id": "mix_000466",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_120|></slot><slot><sfx></sfx><|t_556|>一次玻璃破碎声。<|t_562|></slot>"
+    },
+    {
+      "sample_id": "mix_000467",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_140|></slot><slot><sfx></sfx><|t_060|>一次玻璃破碎声。<|t100|></slot>"
+    },
+    {
+      "sample_id": "mix_000468",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_072|>短促的撞击声。<|t_076|></sfx></slot><slot><sfx><|t_084|>一次玻璃破碎声。<|t_088|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000469",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_015|>短促的撞击声。<|4.34|><|5.32|><|6.14|><|7.26|><|7.90|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000470",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_033|>短促的撞击声。<|t_036|></sfx></slot><slot><sfx><|t_044|>一次玻璃破碎声。<|t_047|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000471",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx><|t_015|>短促的撞击声.<|3.34|></sfx></slot><slot><sfx><|t_030|>一次玻璃破碎声.<|3.38|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000472",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000473",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_151|></slot><slot><sfx></sfx><|t028|>一次玻璃破碎声。<|t030|></slot>"
+    },
+    {
+      "sample_id": "mix_000474",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_101|></slot><slot><sfx></sfx><|t_039|>一次玻璃破碎声。<|t_044|></slot>"
+    },
+    {
+      "sample_id": "mix_000475",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><slot><sfx></s slot>"
+    },
+    {
+      "sample_id": "mix_000476",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一次玻璃破碎声短促出现。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000477",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx><|t_020|>短促的撞击声。<|4.40|></sfx></slot><slot><sfx><|t_041|>一次玻璃破碎声。<|4.54|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000478",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 12,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>4</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_140|></slot><slot><sfx></sfx><|t_047|>一次玻璃破碎声。<|t_053|></slot><slot><sfx></sfx><|t_049|>一次玻璃破碎声。<|t_055|></slot><slot><sfx></sfx><|t_050|>一次玻璃破碎声。<|t_063|></slot><slot><sfx></sfx><|t_068|>一次玻璃破碎声。<|t_074|></slot><slot><sfx></sfx><|t_079|>一次玻璃破碎声。<|t_083|></slot><slot><sfx></sfx><|t_081|>一次玻璃破碎声。<|t_087|></slot><slot><sfx></sfx><|t_087|>一次玻璃破碎声。<|t_093|></slot><slot><sfx></sfx><|t_091|>一次玻璃破碎声。<|t_097|></slot><slot><sfx></sfx><|t_101|>一次玻璃破碎声。<|t_107|></"
+    },
+    {
+      "sample_id": "mix_000479",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000480",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_022|>短促的撞击声。<|2.86|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000481",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx></slot><slot><sfx></sfx></slot><slot><sfx></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000482",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_130|></slot><slot><sfx></sfx><|t_016|>一次玻璃破碎声。<|t_039|></slot>"
+    },
+    {
+      "sample_id": "mix_000483",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_052|>短促的撞击声。<|5.54|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000484",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_109|></slot><slot><sfx></sfx><|t_021|>一次玻璃破碎声。<|t_024|></slot>"
+    },
+    {
+      "sample_id": "mix_000485",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 1,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_008|>短促的撞击声。<|t_013|></sfx></slot><slot><spx><|t_008|>一名说话者正在讲话。<|t_113|></spx></slot>"
+    },
+    {
+      "sample_id": "mix_000486",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_018|>短促的撞击声。<|t_022|></sfx></slot><slot><sfx><|t_035|>一次玻璃破碎声。<|t_040|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000487",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_028|>短促的撞击声。<|3.66|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000488",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><slot><sfx></s slot>"
+    },
+    {
+      "sample_id": "mix_000489",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。一次玻璃破碎声短促出现。"
+    },
+    {
+      "sample_id": "mix_000490",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。短促的撞击声在开始时出现。"
+    },
+    {
+      "sample_id": "mix_000491",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000492",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 1,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>1</n><slot><sfx><|t_032|>短促的撞击声。<|4.06|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000493",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000494",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t_120|></slot><slot><sfx></sfx><|t_096|>一次玻璃破碎声。<|t_113|></slot>"
+    },
+    {
+      "sample_id": "mix_000495",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_032|>短促的撞击声。<|t_037|></sfx></slot><slot><sfx><|t_055|>一次玻璃破碎声。<|t_059|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000496",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_077|>短促的撞击声。<|t_081|></sfx></slot><slot><sfx><|t_094|>一次玻璃破碎声。<|t_097|></sfx></slot>"
+    },
+    {
+      "sample_id": "mix_000497",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "背景音乐持续播放，节奏平稳。一名说话者正在讲话。一名说话者正在讲话。一名说话者正在讲话。"
+    },
+    {
+      "sample_id": "mix_000498",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 2,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></sfx><|t_000|>背景噪声。<|t102|></slot><slot><sfx></sfx><|t059|>一次玻璃破碎声。<|t067|></slot>"
+    },
+    {
+      "sample_id": "mix_000499",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 0,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>2</n><slot><sfx></s slot><|t_000|>背景噪声。<|t_115|></slot><slot><sfx></s slot><|t_032|>一次玻璃破碎声。<|t_036|></slot>"
+    },
+    {
+      "sample_id": "mix_000500",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 3,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx></sfx><|t_000|>背景音乐持续播放，节奏平稳。<|t_137|></slot><slot><sfx></sfx><|t_046|>一次玻璃破碎声。<|t_050|></slot><slot><sfx></sfx><|t_047|>一次短促的撞击声。<|t_050|></slot>"
+    }
+  ]
+}
