@@ -444,7 +444,16 @@ class SceneGraphSampler:
     ) -> Scene:
         rng = random.Random(seed)
         cfg = self.config
-        duration = round(rng.uniform(*cfg.duration_range) / TIME_RESOLUTION_SEC) * TIME_RESOLUTION_SEC
+        # Per-template duration ranges to avoid long clips with few events
+        template_durations = {
+            "isolated_sfx": (3, 8),
+            "repeated_event": (5, 10),
+            "ambient_with_intermittent_sfx": (10, 20),
+            "overlapping_speakers": (5, 15),
+            "random_mix": (8, 20),
+        }
+        dur_range = template_durations.get(template, cfg.duration_range)
+        duration = round(rng.uniform(*dur_range) / TIME_RESOLUTION_SEC) * TIME_RESOLUTION_SEC
         duration = round(duration, 6)
 
         sources = self._place_sources(template, duration, rng)
