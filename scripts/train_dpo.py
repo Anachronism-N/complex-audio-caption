@@ -44,8 +44,13 @@ def main():
     # load SFT LoRA as starting point
     sft_lora = "outputs/b3_slot_aware_5k/lora"
     model = PeftModel.from_pretrained(model, sft_lora)
-    model.train()
+    model.train()  # set to train mode AFTER loading adapter
+    model.enable_adapter_layers()  # ensure LoRA is active
     model.print_trainable_parameters()
+    n_trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    if n_trainable == 0:
+        print("[dpo] ERROR: no trainable params, exiting", file=sys.stderr)
+        return
 
     # load predictions + references to build preference pairs
     print("[dpo] building preference pairs ...", file=sys.stderr, flush=True)
