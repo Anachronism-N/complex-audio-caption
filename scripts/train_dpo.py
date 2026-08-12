@@ -16,9 +16,9 @@ import yaml
 def main():
     cfg = yaml.safe_load(Path("configs/model/b3_slot_aware_5k.yaml").read_text())
     device = "cuda:0"
-    beta = 0.1  # DPO temperature
-    steps = 500
-    lr = 5e-6  # lower than SFT
+    beta = 0.05  # lower DPO temperature
+    steps = 100  # fewer steps
+    lr = 5e-7  # 10x lower than before
 
     import sys as _sys
     repo = Path(__file__).resolve().parents[1] / "third_party" / "MOSS-Audio"
