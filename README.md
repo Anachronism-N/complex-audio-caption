@@ -50,6 +50,7 @@
 - [设计澄清、术语、loss、推理与实现状态](docs/21_design_clarifications_and_status.md)
 - [合成音频质量问题与改进方案](docs/15_synthetic_audio_quality.md)
 - [合成音频根本性问题（第三轮 Review）](docs/16_synthetic_audio_fundamental_issues.md)
+- [真实音频混合 v2 Review 反馈](docs/17_real_mix_v2_review_feedback.md)
 - [机器可读实验矩阵](configs/experiment_matrix.yaml)
 - [机器可读开发阶段](configs/pipeline_stages.yaml)
 - [规范化事件账本 JSON Schema](schemas/sceneledger.schema.json)
