@@ -208,20 +208,19 @@ def main():
     for fname, cat in cat_map.items():
         cat_files.setdefault(cat, []).append(fname)
 
-# UrbanSound8K classes: dog_bark, children_playing, car_horn, air_conditioner, street_music, etc.
-US8K_MAP = {
-    'dog_bark': 'dog', 'children_playing': 'laughing', 'car_horn': 'car_horn',
-    'air_conditioner': 'engine', 'street_music': 'clapping',
-    'drilling': 'chainsaw', 'siren': 'siren', 'jackhammer': 'chainsaw',
-    'engine_idling': 'engine', 'gun_shot': 'fireworks',
-}
-us8k_files = {}
-if os.path.exists('/tmp/real_audio/urbansound8k_wav'):
-    for f in os.listdir('/tmp/real_audio/urbansound8k_wav'):
-        if f.endswith('.wav'):
-            cls = f.rsplit('_', 1)[0]
-            mapped = US8K_MAP.get(cls, cls)
-            cat_files.setdefault(mapped, []).append(f'/tmp/real_audio/urbansound8k_wav/{f}')
+    # UrbanSound8K classes: dog_bark, children_playing, etc.
+    US8K_MAP = {
+        'dog_bark': 'dog', 'children_playing': 'laughing', 'car_horn': 'car_horn',
+        'air_conditioner': 'engine', 'street_music': 'clapping',
+        'drilling': 'chainsaw', 'siren': 'siren', 'jackhammer': 'chainsaw',
+        'engine_idling': 'engine', 'gun_shot': 'fireworks',
+    }
+    if os.path.exists('/tmp/real_audio/urbansound8k_wav'):
+        for f in os.listdir('/tmp/real_audio/urbansound8k_wav'):
+            if f.endswith('.wav'):
+                cls = f.rsplit('_', 1)[0]
+                mapped = US8K_MAP.get(cls, cls)
+                cat_files.setdefault(mapped, []).append(f'/tmp/real_audio/urbansound8k_wav/{f}')
 
     print(f"Music sources: {len(MUSIC_SOURCES)}", file=sys.stderr, flush=True)
     print(f"Speech sources: {len(SPEECH_SOURCES)}", file=sys.stderr, flush=True)
@@ -240,134 +239,134 @@ if os.path.exists('/tmp/real_audio/urbansound8k_wav'):
         scene = rng.choice(SCENE_TEMPLATES)
         sid = f"rv3_{i+1:04d}"
         duration = rng.uniform(8.0, 12.0)
-        n_clip = int(duration * sr)
-        sources_info = []
+    n_clip = int(duration * sr)
+    sources_info = []
 
-        has_speech = any(s["type"] == "speech" for s in scene["sources"])
-        has_music = any(s["type"] == "music" for s in scene["sources"])
-        duck_others = has_speech and has_music and rng.random() < 0.8
+    has_speech = any(s["type"] == "speech" for s in scene["sources"])
+    has_music = any(s["type"] == "music" for s in scene["sources"])
+    duck_others = has_speech and has_music and rng.random() < 0.8
 
-        # Compute speech active mask for ducking
-        speech_mask = np.zeros(n_clip, dtype=np.float32)
-        mixture = np.zeros(n_clip, dtype=np.float32)
-        events = []
-        source_wavs = []  # store for later ducking
+    # Compute speech active mask for ducking
+    speech_mask = np.zeros(n_clip, dtype=np.float32)
+    mixture = np.zeros(n_clip, dtype=np.float32)
+    events = []
+    source_wavs = []  # store for later ducking
 
-        for sc_idx, src_spec in enumerate(scene["sources"]):
-            src_type = src_spec["type"]
-            onset = rng.uniform(0, max(0.5, duration - 5))
-            base_gain = src_spec.get("gain_db", -3)
+    for sc_idx, src_spec in enumerate(scene["sources"]):
+        src_type = src_spec["type"]
+        onset = rng.uniform(0, max(0.5, duration - 5))
+        base_gain = src_spec.get("gain_db", -3)
 
-            if src_type == "music":
-                music_path, music_desc = rng.choice(MUSIC_SOURCES)
-                wav = load_audio(music_path, sr)
-                if len(wav) > n_clip:
-                    start = rng.randint(0, len(wav) - n_clip)
-                    wav = wav[start:start+n_clip]
-                wav = apply_fade(wav, sr, 0.5)
-                caption = music_desc
-                etype = "music"
-            elif src_type == "speech":
-                speech_path, speech_desc = rng.choice(SPEECH_SOURCES)
-                wav = load_audio(speech_path, sr)
-                if len(wav) > n_clip // 2:
-                    start = rng.randint(0, len(wav) - n_clip // 2)
-                    wav = wav[start:start + n_clip // 2]
-                wav = apply_fade(wav, sr, 0.05)
-                # Vocal enhancement (docs/17 problem 13)
-                wav = apply_compression(wav, sr, threshold=-20, ratio=3.0)
-                wav = apply_vocal_eq(wav, sr, boost_db=2.0)
-                caption = speech_desc
-                etype = "speech"
-            else:
-                cats = src_spec.get("esc50_cats", ["dog"])
-                cat = rng.choice(cats)
-                fname = rng.choice(cat_files.get(cat, cat_files.get("dog")))
-                path = f"/tmp/real_audio/esc50_wav/{fname}"
-                if not os.path.exists(path):
-                    # maybe urban sound
-                    path = fname
-                wav = load_audio(path, sr)
-                wav = apply_fade(wav, sr, 0.05)
-                try:
-                    raw_path = f"/tmp/rv3_src_{sid}_{sc_idx}.wav"
-                    sf.write(raw_path, wav, sr)
-                    caption = adapter.infer(raw_path, prompt, sample_id=f"{sid}_s{sc_idx}", duration=len(wav)/sr)
-                    os.unlink(raw_path)
-                except:
-                    caption = src_spec.get("desc", cat)
-                etype = "sfx"
-
-            wav = wav * (10 ** (base_gain / 20))
-
-            # Optional RIR
-            if rng.random() < 0.4:
-                t60 = rng.uniform(0.2, 0.8)
-                rir = synth_rir(sr, t60, seed=i*100+sc_idx)
-                wav = fftconvolve(wav, rir, mode="full")[:len(wav)].astype(np.float32)
-
-            # Store for ducking
-            source_wavs.append({"wav": wav, "onset": onset, "type": src_type, "spec": src_spec})
-
-            # Track speech active regions
-            if src_type == "speech":
-                start_sample = int(onset * sr)
-                end_sample = min(n_clip, start_sample + len(wav))
-                frame_size = int(0.05 * sr)
-                for fi in range(start_sample, end_sample - frame_size, frame_size):
-                    rms = np.sqrt(np.mean(wav[fi-start_sample:fi-start_sample+frame_size]**2))
-                    if rms > 0.01:
-                        speech_mask[fi:fi+frame_size] = 1.0
-
-            onset_sec = round(onset, 1)
-            offset_sec = round(min(duration, onset + len(wav)/sr), 1)
-            events.append({
-                "id": f"E{sc_idx+1:03d}", "type": etype, "track_id": f"T{sc_idx+1}",
-                "spans": [{"start_sec": onset_sec, "end_sec": offset_sec}],
-                "text": caption[:200], "confidence": 0.85,
-            })
-            sources_info.append({"role": src_spec["role"], "type": src_type,
-                                 "onset": onset_sec, "offset": offset_sec,
-                                 "caption": caption[:200], "gain_db": base_gain})
-
-        # Apply ducking: smooth speech mask
-        if duck_others and speech_mask.any():
-            smooth = lfilter(np.ones(10) / 10, [1.0], speech_mask)
-            speech_mask_smooth = np.clip(smooth, 0, 1)
-            duck_depth = rng.uniform(6, 8)  # 6-8dB (was 4dB)
-            duck_factor = 10 ** (-duck_depth / 20)
-            duck_gain = 1.0 - (1.0 - duck_factor) * speech_mask_smooth
+        if src_type == "music":
+            music_path, music_desc = rng.choice(MUSIC_SOURCES)
+            wav = load_audio(music_path, sr)
+            if len(wav) > n_clip:
+                start = rng.randint(0, len(wav) - n_clip)
+                wav = wav[start:start+n_clip]
+            wav = apply_fade(wav, sr, 0.5)
+            caption = music_desc
+            etype = "music"
+        elif src_type == "speech":
+            speech_path, speech_desc = rng.choice(SPEECH_SOURCES)
+            wav = load_audio(speech_path, sr)
+            if len(wav) > n_clip // 2:
+                start = rng.randint(0, len(wav) - n_clip // 2)
+                wav = wav[start:start + n_clip // 2]
+            wav = apply_fade(wav, sr, 0.05)
+            # Vocal enhancement (docs/17 problem 13)
+            wav = apply_compression(wav, sr, threshold=-20, ratio=3.0)
+            wav = apply_vocal_eq(wav, sr, boost_db=2.0)
+            caption = speech_desc
+            etype = "speech"
         else:
-            duck_gain = np.ones(n_clip, dtype=np.float32)
+            cats = src_spec.get("esc50_cats", ["dog"])
+            cat = rng.choice(cats)
+            fname = rng.choice(cat_files.get(cat, cat_files.get("dog")))
+            path = f"/tmp/real_audio/esc50_wav/{fname}"
+            if not os.path.exists(path):
+                # maybe urban sound
+                path = fname
+            wav = load_audio(path, sr)
+            wav = apply_fade(wav, sr, 0.05)
+            try:
+                raw_path = f"/tmp/rv3_src_{sid}_{sc_idx}.wav"
+                sf.write(raw_path, wav, sr)
+                caption = adapter.infer(raw_path, prompt, sample_id=f"{sid}_s{sc_idx}", duration=len(wav)/sr)
+                os.unlink(raw_path)
+            except:
+                caption = src_spec.get("desc", cat)
+            etype = "sfx"
 
-        # Mix with ducking
-        for sw in source_wavs:
-            start = int(sw["onset"] * sr)
-            wav = sw["wav"]
-            end = min(n_clip, start + len(wav))
-            if start < n_clip:
-                seg = wav[:end-start]
-                if sw["type"] in ("music", "sfx") and duck_others:
-                    seg = seg * duck_gain[start:start+len(seg)]
-                mixture[start:end] += seg
+        wav = wav * (10 ** (base_gain / 20))
 
-        # Prevent clipping
-        peak = np.max(np.abs(mixture)) + 1e-9
-        if peak > 0.99:
-            mixture *= 0.99 / peak
+        # Optional RIR
+        if rng.random() < 0.4:
+            t60 = rng.uniform(0.2, 0.8)
+            rir = synth_rir(sr, t60, seed=i*100+sc_idx)
+            wav = fftconvolve(wav, rir, mode="full")[:len(wav)].astype(np.float32)
 
-        sf.write(str(audio_dir / f"{sid}.wav"), mixture, sr)
-        ledger = {"schema_version": "0.2.0", "sample_id": sid, "duration_sec": duration,
-                  "time_resolution_sec": 0.1,
-                  "tracks": [{"id": f"T{j+1}", "kind": e["type"], "spans": e["spans"], "confidence": 0.85} for j, e in enumerate(events)],
-                  "events": events,
-                  "provenance": {"label_level": "model_prediction", "source_dataset": "esc50+libri+fma", "license_status": "CC"}}
-        manifest.append({"scene_id": sid, "scene_name": scene["name"], "scene_desc": scene["desc"],
-                         "audio_path": f"audio/{sid}.wav", "duration": duration,
-                         "ledger": ledger, "sources": sources_info})
+        # Store for ducking
+        source_wavs.append({"wav": wav, "onset": onset, "type": src_type, "spec": src_spec})
 
-        if (i+1) % 50 == 0:
-            print(f"[rv3] {i+1}/{n_mixtures} ({time.time()-t0:.0f}s)", file=sys.stderr, flush=True)
+        # Track speech active regions
+        if src_type == "speech":
+            start_sample = int(onset * sr)
+            end_sample = min(n_clip, start_sample + len(wav))
+            frame_size = int(0.05 * sr)
+            for fi in range(start_sample, end_sample - frame_size, frame_size):
+                rms = np.sqrt(np.mean(wav[fi-start_sample:fi-start_sample+frame_size]**2))
+                if rms > 0.01:
+                    speech_mask[fi:fi+frame_size] = 1.0
+
+        onset_sec = round(onset, 1)
+        offset_sec = round(min(duration, onset + len(wav)/sr), 1)
+        events.append({
+            "id": f"E{sc_idx+1:03d}", "type": etype, "track_id": f"T{sc_idx+1}",
+            "spans": [{"start_sec": onset_sec, "end_sec": offset_sec}],
+            "text": caption[:200], "confidence": 0.85,
+        })
+        sources_info.append({"role": src_spec["role"], "type": src_type,
+                             "onset": onset_sec, "offset": offset_sec,
+                             "caption": caption[:200], "gain_db": base_gain})
+
+    # Apply ducking: smooth speech mask
+    if duck_others and speech_mask.any():
+        smooth = lfilter(np.ones(10) / 10, [1.0], speech_mask)
+        speech_mask_smooth = np.clip(smooth, 0, 1)
+        duck_depth = rng.uniform(6, 8)  # 6-8dB (was 4dB)
+        duck_factor = 10 ** (-duck_depth / 20)
+        duck_gain = 1.0 - (1.0 - duck_factor) * speech_mask_smooth
+    else:
+        duck_gain = np.ones(n_clip, dtype=np.float32)
+
+    # Mix with ducking
+    for sw in source_wavs:
+        start = int(sw["onset"] * sr)
+        wav = sw["wav"]
+        end = min(n_clip, start + len(wav))
+        if start < n_clip:
+            seg = wav[:end-start]
+            if sw["type"] in ("music", "sfx") and duck_others:
+                seg = seg * duck_gain[start:start+len(seg)]
+            mixture[start:end] += seg
+
+    # Prevent clipping
+    peak = np.max(np.abs(mixture)) + 1e-9
+    if peak > 0.99:
+        mixture *= 0.99 / peak
+
+    sf.write(str(audio_dir / f"{sid}.wav"), mixture, sr)
+    ledger = {"schema_version": "0.2.0", "sample_id": sid, "duration_sec": duration,
+              "time_resolution_sec": 0.1,
+              "tracks": [{"id": f"T{j+1}", "kind": e["type"], "spans": e["spans"], "confidence": 0.85} for j, e in enumerate(events)],
+              "events": events,
+              "provenance": {"label_level": "model_prediction", "source_dataset": "esc50+libri+fma", "license_status": "CC"}}
+    manifest.append({"scene_id": sid, "scene_name": scene["name"], "scene_desc": scene["desc"],
+                     "audio_path": f"audio/{sid}.wav", "duration": duration,
+                     "ledger": ledger, "sources": sources_info})
+
+    if (i+1) % 50 == 0:
+        print(f"[rv3] {i+1}/{n_mixtures} ({time.time()-t0:.0f}s)", file=sys.stderr, flush=True)
 
     # Write manifest + review CSV (10 clips with music/speech)
     with open(out_dir / "manifest.jsonl", "w") as f:
