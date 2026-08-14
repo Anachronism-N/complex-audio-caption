@@ -381,6 +381,63 @@ def test_catalog_candidates_balance_primary_classes(tmp_path: Path) -> None:
     }
 
 
+def test_catalog_set_queries_an_exact_recipe_label_across_banks(
+    tmp_path: Path,
+) -> None:
+    first_root = tmp_path / "first"
+    second_root = tmp_path / "second"
+    first_root.mkdir()
+    second_root.mkdir()
+    first_records: list[SourceRecord] = []
+    for index in range(300):
+        filename = f"first_{index}.wav"
+        _write_tone(first_root / filename, frequency=700 + index)
+        first_records.append(
+            _record(
+                f"first_{index}", "sfx", filename, f"first:group:{index}"
+            ).model_copy(
+                update={
+                    "labels": [f"class_{index:03d}"],
+                    "dataset": "first-bank",
+                    "split": "test",
+                    "duration_sec": 0.5,
+                }
+            )
+        )
+    rare_file = second_root / "rare.wav"
+    _write_tone(rare_file, frequency=1100)
+    second_records = [
+        _record("rare", "sfx", rare_file.name, "second:rare").model_copy(
+            update={
+                "labels": ["rare_target"],
+                "dataset": "second-bank",
+                "split": "test",
+                "duration_sec": 0.5,
+            }
+        )
+    ]
+    first_catalog = first_root / "test.jsonl"
+    second_catalog = second_root / "test.jsonl"
+    write_source_catalog(first_catalog, first_records)
+    write_source_catalog(second_catalog, second_records)
+    pool = CatalogSetSourcePool(
+        [
+            CatalogSourcePool(
+                str(first_catalog), audio_root=str(first_root), expected_split="test"
+            ),
+            CatalogSourcePool(
+                str(second_catalog), audio_root=str(second_root), expected_split="test"
+            ),
+        ]
+    )
+
+    candidates = pool.candidates_for_label(
+        "sfx", "rare_target", random.Random(4), limit=1
+    )
+
+    assert candidates == ["rare"]
+
+
 def test_catalog_set_rejects_cross_bank_content_leakage(tmp_path: Path) -> None:
     first = _single_kind_pool(
         tmp_path / "first",

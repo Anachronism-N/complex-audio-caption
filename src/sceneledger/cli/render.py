@@ -183,11 +183,64 @@ def _weighted_templates(
 
 def sample_scene_plan(config_path: str, limit: int | None = None) -> list[Scene]:
     """Sample every scene deterministically without rendering waveforms."""
-    cfg = yaml.safe_load(Path(config_path).read_text(encoding="utf-8"))
+    resolved_config = Path(config_path).expanduser().resolve()
+    cfg = yaml.safe_load(resolved_config.read_text(encoding="utf-8"))
     pool = _build_pool(cfg)
     sampler = _build_sampler(cfg, pool)
     rcfg = cfg.get("render", {})
     n = int(rcfg.get("sample_count", 500))
+    recipe_plan_value = rcfg.get("recipe_plan_path")
+    if recipe_plan_value:
+        from sceneledger.data.scene_recipes import (
+            read_inventory,
+            read_recipes,
+            validate_recipes,
+        )
+        from sceneledger.data.source_catalog import file_sha256
+
+        inventory_value = rcfg.get("recipe_inventory_path")
+        if not inventory_value:
+            raise ValueError(
+                "render.recipe_inventory_path is required with recipe_plan_path"
+            )
+        recipe_path = Path(str(recipe_plan_value)).expanduser()
+        inventory_path = Path(str(inventory_value)).expanduser()
+        if not recipe_path.is_absolute():
+            recipe_path = (resolved_config.parent / recipe_path).resolve()
+        if not inventory_path.is_absolute():
+            inventory_path = (resolved_config.parent / inventory_path).resolve()
+        recipes = read_recipes(recipe_path)
+        inventory = read_inventory(inventory_path)
+        validate_recipes(recipes, inventory)
+        if len(recipes) != n:
+            raise ValueError(
+                "render.sample_count must exactly equal recipe plan rows: "
+                f"sample_count={n} recipes={len(recipes)}"
+            )
+        selected = recipes[: min(n, limit)] if limit is not None else recipes
+        scene_id_prefix = str(rcfg.get("scene_id_prefix", "mix"))
+        recipe_hash = file_sha256(recipe_path)
+        inventory_hash = file_sha256(inventory_path)
+        return [
+            sampler.sample(
+                scene_id=f"{scene_id_prefix}_{index + 1:06d}",
+                seed=recipe.seed,
+                template=recipe.template,  # type: ignore[arg-type]
+                label_preferences_by_kind=recipe.label_preferences_by_kind,
+                recipe_metadata={
+                    "recipe_id": recipe.recipe_id,
+                    "proposal_source": recipe.proposal_source,
+                    "context": recipe.context,
+                    "difficulty": recipe.difficulty,
+                    "relations": recipe.relations,
+                    "rationale": recipe.rationale,
+                    "label_preferences_by_kind": recipe.label_preferences_by_kind,
+                    "recipe_plan_sha256": recipe_hash,
+                    "recipe_inventory_sha256": inventory_hash,
+                },
+            )
+            for index, recipe in enumerate(selected)
+        ]
     if limit is not None:
         n = min(n, limit)
     templates = _weighted_templates(
@@ -259,6 +312,13 @@ def _write_data_card(odir: Path, cfg: dict, entries: list[ManifestEntry]) -> Non
         "## template distribution",
         "",
     ]
+    recipe_metadata = entries[0].scene.get("recipe_metadata") if entries else None
+    if recipe_metadata:
+        lines[6:6] = [
+            f"- recipe_plan_sha256: {recipe_metadata.get('recipe_plan_sha256')}",
+            f"- recipe_inventory_sha256: {recipe_metadata.get('recipe_inventory_sha256')}",
+            "",
+        ]
     for k, v in sorted(templates.items()):
         lines.append(f"- {k}: {v}")
     lines += ["", "## config", "", "```yaml", yaml.safe_dump(cfg, sort_keys=False), "```"]

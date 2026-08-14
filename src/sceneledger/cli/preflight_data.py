@@ -7,6 +7,8 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
+import yaml
+
 from sceneledger.cli.render import sample_scene_plan
 from sceneledger.data.experiment_data import (
     audit_scene_plan_distribution,
@@ -36,6 +38,20 @@ def main(argv: list[str] | None = None) -> int:
             raise ValueError(f"duplicate preflight fold name: {fold_name}")
         report["config_path"] = str(config_path)
         report["config_sha256"] = file_sha256(config_path)
+        config_payload = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+        render_config = config_payload.get("render", {})
+        recipe_artifacts: dict[str, dict[str, str]] = {}
+        for field in ("recipe_plan_path", "recipe_inventory_path"):
+            if render_config.get(field):
+                artifact = Path(str(render_config[field])).expanduser()
+                if not artifact.is_absolute():
+                    artifact = (config_path.parent / artifact).resolve()
+                recipe_artifacts[field] = {
+                    "path": str(artifact),
+                    "sha256": file_sha256(artifact),
+                }
+        if recipe_artifacts:
+            report["recipe_artifacts"] = recipe_artifacts
         fold_reports[fold_name] = report
 
     passed = bool(fold_reports) and all(report["pass"] for report in fold_reports.values())

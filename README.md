@@ -63,6 +63,7 @@
 - [v3/v3b 审计与下一步 active-RMS 数据门禁](docs/28_v3b_audit_and_active_rms_gate.md)
 - [下一步实验：FSD50K/MUSDB18 音源扩充与跨库均衡协议](docs/29_expanded_source_bank_protocol.md)
 - [音源银行冻结方案：数据选择、许可/监督门禁与逐阶段实验指引](docs/30_source_bank_selection_and_execution.md)
+- [20 小时数据扩充与 Rule/LLM 混音实验](docs/31_twenty_hour_data_and_recipe_experiment.md)
 - [机器可读实验矩阵](configs/experiment_matrix.yaml)
 - [机器可读开发阶段](configs/pipeline_stages.yaml)
 - [规范化事件账本 JSON Schema](schemas/sceneledger.schema.json)

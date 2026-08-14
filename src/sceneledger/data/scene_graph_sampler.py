@@ -21,6 +21,7 @@ The first TAC-mini version (``docs/11`` §5) targets 3 core templates
 from __future__ import annotations
 
 import random
+from collections import Counter
 from dataclasses import dataclass, field
 from typing import Literal, Protocol
 
@@ -141,9 +142,10 @@ class Scene:
     conditions: Conditions = field(default_factory=Conditions)
     supervision: Supervision = field(default_factory=Supervision)
     sample_rate: int = 24000
+    recipe_metadata: dict[str, object] = field(default_factory=dict)
 
     def to_manifest_dict(self) -> dict:
-        return {
+        payload = {
             "scene_id": self.scene_id,
             "seed": self.seed,
             "duration": self.duration,
@@ -153,6 +155,9 @@ class Scene:
             "conditions": _conditions_dict(self.conditions),
             "supervision": _supervision_dict(self.supervision),
         }
+        if self.recipe_metadata:
+            payload["recipe_metadata"] = self.recipe_metadata
+        return payload
 
 
 def _source_dict(s: PlacedSource) -> dict:
@@ -406,6 +411,35 @@ class CatalogSourcePool:
                     break
         return output
 
+    def candidates_for_label(
+        self,
+        kind: SourceKind,
+        label: str,
+        rng: random.Random,
+        *,
+        max_duration: float | None = None,
+        limit: int = 256,
+    ) -> list[str]:
+        """Return recordings with an exact audited primary label.
+
+        Recipe labels are selected from the frozen catalog inventory.  Querying
+        the label index directly prevents an infrequent class from disappearing
+        behind the generic candidate limit when several large banks are merged.
+        """
+        keys = [
+            key
+            for key in self._by_kind.get(kind, [])
+            if self._records[key].labels
+            and self._records[key].labels[0] == label
+            and (
+                max_duration is None
+                or self._records[key].duration_sec is None
+                or float(self._records[key].duration_sec) <= max_duration
+            )
+        ]
+        rng.shuffle(keys)
+        return keys[:limit]
+
     def load(self, key: str, sample_rate: int) -> tuple[np.ndarray, float]:
         self._verify_audio(key)
         return FileSourcePool(by_kind={}).load(str(self._resolved_paths[key]), sample_rate)
@@ -523,6 +557,34 @@ class CatalogSetSourcePool:
                     limit=limit,
                 )
             )
+        output: list[str] = []
+        while any(queues) and len(output) < limit:
+            available = [index for index, queue in enumerate(queues) if queue]
+            weights = [self.sampling_weights[index] for index in available]
+            selected = rng.choices(available, weights=weights, k=1)[0]
+            output.append(queues[selected].pop(0))
+        return output
+
+    def candidates_for_label(
+        self,
+        kind: SourceKind,
+        label: str,
+        rng: random.Random,
+        *,
+        max_duration: float | None = None,
+        limit: int = 256,
+    ) -> list[str]:
+        """Weighted exact-label permutation across all component catalogs."""
+        queues = [
+            catalog.candidates_for_label(
+                kind,
+                label,
+                rng,
+                max_duration=max_duration,
+                limit=limit,
+            )
+            for catalog in self.catalogs
+        ]
         output: list[str] = []
         while any(queues) and len(output) < limit:
             available = [index for index, queue in enumerate(queues) if queue]
@@ -831,6 +893,9 @@ class SceneGraphSampler:
         scene_id: str,
         seed: int,
         template: TemplateID,
+        *,
+        label_preferences_by_kind: dict[str, list[str]] | None = None,
+        recipe_metadata: dict[str, object] | None = None,
     ) -> Scene:
         rng = random.Random(seed)
         cfg = self.config
@@ -838,7 +903,12 @@ class SceneGraphSampler:
         duration = round(rng.uniform(*duration_range) / TIME_RESOLUTION_SEC) * TIME_RESOLUTION_SEC
         duration = round(duration, 6)
 
-        sources = self._place_sources(template, duration, rng)
+        sources = self._place_sources(
+            template,
+            duration,
+            rng,
+            label_preferences_by_kind=label_preferences_by_kind,
+        )
         conditions = self._sample_conditions(rng, sources)
         supervision = self._sample_supervision(rng)
         return Scene(
@@ -850,10 +920,16 @@ class SceneGraphSampler:
             conditions=conditions,
             supervision=supervision,
             sample_rate=cfg.sample_rate,
+            recipe_metadata=dict(recipe_metadata or {}),
         )
 
     def _place_sources(
-        self, template: TemplateID, duration: float, rng: random.Random
+        self,
+        template: TemplateID,
+        duration: float,
+        rng: random.Random,
+        *,
+        label_preferences_by_kind: dict[str, list[str]] | None = None,
     ) -> list[PlacedSource]:
         cfg = self.config
         fg_gain = rng.uniform(*cfg.gain_db_range)
@@ -862,15 +938,34 @@ class SceneGraphSampler:
         selected_paths: set[str] = set()
         selected_leakage_groups: set[str] = set()
         selected_voice_identities: set[str] = set()
+        kind_occurrences: Counter[str] = Counter()
 
         def _src(kind: SourceKind, *, fg: bool, identity: str | None = None) -> PlacedSource:
             nonlocal source_serial
             source_serial += 1
+            occurrence = kind_occurrences[kind]
+            kind_occurrences[kind] += 1
+            preferences = (label_preferences_by_kind or {}).get(kind, [])
+            preferred_label = preferences[occurrence] if occurrence < len(preferences) else None
             key = ""
             metadata: dict[str, object] = {}
             candidates_fn = getattr(self.pool, "candidates", None)
+            label_candidates_fn = getattr(self.pool, "candidates_for_label", None)
             keys_fn = getattr(self.pool, "keys", None)
-            if callable(candidates_fn):
+            if preferred_label and callable(label_candidates_fn):
+                candidates = list(
+                    label_candidates_fn(
+                        kind,
+                        preferred_label,
+                        rng,
+                        max_duration=(
+                            duration - 0.05
+                            if kind not in ("music", "ambience")
+                            else None
+                        ),
+                    )
+                )
+            elif callable(candidates_fn):
                 candidates = list(
                     candidates_fn(
                         kind,
@@ -892,6 +987,13 @@ class SceneGraphSampler:
                     continue
                 metadata_fn = getattr(self.pool, "metadata", None)
                 candidate_metadata = metadata_fn(candidate) if callable(metadata_fn) else {}
+                candidate_labels = [
+                    str(item) for item in candidate_metadata.get("source_labels", [])
+                ]
+                if preferred_label and (
+                    not candidate_labels or candidate_labels[0] != preferred_label
+                ):
+                    continue
                 candidate_duration = candidate_metadata.get("source_duration_sec")
                 candidate_groups = {
                     str(candidate_metadata.get("source_group") or ""),
@@ -928,7 +1030,8 @@ class SceneGraphSampler:
             if not key:
                 raise ValueError(
                     f"source pool cannot provide enough unique recordings for "
-                    f"template={template!r}, kind={kind!r}"
+                    f"template={template!r}, kind={kind!r}, "
+                    f"preferred_label={preferred_label!r}"
                 )
             target_range = cfg.target_active_rms_dbfs_by_kind.get(kind)
             measured_rms = candidate_metadata.get("source_active_rms_dbfs")

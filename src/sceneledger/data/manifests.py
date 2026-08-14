@@ -122,6 +122,7 @@ def scene_from_dict(d: dict) -> Scene:
             resolution_s=sup.get("resolution_s", 0.1),
         ),
         sample_rate=d.get("sample_rate", 24000),
+        recipe_metadata=dict(d.get("recipe_metadata") or {}),
     )
 
 

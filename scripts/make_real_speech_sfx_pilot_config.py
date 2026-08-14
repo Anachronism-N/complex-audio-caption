@@ -77,6 +77,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--esc50-prepared", required=True)
     parser.add_argument("--fsd50k-root")
     parser.add_argument("--fsd50k-prepared")
+    parser.add_argument("--urbansound8k-root")
+    parser.add_argument("--urbansound8k-prepared")
     parser.add_argument("--output", required=True)
     args = parser.parse_args(argv)
 
@@ -92,6 +94,10 @@ def main(argv: list[str] | None = None) -> int:
         raise FileNotFoundError(f"ESC-50 audio root is missing: {esc50_audio_root}")
     if bool(args.fsd50k_root) != bool(args.fsd50k_prepared):
         parser.error("--fsd50k-root and --fsd50k-prepared must be supplied together")
+    if bool(args.urbansound8k_root) != bool(args.urbansound8k_prepared):
+        parser.error(
+            "--urbansound8k-root and --urbansound8k-prepared must be supplied together"
+        )
 
     prepared = [
         (
@@ -122,6 +128,21 @@ def main(argv: list[str] | None = None) -> int:
                 3,
             )
         )
+    if args.urbansound8k_root:
+        urbansound8k_root = Path(args.urbansound8k_root).expanduser().resolve()
+        if not urbansound8k_root.is_dir():
+            raise FileNotFoundError(
+                f"UrbanSound8K root is missing: {urbansound8k_root}"
+            )
+        prepared.append(
+            (
+                Path(args.urbansound8k_prepared),
+                urbansound8k_root,
+                "UrbanSound8K",
+                {"sfx"},
+                3,
+            )
+        )
     catalogs: list[dict[str, str]] = []
     for prepared_root, audio_root, name, required_kinds, minimum_per_kind in prepared:
         root = prepared_root.expanduser().resolve()
@@ -142,7 +163,7 @@ def main(argv: list[str] | None = None) -> int:
             }
         )
     config["pool"]["catalogs"] = catalogs
-    if args.fsd50k_root:
+    if args.fsd50k_root or args.urbansound8k_root:
         config["render"]["sample_count"] = 60
         config["render"]["scene_id_prefix"] = "expanded_speech_test"
 
@@ -156,7 +177,11 @@ def main(argv: list[str] | None = None) -> int:
     )
     print(f"config={output}")
     print("source_audits=passed")
-    profile = "expanded_pilot" if args.fsd50k_root else "pilot"
+    profile = (
+        "expanded_pilot"
+        if args.fsd50k_root or args.urbansound8k_root
+        else "pilot"
+    )
     print(
         "next=run scripts/run_real_speech_sfx_pilot.sh "
         f"CONFIG OUTPUT_DIR {profile}"

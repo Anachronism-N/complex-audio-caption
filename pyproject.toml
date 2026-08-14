@@ -47,7 +47,9 @@ sceneledger-caption-sources = "sceneledger.cli.caption_sources:main"
 sceneledger-prepare-librispeech = "sceneledger.cli.prepare_librispeech:main"
 sceneledger-prepare-common-voice = "sceneledger.cli.prepare_common_voice:main"
 sceneledger-prepare-slakh = "sceneledger.cli.prepare_slakh:main"
+sceneledger-prepare-urbansound8k = "sceneledger.cli.prepare_urbansound8k:main"
 sceneledger-validate-source-policy = "sceneledger.cli.validate_source_policy:main"
+sceneledger-recipes = "sceneledger.cli.scene_recipes:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

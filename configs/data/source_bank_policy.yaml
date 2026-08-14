@@ -48,6 +48,17 @@ datasets:
     required_gates: [pp_consensus, predominant_single_label, uploader_disjoint, source_human_audit]
     note: Real recording expansion filtered to predominant non-speech/non-music events and per-clip licenses.
 
+  urbansound8k:
+    status: implemented
+    source_type: semantic
+    roles: [sfx]
+    licenses: [CC BY-NC 3.0]
+    acquisition: automatic
+    redistributable_by_project: false
+    supported_claims: [source_class, clip_timing]
+    required_gates: [foreground_salience, strict_class_filter, freesound_recording_disjoint, source_human_audit]
+    note: Optional 6 GB research-only SFX expansion; excludes continuous, multi-speaker, and street-music classes.
+
   slakh2100_redux:
     status: implemented
     source_type: semantic
@@ -164,6 +175,28 @@ profiles:
         roles: [music, vocal]
         allowed_licenses: [CC BY-NC-SA, CC BY-NC-SA 3.0]
         claims: [source_class, instrument_set, vocal_presence, lyrics_nonverbatim, stem_timing]
+
+  d1_urban_sfx_research:
+    stage: D1
+    runnable: true
+    objective: Add a third, non-commercial urban foreground SFX bank only after the ESC-50/FSD50K anchor passes.
+    selections:
+      - dataset: librispeech
+        roles: [speech]
+        allowed_licenses: [CC BY 4.0]
+        claims: [source_class, speech_transcript, clip_timing]
+      - dataset: esc50
+        roles: [sfx, ambience]
+        allowed_licenses: [CC BY-NC 3.0, CC BY 3.0]
+        claims: [source_class, clip_timing]
+      - dataset: fsd50k
+        roles: [sfx, ambience]
+        allowed_licenses: [CC0-1.0, CC BY 3.0, CC BY-NC 3.0]
+        claims: [source_class, clip_timing]
+      - dataset: urbansound8k
+        roles: [sfx]
+        allowed_licenses: [CC BY-NC 3.0]
+        claims: [source_class, clip_timing]
 
   d2_exact_mandarin_lyrics_future:
     stage: D2
