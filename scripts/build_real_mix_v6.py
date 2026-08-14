@@ -16,7 +16,13 @@ for genre in ['classical', 'jazz', 'blues']:
     if os.path.exists(gdir):
         for f in os.listdir(gdir):
             if f.endswith('.wav') and not f.startswith('._'):
-                MUSIC_SOURCES.append((f'{gdir}/{f}', f'{genre} music'))
+                path = f'{gdir}/{f}'
+                try:
+                    import soundfile as _sf
+                    _sf.read(path, frames=10)  # test read
+                    MUSIC_SOURCES.append((path, f'{genre} music'))
+                except Exception:
+                    pass  # skip corrupted files
 print(f"Music sources (GTZAN instrumental): {len(MUSIC_SOURCES)}")
 
 SPEECH_SOURCES = [
@@ -69,8 +75,37 @@ SCENE_TEMPLATES = [
 ]
 
 def load_audio(path, sr):
-    wav, sr = librosa.load(path, sr=sr, mono=True)
-    return wav.astype(np.float32)
+    """Load any audio file via soundfile, or ffmpeg for mp3/m4a. Skip bad files."""
+    if path.endswith('.mp3') or path.endswith('.m4a'):
+        import subprocess, tempfile
+        tmp = tempfile.NamedTemporaryFile(suffix='.wav', delete=False)
+        tmp.close()
+        subprocess.run(['ffmpeg', '-i', path, '-f', 'wav', '-ar', str(sr),
+                       '-ac', '1', '-y', tmp.name], capture_output=True, check=True)
+        wav, sr_orig = sf.read(tmp.name, dtype="float32", always_2d=False)
+        os.unlink(tmp.name)
+        if wav.ndim == 2: wav = wav.mean(axis=1)
+        return wav
+    try:
+        wav, sr_orig = sf.read(path, dtype="float32", always_2d=False)
+    except Exception:
+        # Corrupted wav — try ffmpeg conversion
+        import subprocess, tempfile
+        tmp = tempfile.NamedTemporaryFile(suffix='.wav', delete=False)
+        tmp.close()
+        r = subprocess.run(['ffmpeg', '-i', path, '-f', 'wav', '-ar', str(sr),
+                           '-ac', '1', '-y', tmp.name], capture_output=True)
+        if r.returncode != 0:
+            raise RuntimeError(f"Cannot load {path}")
+        wav, sr_orig = sf.read(tmp.name, dtype="float32", always_2d=False)
+        os.unlink(tmp.name)
+    if wav.ndim == 2: wav = wav.mean(axis=1)
+    if sr_orig != sr:
+        from scipy.signal import resample_poly
+        from math import gcd
+        g = gcd(int(sr_orig), int(sr))
+        wav = resample_poly(wav.astype(np.float64), int(sr)//g, int(sr_orig)//g).astype(np.float32)
+    return wav
 
 def apply_fade(wav, sr, fade_s=0.1):
     fade = int(fade_s * sr)
