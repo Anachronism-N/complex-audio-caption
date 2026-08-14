@@ -1,5 +1,7 @@
 # 人工 Review 指南
 
+> **状态说明（legacy exploratory asset）**：`review_50.csv` 当前实际包含 44 个任务，人工字段全部为空；它不是已完成的 review，也没有绑定当前 `B3-complex-v2` 的 dataset ID、split contract 或文件哈希。其生成脚本还依赖未纳入仓库的旧 predictions 文件。因此该目录只能用于回看旧 `b3_5k` 现象，不能作为训练/论文实验的数据门禁。正式数据验收请使用 `sceneledger-human-audit prepare/summarize` 与 `docs/22_next_experiment_b3_complex_v2_data_anchor.md`。
+
 ## 目标
 检查 50 条合成音频的标签是否正确，以及模型预测是否合理。
 

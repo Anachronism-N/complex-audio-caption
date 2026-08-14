@@ -1,6 +1,6 @@
 # 相关工作与研究空缺
 
-> 调研冻结日期：2026-08-08。优先引用论文原文、官方项目页、会议论文集和数据集主页。2026 年预印本和匿名在审稿件尚未经过稳定的同行评审，文中将其结论标为“作者报告”，不把排行榜数字视作最终事实。
+> 调研冻结日期：2026-08-12。优先引用论文原文、官方项目页、会议论文集和数据集主页。2026 年预印本和匿名在审稿件尚未经过稳定的同行评审，文中将其结论标为“作者报告”，不把排行榜数字视作最终事实。
 
 ## 1. 问题重新定义
 
@@ -24,6 +24,7 @@
 | [MOSS-Audio](https://arxiv.org/html/2606.01802v3) | 4B/8B 统一 speech、sound、music；12.5 Hz encoder、DeepStack、2 s time markers；分支标注含多说话人、music structure 和 lyrics | 重点是广义 audio understanding/ASR/QA；没有针对单个统一事件账本的 benchmark，也未给出混响、回声、强噪声和高并发声源下的系统鲁棒性分解 |
 | [AudioChat](https://arxiv.org/html/2602.17097v1) | 6M agent 生成的多轮复杂 audio stories；含多说话人、前后景 sfx、panning/loudness；统一理解/生成/编辑 | 数据和评测主要是合成 story；StoryGen-Eval 仅 1,200 条且由同一 AudioCopilot 生成；模型/部分数据不发布；timestamped unified caption 不是核心评价 |
 | [Audio-Omni](https://arxiv.org/html/2604.10708v2) | 使用冻结 MLLM + DiT 统一 general sound/music/speech 的理解、生成与编辑；AudioEdit 约 1.1M 对 | 研究中心是生成/编辑；没有事件级 0.1 s caption 目标或复杂声景 caption benchmark。其“真实数据 + SAM Audio 分离 + 合成数据”构建思想可借鉴 |
+| [SwanTale](https://arxiv.org/html/2608.02023) | 统一 instruct/zero-shot 多说话人 speech/audio 生成；SwanData-Caption 使用 `Environment/Speakers/Content` 三层描述、辅助分离/ASR/alignment、selective verifier、curriculum 和 GRPO | 方向是 caption/reference→audio 而非 audio→timestamped caption；核心数据和多个 teacher/verifier 为内部组件；没有事件级 0.1 s 逆向解析与 evidence-grounded hallucination benchmark。其三层语义、低置信 abstention 和 anchor replay 可直接借鉴 |
 | [AudioCapBench](https://arxiv.org/abs/2602.23649) | 以 1,000 样本快速测 speech/sound/music caption，并显式评准确、完整和幻觉 | 没有细粒度时间、重叠声源和鲁棒性轴；作者报告现有模型在 music 上最弱，说明统一 caption 仍存在显著 domain gap |
 
 ### 2.1 TAC 给出的强基线与可攻击点
@@ -66,6 +67,12 @@ SpotSound 的核心发现很重要：如果只问模型“这个事件在哪里�
 截至调研冻结日，TAC 官方项目页只提供论文、结果和演示，未发现训练代码或 checkpoint；论文还使用未公开的 licensed single-source corpus，因此只能做 paper-spec reimplementation，不能声称 exact reproduction。TimeAudio 的 Hugging Face 页面提供约 907 MB checkpoint，但未发现配套完整训练仓库。
 
 相较之下，[MOSS-Audio](https://github.com/OpenMOSS/MOSS-Audio)公开 4B/8B 权重、推理、LoRA/全参微调脚本及可访问的 12.5 Hz 多层 audio features，并声明 Apache-2.0；[SpotSound](https://github.com/LoieSun/SpotSound)公开基于 Audio Flamingo 3 的训练/推理与 checkpoint，但任务仍是 query grounding，且 AF3 checkpoint 为非商业研究许可证。因此本项目选择 MOSS-Audio-4B-Instruct 作为工程底座，在其上实现 TAC-style autoregressive baseline，再增加 event slots/evidence/CARC。完整审计见[实现蓝图](05_base_and_implementation.md)。
+
+### 2.5 SwanTale 改变了哪些创新边界
+
+SwanTale（arXiv v2，2026-08-04）已经用 `Environment / Speakers / Content` 表示场景、稳定说话人特征与按时间展开的局部内容，并生成包含多说话人、环境、局部音效、偶发歌声和音乐的统一波形。因此，“统一 speech/audio”“丰富环境描述”或“多说话人加局部音效”本身不能再作为本项目的核心新颖性。
+
+它没有解决的互补问题是：从未知真实混音中逆向恢复这些字段，同时输出 speech/music/lyrics/SFX 的显式时间边界和局部证据。SwanTale 的辅助分离、粗 diarization、ASR/alignment、结构约束、选择性 verifier 与人工审计可用于构建我们的真实数据；但其内部 SwanData-Caption、Seed 系列标注器、SwanAligner 和 SwanVerifier 没有公开到可以直接复现。具体迁移方案见[专项分析](23_swantale_lessons_and_next_stage.md)。
 
 ## 3. 时间对齐与开放词汇检测
 

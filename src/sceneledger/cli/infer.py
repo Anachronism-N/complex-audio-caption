@@ -23,7 +23,8 @@ import json
 import sys
 from pathlib import Path
 
-from sceneledger.data.manifests import ManifestEntry, read_manifest
+from sceneledger.data.experiment_data import file_sha256
+from sceneledger.data.manifests import read_manifest
 from sceneledger.data.schema import Ledger
 from sceneledger.eval.parser import ParseReport, parse_model_output
 from sceneledger.models.moss_adapter import (
@@ -55,10 +56,48 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--style", default="brief")
     parser.add_argument("--include-lyrics", action="store_true")
+    parser.add_argument(
+        "--split-contract",
+        default=None,
+        help="passed split_contract.json; required together with --expected-split",
+    )
+    parser.add_argument(
+        "--expected-split",
+        choices=("train", "val", "test"),
+        default=None,
+        help="assert that --manifest is exactly this frozen split",
+    )
+    parser.add_argument(
+        "--data-gate-summary",
+        default=None,
+        help="passed experiment_data_summary.json for the same split contract",
+    )
     args = parser.parse_args(argv)
+
+    if bool(args.split_contract) != bool(args.expected_split):
+        parser.error("--split-contract and --expected-split must be provided together")
+    if args.split_contract and not args.data_gate_summary:
+        parser.error("--data-gate-summary is required with --split-contract")
+    if args.data_gate_summary and not args.split_contract:
+        parser.error("--data-gate-summary requires --split-contract")
+    if args.split_contract and not args.report:
+        parser.error("--report is required with --split-contract for auditable evaluation")
+    split_contract = None
+    if args.split_contract:
+        from sceneledger.data.experiment_data import (
+            require_experiment_data_summary,
+            require_split_manifest,
+        )
+
+        require_experiment_data_summary(args.data_gate_summary, args.split_contract)
+        split_contract = require_split_manifest(
+            args.split_contract, args.expected_split, args.manifest
+        )
 
     entries = read_manifest(args.manifest)
     if args.limit is not None:
+        if split_contract is not None:
+            parser.error("--limit is forbidden when a frozen split contract is active")
         entries = entries[: args.limit]
 
     if args.backend == "moss":
@@ -80,6 +119,7 @@ def main(argv: list[str] | None = None) -> int:
 
     reports: list[dict] = []
     n_ok = 0
+    n_strict = 0
     with out_path.open("w", encoding="utf-8") as f:
         for i, entry in enumerate(entries):
             sid = entry.scene["scene_id"]
@@ -104,11 +144,15 @@ def main(argv: list[str] | None = None) -> int:
                     "events_recovered": report.events_recovered,
                     "events_rejected": report.events_rejected,
                     "warnings": report.warnings[:5],
-                    "raw_text": raw_text[:500] if args.backend == "moss" else None,
+                    # Preserve the full raw generation so parser decisions can
+                    # be independently audited. Truncation destroys evidence.
+                    "raw_text": raw_text if args.backend == "moss" else None,
                 }
             )
             if report.ok:
                 n_ok += 1
+            if report.strict_format_success:
+                n_strict += 1
             if (i + 1) % 100 == 0:
                 print(f"[infer] {i + 1}/{len(entries)}", file=sys.stderr)
 
@@ -116,23 +160,38 @@ def main(argv: list[str] | None = None) -> int:
         rp = Path(args.report)
         rp.parent.mkdir(parents=True, exist_ok=True)
         summary = {
+            "schema_version": "sceneledger-inference-report-v1",
             "backend": args.backend,
             "n_samples": len(entries),
             "n_ok": n_ok,
+            "n_strict_format_success": n_strict,
             "strict_format_success_rate": round(
-                sum(1 for r in reports if r["strict_format_success"]) / max(1, len(reports)), 4
+                n_strict / max(1, len(reports)), 4
             ),
             "mean_events_recovered": round(
                 sum(r["events_recovered"] for r in reports) / max(1, len(reports)), 3
             ),
             "total_events_rejected": sum(r["events_rejected"] for r in reports),
+            "manifest_path": str(Path(args.manifest).resolve()),
+            "prediction_path": str(out_path.resolve()),
+            "prediction_sha256": file_sha256(out_path),
+            "split_contract_path": (
+                str(Path(args.split_contract).resolve()) if args.split_contract else None
+            ),
+            "data_gate_summary_path": (
+                str(Path(args.data_gate_summary).resolve())
+                if args.data_gate_summary
+                else None
+            ),
+            "expected_split": args.expected_split,
+            "dataset_id": split_contract.get("dataset_id") if split_contract else None,
             "samples": reports,
         }
         rp.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
 
     print(
         f"[infer] {len(entries)} samples via {args.backend} -> {out_path} "
-        f"(strict ok={n_ok})",
+        f"(parsed ok={n_ok}, strict ok={n_strict})",
         file=sys.stderr,
     )
     return 0

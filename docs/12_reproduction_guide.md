@@ -86,8 +86,11 @@ conda run -n moss-audio python -m sceneledger.cli.infer \
 python -m sceneledger.cli.evaluate \
     --prediction reports/b0_predictions_moss.jsonl \
     --reference data/derived/tac_mini/manifest.jsonl \
+    --inference-report reports/b0_infer_report_moss.json \
     --output reports/b0_metrics_moss.json --pretty
 ```
+
+`strict_format_success_rate` 必须来自 `sceneledger-infer --report` 保存的原始输出解析证据，不能由已解析的 prediction Ledger 反推。若省略 `--inference-report`，其值为 `null`，不得作为论文结果；报告若与 prediction 的 SHA-256 不一致，评测直接失败。
 
 ### 3.3 鲁棒性分层
 

@@ -20,20 +20,20 @@ The first TAC-mini version (``docs/11`` §5) targets 3 core templates
 
 from __future__ import annotations
 
-import math
 import random
 from dataclasses import dataclass, field
-from pathlib import Path
-from typing import Literal, Protocol, Sequence
+from typing import Literal, Protocol
 
 import numpy as np
 
 from sceneledger.data.schema import TIME_RESOLUTION_SEC
 
-SourceKind = Literal["speech", "music", "sfx", "ambience"]
+SourceKind = Literal["speech", "vocal", "music", "sfx", "ambience"]
 TemplateID = Literal[
     "isolated_sfx",
     "speech_over_music",
+    "speech_with_sfx",
+    "speech_ambience_sfx",
     "music_with_sfx",
     "speech_music_sfx",
     "repeated_event",
@@ -71,11 +71,34 @@ class PlacedSource:
     gain_db: float
     text: str  # caption text for the events derived from this source
     identity: str | None = None  # speaker_1 / singer_1 / None
+    # Stable identity of the original recording/work/speaker group.  It is
+    # intentionally distinct from the per-scene source_id and is used for
+    # leakage-safe split checks.
+    source_group: str | None = None
+    leakage_groups: list[str] = field(default_factory=list)
+    # Primary semantic class first, followed by optional secondary dataset
+    # labels.  Keeping this separate from free-form text makes source-bank
+    # class coverage auditable without parsing captions.
+    source_labels: list[str] = field(default_factory=list)
+    source_dataset: str | None = None
+    source_license: str | None = None
+    annotation_origin: str | None = None
+    text_is_verbatim: bool = False
+    # Cryptographic identity of the dry source waveform.  The stable catalog
+    # source ID in ``path`` is convenient for sampling, while this digest proves
+    # that the rendered scene used the exact file that passed source review.
+    source_file_sha256: str | None = None
+    source_duration_sec: float | None = None
+    source_rms_dbfs: float | None = None
+    source_active_rms_dbfs: float | None = None
     repeat: int = 1
     repeat_gap_s: float = 0.0
     rir_id: str | None = None
     t60_sec: float | None = None
     is_foreground: bool = True
+    # New manifests can request seamless background extension.  The default
+    # remains False so old frozen manifests replay bit-for-bit.
+    loop_to_scene: bool = False
 
     def event_type(self) -> str:
         """Map source kind to event type tag (speech/lys/music/sfx)."""
@@ -96,6 +119,8 @@ class Conditions:
     t60_sec: float | None = None
     codec: str | None = None
     overlap_ratio: float | None = None
+    ducking_enabled: bool = False
+    ducking_depth_db: float | None = None
 
 
 @dataclass
@@ -131,7 +156,7 @@ class Scene:
 
 
 def _source_dict(s: PlacedSource) -> dict:
-    return {
+    payload = {
         "source_id": s.source_id,
         "kind": s.kind,
         "path": s.path,
@@ -139,12 +164,26 @@ def _source_dict(s: PlacedSource) -> dict:
         "gain_db": s.gain_db,
         "text": s.text,
         "identity": s.identity,
+        "source_group": s.source_group,
+        "leakage_groups": s.leakage_groups,
+        "source_labels": s.source_labels,
+        "source_dataset": s.source_dataset,
+        "source_license": s.source_license,
+        "annotation_origin": s.annotation_origin,
+        "text_is_verbatim": s.text_is_verbatim,
+        "source_file_sha256": s.source_file_sha256,
+        "source_duration_sec": s.source_duration_sec,
+        "source_rms_dbfs": s.source_rms_dbfs,
+        "source_active_rms_dbfs": s.source_active_rms_dbfs,
         "repeat": s.repeat,
         "repeat_gap_s": s.repeat_gap_s,
         "rir_id": s.rir_id,
         "t60_sec": s.t60_sec,
         "is_foreground": s.is_foreground,
     }
+    if s.loop_to_scene:
+        payload["loop_to_scene"] = True
+    return payload
 
 
 def _conditions_dict(c: Conditions) -> dict:
@@ -155,6 +194,8 @@ def _conditions_dict(c: Conditions) -> dict:
         "t60_sec": c.t60_sec,
         "codec": c.codec,
         "overlap_ratio": c.overlap_ratio,
+        "ducking_enabled": c.ducking_enabled,
+        "ducking_depth_db": c.ducking_depth_db,
     }
 
 
@@ -179,6 +220,9 @@ class SourcePool(Protocol):
     def pick(self, kind: SourceKind, rng: random.Random) -> str:  # pragma: no cover
         ...
 
+    def metadata(self, key: str) -> dict[str, object]:  # pragma: no cover
+        ...
+
 
 @dataclass
 class FileSourcePool:
@@ -193,16 +237,305 @@ class FileSourcePool:
         return rng.choice(paths)
 
     def load(self, key: str, sample_rate: int) -> tuple[np.ndarray, float]:
+        import math
+
         import soundfile as sf
+        from scipy.signal import resample_poly
 
         wav, sr = sf.read(key, dtype="float32", always_2d=False)
         if wav.ndim == 2:
             wav = wav.mean(axis=1)
         if sr != sample_rate:
-            import librosa
-
-            wav = librosa.resample(wav.astype(np.float64), orig_sr=sr, target_sr=sample_rate)
+            divisor = math.gcd(int(sr), int(sample_rate))
+            wav = resample_poly(
+                wav.astype(np.float64),
+                sample_rate // divisor,
+                sr // divisor,
+            )
         return wav.astype(np.float32), float(len(wav) / sample_rate)
+
+    def metadata(self, key: str) -> dict[str, object]:
+        # Legacy path-only pools have no trustworthy semantic annotation.
+        return {}
+
+
+@dataclass
+class CatalogSourcePool:
+    """Real sources backed by a validated :mod:`source_catalog` JSONL file."""
+
+    catalog_path: str
+    audio_root: str | None = None
+    audit_report_path: str | None = None
+    expected_split: str | None = None
+
+    def __post_init__(self) -> None:
+        from pathlib import Path
+
+        from sceneledger.data.source_catalog import file_sha256, read_source_catalog
+
+        catalog = Path(self.catalog_path).expanduser().resolve()
+        if self.audit_report_path:
+            import json
+
+            audit_path = Path(self.audit_report_path).expanduser().resolve()
+            audit = json.loads(audit_path.read_text(encoding="utf-8"))
+            if audit.get("pass") is not True:
+                raise ValueError(f"source audit did not pass: {audit_path}")
+            preparation_path = Path(str(audit.get("preparation_report_path", "")))
+            if not preparation_path.is_absolute():
+                preparation_path = (audit_path.parent / preparation_path).resolve()
+            expected_preparation_hash = audit.get("preparation_report_sha256")
+            observed_preparation_hash = (
+                file_sha256(preparation_path) if preparation_path.is_file() else None
+            )
+            if (
+                not expected_preparation_hash
+                or observed_preparation_hash != expected_preparation_hash
+            ):
+                raise ValueError(
+                    "source preparation report changed after human audit: "
+                    f"{preparation_path}"
+                )
+            artifact = (audit.get("catalog_artifacts") or {}).get(catalog.name)
+            expected_hash = artifact.get("sha256") if artifact else None
+            observed_hash = file_sha256(catalog)
+            if not expected_hash or expected_hash != observed_hash:
+                raise ValueError(
+                    f"catalog is not bound to passed source audit: {catalog} "
+                    f"expected={expected_hash!r} observed={observed_hash!r}"
+                )
+        root = Path(self.audio_root).expanduser().resolve() if self.audio_root else catalog.parent
+        records = read_source_catalog(catalog)
+        observed_splits = {record.split for record in records}
+        if None in observed_splits or len(observed_splits) != 1:
+            raise ValueError(
+                f"catalog must contain exactly one frozen split, observed={sorted(str(x) for x in observed_splits)}"
+            )
+        observed_split = next(iter(observed_splits))
+        if self.expected_split and observed_split != self.expected_split:
+            raise ValueError(
+                f"catalog split mismatch: expected={self.expected_split!r} observed={observed_split!r}"
+            )
+        self._records = {record.source_id: record for record in records}
+        self._by_kind: dict[str, list[str]] = {}
+        self._resolved_paths: dict[str, Path] = {}
+        self._verified_audio_hashes: set[str] = set()
+        for record in self._records.values():
+            self._by_kind.setdefault(record.kind, []).append(record.source_id)
+            resolved = (root / record.audio_path).resolve()
+            try:
+                resolved.relative_to(root)
+            except ValueError as exc:
+                raise ValueError(
+                    f"catalog audio path escapes audio_root: {record.audio_path}"
+                ) from exc
+            if not resolved.is_file():
+                raise FileNotFoundError(
+                    f"catalog audio file is missing: source={record.source_id} path={resolved}"
+                )
+            if self.audit_report_path:
+                if not record.file_sha256:
+                    raise ValueError(
+                        f"audited catalog source lacks file SHA-256: {record.source_id}"
+                    )
+            self._resolved_paths[record.source_id] = resolved
+        self._audio_root = root
+
+    def _verify_audio(self, key: str) -> None:
+        if not self.audit_report_path or key in self._verified_audio_hashes:
+            return
+        from sceneledger.data.source_catalog import file_sha256
+
+        record = self._records[key]
+        observed = file_sha256(self._resolved_paths[key])
+        if observed != record.file_sha256:
+            raise ValueError(
+                "source audio changed after catalog preparation: "
+                f"source={record.source_id} expected={record.file_sha256} "
+                f"observed={observed}"
+            )
+        self._verified_audio_hashes.add(key)
+
+    def pick(self, kind: SourceKind, rng: random.Random) -> str:
+        keys = self._by_kind.get(kind, [])
+        if not keys:
+            raise ValueError(f"no catalog sources registered for kind {kind!r}")
+        by_class: dict[str, list[str]] = {}
+        for key in keys:
+            labels = self._records[key].labels
+            by_class.setdefault(labels[0] if labels else "<unlabeled>", []).append(key)
+        return rng.choice(by_class[rng.choice(sorted(by_class))])
+
+    def keys(self, kind: SourceKind) -> list[str]:
+        """Return a copy so the sampler can exhaustively filter by duration."""
+        return list(self._by_kind.get(kind, []))
+
+    def candidates(
+        self,
+        kind: SourceKind,
+        rng: random.Random,
+        *,
+        max_duration: float | None = None,
+        limit: int = 256,
+    ) -> list[str]:
+        keys = [
+            key
+            for key in self._by_kind.get(kind, [])
+            if max_duration is None
+            or self._records[key].duration_sec is None
+            or float(self._records[key].duration_sec) <= max_duration
+        ]
+        # Uniformly cycle over primary semantic classes.  This prevents a
+        # long-tailed bank from returning 256 examples of the few dominant
+        # classes while still sampling recordings randomly inside each class.
+        queues: dict[str, list[str]] = {}
+        for key in keys:
+            labels = self._records[key].labels
+            queues.setdefault(labels[0] if labels else "<unlabeled>", []).append(key)
+        for queue in queues.values():
+            rng.shuffle(queue)
+        output: list[str] = []
+        while queues and len(output) < limit:
+            class_cycle = sorted(queues)
+            rng.shuffle(class_cycle)
+            for label in class_cycle:
+                output.append(queues[label].pop())
+                if not queues[label]:
+                    del queues[label]
+                if len(output) >= limit:
+                    break
+        return output
+
+    def load(self, key: str, sample_rate: int) -> tuple[np.ndarray, float]:
+        self._verify_audio(key)
+        return FileSourcePool(by_kind={}).load(str(self._resolved_paths[key]), sample_rate)
+
+    def metadata(self, key: str) -> dict[str, object]:
+        self._verify_audio(key)
+        record = self._records[key]
+        return {
+            "text": record.caption,
+            "identity": record.identity,
+            "source_group": record.source_group,
+            "leakage_groups": record.leakage_groups,
+            "source_labels": record.labels,
+            "source_dataset": record.dataset,
+            "source_license": record.license,
+            "annotation_origin": record.annotation_origin,
+            "text_is_verbatim": record.text_is_verbatim,
+            "source_file_sha256": record.file_sha256,
+            "source_duration_sec": record.duration_sec,
+            "source_rms_dbfs": record.rms_dbfs,
+            "source_active_rms_dbfs": record.active_rms_dbfs,
+        }
+
+
+@dataclass
+class CatalogSetSourcePool:
+    """Compose independently prepared/audited catalogs without rebasing paths."""
+
+    catalogs: list[CatalogSourcePool]
+    sampling_weights: list[float] | None = None
+
+    def __post_init__(self) -> None:
+        if not self.catalogs:
+            raise ValueError("catalog set must contain at least one catalog")
+        if self.sampling_weights is None:
+            self.sampling_weights = [1.0] * len(self.catalogs)
+        if len(self.sampling_weights) != len(self.catalogs) or any(
+            weight <= 0 for weight in self.sampling_weights
+        ):
+            raise ValueError("catalog sampling weights must be positive and match catalogs")
+        self._owner: dict[str, CatalogSourcePool] = {}
+        self._by_kind: dict[str, list[str]] = {}
+        collisions: list[str] = []
+        content_owner: dict[str, int] = {}
+        group_owner: dict[str, int] = {}
+        cross_catalog_duplicates: list[dict[str, object]] = []
+        for catalog_index, catalog in enumerate(self.catalogs):
+            for source_id, record in catalog._records.items():
+                if source_id in self._owner:
+                    collisions.append(source_id)
+                    continue
+                self._owner[source_id] = catalog
+                self._by_kind.setdefault(record.kind, []).append(source_id)
+                if record.content_sha256:
+                    owner = content_owner.setdefault(record.content_sha256, catalog_index)
+                    if owner != catalog_index:
+                        cross_catalog_duplicates.append(
+                            {
+                                "source_id": source_id,
+                                "reason": "content_sha256",
+                                "value": record.content_sha256,
+                                "catalogs": [owner, catalog_index],
+                            }
+                        )
+                for group in {record.source_group, *record.leakage_groups}:
+                    owner = group_owner.setdefault(group, catalog_index)
+                    if owner != catalog_index:
+                        cross_catalog_duplicates.append(
+                            {
+                                "source_id": source_id,
+                                "reason": "source/leakage group",
+                                "value": group,
+                                "catalogs": [owner, catalog_index],
+                            }
+                        )
+        if collisions:
+            raise ValueError(f"catalog set contains duplicate source IDs: {sorted(collisions)[:20]}")
+        if cross_catalog_duplicates:
+            raise ValueError(
+                "catalog set contains cross-catalog source leakage: "
+                f"{cross_catalog_duplicates[:20]}"
+            )
+
+    def pick(self, kind: SourceKind, rng: random.Random) -> str:
+        available = [
+            index
+            for index, catalog in enumerate(self.catalogs)
+            if catalog._by_kind.get(kind)
+        ]
+        if not available:
+            raise ValueError(f"no catalog-set sources registered for kind {kind!r}")
+        weights = [self.sampling_weights[index] for index in available]
+        selected = rng.choices(available, weights=weights, k=1)[0]
+        return self.catalogs[selected].pick(kind, rng)
+
+    def keys(self, kind: SourceKind) -> list[str]:
+        return list(self._by_kind.get(kind, []))
+
+    def candidates(
+        self,
+        kind: SourceKind,
+        rng: random.Random,
+        *,
+        max_duration: float | None = None,
+        limit: int = 256,
+    ) -> list[str]:
+        """Weighted catalog permutation without letting a large bank dominate."""
+        queues: list[list[str]] = []
+        for catalog in self.catalogs:
+            queues.append(
+                catalog.candidates(
+                    kind,
+                    rng,
+                    max_duration=max_duration,
+                    limit=limit,
+                )
+            )
+        output: list[str] = []
+        while any(queues) and len(output) < limit:
+            available = [index for index, queue in enumerate(queues) if queue]
+            weights = [self.sampling_weights[index] for index in available]
+            selected = rng.choices(available, weights=weights, k=1)[0]
+            output.append(queues[selected].pop(0))
+        return output
+
+    def load(self, key: str, sample_rate: int) -> tuple[np.ndarray, float]:
+        return self._owner[key].load(key, sample_rate)
+
+    def metadata(self, key: str) -> dict[str, object]:
+        return self._owner[key].metadata(key)
 
 
 @dataclass
@@ -216,10 +549,19 @@ class SyntheticSourcePool:
 
     sample_rate: int = 24000
     seed: int = 20260808
+    index_range: tuple[int, int] = (0, 999)
+
+    def __post_init__(self) -> None:
+        low, high = self.index_range
+        if low < 0 or high < low:
+            raise ValueError(f"invalid synthetic source index_range: {self.index_range}")
 
     def pick(self, kind: SourceKind, rng: random.Random) -> str:
-        idx = rng.randint(0, 999)
+        idx = rng.randint(*self.index_range)
         return f"{kind}:{idx:03d}"
+
+    def metadata(self, key: str) -> dict[str, object]:
+        return {}
 
     def load(self, key: str, sample_rate: int) -> tuple[np.ndarray, float]:
         import hashlib
@@ -306,7 +648,6 @@ class SyntheticSourcePool:
     def _synth_music(sr: int, dur: float, rng: np.random.Generator, idx: int) -> np.ndarray:
         """A slow chord progression (root + fifth + octave)."""
         n = int(sr * dur)
-        t = np.arange(n) / sr
         roots = [220.0, 246.94, 196.0, 174.61]
         chord_period = dur / max(1, len(roots))
         sig = np.zeros(n, dtype=np.float64)
@@ -363,17 +704,14 @@ class SyntheticSourcePool:
         - Periodic droplet clicks for rain-like character
         - Low-pass filtered for warmth
         """
-        from scipy.signal import lfilter, firwin
+        from scipy.signal import firwin, lfilter
 
         n = int(sr * dur)
-        # Pink noise via filtered white noise (Voss-McCartney approximation)
+        # Pink-ish noise via a vectorized one-pole filter. This is numerically
+        # identical to the previous Python recurrence, but avoids iterating
+        # over hundreds of thousands of samples per rendered source.
         white = rng.standard_normal(n).astype(np.float64)
-        # accumulate every 2^k sample for pink spectrum
-        pink = np.zeros(n)
-        prev = 0.0
-        for i in range(n):
-            prev = 0.99 * prev + 0.01 * white[i]
-            pink[i] = prev
+        pink = lfilter([0.01], [1.0, -0.99], white)
         # Low-pass for warmth (cutoff ~2kHz)
         try:
             b = firwin(65, 2000 / (sr / 2))
@@ -442,7 +780,18 @@ def _caption_for(kind: SourceKind, rng: random.Random) -> str:
 class SceneSamplerConfig:
     sample_rate: int = 24000
     duration_range: tuple[float, float] = DURATION_RANGE
+    template_duration_ranges: dict[str, tuple[float, float]] = field(default_factory=dict)
     gain_db_range: tuple[float, float] = GAIN_DB_RANGE
+    kind_gain_db_offsets: dict[str, float] = field(default_factory=dict)
+    # Optional post-gain active-RMS targets for audited real sources.  When
+    # present, gain is derived from measured active RMS rather than raw peaks
+    # or a whole-file RMS diluted by long silence.
+    target_active_rms_dbfs_by_kind: dict[str, tuple[float, float]] = field(
+        default_factory=dict
+    )
+    # Fail instead of applying an extreme correction to an anomalously quiet
+    # or loud source.  ``None`` preserves legacy manifests/configurations.
+    max_abs_source_gain_db: float | None = None
     fg_bg_snr_range: tuple[float, float] = FG_BG_SNR_RANGE
     t60_range: tuple[float, float] = T60_RANGE
     echo_delay_ms_range: tuple[int, int] = ECHO_DELAY_MS_RANGE
@@ -452,6 +801,14 @@ class SceneSamplerConfig:
     resolutions: tuple[float, ...] = RESOLUTIONS
     styles: tuple[str, ...] = STYLES
     activity_threshold_range: tuple[float, float] = ACTIVITY_THRESHOLD_RANGE
+    foreground_onset_fraction_range: tuple[float, float] | None = None
+    loop_background_to_scene: bool = False
+    enforce_speaker_overlap: bool = False
+    dense_repeated_event: bool = False
+    spread_repeated_event: bool = False
+    stable_unique_source_ids: bool = False
+    ducking_probability: float = 0.7
+    ducking_depth_db_range: tuple[float, float] = (2.0, 5.0)
     # probability of applying RIR / echo to a scene
     p_rir: float = 0.5
     p_echo: float = 0.3
@@ -477,16 +834,8 @@ class SceneGraphSampler:
     ) -> Scene:
         rng = random.Random(seed)
         cfg = self.config
-        # Per-template duration ranges to avoid long clips with few events
-        template_durations = {
-            "isolated_sfx": (3, 8),
-            "repeated_event": (5, 10),
-            "ambient_with_intermittent_sfx": (10, 20),
-            "overlapping_speakers": (5, 15),
-            "random_mix": (8, 20),
-        }
-        dur_range = template_durations.get(template, cfg.duration_range)
-        duration = round(rng.uniform(*dur_range) / TIME_RESOLUTION_SEC) * TIME_RESOLUTION_SEC
+        duration_range = cfg.template_duration_ranges.get(template, cfg.duration_range)
+        duration = round(rng.uniform(*duration_range) / TIME_RESOLUTION_SEC) * TIME_RESOLUTION_SEC
         duration = round(duration, 6)
 
         sources = self._place_sources(template, duration, rng)
@@ -509,46 +858,200 @@ class SceneGraphSampler:
         cfg = self.config
         fg_gain = rng.uniform(*cfg.gain_db_range)
         bg_gain = _snr_to_gain_db(rng.uniform(*cfg.fg_bg_snr_range), fg_gain)
+        source_serial = 0
+        selected_paths: set[str] = set()
+        selected_leakage_groups: set[str] = set()
+        selected_voice_identities: set[str] = set()
 
         def _src(kind: SourceKind, *, fg: bool, identity: str | None = None) -> PlacedSource:
-            key = self.pool.pick(kind, rng)
-            gain = fg_gain if fg else bg_gain
-            # onset: foreground sources placed with margin; background at 0
+            nonlocal source_serial
+            source_serial += 1
+            key = ""
+            metadata: dict[str, object] = {}
+            candidates_fn = getattr(self.pool, "candidates", None)
+            keys_fn = getattr(self.pool, "keys", None)
+            if callable(candidates_fn):
+                candidates = list(
+                    candidates_fn(
+                        kind,
+                        rng,
+                        max_duration=(
+                            duration - 0.05
+                            if kind not in ("music", "ambience")
+                            else None
+                        ),
+                    )
+                )
+            elif callable(keys_fn):
+                candidates = list(keys_fn(kind))
+                rng.shuffle(candidates)
+            else:
+                candidates = [self.pool.pick(kind, rng) for _ in range(128)]
+            for candidate in candidates:
+                if candidate in selected_paths:
+                    continue
+                metadata_fn = getattr(self.pool, "metadata", None)
+                candidate_metadata = metadata_fn(candidate) if callable(metadata_fn) else {}
+                candidate_duration = candidate_metadata.get("source_duration_sec")
+                candidate_groups = {
+                    str(candidate_metadata.get("source_group") or ""),
+                    *(
+                        str(item)
+                        for item in candidate_metadata.get("leakage_groups", [])
+                    ),
+                } - {""}
+                if candidate_groups & selected_leakage_groups:
+                    continue
+                # Speech, vocals and discrete SFX carry utterance/event-level
+                # text.  Cropping their tail while keeping the complete text
+                # would manufacture unsupported supervision.
+                if (
+                    kind not in ("music", "ambience")
+                    and candidate_duration is not None
+                    and float(candidate_duration) > duration - 0.05
+                ):
+                    continue
+                if kind in ("speech", "vocal"):
+                    voice_identity = str(
+                        candidate_metadata.get("identity")
+                        or candidate_metadata.get("source_group")
+                        or candidate
+                    )
+                    if voice_identity in selected_voice_identities:
+                        continue
+                    selected_voice_identities.add(voice_identity)
+                key = candidate
+                metadata = candidate_metadata
+                selected_paths.add(candidate)
+                selected_leakage_groups.update(candidate_groups)
+                break
+            if not key:
+                raise ValueError(
+                    f"source pool cannot provide enough unique recordings for "
+                    f"template={template!r}, kind={kind!r}"
+                )
+            target_range = cfg.target_active_rms_dbfs_by_kind.get(kind)
+            measured_rms = candidate_metadata.get("source_active_rms_dbfs")
+            if target_range is not None:
+                if measured_rms is None:
+                    raise ValueError(
+                        "active-RMS-normalized sampling requires "
+                        f"source_active_rms_dbfs: {key}"
+                    )
+                if len(target_range) != 2 or target_range[0] > target_range[1]:
+                    raise ValueError(
+                        f"invalid target RMS range for {kind}: {target_range}"
+                    )
+                target_rms = rng.uniform(*target_range)
+                gain = target_rms - float(measured_rms)
+                if (
+                    cfg.max_abs_source_gain_db is not None
+                    and abs(gain) > cfg.max_abs_source_gain_db
+                ):
+                    raise ValueError(
+                        f"RMS normalization for {key} requires {gain:.2f} dB, "
+                        f"above max_abs_source_gain_db={cfg.max_abs_source_gain_db}"
+                    )
+            else:
+                gain = (fg_gain if fg else bg_gain) + float(
+                    cfg.kind_gain_db_offsets.get(kind, 0.0)
+                )
+            # Background starts at zero and may be extended by the renderer.
+            # Foreground is distributed across the clip instead of being
+            # restricted to the first 40%, which previously created long tails.
             if kind in ("music", "ambience"):
                 onset = 0.0
             else:
+                source_duration = (
+                    float(metadata["source_duration_sec"])
+                    if metadata.get("source_duration_sec") is not None
+                    else None
+                )
+                latest_onset = (
+                    max(0.0, duration - source_duration - 0.05)
+                    if source_duration is not None
+                    else duration
+                )
+                if cfg.foreground_onset_fraction_range is None:
+                    desired_low, desired_high = 0.2, max(0.3, duration * 0.4)
+                else:
+                    low_fraction, high_fraction = cfg.foreground_onset_fraction_range
+                    desired_low = max(0.1, duration * low_fraction)
+                    desired_high = max(0.2, duration * high_fraction)
+                latest_grid_onset = (
+                    int((latest_onset + 1e-9) / TIME_RESOLUTION_SEC)
+                    * TIME_RESOLUTION_SEC
+                )
+                onset_low = min(desired_low, latest_grid_onset)
+                onset_high = min(max(desired_high, onset_low), latest_grid_onset)
                 onset = round(
-                    rng.uniform(0.2, max(0.3, duration * 0.4)) / TIME_RESOLUTION_SEC
+                    rng.uniform(onset_low, onset_high)
+                    / TIME_RESOLUTION_SEC
                 ) * TIME_RESOLUTION_SEC
+                onset = min(onset, latest_grid_onset)
             repeat = 1
             repeat_gap = 0.0
-            if template == "repeated_event":
+            if template == "repeated_event" and kind == "sfx":
                 repeat = rng.randint(*cfg.repeat_range)
-                repeat_gap = round(rng.uniform(0.2, 1.0), 3)
+                if cfg.spread_repeated_event:
+                    # Spread instances over a meaningful part of the clip instead
+                    # of packing them into the opening seconds.
+                    repeat_gap = round(
+                        rng.uniform(1.2, max(1.3, duration * 0.2)), 3
+                    )
+                else:
+                    repeat_gap = round(rng.uniform(0.2, 1.0), 3)
             rir_id = None
             t60 = None
             if rng.random() < cfg.p_rir:
                 t60 = round(rng.uniform(*cfg.t60_range), 3)
                 rir_id = f"room_{rng.randint(1, 8):02d}"
+            resolved_identity = str(metadata.get("identity") or identity) if metadata.get("identity") or identity else None
+            text = str(metadata.get("text") or _caption_for(kind, rng))
             return PlacedSource(
-                source_id=f"{kind[0].upper()}{rng.randint(1, 99):02d}",
+                source_id=(
+                    f"{kind[:2].upper()}{source_serial:02d}"
+                    if cfg.stable_unique_source_ids
+                    else f"{kind[0].upper()}{rng.randint(1, 99):02d}"
+                ),
                 kind=kind,
                 path=key,
                 onset=round(onset, 6),
                 gain_db=round(gain, 3),
-                text=_caption_for(kind, rng),
-                identity=identity,
+                text=text,
+                identity=resolved_identity,
+                source_group=(str(metadata["source_group"]) if metadata.get("source_group") else None),
+                leakage_groups=[str(item) for item in metadata.get("leakage_groups", [])],
+                source_labels=[str(item) for item in metadata.get("source_labels", [])],
+                source_dataset=(str(metadata["source_dataset"]) if metadata.get("source_dataset") else None),
+                source_license=(str(metadata["source_license"]) if metadata.get("source_license") else None),
+                annotation_origin=(str(metadata["annotation_origin"]) if metadata.get("annotation_origin") else None),
+                text_is_verbatim=bool(metadata.get("text_is_verbatim", False)),
+                source_file_sha256=(str(metadata["source_file_sha256"]) if metadata.get("source_file_sha256") else None),
+                source_duration_sec=(float(metadata["source_duration_sec"]) if metadata.get("source_duration_sec") is not None else None),
+                source_rms_dbfs=(float(metadata["source_rms_dbfs"]) if metadata.get("source_rms_dbfs") is not None else None),
+                source_active_rms_dbfs=(float(metadata["source_active_rms_dbfs"]) if metadata.get("source_active_rms_dbfs") is not None else None),
                 repeat=repeat,
                 repeat_gap_s=repeat_gap,
                 rir_id=rir_id,
                 t60_sec=t60,
                 is_foreground=fg,
+                loop_to_scene=cfg.loop_background_to_scene
+                and kind in ("music", "ambience"),
             )
 
         if template == "isolated_sfx":
             return [_src("sfx", fg=True)]
         if template == "speech_over_music":
             return [_src("music", fg=False), _src("speech", fg=True, identity="S1")]
+        if template == "speech_with_sfx":
+            return [_src("speech", fg=True, identity="S1"), _src("sfx", fg=True)]
+        if template == "speech_ambience_sfx":
+            return [
+                _src("ambience", fg=False),
+                _src("speech", fg=True, identity="S1"),
+                _src("sfx", fg=True),
+            ]
         if template == "music_with_sfx":
             return [_src("music", fg=False), _src("sfx", fg=True)]
         if template == "speech_music_sfx":
@@ -558,6 +1061,15 @@ class SceneGraphSampler:
                 _src("sfx", fg=True),
             ]
         if template == "repeated_event":
+            if cfg.dense_repeated_event:
+                # Retain the multi-span repeated SFX target while ensuring the
+                # main distribution is not a long, otherwise-empty clip.
+                sources = [_src("ambience", fg=False), _src("sfx", fg=True)]
+                sources[1].onset = round(
+                    rng.uniform(0.2, max(0.3, duration * 0.15))
+                    / TIME_RESOLUTION_SEC
+                ) * TIME_RESOLUTION_SEC
+                return sources
             return [_src("sfx", fg=True)]
         if template == "ambient_with_intermittent_sfx":
             return [_src("ambience", fg=False), _src("sfx", fg=True)]
@@ -572,10 +1084,24 @@ class SceneGraphSampler:
                 _src("sfx", fg=True),
             ]
         if template == "overlapping_speakers":
-            return [
+            speakers = [
                 _src("speech", fg=True, identity="S1"),
                 _src("speech", fg=True, identity="S2"),
             ]
+            if cfg.enforce_speaker_overlap:
+                first_onset = round(
+                    rng.uniform(0.1, max(0.2, min(1.0, duration * 0.15)))
+                    / TIME_RESOLUTION_SEC
+                ) * TIME_RESOLUTION_SEC
+                second_onset = max(
+                    0.0,
+                    first_onset
+                    + round(rng.uniform(-0.3, 0.5) / TIME_RESOLUTION_SEC)
+                    * TIME_RESOLUTION_SEC,
+                )
+                speakers[0].onset = round(first_onset, 6)
+                speakers[1].onset = round(second_onset, 6)
+            return speakers
         if template == "random_mix":
             # B2-no-template ablation: fully random source selection + placement
             n_sources = rng.randint(2, 4)
@@ -635,6 +1161,18 @@ class SceneGraphSampler:
             if s.t60_sec is not None:
                 t60 = s.t60_sec
                 break
+        has_voice = any(source.kind in ("speech", "vocal") for source in sources)
+        has_background = any(source.kind in ("music", "ambience") for source in sources)
+        ducking_enabled = (
+            has_voice
+            and has_background
+            and rng.random() < cfg.ducking_probability
+        )
+        ducking_depth_db = (
+            round(rng.uniform(*cfg.ducking_depth_db_range), 3)
+            if ducking_enabled
+            else None
+        )
         return Conditions(
             noise_snr_db=None,
             echo_delay_ms=echo_delay,
@@ -642,6 +1180,8 @@ class SceneGraphSampler:
             t60_sec=t60,
             codec=None,
             overlap_ratio=None,
+            ducking_enabled=ducking_enabled,
+            ducking_depth_db=ducking_depth_db,
         )
 
     def _sample_supervision(self, rng: random.Random) -> Supervision:
@@ -655,6 +1195,8 @@ class SceneGraphSampler:
 
 
 __all__ = [
+    "CatalogSetSourcePool",
+    "CatalogSourcePool",
     "Conditions",
     "FileSourcePool",
     "PlacedSource",

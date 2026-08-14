@@ -17,30 +17,38 @@ waveform hash is identical. Validation/test mixes are pre-generated and frozen.
 from __future__ import annotations
 
 import hashlib
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import numpy as np
 
 from sceneledger.data.activity import ActivityResult, compute_activity
+from sceneledger.data.scene_graph_sampler import PlacedSource, Scene, SourcePool
 from sceneledger.data.schema import (
     SCHEMA_VERSION,
     TIME_RESOLUTION_SEC,
-    Conditions as LedgerConditions,
     Event,
     Ledger,
     Provenance,
     Span,
     Track,
 )
-from sceneledger.data.scene_graph_sampler import (
-    Conditions,
-    PlacedSource,
-    Scene,
-    SourcePool,
+from sceneledger.data.schema import (
+    Conditions as LedgerConditions,
 )
 
 # type ordering for stable event serialization (docs/06 §5.2)
 _TYPE_ORDER = {"speech": 0, "lys": 1, "music": 2, "sfx": 3}
+
+
+def _semantic_confidence(source: PlacedSource) -> float:
+    """Conservative semantic confidence based on actual annotation origin."""
+    return {
+        "human": 1.0,
+        "dataset": 0.98,
+        "asr": 0.80,
+        "audio_model": 0.60,
+        "llm_rewrite": 0.50,
+    }.get(source.annotation_origin, 0.50)
 
 
 @dataclass
@@ -54,7 +62,7 @@ class RenderedSource:
 class RenderOutput:
     scene: Scene
     mixture: np.ndarray  # [N] float32, post-echo + clipping guard
-    dry_mixture: np.ndarray  # [N] float32, sum of stems BEFORE echo/clipping
+    dry_mixture: np.ndarray  # [N] float32, exact sum of persisted stems, before echo
     stems: list[RenderedSource]
     target_ledger: Ledger
     sample_rate: int
@@ -116,6 +124,33 @@ def _repeat_source(wav: np.ndarray, repeat: int, gap_s: float, sample_rate: int)
             parts.append(pad)
         parts.append(wav)
     return np.concatenate(parts)
+
+
+def _loop_to_duration(
+    wav: np.ndarray, duration_s: float, sample_rate: int, crossfade_s: float = 0.05
+) -> np.ndarray:
+    """Loop a background source with short crossfades and crop to duration."""
+    target = max(0, int(round(duration_s * sample_rate)))
+    if target == 0:
+        return np.zeros(0, dtype=np.float32)
+    if wav.size == 0:
+        return np.zeros(target, dtype=np.float32)
+    if wav.shape[-1] >= target:
+        return wav[:target].astype(np.float32, copy=True)
+
+    overlap = min(
+        int(round(crossfade_s * sample_rate)),
+        max(0, wav.shape[-1] // 4),
+    )
+    out = wav.astype(np.float32, copy=True)
+    while out.shape[-1] < target:
+        if overlap <= 0:
+            out = np.concatenate([out, wav])
+            continue
+        ramp = np.linspace(0.0, 1.0, overlap, dtype=np.float32)
+        blended = out[-overlap:] * (1.0 - ramp) + wav[:overlap] * ramp
+        out = np.concatenate([out[:-overlap], blended, wav[overlap:]])
+    return out[:target].astype(np.float32, copy=False)
 
 
 def _synth_rir(sample_rate: int, t60: float, rng: np.random.Generator) -> np.ndarray:
@@ -184,7 +219,7 @@ def _build_events_for_source(
 ) -> list[Event]:
     """Convert a source's activity spans into one or more events.
 
-    * speech: one event per span (each utterance).
+    * speech: one event per source utterance; pauses become multiple spans.
     * music / ambience: one event over the union of all spans.
     * sfx: one event with multiple spans (repeated instances of same source).
     """
@@ -196,22 +231,27 @@ def _build_events_for_source(
     events: list[Event] = []
 
     if etype == "speech":
-        for i, sp in enumerate(span_objs):
-            events.append(
-                Event(
-                    id=f"E{eid_start + i:03d}",
-                    type="speech",
-                    track_id=track_id,
-                    spans=[sp],
-                    text=src.text,
-                    verbatim=False,
-                    confidence=0.95,
-                )
+        # A catalog source is one transcript-aligned utterance.  Energy VAD
+        # may split it at pauses, but copying the full transcript into every
+        # active region creates false repeated speech supervision.  Preserve
+        # one utterance event and attach every supported activity span.
+        events.append(
+            Event(
+                id=f"E{eid_start:03d}",
+                type="speech",
+                track_id=track_id,
+                spans=span_objs,
+                text=src.text,
+                verbatim=src.text_is_verbatim,
+                confidence=_semantic_confidence(src),
             )
+        )
         return events
 
     if etype == "lys":
-        # lyrics: one event per line (like speech utterances), verbatim=True
+        # A source event is only verbatim when its words were supplied by a
+        # human or a transcript-bearing dataset.  Model-generated lyrics are
+        # semantic hypotheses and must not be promoted to exact quotations.
         for i, sp in enumerate(span_objs):
             events.append(
                 Event(
@@ -220,8 +260,8 @@ def _build_events_for_source(
                     track_id=track_id,
                     spans=[sp],
                     text=src.text,
-                    verbatim=True,
-                    confidence=0.88,
+                    verbatim=src.text_is_verbatim,
+                    confidence=_semantic_confidence(src),
                 )
             )
         return events
@@ -235,7 +275,7 @@ def _build_events_for_source(
                 track_id=track_id,
                 spans=span_objs,
                 text=src.text,
-                confidence=0.93,
+                confidence=_semantic_confidence(src),
             )
         )
         return events
@@ -248,7 +288,7 @@ def _build_events_for_source(
             track_id=track_id,
             spans=span_objs,
             text=src.text,
-            confidence=0.94,
+            confidence=_semantic_confidence(src),
         )
     )
     return events
@@ -289,10 +329,6 @@ def _build_ledger(scene: Scene, rendered: list[RenderedSource]) -> Ledger:
 
     # stable order: onset asc, then type order, then source id
     def _sort_key(e: Event) -> tuple:
-        src_idx = next(
-            (i for i, rs in enumerate(rendered) if rs.placed.source_id == e.track_id and False),
-            0,
-        ) if False else 0
         return (
             round(e.start_sec(), 6),
             _TYPE_ORDER.get(e.type, 9),
@@ -313,6 +349,13 @@ def _build_ledger(scene: Scene, rendered: list[RenderedSource]) -> Ledger:
         overlap_ratio=overlap_ratio,
     )
 
+    datasets = sorted({rs.placed.source_dataset for rs in rendered if rs.placed.source_dataset})
+    licenses = sorted({rs.placed.source_license for rs in rendered if rs.placed.source_license})
+    is_catalog_scene = bool(datasets)
+    # Programmatic mixing of known single sources is Level B: source identity,
+    # placement and transforms are exact, while real-scene naturalness and any
+    # model-derived semantic attributes are not promoted to Level A truth.
+    label_level = "B" if is_catalog_scene else "model_prediction"
     return Ledger(
         schema_version=SCHEMA_VERSION,  # type: ignore[arg-type]
         sample_id=scene.scene_id,
@@ -322,10 +365,10 @@ def _build_ledger(scene: Scene, rendered: list[RenderedSource]) -> Ledger:
         tracks=tracks,
         events=events,
         provenance=Provenance(
-            label_level="model_prediction",
-            source_dataset="tac_mini_synthetic",
+            label_level=label_level,
+            source_dataset="+".join(datasets) if datasets else "tac_mini_synthetic",
             renderer_manifest_uri=None,
-            license_status="synthetic",
+            license_status="+".join(licenses) if licenses else "synthetic",
         ),
     )
 
@@ -358,6 +401,8 @@ def render_scene(scene: Scene, pool: SourcePool) -> RenderOutput:
     for idx, src in enumerate(scene.sources):
         wav, _dur = pool.load(src.path, sr)
         wav = wav.astype(np.float32)
+        if src.loop_to_scene:
+            wav = _loop_to_duration(wav, scene.duration - src.onset, sr)
         wav = _apply_gain(wav, src.gain_db)
         wav = _apply_fade_by_kind(wav, src.kind, sr)  # source-type-dependent fade
         wav = _repeat_source(wav, src.repeat, src.repeat_gap_s, sr)
@@ -375,56 +420,43 @@ def render_scene(scene: Scene, pool: SourcePool) -> RenderOutput:
         )
         rendered.append(RenderedSource(placed=src, stem=placed, activity=activity))
 
+    # Ducking is a deterministic, explicit scene condition. Apply it to the
+    # stored background stems (not only to the final mixture), then recompute
+    # activity so Ledger evidence matches the waveform the model hears.
+    speech_active = np.zeros(n_clip, dtype=np.float32)
+    if scene.conditions.ducking_enabled:
+        for rs in rendered:
+            if rs.placed.kind in ("speech", "vocal"):
+                frame_size = int(0.05 * sr)
+                for i in range(0, len(rs.stem), frame_size):
+                    rms = np.sqrt(np.mean(rs.stem[i : i + frame_size] ** 2))
+                    if rms > 0.01:
+                        speech_active[i : i + frame_size] = 1.0
+    if speech_active.any():
+        from scipy.signal import lfilter
+
+        smooth = lfilter(np.ones(10) / 10, [1.0], speech_active)
+        speech_active = np.clip(smooth, 0, 1)
+        duck_depth_db = float(scene.conditions.ducking_depth_db or 0.0)
+        duck_factor = 10.0 ** (-duck_depth_db / 20.0)
+        duck_gain = 1.0 - (1.0 - duck_factor) * speech_active
+        for rs in rendered:
+            if rs.placed.kind in ("music", "ambience"):
+                rs.stem = (rs.stem * duck_gain[: len(rs.stem)]).astype(np.float32)
+                rs.activity = compute_activity(
+                    rs.stem,
+                    sr,
+                    activity_threshold=scene.supervision.activity_threshold,
+                    resolution_sec=scene.supervision.resolution_s,
+                    merge_threshold_s=scene.supervision.merge_threshold_s,
+                    duration_sec=scene.duration,
+                    is_continuous=_continuous(rs.placed.kind),
+                )
+
     mixture = np.zeros(n_clip, dtype=np.float32)
     for rs in rendered:
         mixture += rs.stem
     dry_mixture = mixture.copy()
-
-    # Background ambience fill: add low-gain ambient bed to avoid silence (docs/15 problem 6).
-    # Only if no ambience source already present and clip is >5s with gaps.
-    has_ambience = any(rs.placed.kind == "ambience" for rs in rendered)
-    if not has_ambience and scene.duration > 5.0:
-        import hashlib as _hl
-        bg_seed = int(_hl.sha256(f"{scene.scene_id}_bg".encode()).hexdigest()[:8], 16)
-        bg_rng = np.random.default_rng(bg_seed)
-        from sceneledger.data.scene_graph_sampler import SyntheticSourcePool
-        bg_pool = SyntheticSourcePool(sample_rate=sr, seed=20260808)
-        bg_wav, _ = bg_pool.load("ambience:001", sr)
-        bg_wav = bg_wav.astype(np.float32)
-        # trim/pad to clip length
-        if len(bg_wav) > n_clip:
-            bg_wav = bg_wav[:n_clip]
-        else:
-            bg_wav = np.pad(bg_wav, (0, n_clip - len(bg_wav)))
-        bg_wav = _apply_fade_by_kind(bg_wav, "ambience", sr)
-        bg_gain_db = -18.0  # very low background
-        bg_wav = _apply_gain(bg_wav, bg_gain_db)
-        mixture += bg_wav
-
-    # Ducking: reduce music/ambience when speech/vocal is active (docs/15).
-    # Randomized depth (2-5dB) and 30% chance of no ducking for diversity.
-    import random as _rng
-    _duck_rng = _rng.Random(scene.seed)
-    apply_duck = _duck_rng.random() > 0.3  # 70% of clips get ducking
-    duck_depth_db = _duck_rng.uniform(2.0, 5.0)  # 2-5dB, not fixed 6dB
-    speech_active = np.zeros(n_clip, dtype=np.float32)
-    if apply_duck:
-        for rs in rendered:
-            if rs.placed.kind in ("speech", "vocal"):
-                frame_size = int(0.05 * sr)
-                for i in range(0, len(rs.stem) - frame_size, frame_size):
-                    rms = np.sqrt(np.mean(rs.stem[i:i+frame_size]**2))
-                    if rms > 0.01:
-                        speech_active[i:i+frame_size] = 1.0
-    if speech_active.any():
-        from scipy.signal import lfilter
-        smooth = lfilter(np.ones(10) / 10, [1.0], speech_active)
-        speech_active = np.clip(smooth, 0, 1)
-        duck_factor = 10.0 ** (-duck_depth_db / 20.0)  # linear gain
-        duck_gain = 1.0 - (1.0 - duck_factor) * speech_active
-        for rs in rendered:
-            if rs.placed.kind in ("music", "ambience"):
-                mixture[:len(rs.stem)] += rs.stem * (duck_gain[:len(rs.stem)] - 1.0)
 
     # scene-level echo applied to the mixture
     if scene.conditions.echo_delay_ms is not None and scene.conditions.echo_atten_db is not None:
@@ -432,10 +464,29 @@ def render_scene(scene: Scene, pool: SourcePool) -> RenderOutput:
             mixture, sr, scene.conditions.echo_delay_ms, scene.conditions.echo_atten_db
         )
 
-    # prevent clipping
+    # Apply one master gain to mixture, dry mixture and every persisted stem.
+    # Scaling only the final mixture would make saved stems louder than their
+    # actual contribution and invalidate stem-level audibility/SNR audits.
     peak = float(np.max(np.abs(mixture)))
     if peak > 0.99:
-        mixture = mixture * (0.99 / peak)
+        master_gain = 0.99 / peak
+        mixture = (mixture * master_gain).astype(np.float32)
+        for rs in rendered:
+            rs.stem = (rs.stem * master_gain).astype(np.float32)
+            rs.activity = compute_activity(
+                rs.stem,
+                sr,
+                activity_threshold=scene.supervision.activity_threshold,
+                resolution_sec=scene.supervision.resolution_s,
+                merge_threshold_s=scene.supervision.merge_threshold_s,
+                duration_sec=scene.duration,
+                is_continuous=_continuous(rs.placed.kind),
+            )
+        # Re-sum the scaled float32 stems so the persisted-stem invariant is
+        # exact even after per-array rounding.
+        dry_mixture = np.zeros(n_clip, dtype=np.float32)
+        for rs in rendered:
+            dry_mixture += rs.stem
 
     target_ledger = _build_ledger(scene, rendered)
     return RenderOutput(

@@ -1,0 +1,46 @@
+# Example only.  First prepare and human-audit every catalog independently.
+# Copy this into the pool section of train/val/test configs and change split.
+pool:
+  kind: catalog_set
+  catalogs:
+    - catalog_path: /data/source_bank/librispeech/prepared/train.jsonl
+      audio_root: /data/raw/librispeech
+      audit_report_path: /data/source_bank/librispeech/prepared/source_audit_report.json
+      expected_split: train
+      sampling_weight: 1.0
+    - catalog_path: /data/source_bank/esc50/prepared/train.jsonl
+      audio_root: /data/raw/esc50/audio
+      audit_report_path: /data/source_bank/esc50/prepared/source_audit_report.json
+      expected_split: train
+      # Equal bank weights prevent 16k FSD50K sources from drowning ESC-50.
+      sampling_weight: 1.0
+    - catalog_path: /data/source_bank/fsd50k/prepared/train.jsonl
+      audio_root: /data/raw/fsd50k/FSD50K
+      audit_report_path: /data/source_bank/fsd50k/prepared/source_audit_report.json
+      expected_split: train
+      sampling_weight: 1.0
+    - catalog_path: /data/source_bank/musdb18/prepared/train.jsonl
+      audio_root: /data/raw/musdb18_materialized
+      audit_report_path: /data/source_bank/musdb18/prepared/source_audit_report.json
+      expected_split: train
+      sampling_weight: 1.0
+
+# Merge into the chosen mixture-quality profile.  Final ranges must be
+# estimated from the frozen scene plan, not silently tuned after training.
+source_diversity_extension:
+  min_unique_datasets_by_kind:
+    speech: 1
+    sfx: 2
+    ambience: 2
+    music: 1
+    vocal: 1
+  min_unique_primary_labels_by_kind:
+    sfx: 20
+    ambience: 8
+  dataset_fraction_ranges_by_kind:
+    sfx:
+      ESC-50: [0.25, 0.75]
+      FSD50K: [0.25, 0.75]
+    ambience:
+      ESC-50: [0.25, 0.75]
+      FSD50K: [0.25, 0.75]

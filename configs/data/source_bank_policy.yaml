@@ -1,0 +1,180 @@
+schema_version: sceneledger.source_bank_policy.v1
+
+# This file is an executable experiment contract, not a list of datasets that
+# look relevant.  A dataset may enter a runnable profile only after its local
+# importer and its required source-level gates exist.
+datasets:
+  librispeech:
+    status: implemented
+    source_type: semantic
+    roles: [speech]
+    licenses: [CC BY 4.0]
+    acquisition: automatic
+    redistributable_by_project: true
+    supported_claims: [source_class, speech_transcript, clip_timing]
+    required_gates: [speaker_disjoint, transcript_audio_match, source_human_audit]
+    note: English read-speech anchor with exact utterance transcripts.
+
+  common_voice:
+    status: implemented
+    source_type: semantic
+    roles: [speech]
+    licenses: [CC0-1.0]
+    acquisition: mdc_manual
+    redistributable_by_project: false
+    supported_claims: [source_class, speech_transcript, clip_timing]
+    required_gates: [speaker_disjoint, vote_filter, source_human_audit]
+    note: Multilingual speech expansion; users must obtain it directly from Mozilla Data Collective.
+
+  esc50:
+    status: implemented
+    source_type: semantic
+    roles: [sfx, ambience]
+    licenses: [CC BY-NC 3.0, CC BY 3.0]
+    acquisition: automatic
+    redistributable_by_project: false
+    supported_claims: [source_class, clip_timing]
+    required_gates: [recording_group_disjoint, source_human_audit]
+    note: Five-second SFX/ambience anchor; the full ESC-50 collection is non-commercial.
+
+  fsd50k:
+    status: implemented
+    source_type: semantic
+    roles: [sfx, ambience]
+    licenses: [CC0-1.0, CC BY 3.0, CC BY-NC 3.0, CC Sampling+ 1.0]
+    acquisition: automatic
+    redistributable_by_project: false
+    supported_claims: [source_class, clip_timing]
+    required_gates: [pp_consensus, predominant_single_label, uploader_disjoint, source_human_audit]
+    note: Real recording expansion filtered to predominant non-speech/non-music events and per-clip licenses.
+
+  slakh2100_redux:
+    status: implemented
+    source_type: semantic
+    roles: [music]
+    licenses: [CC BY 4.0]
+    acquisition: automatic
+    redistributable_by_project: true
+    supported_claims: [source_class, instrument_set, clip_timing, stem_timing]
+    required_gates: [redux_split, midi_uuid_disjoint, voice_patch_filter, source_human_audit]
+    note: Controlled instrumental music; one complete composition is one semantic music track.
+
+  musdb18_hq:
+    status: implemented
+    source_type: semantic
+    roles: [music, vocal]
+    licenses: [CC BY-NC-SA, CC BY-NC-SA 3.0, MUSDB18 educational use only]
+    acquisition: manual
+    redistributable_by_project: false
+    supported_claims: [source_class, instrument_set, vocal_presence, lyrics_nonverbatim, stem_timing]
+    required_gates: [track_license_allowlist, artist_song_disjoint, source_human_audit]
+    note: Real accompaniment/vocal stems; vocals supervise presence only and never exact lyrics.
+
+  m4singer:
+    status: gated
+    source_type: semantic
+    roles: [vocal]
+    licenses: [UNVERIFIED]
+    acquisition: manual
+    redistributable_by_project: false
+    supported_claims: [source_class, vocal_presence, lyrics_verbatim, stem_timing]
+    required_gates: [written_license_review, lyric_alignment_audit, singer_song_disjoint]
+    note: Candidate Mandarin exact-lyric bank; disabled until written license review is recorded.
+
+  opencpop:
+    status: gated
+    source_type: semantic
+    roles: [vocal]
+    licenses: [UNVERIFIED]
+    acquisition: manual
+    redistributable_by_project: false
+    supported_claims: [source_class, vocal_presence, lyrics_verbatim, stem_timing]
+    required_gates: [written_license_review, lyric_alignment_audit, song_disjoint]
+    note: Candidate Mandarin exact-lyric bank; disabled until written license review is recorded.
+
+  rirs_noises:
+    status: planned
+    source_type: corruption
+    roles: []
+    licenses: [Apache-2.0]
+    acquisition: automatic
+    redistributable_by_project: true
+    supported_claims: []
+    required_gates: [rir_identity_disjoint, corruption_provenance]
+    note: RIR/noise is an acoustic intervention, never a semantic event or caption target.
+
+  scraped_web:
+    status: gated
+    source_type: real_domain
+    roles: []
+    licenses: [RIGHTS_UNVERIFIED]
+    acquisition: local_only
+    redistributable_by_project: false
+    supported_claims: []
+    required_gates: [rights_review, privacy_review, pseudo_label_consensus]
+    note: Bilibili/Instagram/TikTok media is reserved for private real-domain adaptation or evaluation, not the dry source bank.
+
+profiles:
+  d0_anchor_research:
+    stage: D0
+    runnable: true
+    objective: Re-establish the speech plus SFX/ambience data anchor before any model training.
+    selections:
+      - dataset: librispeech
+        roles: [speech]
+        allowed_licenses: [CC BY 4.0]
+        claims: [source_class, speech_transcript, clip_timing]
+      - dataset: esc50
+        roles: [sfx, ambience]
+        allowed_licenses: [CC BY-NC 3.0, CC BY 3.0]
+        claims: [source_class, clip_timing]
+
+  d1_expanded_open_license:
+    stage: D1
+    runnable: true
+    objective: Expand speech, SFX, ambience and controlled music while keeping only open per-source licenses.
+    selections:
+      - dataset: librispeech
+        roles: [speech]
+        allowed_licenses: [CC BY 4.0]
+        claims: [source_class, speech_transcript, clip_timing]
+      - dataset: common_voice
+        roles: [speech]
+        allowed_licenses: [CC0-1.0]
+        claims: [source_class, speech_transcript, clip_timing]
+      - dataset: fsd50k
+        roles: [sfx, ambience]
+        allowed_licenses: [CC0-1.0, CC BY 3.0]
+        claims: [source_class, clip_timing]
+      - dataset: slakh2100_redux
+        roles: [music]
+        allowed_licenses: [CC BY 4.0]
+        claims: [source_class, instrument_set, clip_timing]
+
+  d1_real_music_research:
+    stage: D1
+    runnable: true
+    objective: Add real accompaniment and weak vocal supervision after the D0/D1 source audits pass.
+    selections:
+      - dataset: slakh2100_redux
+        roles: [music]
+        allowed_licenses: [CC BY 4.0]
+        claims: [source_class, instrument_set, clip_timing, stem_timing]
+      - dataset: musdb18_hq
+        roles: [music, vocal]
+        allowed_licenses: [CC BY-NC-SA, CC BY-NC-SA 3.0]
+        claims: [source_class, instrument_set, vocal_presence, lyrics_nonverbatim, stem_timing]
+
+  d2_exact_mandarin_lyrics_future:
+    stage: D2
+    runnable: false
+    objective: Exact timestamped Mandarin lyrics; blocked until dataset licenses and alignments are audited.
+    selections:
+      - dataset: m4singer
+        roles: [vocal]
+        allowed_licenses: [UNVERIFIED]
+        claims: [source_class, vocal_presence, lyrics_verbatim, stem_timing]
+      - dataset: opencpop
+        roles: [vocal]
+        allowed_licenses: [UNVERIFIED]
+        claims: [source_class, vocal_presence, lyrics_verbatim, stem_timing]

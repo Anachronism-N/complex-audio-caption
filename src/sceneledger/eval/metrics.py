@@ -3,8 +3,9 @@
 Reads prediction/reference JSONL (one :class:`Ledger` per line, ``sample_id``
 join key) and reports:
 
-* strict format-success rate (from parser reports, when predictions are raw
-  model output) — when predictions are already Ledgers this is 1.0;
+* strict format-success rate, read from the inference parser report.  A
+  parsed Ledger alone cannot prove that the raw model output was valid, so
+  the rate is reported as unavailable when that evidence is missing;
 * semantic-temporal event F1, precision, recall;
 * onset/offset MAE and p90, tolerance accuracy at several collars;
 * per-type breakdown;
@@ -54,7 +55,7 @@ class SampleMetrics:
     source_count_mae: float
     pointer_accuracy: float
     per_type: dict[str, dict[str, float]] = field(default_factory=dict)
-    strict_format_success: bool = True
+    strict_format_success: bool | None = None
     warnings: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict:
@@ -64,7 +65,10 @@ class SampleMetrics:
 @dataclass
 class CorpusMetrics:
     n_samples: int
-    strict_format_success_rate: float
+    strict_format_success_rate: float | None
+    format_status_complete: bool
+    n_format_status_known: int
+    n_format_status_missing: int
     macro_event_precision: float
     macro_event_recall: float
     macro_event_f1: float
@@ -112,7 +116,10 @@ def _per_type_breakdown(matches: list[EventMatch]) -> dict[str, dict[str, float]
 
 
 def evaluate_sample(
-    ref: Ledger, hyp: Ledger, strict_format_success: bool = True
+    ref: Ledger,
+    hyp: Ledger,
+    strict_format_success: bool | None = None,
+    warnings: list[str] | None = None,
 ) -> SampleMetrics:
     matches = match_events(ref.events, hyp.events)
     pairs = matched_pairs(matches, ref.events, hyp.events)
@@ -172,6 +179,7 @@ def evaluate_sample(
         pointer_accuracy=round(pointer_accuracy, 6),
         per_type=_per_type_breakdown(matches),
         strict_format_success=strict_format_success,
+        warnings=list(warnings or []),
     )
 
 
@@ -184,7 +192,10 @@ def aggregate(samples: list[SampleMetrics]) -> CorpusMetrics:
     if n == 0:
         return CorpusMetrics(
             n_samples=0,
-            strict_format_success_rate=0.0,
+            strict_format_success_rate=None,
+            format_status_complete=False,
+            n_format_status_known=0,
+            n_format_status_missing=0,
             macro_event_precision=0.0,
             macro_event_recall=0.0,
             macro_event_f1=0.0,
@@ -212,11 +223,19 @@ def aggregate(samples: list[SampleMetrics]) -> CorpusMetrics:
             k: _macro([r[k] for r in rows]) for k in ("precision", "recall", "f1")
         }
 
+    known_format = [s.strict_format_success for s in samples if s.strict_format_success is not None]
+    format_complete = len(known_format) == n
+
     return CorpusMetrics(
         n_samples=n,
-        strict_format_success_rate=_macro(
-            [1.0 if s.strict_format_success else 0.0 for s in samples]
+        strict_format_success_rate=(
+            _macro([1.0 if status else 0.0 for status in known_format])
+            if format_complete
+            else None
         ),
+        format_status_complete=format_complete,
+        n_format_status_known=len(known_format),
+        n_format_status_missing=n - len(known_format),
         macro_event_precision=_macro([s.event_precision for s in samples]),
         macro_event_recall=_macro([s.event_recall for s in samples]),
         macro_event_f1=_macro([s.event_f1 for s in samples]),
@@ -255,15 +274,88 @@ def _load_ledger_jsonl(path: str | Path) -> dict[str, Ledger]:
     return out
 
 
+def load_inference_report(source: str | Path | dict) -> tuple[dict, dict[str, dict]]:
+    """Load and validate per-sample parser evidence from inference.
+
+    The returned mapping contains only validated ``strict_format_success``
+    booleans and warning strings.  Duplicate/missing IDs and internally
+    inconsistent summary fields are rejected instead of silently producing a
+    paper metric from incomplete evidence.
+    """
+    if isinstance(source, (str, Path)):
+        payload = json.loads(Path(source).read_text(encoding="utf-8"))
+    else:
+        payload = dict(source)
+    if not isinstance(payload, dict):
+        raise ValueError("inference report must be a JSON object")
+    rows = payload.get("samples")
+    if not isinstance(rows, list):
+        raise ValueError("inference report is missing a samples list")
+    if payload.get("n_samples") is not None and payload["n_samples"] != len(rows):
+        raise ValueError("inference report n_samples does not match its samples list")
+
+    statuses: dict[str, dict] = {}
+    for index, row in enumerate(rows):
+        if not isinstance(row, dict):
+            raise ValueError(f"inference report sample {index} must be an object")
+        sample_id = row.get("sample_id")
+        if not isinstance(sample_id, str) or not sample_id:
+            raise ValueError(f"inference report sample {index} has no sample_id")
+        if sample_id in statuses:
+            raise ValueError(f"duplicate sample_id in inference report: {sample_id}")
+        status = row.get("strict_format_success")
+        if not isinstance(status, bool):
+            raise ValueError(
+                f"inference report sample {sample_id} has no boolean "
+                "strict_format_success"
+            )
+        warnings = row.get("warnings", [])
+        if not isinstance(warnings, list) or not all(
+            isinstance(item, str) for item in warnings
+        ):
+            raise ValueError(f"inference report sample {sample_id} has invalid warnings")
+        statuses[sample_id] = {
+            "strict_format_success": status,
+            "warnings": list(warnings),
+        }
+
+    reported_rate = payload.get("strict_format_success_rate")
+    computed_rate = round(
+        sum(1 for row in statuses.values() if row["strict_format_success"])
+        / max(1, len(statuses)),
+        4,
+    )
+    if reported_rate is not None:
+        if not isinstance(reported_rate, (int, float)) or round(
+            float(reported_rate), 4
+        ) != computed_rate:
+            raise ValueError(
+                "inference report strict_format_success_rate is inconsistent "
+                "with its samples"
+            )
+    reported_count = payload.get("n_strict_format_success")
+    computed_count = sum(
+        1 for row in statuses.values() if row["strict_format_success"]
+    )
+    if reported_count is not None and reported_count != computed_count:
+        raise ValueError(
+            "inference report n_strict_format_success is inconsistent with its samples"
+        )
+    return payload, statuses
+
+
 def evaluate_corpus(
     predictions: str | Path | dict[str, Ledger],
     references: str | Path | dict[str, Ledger],
+    inference_report: str | Path | dict | None = None,
 ) -> CorpusMetrics:
     """Evaluate predictions against references.
 
     Both inputs may be a path to a JSONL file (one Ledger per line) or a
     ``{sample_id: Ledger}`` mapping. Predictions and references are joined on
-    ``sample_id``.
+    ``sample_id``. ``inference_report`` is the raw-output parser report emitted
+    by :mod:`sceneledger.cli.infer`; without it, format success is unknown and
+    is never inferred from the existence of a Ledger.
     """
     refs = (
         _load_ledger_jsonl(references)
@@ -275,6 +367,18 @@ def evaluate_corpus(
         if isinstance(predictions, (str, Path))
         else dict(predictions)
     )
+    format_statuses: dict[str, dict] | None = None
+    if inference_report is not None:
+        _, format_statuses = load_inference_report(inference_report)
+        reference_ids = set(refs)
+        report_ids = set(format_statuses)
+        if report_ids != reference_ids:
+            missing = sorted(reference_ids - report_ids)[:5]
+            extra = sorted(report_ids - reference_ids)[:5]
+            raise ValueError(
+                "inference report sample IDs do not equal reference IDs: "
+                f"missing={missing}, extra={extra}"
+            )
 
     samples: list[SampleMetrics] = []
     for sid in sorted(refs):
@@ -306,7 +410,15 @@ def evaluate_corpus(
                 warnings=["prediction missing"],
             )
         else:
-            sm = evaluate_sample(ref, hyp)
+            evidence = format_statuses.get(sid) if format_statuses is not None else None
+            sm = evaluate_sample(
+                ref,
+                hyp,
+                strict_format_success=(
+                    evidence["strict_format_success"] if evidence is not None else None
+                ),
+                warnings=evidence["warnings"] if evidence is not None else None,
+            )
         samples.append(sm)
     return aggregate(samples)
 
@@ -317,4 +429,5 @@ __all__ = [
     "aggregate",
     "evaluate_corpus",
     "evaluate_sample",
+    "load_inference_report",
 ]

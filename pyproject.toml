@@ -29,9 +29,25 @@ moss = [
   "torchaudio>=2.1",
   "soundfile>=0.12",
 ]
+data = [
+  "soundfile>=0.12",
+]
 
 [project.scripts]
 sceneledger-evaluate = "sceneledger.cli.evaluate:main"
+sceneledger-audit-mixtures = "sceneledger.cli.audit_mixtures:main"
+sceneledger-validate-experiment-data = "sceneledger.cli.validate_experiment_data:main"
+sceneledger-human-audit = "sceneledger.cli.human_audit:main"
+sceneledger-preflight-data = "sceneledger.cli.preflight_data:main"
+sceneledger-prepare-sources = "sceneledger.cli.prepare_sources:main"
+sceneledger-prepare-esc50 = "sceneledger.cli.prepare_esc50:main"
+sceneledger-prepare-fsd50k = "sceneledger.cli.prepare_fsd50k:main"
+sceneledger-prepare-musdb18 = "sceneledger.cli.prepare_musdb18:main"
+sceneledger-caption-sources = "sceneledger.cli.caption_sources:main"
+sceneledger-prepare-librispeech = "sceneledger.cli.prepare_librispeech:main"
+sceneledger-prepare-common-voice = "sceneledger.cli.prepare_common_voice:main"
+sceneledger-prepare-slakh = "sceneledger.cli.prepare_slakh:main"
+sceneledger-validate-source-policy = "sceneledger.cli.validate_source_policy:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -1,0 +1,45 @@
+# Copy to a server-local file and replace every /data/... path.
+pool:
+  kind: catalog_set
+  catalogs:
+    - catalog_path: /data/sceneledger/sources/librispeech/prepared/test.jsonl
+      audio_root: /data/sceneledger/raw/librispeech
+      audit_report_path: /data/sceneledger/sources/librispeech/prepared/source_audit_report.json
+      expected_split: test
+    - catalog_path: /data/sceneledger/sources/esc50/prepared/test.jsonl
+      audio_root: /data/sceneledger/raw/esc50/audio
+      audit_report_path: /data/sceneledger/sources/esc50/prepared/source_audit_report.json
+      expected_split: test
+
+sampler:
+  sample_rate: 16000
+  duration_range: [6.0, 10.0]
+  gain_db_range: [-5.0, -1.0]
+  # Normalize audited dry sources by measured RMS.  Raw gain values alone are
+  # not comparable across LibriSpeech and ESC-50 files.
+  target_active_rms_dbfs_by_kind:
+    speech: [-22.0, -20.0]
+    sfx: [-31.0, -27.0]
+    ambience: [-38.0, -34.0]
+  max_abs_source_gain_db: 24.0
+  foreground_onset_fraction_range: [0.02, 0.18]
+  fg_bg_snr_range: [8.0, 16.0]
+  t60_range: [0.1, 0.4]
+  repeat_range: [1, 2]
+  merge_threshold_range: [0.1, 0.3]
+  resolutions: [0.1]
+  styles: [detailed]
+  loop_background_to_scene: true
+  stable_unique_source_ids: true
+  ducking_probability: 0.0
+  p_rir: 0.0
+  p_echo: 0.0
+
+render:
+  sample_count: 30
+  template_weights:
+    speech_with_sfx: 3
+    speech_ambience_sfx: 2
+  seed_base: 20260813
+  template_seed: 211
+  scene_id_prefix: real_speech_test

@@ -15,9 +15,9 @@ ledger so downstream training never needs to re-run the renderer.
 from __future__ import annotations
 
 import json
+from collections.abc import Iterable
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Iterable
 
 import numpy as np
 
@@ -50,7 +50,7 @@ class ManifestEntry:
         return json.dumps(asdict(self), ensure_ascii=False)
 
     @classmethod
-    def from_dict(cls, d: dict) -> "ManifestEntry":
+    def from_dict(cls, d: dict) -> ManifestEntry:
         return cls(
             scene=d["scene"],
             mixture_path=d["mixture_path"],
@@ -77,11 +77,23 @@ def scene_from_dict(d: dict) -> Scene:
             gain_db=s["gain_db"],
             text=s["text"],
             identity=s.get("identity"),
+            source_group=s.get("source_group"),
+            leakage_groups=list(s.get("leakage_groups", [])),
+            source_labels=list(s.get("source_labels", [])),
+            source_dataset=s.get("source_dataset"),
+            source_license=s.get("source_license"),
+            annotation_origin=s.get("annotation_origin"),
+            text_is_verbatim=s.get("text_is_verbatim", False),
+            source_file_sha256=s.get("source_file_sha256"),
+            source_duration_sec=s.get("source_duration_sec"),
+            source_rms_dbfs=s.get("source_rms_dbfs"),
+            source_active_rms_dbfs=s.get("source_active_rms_dbfs"),
             repeat=s.get("repeat", 1),
             repeat_gap_s=s.get("repeat_gap_s", 0.0),
             rir_id=s.get("rir_id"),
             t60_sec=s.get("t60_sec"),
             is_foreground=s.get("is_foreground", True),
+            loop_to_scene=s.get("loop_to_scene", False),
         )
         for s in d["sources"]
     ]
@@ -100,6 +112,8 @@ def scene_from_dict(d: dict) -> Scene:
             t60_sec=cond.get("t60_sec"),
             codec=cond.get("codec"),
             overlap_ratio=cond.get("overlap_ratio"),
+            ducking_enabled=cond.get("ducking_enabled", False),
+            ducking_depth_db=cond.get("ducking_depth_db"),
         ),
         supervision=Supervision(
             style=sup.get("style", "brief"),
