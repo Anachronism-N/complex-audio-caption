@@ -81,3 +81,7 @@
 ## 数据合规原则
 
 互联网音视频只能在确认研究使用权、平台条款、隐私和版权边界后进入训练。默认只公开可再分发音频、平台 ID/时间段、派生标注及构建脚本；不要直接公开未经授权的原始 Bilibili、Instagram 或 TikTok 媒体。严格按音频指纹、视频 ID、上传者和音乐作品做 group split，避免同源泄漏。
+
+## 当前复杂数据锚点
+
+旧 `real_mix_v6` 已被 manifest-only 复杂度门禁拒绝。下一步固定为 120 条“2 位说话人 + 1 条 ambience + 3 条 SFX”的六源 pilot；完整结论、服务器命令和 Go/No-Go 标准见 [复杂数据管线 v1](docs/32_complex_data_pipeline_v6_audit_and_next_run.md)。recaption 暂时延期，当前只使用可溯源 transcript 和数据集类别标签。

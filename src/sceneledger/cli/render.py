@@ -148,6 +148,16 @@ def _build_sampler(cfg: dict, pool) -> SceneGraphSampler:
         dense_repeated_event=scfg.get("dense_repeated_event", False),
         spread_repeated_event=scfg.get("spread_repeated_event", False),
         stable_unique_source_ids=scfg.get("stable_unique_source_ids", False),
+        random_crop_backgrounds=scfg.get("random_crop_backgrounds", False),
+        fade_in_range_by_kind={
+            str(kind): tuple(float(item) for item in value)
+            for kind, value in scfg.get("fade_in_range_by_kind", {}).items()
+        },
+        fade_out_range_by_kind={
+            str(kind): tuple(float(item) for item in value)
+            for kind, value in scfg.get("fade_out_range_by_kind", {}).items()
+        },
+        shared_room_probability=float(scfg.get("shared_room_probability", 0.0)),
         ducking_probability=scfg.get("ducking_probability", 0.7),
         ducking_depth_db_range=tuple(
             scfg.get("ducking_depth_db_range", (2.0, 5.0))

@@ -16,8 +16,12 @@ from sceneledger.data.manifests import (
 )
 from sceneledger.data.renderer import render_scene
 from sceneledger.data.scene_graph_sampler import (
+    Conditions,
+    PlacedSource,
+    Scene,
     SceneGraphSampler,
     SceneSamplerConfig,
+    Supervision,
     SyntheticSourcePool,
 )
 from sceneledger.data.schema import Ledger
@@ -165,6 +169,50 @@ def test_scene_dict_round_trip(pool, sampler):
     d = scene.to_manifest_dict()
     scene2 = scene_from_dict(d)
     assert scene2.to_manifest_dict() == d
+
+
+def test_explicit_crop_and_asymmetric_fades_are_replayable():
+    class RampPool:
+        def load(self, key: str, sample_rate: int) -> tuple[np.ndarray, float]:
+            del key
+            waveform = np.linspace(0.1, 0.8, sample_rate, dtype=np.float32)
+            return waveform, 1.0
+
+    source = PlacedSource(
+        source_id="S01",
+        kind="sfx",
+        path="ramp",
+        onset=0.0,
+        gain_db=-6.0,
+        text="A controlled ramp.",
+        crop_start_sec=0.2,
+        crop_duration_sec=0.4,
+        fade_in_sec=0.0,
+        fade_out_sec=0.1,
+    )
+    scene = Scene(
+        scene_id="crop",
+        seed=1,
+        duration=0.5,
+        template="isolated_sfx",
+        sources=[source],
+        conditions=Conditions(),
+        supervision=Supervision(),
+        sample_rate=1000,
+    )
+
+    first = render_scene(scene, RampPool())
+    restored_scene = scene_from_dict(scene.to_manifest_dict())
+    replay = render_scene(restored_scene, RampPool())
+    stem = first.stems[0].stem
+
+    assert first.mixture_hash() == replay.mixture_hash()
+    assert stem.shape == (500,)
+    assert stem[0] > 0.0
+    assert stem[399] == pytest.approx(0.0)
+    assert np.all(stem[400:] == 0.0)
+    assert restored_scene.sources[0].crop_start_sec == 0.2
+    assert restored_scene.sources[0].fade_out_sec == 0.1
 
 
 def test_persist_and_manifest_round_trip(tmp_path: Path, pool, sampler):

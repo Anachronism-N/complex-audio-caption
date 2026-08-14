@@ -46,6 +46,7 @@ TemplateID = Literal[
     "complex_cocktail",
     "rich_band",
     "multi_event_dense",
+    "multi_speaker_ambient_events",
 ]
 
 # Sampling ranges (docs/06 §3.3). These are project choices, not TAC values.
@@ -92,6 +93,13 @@ class PlacedSource:
     source_duration_sec: float | None = None
     source_rms_dbfs: float | None = None
     source_active_rms_dbfs: float | None = None
+    # Explicit, replayable edit decisions.  Speech/SFX remain uncropped unless
+    # their source annotation is also segmented; long music/ambience may use a
+    # random excerpt.  ``None`` fade values retain the legacy kind defaults.
+    crop_start_sec: float = 0.0
+    crop_duration_sec: float | None = None
+    fade_in_sec: float | None = None
+    fade_out_sec: float | None = None
     repeat: int = 1
     repeat_gap_s: float = 0.0
     rir_id: str | None = None
@@ -180,6 +188,10 @@ def _source_dict(s: PlacedSource) -> dict:
         "source_duration_sec": s.source_duration_sec,
         "source_rms_dbfs": s.source_rms_dbfs,
         "source_active_rms_dbfs": s.source_active_rms_dbfs,
+        "crop_start_sec": s.crop_start_sec,
+        "crop_duration_sec": s.crop_duration_sec,
+        "fade_in_sec": s.fade_in_sec,
+        "fade_out_sec": s.fade_out_sec,
         "repeat": s.repeat,
         "repeat_gap_s": s.repeat_gap_s,
         "rir_id": s.rir_id,
@@ -279,6 +291,7 @@ class CatalogSourcePool:
         from sceneledger.data.source_catalog import file_sha256, read_source_catalog
 
         catalog = Path(self.catalog_path).expanduser().resolve()
+        rejected_source_ids: set[str] = set()
         if self.audit_report_path:
             import json
 
@@ -309,8 +322,21 @@ class CatalogSourcePool:
                     f"catalog is not bound to passed source audit: {catalog} "
                     f"expected={expected_hash!r} observed={observed_hash!r}"
                 )
+            rejected_source_ids = {
+                str(source_id)
+                for source_id in audit.get("rejected_source_ids", [])
+            }
         root = Path(self.audio_root).expanduser().resolve() if self.audio_root else catalog.parent
-        records = read_source_catalog(catalog)
+        records = [
+            record
+            for record in read_source_catalog(catalog)
+            if record.source_id not in rejected_source_ids
+        ]
+        if not records:
+            raise ValueError(
+                "catalog has no usable sources after human-audit quarantine: "
+                f"{catalog}"
+            )
         observed_splits = {record.split for record in records}
         if None in observed_splits or len(observed_splits) != 1:
             raise ValueError(
@@ -439,6 +465,38 @@ class CatalogSourcePool:
         ]
         rng.shuffle(keys)
         return keys[:limit]
+
+    def candidates_for_group(
+        self,
+        kind: SourceKind,
+        source_group: str,
+        rng: random.Random,
+        *,
+        max_duration: float | None = None,
+        limit: int = 256,
+    ) -> list[str]:
+        """Return aligned stems/records from one semantic source group."""
+        keys = [
+            key
+            for key in self._by_kind.get(kind, [])
+            if self._records[key].source_group == source_group
+            and (
+                max_duration is None
+                or self._records[key].duration_sec is None
+                or float(self._records[key].duration_sec) <= max_duration
+            )
+        ]
+        rng.shuffle(keys)
+        return keys[:limit]
+
+    def paired_groups(self, left: SourceKind, right: SourceKind) -> list[str]:
+        left_groups = {
+            self._records[key].source_group for key in self._by_kind.get(left, [])
+        }
+        right_groups = {
+            self._records[key].source_group for key in self._by_kind.get(right, [])
+        }
+        return sorted(left_groups & right_groups)
 
     def load(self, key: str, sample_rate: int) -> tuple[np.ndarray, float]:
         self._verify_audio(key)
@@ -592,6 +650,39 @@ class CatalogSetSourcePool:
             selected = rng.choices(available, weights=weights, k=1)[0]
             output.append(queues[selected].pop(0))
         return output
+
+    def candidates_for_group(
+        self,
+        kind: SourceKind,
+        source_group: str,
+        rng: random.Random,
+        *,
+        max_duration: float | None = None,
+        limit: int = 256,
+    ) -> list[str]:
+        queues = [
+            catalog.candidates_for_group(
+                kind,
+                source_group,
+                rng,
+                max_duration=max_duration,
+                limit=limit,
+            )
+            for catalog in self.catalogs
+        ]
+        output: list[str] = []
+        while any(queues) and len(output) < limit:
+            available = [index for index, queue in enumerate(queues) if queue]
+            weights = [self.sampling_weights[index] for index in available]
+            selected = rng.choices(available, weights=weights, k=1)[0]
+            output.append(queues[selected].pop(0))
+        return output
+
+    def paired_groups(self, left: SourceKind, right: SourceKind) -> list[str]:
+        groups: set[str] = set()
+        for catalog in self.catalogs:
+            groups.update(catalog.paired_groups(left, right))
+        return sorted(groups)
 
     def load(self, key: str, sample_rate: int) -> tuple[np.ndarray, float]:
         return self._owner[key].load(key, sample_rate)
@@ -869,11 +960,42 @@ class SceneSamplerConfig:
     dense_repeated_event: bool = False
     spread_repeated_event: bool = False
     stable_unique_source_ids: bool = False
+    random_crop_backgrounds: bool = False
+    fade_in_range_by_kind: dict[str, tuple[float, float]] = field(default_factory=dict)
+    fade_out_range_by_kind: dict[str, tuple[float, float]] = field(default_factory=dict)
+    # A real scene has one room.  When enabled, all sources receive the same
+    # room ID and T60 instead of independently sampled incompatible rooms.
+    shared_room_probability: float = 0.0
     ducking_probability: float = 0.7
     ducking_depth_db_range: tuple[float, float] = (2.0, 5.0)
     # probability of applying RIR / echo to a scene
     p_rir: float = 0.5
     p_echo: float = 0.3
+
+    def __post_init__(self) -> None:
+        for name in (
+            "shared_room_probability",
+            "ducking_probability",
+            "p_rir",
+            "p_echo",
+        ):
+            value = float(getattr(self, name))
+            if not 0.0 <= value <= 1.0:
+                raise ValueError(f"{name} must be in [0, 1], got {value}")
+        for mapping_name in (
+            "fade_in_range_by_kind",
+            "fade_out_range_by_kind",
+        ):
+            mapping = getattr(self, mapping_name)
+            for kind, interval in mapping.items():
+                if (
+                    len(interval) != 2
+                    or float(interval[0]) < 0.0
+                    or float(interval[1]) < float(interval[0])
+                ):
+                    raise ValueError(
+                        f"invalid {mapping_name} interval for {kind}: {interval}"
+                    )
 
 
 def _snr_to_gain_db(snr_db: float, ref_gain_db: float) -> float:
@@ -909,6 +1031,12 @@ class SceneGraphSampler:
             rng,
             label_preferences_by_kind=label_preferences_by_kind,
         )
+        if rng.random() < cfg.shared_room_probability:
+            shared_t60 = round(rng.uniform(*cfg.t60_range), 3)
+            shared_room = f"shared_room_{rng.randint(1, 32):02d}"
+            for source in sources:
+                source.t60_sec = shared_t60
+                source.rir_id = shared_room
         conditions = self._sample_conditions(rng, sources)
         supervision = self._sample_supervision(rng)
         return Scene(
@@ -940,7 +1068,15 @@ class SceneGraphSampler:
         selected_voice_identities: set[str] = set()
         kind_occurrences: Counter[str] = Counter()
 
-        def _src(kind: SourceKind, *, fg: bool, identity: str | None = None) -> PlacedSource:
+        def _src(
+            kind: SourceKind,
+            *,
+            fg: bool,
+            identity: str | None = None,
+            required_source_group: str | None = None,
+            min_duration_sec: float | None = None,
+            allow_crop: bool = False,
+        ) -> PlacedSource:
             nonlocal source_serial
             source_serial += 1
             occurrence = kind_occurrences[kind]
@@ -951,8 +1087,22 @@ class SceneGraphSampler:
             metadata: dict[str, object] = {}
             candidates_fn = getattr(self.pool, "candidates", None)
             label_candidates_fn = getattr(self.pool, "candidates_for_label", None)
+            group_candidates_fn = getattr(self.pool, "candidates_for_group", None)
             keys_fn = getattr(self.pool, "keys", None)
-            if preferred_label and callable(label_candidates_fn):
+            if required_source_group and callable(group_candidates_fn):
+                candidates = list(
+                    group_candidates_fn(
+                        kind,
+                        required_source_group,
+                        rng,
+                        max_duration=(
+                            duration - 0.05
+                            if kind not in ("music", "ambience") and not allow_crop
+                            else None
+                        ),
+                    )
+                )
+            elif preferred_label and callable(label_candidates_fn):
                 candidates = list(
                     label_candidates_fn(
                         kind,
@@ -960,7 +1110,7 @@ class SceneGraphSampler:
                         rng,
                         max_duration=(
                             duration - 0.05
-                            if kind not in ("music", "ambience")
+                            if kind not in ("music", "ambience") and not allow_crop
                             else None
                         ),
                     )
@@ -972,7 +1122,7 @@ class SceneGraphSampler:
                         rng,
                         max_duration=(
                             duration - 0.05
-                            if kind not in ("music", "ambience")
+                            if kind not in ("music", "ambience") and not allow_crop
                             else None
                         ),
                     )
@@ -1002,13 +1152,27 @@ class SceneGraphSampler:
                         for item in candidate_metadata.get("leakage_groups", [])
                     ),
                 } - {""}
-                if candidate_groups & selected_leakage_groups:
+                candidate_source_group = str(
+                    candidate_metadata.get("source_group") or ""
+                )
+                if required_source_group and candidate_source_group != required_source_group:
+                    continue
+                if min_duration_sec is not None and (
+                    candidate_duration is None
+                    or float(candidate_duration) < min_duration_sec
+                ):
+                    continue
+                if (
+                    candidate_groups & selected_leakage_groups
+                    and candidate_source_group != required_source_group
+                ):
                     continue
                 # Speech, vocals and discrete SFX carry utterance/event-level
                 # text.  Cropping their tail while keeping the complete text
                 # would manufacture unsupported supervision.
                 if (
                     kind not in ("music", "ambience")
+                    and not allow_crop
                     and candidate_duration is not None
                     and float(candidate_duration) > duration - 0.05
                 ):
@@ -1111,6 +1275,23 @@ class SceneGraphSampler:
                 rir_id = f"room_{rng.randint(1, 8):02d}"
             resolved_identity = str(metadata.get("identity") or identity) if metadata.get("identity") or identity else None
             text = str(metadata.get("text") or _caption_for(kind, rng))
+            crop_start = 0.0
+            crop_duration = None
+            if (
+                cfg.random_crop_backgrounds
+                and (kind in ("music", "ambience") or allow_crop)
+                and metadata.get("source_duration_sec") is not None
+                and float(metadata["source_duration_sec"]) > duration + 0.05
+            ):
+                crop_duration = duration
+                crop_start = round(
+                    rng.uniform(0.0, float(metadata["source_duration_sec"]) - duration),
+                    6,
+                )
+            fade_in_range = cfg.fade_in_range_by_kind.get(kind)
+            fade_out_range = cfg.fade_out_range_by_kind.get(kind)
+            fade_in = round(rng.uniform(*fade_in_range), 6) if fade_in_range else None
+            fade_out = round(rng.uniform(*fade_out_range), 6) if fade_out_range else None
             return PlacedSource(
                 source_id=(
                     f"{kind[:2].upper()}{source_serial:02d}"
@@ -1134,6 +1315,10 @@ class SceneGraphSampler:
                 source_duration_sec=(float(metadata["source_duration_sec"]) if metadata.get("source_duration_sec") is not None else None),
                 source_rms_dbfs=(float(metadata["source_rms_dbfs"]) if metadata.get("source_rms_dbfs") is not None else None),
                 source_active_rms_dbfs=(float(metadata["source_active_rms_dbfs"]) if metadata.get("source_active_rms_dbfs") is not None else None),
+                crop_start_sec=crop_start,
+                crop_duration_sec=crop_duration,
+                fade_in_sec=fade_in,
+                fade_out_sec=fade_out,
                 repeat=repeat,
                 repeat_gap_s=repeat_gap,
                 rir_id=rir_id,
@@ -1142,6 +1327,53 @@ class SceneGraphSampler:
                 loop_to_scene=cfg.loop_background_to_scene
                 and kind in ("music", "ambience"),
             )
+
+        def _schedule(source: PlacedSource, target_onset: float) -> None:
+            latest = max(
+                0.0,
+                duration - float(source.source_duration_sec or duration) - 0.05,
+            )
+            source.onset = round(
+                min(max(0.0, target_onset), latest) / TIME_RESOLUTION_SEC
+            ) * TIME_RESOLUTION_SEC
+
+        def _aligned_music_vocal() -> tuple[PlacedSource, PlacedSource]:
+            paired_groups_fn = getattr(self.pool, "paired_groups", None)
+            if not callable(paired_groups_fn):
+                return (
+                    _src("music", fg=False),
+                    _src("vocal", fg=True, identity="V1"),
+                )
+            groups = list(paired_groups_fn("music", "vocal"))
+            if not groups:
+                raise ValueError(
+                    "music/vocal template requires an audited source_group "
+                    "containing aligned music and vocal stems"
+                )
+            group = rng.choice(groups)
+            vocal = _src(
+                "vocal",
+                fg=True,
+                identity="V1",
+                required_source_group=group,
+                allow_crop=True,
+            )
+            music = _src("music", fg=False, required_source_group=group)
+            durations = [
+                value
+                for value in (
+                    music.source_duration_sec,
+                    vocal.source_duration_sec,
+                )
+                if value is not None
+            ]
+            available = min(durations) if len(durations) == 2 else 0.0
+            if cfg.random_crop_backgrounds and available > duration + 0.05:
+                crop_start = round(rng.uniform(0.0, available - duration), 6)
+                for source in (music, vocal):
+                    source.crop_start_sec = crop_start
+                    source.crop_duration_sec = duration
+            return music, vocal
 
         if template == "isolated_sfx":
             return [_src("sfx", fg=True)]
@@ -1178,12 +1410,14 @@ class SceneGraphSampler:
             return [_src("ambience", fg=False), _src("sfx", fg=True)]
         # B3 templates: lyrics + overlapping speakers
         if template == "lyrics_over_music":
-            return [_src("music", fg=False), _src("vocal", fg=True, identity="V1")]
+            music, vocal = _aligned_music_vocal()
+            return [music, vocal]
         if template == "speech_music_lyrics_sfx":
+            music, vocal = _aligned_music_vocal()
             return [
-                _src("music", fg=False),
+                music,
                 _src("speech", fg=True, identity="S1"),
-                _src("vocal", fg=True, identity="V1"),
+                vocal,
                 _src("sfx", fg=True),
             ]
         if template == "overlapping_speakers":
@@ -1234,10 +1468,11 @@ class SceneGraphSampler:
             return sources
         if template == "rich_band":
             # music + vocals + 2 sfx + ambience = 5 sources
+            music, vocal = _aligned_music_vocal()
             return [
                 _src("ambience", fg=False),
-                _src("music", fg=False),
-                _src("vocal", fg=True, identity="V1"),
+                music,
+                vocal,
                 _src("sfx", fg=True),
                 _src("sfx", fg=True),
             ]
@@ -1247,6 +1482,22 @@ class SceneGraphSampler:
             for _ in range(rng.randint(2, 3)):
                 sources.append(_src("sfx", fg=True))
             return sources
+        if template == "multi_speaker_ambient_events":
+            # Runnable with the current audited LibriSpeech + SFX/ambience
+            # banks: two overlapping utterances, a continuous bed, and three
+            # distinct foreground events distributed across the full scene.
+            ambience = _src("ambience", fg=False)
+            speakers = [
+                _src("speech", fg=True, identity="S1", min_duration_sec=1.5),
+                _src("speech", fg=True, identity="S2", min_duration_sec=1.5),
+            ]
+            effects = [_src("sfx", fg=True) for _ in range(3)]
+            _schedule(speakers[0], duration * 0.08)
+            _schedule(speakers[1], duration * 0.12)
+            event_positions = (0.12, 0.42, 0.70)
+            for index, effect in enumerate(effects):
+                _schedule(effect, duration * event_positions[index])
+            return [ambience, *speakers, *effects]
         raise ValueError(f"unknown template {template!r}")
 
     def _sample_conditions(

@@ -1,0 +1,110 @@
+schema_version: sceneledger-dataset-expansion-plan-v1
+updated: 2026-08-15
+
+principles:
+  - A source bank, a controllable mixture generator and a real-scene benchmark are different roles.
+  - Taxonomy labels and transcripts may supervise only what their original annotation supports.
+  - Every source must retain recording, speaker, uploader, song or creator groups for leakage-safe splitting.
+  - Recaptioning is deferred; generated prose must not overwrite source truth in this phase.
+
+tiers:
+  p1_complex_anchor:
+    objective: Prove the six-source speech/ambience/SFX pipeline before model training.
+    datasets:
+      - name: LibriSpeech
+        role: transcript-bearing speech source
+        status: implemented
+        official_url: https://www.openslr.org/12/
+        supervision: utterance transcript, speaker and chapter
+        use: two distinct speakers per scene
+        do_not_use_as: spontaneous or emotional speech supervision
+      - name: ESC-50
+        role: isolated SFX and ambience anchor
+        status: implemented
+        official_url: https://github.com/karolpiczak/ESC-50
+        supervision: one official class label per five-second clip
+        use: balanced, interpretable event classes
+        do_not_use_as: real complex-scene benchmark
+      - name: FSD50K
+        role: diverse real SFX and ambience source-like bank
+        status: implemented
+        official_url: https://zenodo.org/records/4060432
+        supervision: weak labels filtered to one high-agreement predominant class
+        use: increase class, uploader and recording diversity
+        do_not_use_as: perfectly isolated source truth
+
+  p2_acoustic_and_real_distribution:
+    objective: Test sim-to-real transfer without pretending real mixtures are dry sources.
+    datasets:
+      - name: DESED
+        role: real and synthetic domestic soundscape benchmark
+        status: integration-needed
+        official_url: https://github.com/turpaultn/DESED
+        supervision: domestic sound-event classes with task-specific annotations
+        use: external real-scene evaluation and optional audited soundbank
+        do_not_use_as: unrestricted caption corpus
+      - name: RIRS_NOISES
+        role: measured/simulated room responses and noise
+        status: downloader-and-renderer-integration-needed
+        official_url: https://www.openslr.org/28/
+        supervision: acoustic corruption only
+        use: replace synthetic RIRs in robustness arms
+        do_not_use_as: semantic event supervision
+      - name: FUSS
+        role: variable-source separation and room-acoustics reference
+        status: evaluation-integration-needed
+        official_url: https://www.tensorflow.org/datasets/catalog/fuss
+        supervision: isolated sources and mixtures; no semantic labels for source files
+        use: source-count/separation diagnostics and renderer validation
+        do_not_use_as: caption semantic ground truth
+      - name: TAU Urban Acoustic Scenes
+        role: real urban ambience and domain-shift benchmark
+        status: license-and-metadata-review-needed
+        official_url: https://zenodo.org/records/6337421
+        supervision: global acoustic-scene class
+        use: real ambience/domain evaluation after segment-level review
+        do_not_use_as: isolated SFX source bank
+
+  p3_voice_and_music:
+    objective: Add aligned music/vocal and established multi-speaker mixture anchors.
+    datasets:
+      - name: MUSDB18-HQ
+        role: aligned accompaniment and vocal stems
+        status: implemented-awaiting-source-audit
+        official_url: https://sigsep.github.io/datasets/musdb.html
+        supervision: song-aligned stems; no lyric transcript
+        use: music/vocal pairing with shared excerpt boundaries
+        do_not_use_as: lyric text supervision
+      - name: MedleyDB
+        role: instrument-rich aligned multitracks
+        status: access-and-license-review-needed
+        official_url: https://medleydb.weebly.com/
+        supervision: stem/instrument metadata and multitrack alignment
+        use: music detail and instrument-overlap experiments
+        do_not_use_as: automatic redistribution without permission review
+      - name: LibriMix
+        role: established two/three-speaker mixture anchor
+        status: subset-generation-integration-needed
+        official_url: https://github.com/JorisCos/LibriMix
+        supervision: LibriSpeech utterances mixed with WHAM noise
+        use: speaker-overlap baseline and comparison protocol
+        do_not_use_as: new speech-content diversity
+
+  p4_large_corruption_banks:
+    objective: Scale only after P1-P3 gates pass.
+    datasets:
+      - name: DNS Challenge
+        role: large speech/noise/RIR corruption bank
+        status: deferred-large-download
+        official_url: https://github.com/microsoft/DNS-Challenge
+        supervision: speech enhancement and acoustic corruption
+        use: high-scale robustness training
+        do_not_use_as: first data-pipeline anchor
+
+acceptance_order:
+  - source_catalog_audit
+  - leakage_and_provenance_preflight
+  - complexity_manifest_gate
+  - waveform_and_stem_audibility_gate
+  - blinded_human_mixture_review
+  - model_training

@@ -6,6 +6,9 @@ from pathlib import Path
 import pytest
 import yaml
 
+from sceneledger.data.scene_recipes import read_recipes
+from sceneledger.data.source_catalog import SourceRecord, write_source_catalog
+from scripts.make_complex_speech_sfx_config import main as complex_main
 from scripts.make_real_speech_sfx_pilot_config import (
     _passed_audit,
     _rms_ready_catalog,
@@ -143,3 +146,88 @@ def test_pilot_config_can_add_fsd50k_and_urbansound8k_banks(
     config = yaml.safe_load(output.read_text(encoding="utf-8"))
     assert len(config["pool"]["catalogs"]) == 4
     assert config["render"]["sample_count"] == 60
+
+
+def test_complex_config_binds_rule_recipes_inventory_and_review(
+    tmp_path: Path,
+) -> None:
+    bank_specs = {
+        "librispeech": [("speech", "read_english_speech")],
+        "esc50": [("ambience", "rain"), ("sfx", "dog_bark")],
+        "fsd50k": [
+            ("ambience", "wind"),
+            ("sfx", "bird_call"),
+            ("sfx", "water_drop"),
+        ],
+    }
+    roots: dict[str, Path] = {}
+    prepared: dict[str, Path] = {}
+    for bank, specs in bank_specs.items():
+        roots[bank] = tmp_path / bank / "audio"
+        roots[bank].mkdir(parents=True)
+        prepared[bank] = tmp_path / bank / "prepared"
+        prepared[bank].mkdir()
+        records = [
+            SourceRecord(
+                source_id=f"{bank}:{index}",
+                kind=kind,  # type: ignore[arg-type]
+                audio_path=f"{bank}_{index}.wav",
+                source_group=f"{bank}:group:{index}",
+                labels=[label],
+                caption=f"{bank} {label}",
+                dataset=bank,
+                license="CC0-1.0",
+                annotation_origin="dataset",
+                split="test",
+                rms_dbfs=-24.0,
+                active_rms_dbfs=-20.0,
+            )
+            for index, (kind, label) in enumerate(specs)
+        ]
+        write_source_catalog(prepared[bank] / "test.jsonl", records)
+        kinds = {"speech": 10} if bank == "librispeech" else {
+            "sfx": 10,
+            "ambience": 10,
+        }
+        (prepared[bank] / "source_audit_report.json").write_text(
+            json.dumps(
+                {
+                    "pass": True,
+                    "required_splits": ["test"],
+                    "counts_by_split_kind": {"test": kinds},
+                }
+            ),
+            encoding="utf-8",
+        )
+    output = tmp_path / "complex.yaml"
+
+    assert (
+        complex_main(
+            [
+                "--librispeech-root",
+                str(roots["librispeech"]),
+                "--librispeech-prepared",
+                str(prepared["librispeech"]),
+                "--esc50-audio-root",
+                str(roots["esc50"]),
+                "--esc50-prepared",
+                str(prepared["esc50"]),
+                "--fsd50k-root",
+                str(roots["fsd50k"]),
+                "--fsd50k-prepared",
+                str(prepared["fsd50k"]),
+                "--output",
+                str(output),
+            ]
+        )
+        == 0
+    )
+    config = yaml.safe_load(output.read_text(encoding="utf-8"))
+    inventory = output.with_suffix(".inventory.json")
+    recipes = output.with_suffix(".rule_recipes.jsonl")
+    review = output.with_suffix(".rule_recipe_review.csv")
+    assert inventory.is_file()
+    assert review.is_file()
+    assert len(read_recipes(recipes)) == 120
+    assert config["render"]["recipe_plan_path"] == str(recipes)
+    assert config["recipe_experiment"]["human_review_path"] == str(review)

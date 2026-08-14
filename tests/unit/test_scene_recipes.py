@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 import json
 from pathlib import Path
 
@@ -14,8 +15,10 @@ from sceneledger.data.scene_recipes import (
     export_llm_tasks,
     generate_rule_recipes,
     read_recipes,
+    validate_recipe_review,
     validate_recipes,
     write_inventory,
+    write_recipe_review,
     write_recipes,
 )
 from sceneledger.data.source_catalog import SourceRecord, write_source_catalog
@@ -71,6 +74,80 @@ def test_rule_recipes_are_deterministic_and_inventory_constrained(tmp_path: Path
     ]
     assert validate_recipes(left, inventory)["pass"] is True
     assert all(recipe.label_preferences_by_kind.get("sfx") for recipe in left)
+
+
+def test_complex_rule_recipe_fills_all_slots_without_repeating_available_labels(
+    tmp_path: Path,
+) -> None:
+    catalog = tmp_path / "complex_catalog.jsonl"
+    write_source_catalog(
+        catalog,
+        [
+            _record("speech1", "speech", None),
+            _record("speech2", "speech", None),
+            _record("rain", "ambience", "rain"),
+            _record("bird", "sfx", "bird_call"),
+            _record("dog", "sfx", "dog_bark"),
+            _record("water", "sfx", "water_drop"),
+        ],
+    )
+    inventory = build_label_inventory([catalog])
+
+    recipes = generate_rule_recipes(
+        inventory,
+        count=4,
+        seed=17,
+        template_weights={"multi_speaker_ambient_events": 1.0},
+    )
+
+    assert all(recipe.context == "nature" for recipe in recipes)
+    assert all(
+        len(recipe.label_preferences_by_kind["sfx"]) == 3
+        for recipe in recipes
+    )
+    assert all(
+        len(set(recipe.label_preferences_by_kind["sfx"])) == 3
+        for recipe in recipes
+    )
+    assert all(
+        recipe.label_preferences_by_kind["ambience"] == ["rain"]
+        for recipe in recipes
+    )
+
+
+def test_recipe_review_must_be_complete_and_meet_pass_rate(tmp_path: Path) -> None:
+    inventory = _inventory(tmp_path)
+    recipes = generate_rule_recipes(
+        inventory,
+        count=4,
+        seed=3,
+        template_weights={"speech_with_sfx": 1.0},
+    )
+    review = tmp_path / "review.csv"
+    write_recipe_review(review, recipes)
+
+    incomplete = validate_recipe_review(review, recipes, min_pass_rate=0.75)
+    assert incomplete["pass"] is False
+    assert incomplete["n_completed"] == 0
+
+    with review.open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        fieldnames = list(reader.fieldnames or [])
+        rows = [dict(row) for row in reader]
+    for index, row in enumerate(rows):
+        row["plausible_y_n"] = "n" if index == 0 else "y"
+        row["label_compatible_y_n"] = "y"
+        row["notes"] = "one intentional rejection" if index == 0 else "checked"
+    with review.open("w", encoding="utf-8-sig", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+    accepted = validate_recipe_review(review, recipes, min_pass_rate=0.75)
+    rejected = validate_recipe_review(review, recipes, min_pass_rate=0.80)
+    assert accepted["pass"] is True
+    assert accepted["pass_rate"] == 0.75
+    assert rejected["pass"] is False
 
 
 def test_llm_compile_injects_frozen_template_seed_and_rejects_hallucinated_labels(

@@ -747,6 +747,7 @@ def validate_source_audit(
         split: {field: [] for field in fields} for split in FOLDS
     }
     invalid_answers: list[dict[str, str]] = []
+    rejected_source_ids: set[str] = set()
     for row in rows:
         for field in fields:
             answer = str(row.get(field, "")).strip().lower()
@@ -756,6 +757,10 @@ def validate_source_audit(
                 )
             else:
                 passed = answer == "y"
+                if not passed:
+                    rejected_source_ids.add(
+                        str(row.get("source_id", "")).strip()
+                    )
                 normalized[field].append(passed)
                 source_id = str(row.get("source_id", "")).strip()
                 if source_id in known and known[source_id].split in FOLDS:
@@ -849,6 +854,9 @@ def validate_source_audit(
         },
         "pass_rates": pass_rates,
         "pass_rates_by_split": pass_rates_by_split,
+        # Reviewed failures are quarantined by CatalogSourcePool even when the
+        # aggregate sampling audit still passes its confidence threshold.
+        "rejected_source_ids": sorted(rejected_source_ids),
         "required_splits": sorted(requested_splits),
         "checks": checks,
     }

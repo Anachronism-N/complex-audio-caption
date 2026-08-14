@@ -1,0 +1,84 @@
+profiles:
+  # Diagnostic only: enough to reject the old one/two-block distributions and
+  # provenance-free manifests before any model training.
+  diagnostic_v1:
+    description: General complex-audio diagnostic; not a paper acceptance gate.
+    complex_definition:
+      min_sources: 4
+      min_events: 4
+      min_overlap_ratio: 0.15
+      min_simultaneous_tracks: 2
+    simple_definition:
+      max_sources: 2
+      max_events: 2
+      max_overlap_ratio: 0.05
+      max_temporal_transitions: 4
+    gates:
+      min_scenes: 50
+      min_mean_sources: 3.0
+      min_mean_events: 3.0
+      min_mean_overlap_ratio: 0.15
+      min_complex_scene_fraction: 0.30
+      max_simple_scene_fraction: 0.25
+      max_sequential_only_fraction: 0.05
+      max_block_like_fraction: 0.30
+      min_provenance_complete_fraction: 1.0
+
+  # Runnable after the LibriSpeech + ESC-50 + FSD50K source audits pass.  It
+  # deliberately excludes music/vocals so an unavailable bank cannot be hidden
+  # behind a permissive threshold.
+  speech_sfx_complex_v1:
+    description: Multi-speaker, ambience and dense-SFX complex-data gate.
+    complex_definition:
+      min_sources: 5
+      min_events: 5
+      min_overlap_ratio: 0.20
+      min_simultaneous_tracks: 3
+    simple_definition:
+      max_sources: 2
+      max_events: 2
+      max_overlap_ratio: 0.05
+      max_temporal_transitions: 4
+    gates:
+      min_scenes: 120
+      min_mean_sources: 4.5
+      min_mean_events: 4.5
+      min_mean_overlap_ratio: 0.20
+      min_complex_scene_fraction: 0.60
+      max_simple_scene_fraction: 0.10
+      max_sequential_only_fraction: 0.02
+      max_block_like_fraction: 0.15
+      min_multi_voice_scene_fraction: 0.30
+      min_provenance_complete_fraction: 1.0
+      min_unique_source_groups_by_kind:
+        speech: 30
+        sfx: 80
+        ambience: 30
+
+  # Future full-joint gate.  It is intentionally not runnable until paired
+  # music/vocal stems and their audits exist.
+  full_joint_complex_future:
+    description: Speech, sound, aligned music/vocal and multi-speaker gate.
+    complex_definition:
+      min_sources: 5
+      min_events: 5
+      min_overlap_ratio: 0.20
+      min_simultaneous_tracks: 3
+    simple_definition:
+      max_sources: 2
+      max_events: 2
+      max_overlap_ratio: 0.05
+      max_temporal_transitions: 4
+    gates:
+      min_scenes: 300
+      min_mean_sources: 4.5
+      min_mean_events: 4.5
+      min_mean_overlap_ratio: 0.20
+      min_complex_scene_fraction: 0.60
+      max_simple_scene_fraction: 0.10
+      max_sequential_only_fraction: 0.02
+      max_block_like_fraction: 0.15
+      min_multi_voice_scene_fraction: 0.20
+      min_speech_music_sfx_fraction: 0.20
+      min_music_vocal_fraction: 0.20
+      min_provenance_complete_fraction: 1.0

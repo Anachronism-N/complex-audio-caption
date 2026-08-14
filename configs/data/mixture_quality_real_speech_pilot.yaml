@@ -214,3 +214,82 @@ profiles:
       min_speech_competitor_margin_db: 3.0
       max_low_speech_margin_fraction: 0.10
       min_speech_overlap_measured_fraction: 0.80
+
+  # First deliberately complex anchor: every scene has two distinct speakers,
+  # one continuous ambience bed and three independently timed SFX sources.
+  # This profile requires both ESC-50 and FSD50K so one bank cannot masquerade
+  # as source diversity.
+  complex_speech_sfx:
+    global:
+      min_active_ratio: 0.70
+      max_single_event_fraction: 0.0
+      max_low_active_fraction: 0.05
+      long_trailing_silence_sec: 3.0
+      max_long_trailing_silence_fraction: 0.05
+      long_silence_sec: 3.0
+      max_long_silence_fraction: 0.05
+      max_duplicate_source_id_fraction: 0.0
+      max_duplicate_source_path_fraction: 0.0
+    sparse_templates:
+      names: []
+      max_fraction: 0.0
+    repeated_event:
+      required: false
+      template: repeated_event
+      min_sfx_spans: 2
+      max_violation_fraction: 1.0
+    overlapping_speakers:
+      required: false
+      template: overlapping_speakers
+      min_overlap_ratio: 0.05
+      max_violation_fraction: 1.0
+    complexity:
+      simple_max_sources: 2
+      complex_min_sources: 5
+      min_mean_source_count: 6.0
+      simple_fraction_range: [0.0, 0.0]
+      medium_fraction_range: [0.0, 0.0]
+      complex_fraction_range: [1.0, 1.0]
+      min_complex_overlap_ratio: 0.20
+      max_low_overlap_complex_fraction: 0.10
+      required_templates:
+        multi_speaker_ambient_events: 1.0
+    source_diversity:
+      required_provenance_fields:
+        [source_group, source_dataset, source_license, annotation_origin,
+         source_labels, source_file_sha256, source_duration_sec, source_rms_dbfs,
+         source_active_rms_dbfs]
+      min_unique_sources_by_kind:
+        speech: 60
+        sfx: 80
+        ambience: 30
+      min_unique_groups_by_kind:
+        # LibriSpeech test-clean contains 40 speakers; requiring 30 retains a
+        # meaningful diversity gate without silently requiring test-other.
+        speech: 30
+        sfx: 80
+        ambience: 30
+      min_unique_datasets_by_kind:
+        speech: 1
+        sfx: 2
+        ambience: 2
+      min_unique_primary_labels_by_kind:
+        sfx: 20
+        ambience: 8
+      dataset_fraction_ranges_by_kind:
+        sfx:
+          ESC-50: [0.20, 0.80]
+          FSD50K: [0.20, 0.80]
+        ambience:
+          ESC-50: [0.20, 0.80]
+          FSD50K: [0.20, 0.80]
+      max_source_reuse_fraction: 0.05
+    stem_audibility:
+      min_active_rms_dbfs_by_kind:
+        speech: -28.0
+        sfx: -38.0
+        ambience: -45.0
+      max_below_rms_floor_fraction: 0.0
+      min_speech_competitor_margin_db: 3.0
+      max_low_speech_margin_fraction: 0.10
+      min_speech_overlap_measured_fraction: 0.90

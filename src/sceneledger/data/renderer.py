@@ -88,19 +88,36 @@ def _apply_gain(wav: np.ndarray, gain_db: float) -> np.ndarray:
     return wav * _db_to_gain(gain_db)
 
 
-def _apply_fade(wav: np.ndarray, sample_rate: int, fade_s: float = 0.01) -> np.ndarray:
+def _apply_fade(
+    wav: np.ndarray,
+    sample_rate: int,
+    fade_in_s: float = 0.01,
+    fade_out_s: float | None = None,
+) -> np.ndarray:
     n = wav.shape[-1]
-    fade = int(fade_s * sample_rate)
-    if fade <= 0 or n < 2 * fade:
+    fade_out_s = fade_in_s if fade_out_s is None else fade_out_s
+    fade_in = min(max(0, int(fade_in_s * sample_rate)), n)
+    fade_out = min(max(0, int(fade_out_s * sample_rate)), n)
+    if fade_in <= 0 and fade_out <= 0:
         return wav
     out = wav.copy()
-    ramp = np.linspace(0.0, 1.0, fade, dtype=np.float64)
-    out[..., :fade] *= ramp
-    out[..., -fade:] *= ramp[::-1]
+    if fade_in > 0:
+        ramp_in = np.linspace(0.0, 1.0, fade_in, dtype=np.float64)
+        out[..., :fade_in] *= ramp_in
+    if fade_out > 0:
+        ramp_out = np.linspace(1.0, 0.0, fade_out, dtype=np.float64)
+        out[..., -fade_out:] *= ramp_out
     return out
 
 
-def _apply_fade_by_kind(wav: np.ndarray, kind: str, sample_rate: int) -> np.ndarray:
+def _apply_fade_by_kind(
+    wav: np.ndarray,
+    kind: str,
+    sample_rate: int,
+    *,
+    fade_in_sec: float | None = None,
+    fade_out_sec: float | None = None,
+) -> np.ndarray:
     """Source-type-dependent fade for natural boundaries (docs/15 fix)."""
     fade_map = {
         "ambience": 1.5,   # gradual 1.5s fade for environmental sounds
@@ -109,8 +126,36 @@ def _apply_fade_by_kind(wav: np.ndarray, kind: str, sample_rate: int) -> np.ndar
         "speech": 0.05,    # 50ms for speech
         "sfx": 0.05,       # 50ms for sfx (transient, short fade)
     }
-    fade_s = fade_map.get(kind, 0.05)
-    return _apply_fade(wav, sample_rate, fade_s)
+    default = fade_map.get(kind, 0.05)
+    return _apply_fade(
+        wav,
+        sample_rate,
+        default if fade_in_sec is None else fade_in_sec,
+        default if fade_out_sec is None else fade_out_sec,
+    )
+
+
+def _crop_source(
+    wav: np.ndarray,
+    sample_rate: int,
+    start_sec: float,
+    duration_sec: float | None,
+) -> np.ndarray:
+    """Apply an explicit excerpt selection before any gain or room effect."""
+    if start_sec < 0 or (duration_sec is not None and duration_sec <= 0):
+        raise ValueError(
+            f"invalid source crop: start={start_sec} duration={duration_sec}"
+        )
+    start = int(round(start_sec * sample_rate))
+    if start >= wav.shape[-1]:
+        raise ValueError(
+            f"source crop starts after waveform: start={start_sec}s "
+            f"waveform={wav.shape[-1] / sample_rate:.3f}s"
+        )
+    if duration_sec is None:
+        return wav[start:].astype(np.float32, copy=True)
+    end = min(wav.shape[-1], start + int(round(duration_sec * sample_rate)))
+    return wav[start:end].astype(np.float32, copy=True)
 
 
 def _repeat_source(wav: np.ndarray, repeat: int, gap_s: float, sample_rate: int) -> np.ndarray:
@@ -401,10 +446,22 @@ def render_scene(scene: Scene, pool: SourcePool) -> RenderOutput:
     for idx, src in enumerate(scene.sources):
         wav, _dur = pool.load(src.path, sr)
         wav = wav.astype(np.float32)
+        wav = _crop_source(
+            wav,
+            sr,
+            src.crop_start_sec,
+            src.crop_duration_sec,
+        )
         if src.loop_to_scene:
             wav = _loop_to_duration(wav, scene.duration - src.onset, sr)
         wav = _apply_gain(wav, src.gain_db)
-        wav = _apply_fade_by_kind(wav, src.kind, sr)  # source-type-dependent fade
+        wav = _apply_fade_by_kind(
+            wav,
+            src.kind,
+            sr,
+            fade_in_sec=src.fade_in_sec,
+            fade_out_sec=src.fade_out_sec,
+        )
         wav = _repeat_source(wav, src.repeat, src.repeat_gap_s, sr)
         if src.t60_sec is not None:
             wav = _apply_rir(wav, sr, src.t60_sec, seed=scene.seed + idx * 7919)

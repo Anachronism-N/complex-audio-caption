@@ -33,6 +33,9 @@ TEMPLATE_KIND_COUNTS: dict[str, Counter[str]] = {
     "ambient_with_intermittent_sfx": Counter({"ambience": 1, "sfx": 1}),
     "overlapping_speakers": Counter({"speech": 2}),
     "lyrics_over_music": Counter({"music": 1, "vocal": 1}),
+    "multi_speaker_ambient_events": Counter(
+        {"speech": 2, "ambience": 1, "sfx": 3}
+    ),
 }
 ALLOWED_CONTEXTS = {
     "home",
@@ -53,12 +56,27 @@ ALLOWED_RELATIONS = {
 }
 
 CONTEXT_KEYWORDS = {
-    "home": ("door", "knock", "dish", "vacuum", "washing", "clock", "water"),
-    "workplace": ("keyboard", "printer", "tool", "drill", "machine", "phone"),
-    "street": ("car", "horn", "siren", "traffic", "engine", "vehicle", "jackhammer"),
+    "home": (
+        "door", "knock", "dish", "vacuum", "washing", "clock", "water",
+        "inside", "room", "kitchen", "household", "sink",
+    ),
+    "workplace": (
+        "keyboard", "printer", "tool", "drill", "machine", "phone",
+        "office", "inside", "room",
+    ),
+    "street": (
+        "car", "horn", "siren", "traffic", "roadway", "urban", "engine",
+        "vehicle", "jackhammer",
+    ),
     "transport": ("train", "bus", "aircraft", "vehicle", "engine", "subway"),
-    "nature": ("bird", "cricket", "rain", "wind", "water", "thunder", "animal", "dog"),
-    "public_indoor": ("crowd", "laugh", "applause", "clap", "cough", "speech"),
+    "nature": (
+        "bird", "cricket", "rain", "wind", "water", "thunder", "animal",
+        "dog", "rural", "natural", "ocean", "wave",
+    ),
+    "public_indoor": (
+        "crowd", "laugh", "applause", "clap", "cough", "speech", "inside",
+        "room",
+    ),
     "performance": ("music", "applause", "clap", "instrument", "sing"),
 }
 
@@ -262,22 +280,36 @@ def generate_rule_recipes(
             for context in contexts:
                 if all(
                     kind in {"speech", "vocal", "music"}
-                    or bool(_labels_for_context(inventory, kind, context))
-                    for kind in counts
+                    or len(_labels_for_context(inventory, kind, context)) >= slots
+                    for kind, slots in counts.items()
                 ):
                     viable.append(context)
-        context = rng.choice(viable or contexts)
+        context = rng.choice(viable) if viable else "generic"
         preferences: dict[str, list[str]] = {}
         for kind, slots in counts.items():
             if kind in {"speech", "vocal", "music"}:
                 continue
-            candidates = (
+            contextual = (
                 _labels_for_context(inventory, kind, context)
                 if strategy == "keyword"
                 else []
-            ) or list(inventory.labels_by_kind.get(kind, {}))
+            )
+            all_candidates = list(inventory.labels_by_kind.get(kind, {}))
+            candidates = contextual or all_candidates
             if candidates:
-                preferences[kind] = [rng.choice(candidates) for _ in range(slots)]
+                chosen: list[str] = []
+                for _ in range(slots):
+                    unused = [label for label in candidates if label not in chosen]
+                    if not unused:
+                        unused = [
+                            label for label in all_candidates if label not in chosen
+                        ]
+                    # Reusing a class is preferable to inventing a label when a
+                    # tiny fixture/catalog genuinely has fewer classes than
+                    # source slots.  Real complex profiles separately require
+                    # broad label coverage.
+                    chosen.append(rng.choice(unused or candidates))
+                preferences[kind] = chosen
         difficulty = "hard" if sum(counts.values()) >= 3 else "medium"
         recipes.append(
             SceneRecipe(
@@ -528,6 +560,80 @@ def write_recipe_review(path: str | Path, recipes: list[SceneRecipe]) -> None:
             )
 
 
+def validate_recipe_review(
+    path: str | Path,
+    recipes: list[SceneRecipe],
+    *,
+    min_pass_rate: float = 0.90,
+) -> dict[str, object]:
+    """Require an exact, completed human plausibility review for a recipe set."""
+    if not 0.0 <= min_pass_rate <= 1.0:
+        raise ValueError("min_pass_rate must be in [0, 1]")
+    with Path(path).open("r", encoding="utf-8-sig", newline="") as handle:
+        rows = [dict(row) for row in csv.DictReader(handle)]
+    expected_ids = [recipe.recipe_id for recipe in recipes]
+    observed_ids = [str(row.get("recipe_id") or "") for row in rows]
+    duplicate_ids = sorted(
+        recipe_id
+        for recipe_id, count in Counter(observed_ids).items()
+        if recipe_id and count > 1
+    )
+    missing_ids = sorted(set(expected_ids) - set(observed_ids))
+    extra_ids = sorted(set(observed_ids) - set(expected_ids) - {""})
+
+    def _answer(value: object) -> bool | None:
+        normalized = str(value or "").strip().casefold()
+        if normalized in {"y", "yes", "1", "true"}:
+            return True
+        if normalized in {"n", "no", "0", "false"}:
+            return False
+        return None
+
+    reviewed: list[dict[str, object]] = []
+    invalid_answers: list[dict[str, object]] = []
+    rejected: list[dict[str, object]] = []
+    for row in rows:
+        recipe_id = str(row.get("recipe_id") or "")
+        plausible = _answer(row.get("plausible_y_n"))
+        compatible = _answer(row.get("label_compatible_y_n"))
+        item = {
+            "recipe_id": recipe_id,
+            "plausible": plausible,
+            "label_compatible": compatible,
+            "notes": str(row.get("notes") or ""),
+        }
+        reviewed.append(item)
+        if plausible is None or compatible is None:
+            invalid_answers.append(item)
+        elif not plausible or not compatible:
+            rejected.append(item)
+    completed = len(reviewed) - len(invalid_answers)
+    passed_rows = completed - len(rejected)
+    pass_rate = passed_rows / len(recipes) if recipes else 0.0
+    structural_pass = (
+        len(rows) == len(recipes)
+        and not duplicate_ids
+        and not missing_ids
+        and not extra_ids
+        and not invalid_answers
+    )
+    return {
+        "schema_version": "sceneledger.recipe_human_review.v1",
+        "pass": structural_pass and pass_rate >= min_pass_rate,
+        "n_expected": len(recipes),
+        "n_rows": len(rows),
+        "n_completed": completed,
+        "n_passed": passed_rows,
+        "pass_rate": round(pass_rate, 6),
+        "min_pass_rate": min_pass_rate,
+        "duplicate_recipe_ids": duplicate_ids,
+        "missing_recipe_ids": missing_ids,
+        "extra_recipe_ids": extra_ids,
+        "invalid_answers": invalid_answers[:50],
+        "rejected": rejected[:50],
+    }
+
+
 __all__ = [
     "ALLOWED_CONTEXTS",
     "ALLOWED_RELATIONS",
@@ -547,6 +653,7 @@ __all__ = [
     "read_recipes",
     "recipe_summary",
     "validate_recipes",
+    "validate_recipe_review",
     "write_inventory",
     "write_recipe_review",
     "write_recipes",

@@ -15,6 +15,7 @@ from sceneledger.data.scene_recipes import (
     read_inventory,
     read_recipes,
     recipe_summary,
+    validate_recipe_review,
     validate_recipes,
     write_inventory,
     write_recipe_review,
@@ -103,6 +104,12 @@ def main(argv: list[str] | None = None) -> int:
     review_parser.add_argument("--recipes", required=True)
     review_parser.add_argument("--output", required=True)
 
+    validate_review_parser = subparsers.add_parser("validate-review")
+    validate_review_parser.add_argument("--recipes", required=True)
+    validate_review_parser.add_argument("--review-csv", required=True)
+    validate_review_parser.add_argument("--min-pass-rate", type=float, default=0.90)
+    validate_review_parser.add_argument("--output", default=None)
+
     compare_parser = subparsers.add_parser("compare")
     compare_parser.add_argument("--left", required=True)
     compare_parser.add_argument("--right", required=True)
@@ -162,6 +169,14 @@ def main(argv: list[str] | None = None) -> int:
         write_recipe_review(args.output, read_recipes(args.recipes))
         print(args.output)
         return 0
+    if args.command == "validate-review":
+        report = validate_recipe_review(
+            args.review_csv,
+            read_recipes(args.recipes),
+            min_pass_rate=args.min_pass_rate,
+        )
+        _write_report(args.output, report)
+        return 0 if report["pass"] else 1
     if args.command == "compare":
         report = compare_recipe_sets(
             read_recipes(args.left), read_recipes(args.right)

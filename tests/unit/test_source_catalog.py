@@ -27,8 +27,14 @@ from sceneledger.data.source_catalog import (
 )
 
 
-def _write_tone(path: Path, *, frequency: float, sample_rate: int = 8000) -> None:
-    time = np.arange(int(0.5 * sample_rate), dtype=np.float32) / sample_rate
+def _write_tone(
+    path: Path,
+    *,
+    frequency: float,
+    sample_rate: int = 8000,
+    duration_sec: float = 0.5,
+) -> None:
+    time = np.arange(int(duration_sec * sample_rate), dtype=np.float32) / sample_rate
     wav = 0.1 * np.sin(2 * np.pi * frequency * time)
     sf.write(path, wav, sample_rate, subtype="PCM_16")
 
@@ -292,6 +298,114 @@ def test_multi_speaker_template_samples_distinct_catalog_identities(tmp_path: Pa
     )
     scene = sampler.sample("speakers", seed=2, template="overlapping_speakers")
     assert len({source.identity for source in scene.sources}) == 2
+
+
+def test_music_and_vocal_are_sampled_from_one_aligned_song_excerpt(
+    tmp_path: Path,
+) -> None:
+    for name, frequency in (("music.wav", 220.0), ("vocal.wav", 330.0)):
+        _write_tone(
+            tmp_path / name,
+            frequency=frequency,
+            duration_sec=3.0,
+        )
+    records = [
+        _record("song_music", "music", "music.wav", "song:one").model_copy(
+            update={"duration_sec": 3.0, "split": "train"}
+        ),
+        _record("song_vocal", "vocal", "vocal.wav", "song:one").model_copy(
+            update={"duration_sec": 3.0, "split": "train"}
+        ),
+    ]
+    catalog = tmp_path / "music.jsonl"
+    write_source_catalog(catalog, records)
+    pool = CatalogSourcePool(
+        str(catalog), audio_root=str(tmp_path), expected_split="train"
+    )
+    sampler = SceneGraphSampler(
+        pool,
+        SceneSamplerConfig(
+            sample_rate=8000,
+            duration_range=(1.0, 1.0),
+            random_crop_backgrounds=True,
+            p_rir=0.0,
+            p_echo=0.0,
+            ducking_probability=0.0,
+        ),
+    )
+
+    scene = sampler.sample("aligned", seed=9, template="lyrics_over_music")
+    music = next(source for source in scene.sources if source.kind == "music")
+    vocal = next(source for source in scene.sources if source.kind == "vocal")
+
+    assert music.source_group == vocal.source_group == "song:one"
+    assert music.crop_start_sec == vocal.crop_start_sec
+    assert music.crop_duration_sec == vocal.crop_duration_sec == 1.0
+    assert music.path != vocal.path
+
+
+def test_dense_multispeaker_template_has_six_sources_and_shared_room(
+    tmp_path: Path,
+) -> None:
+    specs = [
+        ("speech_a", "speech", "speaker:a", 190.0, 2.0),
+        ("speech_b", "speech", "speaker:b", 230.0, 2.0),
+        ("ambience", "ambience", "ambience:one", 90.0, 3.0),
+        ("sfx_a", "sfx", "event:a", 410.0, 0.4),
+        ("sfx_b", "sfx", "event:b", 510.0, 0.4),
+        ("sfx_c", "sfx", "event:c", 610.0, 0.4),
+    ]
+    records: list[SourceRecord] = []
+    for source_id, kind, group, frequency, duration in specs:
+        filename = f"{source_id}.wav"
+        _write_tone(
+            tmp_path / filename,
+            frequency=frequency,
+            duration_sec=duration,
+        )
+        records.append(
+            _record(source_id, kind, filename, group).model_copy(
+                update={
+                    "duration_sec": duration,
+                    "split": "train",
+                    "labels": [source_id],
+                }
+            )
+        )
+    catalog = tmp_path / "complex.jsonl"
+    write_source_catalog(catalog, records)
+    pool = CatalogSourcePool(
+        str(catalog), audio_root=str(tmp_path), expected_split="train"
+    )
+    sampler = SceneGraphSampler(
+        pool,
+        SceneSamplerConfig(
+            sample_rate=8000,
+            duration_range=(3.0, 3.0),
+            stable_unique_source_ids=True,
+            shared_room_probability=1.0,
+            t60_range=(0.3, 0.3),
+            p_rir=0.0,
+            p_echo=0.0,
+            ducking_probability=0.0,
+        ),
+    )
+
+    scene = sampler.sample(
+        "dense", seed=11, template="multi_speaker_ambient_events"
+    )
+
+    assert Counter(source.kind for source in scene.sources) == Counter(
+        {"speech": 2, "ambience": 1, "sfx": 3}
+    )
+    assert len({source.path for source in scene.sources}) == 6
+    assert len({source.identity for source in scene.sources if source.kind == "speech"}) == 2
+    assert len({source.rir_id for source in scene.sources}) == 1
+    assert {source.t60_sec for source in scene.sources} == {0.3}
+    sfx_onsets = sorted(
+        source.onset for source in scene.sources if source.kind == "sfx"
+    )
+    assert sfx_onsets[0] < sfx_onsets[1] < sfx_onsets[2]
 
 
 def _single_kind_pool(
@@ -582,6 +696,7 @@ def test_validate_source_audit_binds_catalog_hashes(tmp_path: Path) -> None:
         min_per_kind_per_required_split=1,
     )
     assert audit_report["pass"] is True
+    assert audit_report["rejected_source_ids"] == []
     assert audit_report["counts_by_split_kind"]["test"] == {
         "ambience": 1,
         "music": 1,
@@ -615,6 +730,34 @@ def test_validate_source_audit_binds_catalog_hashes(tmp_path: Path) -> None:
         expected_split="train",
     )
     assert audited_pool.metadata("train_speech")["text"] == "Audible content unique to train_speech."
+
+    rejected_rows = [dict(row) for row in rows]
+    rejected_row = next(
+        row for row in rejected_rows if row["source_id"] == "train_speech"
+    )
+    rejected_row["audible_y_n"] = "n"
+    rejected_audit_path = catalogs / "source_audit_rejected.csv"
+    with rejected_audit_path.open("w", encoding="utf-8-sig", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rejected_rows)
+    rejected_report_path = catalogs / "source_audit_report_rejected.json"
+    rejected_report = validate_source_audit(
+        catalogs / "source_catalog_report.json",
+        rejected_audit_path,
+        rejected_report_path,
+        min_per_kind=3,
+        min_pass_rate=0.90,
+    )
+    assert rejected_report["pass"] is True
+    assert rejected_report["rejected_source_ids"] == ["train_speech"]
+    quarantined_pool = CatalogSourcePool(
+        str(catalogs / "train.jsonl"),
+        audio_root=str(audio_root),
+        audit_report_path=str(rejected_report_path),
+        expected_split="train",
+    )
+    assert quarantined_pool.keys("speech") == []
 
     original_audio = (audio_root / "train_speech.wav").read_bytes()
     (audio_root / "train_speech.wav").write_bytes(original_audio + b"tampered")
