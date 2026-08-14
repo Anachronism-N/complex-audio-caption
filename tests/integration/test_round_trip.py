@@ -6,10 +6,10 @@ import json
 from pathlib import Path
 
 import pytest
+from fixtures.factory import ev, ledger, t, tr
 
 from sceneledger.eval.metrics import evaluate_corpus, evaluate_sample
 from sceneledger.models.serializer import serialize
-from fixtures.factory import ev, ledger, t, tr
 
 
 def _build_fixture_set():
@@ -161,7 +161,11 @@ def test_perfect_prediction_gives_perfect_metrics():
     assert corpus.total_hallucination == 0
     assert corpus.total_omission == 0
     assert corpus.mean_pointer_accuracy == 1.0
-    assert corpus.strict_format_success_rate == 1.0
+    # Parsed Ledgers do not prove that the model's raw text followed the
+    # strict output grammar.  That metric requires an inference report.
+    assert corpus.strict_format_success_rate is None
+    assert corpus.format_status_complete is False
+    assert corpus.n_format_status_missing == len(FIXTURES)
 
 
 def test_empty_scene_handled():
@@ -174,10 +178,6 @@ def test_empty_scene_handled():
 
 def test_missing_prediction_counts_as_all_omission():
     refs = {lg.sample_id: lg for lg in FIXTURES}
-    sm = evaluate_sample(refs["f10"], refs["f10"].model_copy())
-    # fudge: simulate missing by direct call to metrics path
-    from sceneledger.eval.metrics import SampleMetrics
-
     # use evaluate_corpus with only refs present
     corpus = evaluate_corpus({}, refs)
     # all refs have no prediction -> all omission

@@ -1,0 +1,140 @@
+schema_version: sceneledger-mixture-quality-config-v1
+
+profiles:
+  pilot:
+    global:
+      min_active_ratio: 0.35
+      max_single_event_fraction: 0.0
+      max_low_active_fraction: 0.15
+      long_trailing_silence_sec: 3.0
+      max_long_trailing_silence_fraction: 0.15
+      long_silence_sec: 3.0
+      max_long_silence_fraction: 0.15
+      max_duplicate_source_id_fraction: 0.0
+      max_duplicate_source_path_fraction: 0.0
+    sparse_templates:
+      names: []
+      max_fraction: 0.0
+    repeated_event:
+      required: false
+      template: repeated_event
+      min_sfx_spans: 2
+      max_violation_fraction: 1.0
+    overlapping_speakers:
+      required: false
+      template: overlapping_speakers
+      min_overlap_ratio: 0.05
+      max_violation_fraction: 1.0
+    complexity:
+      simple_max_sources: 2
+      complex_min_sources: 4
+      min_mean_source_count: 2.30
+      simple_fraction_range: [0.20, 0.60]
+      medium_fraction_range: [0.40, 0.80]
+      complex_fraction_range: [0.0, 0.0]
+      min_complex_overlap_ratio: 0.0
+      max_low_overlap_complex_fraction: 1.0
+      required_templates:
+        speech_with_sfx: 0.20
+        speech_ambience_sfx: 0.20
+    source_diversity:
+      required_provenance_fields:
+        [source_group, source_dataset, source_license, annotation_origin,
+         source_file_sha256, source_duration_sec, source_rms_dbfs,
+         source_active_rms_dbfs]
+      min_unique_sources_by_kind:
+        speech: 15
+        sfx: 15
+        ambience: 8
+      min_unique_groups_by_kind:
+        speech: 8
+        sfx: 15
+        ambience: 8
+      min_unique_datasets_by_kind:
+        speech: 1
+      max_source_reuse_fraction: 0.15
+    stem_audibility:
+      min_active_rms_dbfs_by_kind:
+        speech: -28.0
+        sfx: -38.0
+        ambience: -45.0
+      max_below_rms_floor_fraction: 0.0
+      min_speech_competitor_margin_db: 3.0
+      max_low_speech_margin_fraction: 0.10
+      min_speech_overlap_measured_fraction: 0.80
+
+  # Same acoustic gate as the 30-clip anchor, with explicit cross-bank
+  # coverage constraints for the 60-clip ESC-50 + FSD50K expansion.
+  expanded_pilot:
+    global:
+      min_active_ratio: 0.35
+      max_single_event_fraction: 0.0
+      max_low_active_fraction: 0.15
+      long_trailing_silence_sec: 3.0
+      max_long_trailing_silence_fraction: 0.15
+      long_silence_sec: 3.0
+      max_long_silence_fraction: 0.15
+      max_duplicate_source_id_fraction: 0.0
+      max_duplicate_source_path_fraction: 0.0
+    sparse_templates:
+      names: []
+      max_fraction: 0.0
+    repeated_event:
+      required: false
+      template: repeated_event
+      min_sfx_spans: 2
+      max_violation_fraction: 1.0
+    overlapping_speakers:
+      required: false
+      template: overlapping_speakers
+      min_overlap_ratio: 0.05
+      max_violation_fraction: 1.0
+    complexity:
+      simple_max_sources: 2
+      complex_min_sources: 4
+      min_mean_source_count: 2.30
+      simple_fraction_range: [0.20, 0.60]
+      medium_fraction_range: [0.40, 0.80]
+      complex_fraction_range: [0.0, 0.0]
+      min_complex_overlap_ratio: 0.0
+      max_low_overlap_complex_fraction: 1.0
+      required_templates:
+        speech_with_sfx: 0.20
+        speech_ambience_sfx: 0.20
+    source_diversity:
+      required_provenance_fields:
+        [source_group, source_dataset, source_license, annotation_origin,
+         source_labels, source_file_sha256, source_duration_sec, source_rms_dbfs,
+         source_active_rms_dbfs]
+      min_unique_sources_by_kind:
+        speech: 30
+        sfx: 30
+        ambience: 15
+      min_unique_groups_by_kind:
+        speech: 15
+        sfx: 30
+        ambience: 15
+      min_unique_datasets_by_kind:
+        speech: 1
+        sfx: 2
+        ambience: 2
+      min_unique_primary_labels_by_kind:
+        sfx: 20
+        ambience: 8
+      dataset_fraction_ranges_by_kind:
+        sfx:
+          ESC-50: [0.25, 0.75]
+          FSD50K: [0.25, 0.75]
+        ambience:
+          ESC-50: [0.25, 0.75]
+          FSD50K: [0.25, 0.75]
+      max_source_reuse_fraction: 0.10
+    stem_audibility:
+      min_active_rms_dbfs_by_kind:
+        speech: -28.0
+        sfx: -38.0
+        ambience: -45.0
+      max_below_rms_floor_fraction: 0.0
+      min_speech_competitor_margin_db: 3.0
+      max_low_speech_margin_fraction: 0.10
+      min_speech_overlap_measured_fraction: 0.80

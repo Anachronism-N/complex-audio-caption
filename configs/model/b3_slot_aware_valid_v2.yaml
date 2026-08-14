@@ -17,6 +17,8 @@ data:
   audio_base_dir: data/derived/b3_complex_v2/train
   split_contract_path: data/derived/b3_complex_v2/gate/split_contract.json
   data_gate_summary_path: data/derived/b3_complex_v2/gate/experiment_data_summary.json
+  human_audit_summary_path: data/derived/b3_complex_v2/gate/human_audit_summary.json
+  require_human_audit: true
   expected_split: train
   pre_split: true
   sample_rate: 16000

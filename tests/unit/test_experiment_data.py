@@ -3,23 +3,30 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import numpy as np
 import pytest
+import soundfile as sf
 
 from sceneledger.cli.evaluate import main as evaluate_main
+from sceneledger.cli.human_audit import main as human_audit_main
 from sceneledger.cli.infer import main as infer_main
 from sceneledger.cli.validate_experiment_data import main as validate_data_main
 from sceneledger.data.experiment_data import (
     audit_mixture_distribution,
+    audit_scene_plan_distribution,
     build_split_contract,
     file_sha256,
     require_experiment_data_summary,
     require_ledger_split,
     require_split_manifest,
+    scene_plan_sha256,
     write_references,
     write_split_contract,
 )
 from sceneledger.data.manifests import ManifestEntry, write_manifest
 from sceneledger.data.scene_graph_sampler import (
+    PlacedSource,
+    Scene,
     SceneGraphSampler,
     SceneSamplerConfig,
     SyntheticSourcePool,
@@ -34,13 +41,18 @@ def _entry(
     duration: float = 10.0,
     event_spans: list[list[tuple[float, float]]] | None = None,
     track_spans: list[list[tuple[float, float]]] | None = None,
+    source_kinds: list[str] | None = None,
 ) -> ManifestEntry:
     event_spans = event_spans or [[(0.0, duration)], [(2.0, 3.0)]]
     track_spans = track_spans or event_spans
+    source_kinds = source_kinds or [
+        "music" if index == 1 else "sfx"
+        for index in range(1, len(source_paths) + 1)
+    ]
     sources = [
         {
             "source_id": f"SRC{index:02d}",
-            "kind": "music" if index == 1 else "sfx",
+            "kind": source_kinds[index - 1],
             "path": path,
             "onset": 0.0,
             "gain_db": 0.0,
@@ -51,7 +63,7 @@ def _entry(
     events = [
         {
             "id": f"E{index:03d}",
-            "type": "music" if index == 1 else "sfx",
+            "type": source_kinds[index - 1],
             "track_id": f"T{index}",
             "spans": [
                 {"start_sec": start, "end_sec": end} for start, end in spans
@@ -64,7 +76,7 @@ def _entry(
     tracks = [
         {
             "id": f"T{index}",
-            "kind": "music" if index == 1 else "sfx",
+            "kind": source_kinds[index - 1],
             "spans": [
                 {"start_sec": start, "end_sec": end} for start, end in spans
             ],
@@ -130,6 +142,7 @@ def _profile() -> dict:
             "long_silence_sec": 5.0,
             "max_long_silence_fraction": 0.1,
             "max_duplicate_source_id_fraction": 0.0,
+            "max_duplicate_source_path_fraction": 0.0,
         },
         "sparse_templates": {"names": ["isolated_sfx"], "max_fraction": 0.05},
         "repeated_event": {
@@ -143,6 +156,36 @@ def _profile() -> dict:
             "max_violation_fraction": 0.1,
         },
     }
+
+
+def _write_preflight(
+    path: Path,
+    manifests: dict[str, Path],
+    quality_config: Path,
+    *,
+    profile: str = "test",
+) -> Path:
+    from sceneledger.data.manifests import read_manifest
+
+    payload = {
+        "schema_version": "sceneledger-data-preflight-v1",
+        "pass": True,
+        "failed_checks": [],
+        "profile": profile,
+        "quality_config_sha256": file_sha256(quality_config),
+        "folds": {
+            split: {
+                "pass": True,
+                "failed_checks": [],
+                "scene_plan_sha256": scene_plan_sha256(
+                    [entry.scene for entry in read_manifest(manifest)]
+                ),
+            }
+            for split, manifest in manifests.items()
+        },
+    }
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    return path
 
 
 def test_split_contract_rejects_raw_source_leakage(tmp_path: Path) -> None:
@@ -195,6 +238,9 @@ def test_complete_data_gate_rechecks_quality_artifact_hashes(tmp_path: Path) -> 
     write_split_contract(contract_path, contract)
     quality_config = tmp_path / "quality.yaml"
     quality_config.write_text("profiles: {}\n", encoding="utf-8")
+    preflight_path = _write_preflight(
+        tmp_path / "scene_plan_preflight.json", paths, quality_config
+    )
 
     reports = {}
     references = {}
@@ -235,6 +281,11 @@ def test_complete_data_gate_rechecks_quality_artifact_hashes(tmp_path: Path) -> 
                 "split_contract_sha256": file_sha256(contract_path),
                 "quality_config_path": str(quality_config),
                 "quality_config_sha256": file_sha256(quality_config),
+                "scene_plan_preflight": {
+                    "path": str(preflight_path),
+                    "sha256": file_sha256(preflight_path),
+                    "pass": True,
+                },
                 "quality_reports": reports,
                 "references": references,
             }
@@ -313,6 +364,84 @@ def test_distribution_gate_accepts_complex_repeated_and_overlap_scenes(
     assert report["metrics"]["overlap_violation_fraction"] == 0.0
 
 
+@pytest.mark.parametrize(
+    ("speech_amplitude", "sfx_amplitude", "expected_pass"),
+    [(0.20, 0.04, True), (0.08, 0.20, False)],
+)
+def test_stem_audibility_gate_measures_persisted_audio(
+    tmp_path: Path,
+    speech_amplitude: float,
+    sfx_amplitude: float,
+    expected_pass: bool,
+) -> None:
+    sample_rate = 8000
+    duration = 1.0
+    time = np.arange(sample_rate, dtype=np.float32) / sample_rate
+    stems_dir = tmp_path / "audio" / "stems"
+    stems_dir.mkdir(parents=True)
+    sf.write(
+        stems_dir / "speech.wav",
+        speech_amplitude * np.sin(2 * np.pi * 190.0 * time),
+        sample_rate,
+        subtype="PCM_16",
+    )
+    sf.write(
+        stems_dir / "sfx.wav",
+        sfx_amplitude * np.sin(2 * np.pi * 510.0 * time),
+        sample_rate,
+        subtype="PCM_16",
+    )
+    entry = _entry(
+        "audibility",
+        ["speech.wav", "sfx.wav"],
+        template="speech_with_sfx",
+        duration=duration,
+        event_spans=[[(0.0, duration)], [(0.0, duration)]],
+        source_kinds=["speech", "sfx"],
+    )
+    entry.sample_rate = sample_rate
+    entry.stem_paths = {
+        "SRC01": "audio/stems/speech.wav",
+        "SRC02": "audio/stems/sfx.wav",
+    }
+    manifest = tmp_path / "manifest.jsonl"
+    write_manifest(manifest, [entry])
+    profile = {
+        "global": {
+            "min_active_ratio": 0.3,
+            "max_single_event_fraction": 0.0,
+            "max_low_active_fraction": 0.0,
+            "long_trailing_silence_sec": 0.5,
+            "max_long_trailing_silence_fraction": 0.0,
+            "long_silence_sec": 0.5,
+            "max_long_silence_fraction": 0.0,
+        },
+        "sparse_templates": {"names": [], "max_fraction": 0.0},
+        "repeated_event": {"required": False},
+        "overlapping_speakers": {"required": False},
+        "stem_audibility": {
+            "min_active_rms_dbfs_by_kind": {"speech": -28.0, "sfx": -38.0},
+            "max_below_rms_floor_fraction": 0.0,
+            "min_speech_competitor_margin_db": 3.0,
+            "max_low_speech_margin_fraction": 0.0,
+            "min_speech_overlap_measured_fraction": 1.0,
+        },
+    }
+    report = audit_mixture_distribution(
+        manifest, profile_name="audibility", profile=profile
+    )
+
+    assert report["pass"] is expected_pass
+    metrics = report["metrics"]["stem_audibility"]
+    assert metrics["n_stems"] == 2
+    assert metrics["speech_overlap_measured_fraction"] == 1.0
+    if expected_pass:
+        assert metrics["minimum_speech_competitor_margin_db"] > 3.0
+    else:
+        assert "speech_competitor_margin_violation_fraction" in report["failed_checks"]
+        assert metrics["minimum_speech_competitor_margin_db"] < 3.0
+
+
 def test_validate_experiment_data_cli_builds_complete_gate(tmp_path: Path) -> None:
     manifests = {}
     for split in ("train", "val", "test"):
@@ -341,7 +470,16 @@ def test_validate_experiment_data_cli_builds_complete_gate(tmp_path: Path) -> No
         )
         manifests[split] = manifest
 
-    quality_config = Path(__file__).resolve().parents[2] / "configs/data/mixture_quality.yaml"
+    quality_config = tmp_path / "quality.yaml"
+    quality_config.write_text(
+        json.dumps({"profiles": {"test": _profile()}}), encoding="utf-8"
+    )
+    preflight_path = _write_preflight(
+        tmp_path / "scene_plan_preflight.json",
+        manifests,
+        quality_config,
+        profile="test",
+    )
     output_dir = tmp_path / "gate"
     assert (
         validate_data_main(
@@ -355,7 +493,9 @@ def test_validate_experiment_data_cli_builds_complete_gate(tmp_path: Path) -> No
                 "--quality-config",
                 str(quality_config),
                 "--profile",
-                "release",
+                "test",
+                "--scene-plan-preflight",
+                str(preflight_path),
                 "--output-dir",
                 str(output_dir),
             ]
@@ -368,6 +508,34 @@ def test_validate_experiment_data_cli_builds_complete_gate(tmp_path: Path) -> No
     )
     assert summary["pass"] is True
     assert (output_dir / "test_references.jsonl").exists()
+
+    audit_csv = output_dir / "human_audit_tasks.csv"
+    audit_metadata = output_dir / "human_audit_tasks.meta.json"
+    assert (
+        human_audit_main(
+            [
+                "prepare",
+                "--manifest",
+                str(manifests["test"]),
+                "--data-gate-summary",
+                str(summary_path),
+                "--split-contract",
+                str(output_dir / "split_contract.json"),
+                "--expected-split",
+                "test",
+                "--per-template",
+                "1",
+                "--output-csv",
+                str(audit_csv),
+                "--output-metadata",
+                str(audit_metadata),
+            ]
+        )
+        == 0
+    )
+    audit_payload = json.loads(audit_metadata.read_text(encoding="utf-8"))
+    assert audit_payload["dataset_id"] == summary["dataset_id"]
+    assert audit_payload["n_tasks"] == 3
 
     predictions = tmp_path / "predictions.jsonl"
     infer_report = tmp_path / "infer_report.json"
@@ -406,6 +574,8 @@ def test_validate_experiment_data_cli_builds_complete_gate(tmp_path: Path) -> No
                 str(summary_path),
                 "--expected-split",
                 "test",
+                "--inference-report",
+                str(infer_report),
                 "--output",
                 str(metrics),
             ]
@@ -414,7 +584,13 @@ def test_validate_experiment_data_cli_builds_complete_gate(tmp_path: Path) -> No
     )
     metrics_payload = json.loads(metrics.read_text(encoding="utf-8"))
     assert metrics_payload["n_samples"] == 3
+    assert metrics_payload["strict_format_success_rate"] == 1.0
+    assert metrics_payload["format_status_complete"] is True
     assert metrics_payload["experiment_contract"]["split"] == "test"
+    assert (
+        metrics_payload["experiment_contract"]["inference_report_sha256"]
+        == file_sha256(infer_report)
+    )
 
 
 def test_sampler_v2_creates_dense_template_primitives() -> None:
@@ -447,3 +623,115 @@ def test_sampler_v2_creates_dense_template_primitives() -> None:
 
     all_types = sampler.sample("all", 4, "speech_music_lyrics_sfx")
     assert len({source.source_id for source in all_types.sources}) == 4
+
+
+def test_scene_plan_gate_rejects_defined_but_unsampled_complex_templates() -> None:
+    pool = SyntheticSourcePool(index_range=(0, 20))
+    sampler = SceneGraphSampler(pool, SceneSamplerConfig(stable_unique_source_ids=True))
+    simple_scenes = [
+        sampler.sample(f"simple-{index}", index, "speech_over_music")
+        for index in range(20)
+    ]
+    profile = {
+        "complexity": {
+            "simple_max_sources": 2,
+            "complex_min_sources": 5,
+            "min_mean_source_count": 3.0,
+            "simple_fraction_range": [0.1, 0.4],
+            "medium_fraction_range": [0.2, 0.7],
+            "complex_fraction_range": [0.2, 0.5],
+            "required_templates": {"complex_cocktail": 0.05},
+        }
+    }
+
+    report = audit_scene_plan_distribution(simple_scenes, profile)
+
+    assert report["pass"] is False
+    assert "mean_source_count" in report["failed_checks"]
+    assert "complex_source_fraction" in report["failed_checks"]
+    assert "required_template:complex_cocktail" in report["failed_checks"]
+
+
+def test_scene_plan_hash_changes_when_scene_conditions_change() -> None:
+    pool = SyntheticSourcePool(index_range=(0, 20))
+    sampler = SceneGraphSampler(pool, SceneSamplerConfig(stable_unique_source_ids=True))
+    scene = sampler.sample("scene", 7, "speech_over_music")
+    original = scene_plan_sha256([scene])
+    scene.conditions.ducking_enabled = not scene.conditions.ducking_enabled
+
+    assert scene_plan_sha256([scene]) != original
+
+
+def test_scene_plan_source_diversity_fails_on_two_reused_untraceable_sources() -> None:
+    scenes = []
+    for index in range(10):
+        scenes.append(
+            Scene(
+                scene_id=f"legacy_{index}",
+                seed=index,
+                duration=8.0,
+                template="speech_with_sfx",
+                sources=[
+                    PlacedSource("SP01", "speech", f"speech_{index % 2}.wav", 0.0, 0.0, "text"),
+                    PlacedSource("SF01", "sfx", f"sfx_{index % 2}.wav", 1.0, -3.0, "sound"),
+                ],
+            )
+        )
+    profile = {
+        "source_diversity": {
+            "min_unique_sources_by_kind": {"speech": 5, "sfx": 5},
+            "min_unique_groups_by_kind": {"speech": 3, "sfx": 3},
+            "max_source_reuse_fraction": 0.3,
+        }
+    }
+
+    report = audit_scene_plan_distribution(scenes, profile)
+
+    assert report["pass"] is False
+    assert "source_diversity:speech:unique_sources" in report["failed_checks"]
+    assert "source_diversity:speech:reuse_fraction" in report["failed_checks"]
+    assert "all_sources_have_provenance" in report["failed_checks"]
+
+
+def test_scene_plan_rejects_truncated_transcript_source() -> None:
+    scene = Scene(
+        scene_id="truncated-speech",
+        seed=1,
+        duration=5.0,
+        template="speech_with_sfx",
+        sources=[
+            PlacedSource(
+                "SP01",
+                "speech",
+                "utterance",
+                1.0,
+                0.0,
+                "full transcript",
+                source_duration_sec=4.5,
+            ),
+            PlacedSource("SF01", "sfx", "event", 0.0, -4.0, "sound"),
+        ],
+    )
+
+    report = audit_scene_plan_distribution([scene], {})
+
+    assert report["pass"] is False
+    assert "noncontinuous_sources_fit_scene" in report["failed_checks"]
+
+
+def test_complex_templates_do_not_reuse_a_source_recording() -> None:
+    pool = SyntheticSourcePool(index_range=(0, 20))
+    sampler = SceneGraphSampler(pool, SceneSamplerConfig(stable_unique_source_ids=True))
+    for template in ("complex_cocktail", "rich_band", "multi_event_dense"):
+        for seed in range(25):
+            scene = sampler.sample(f"{template}-{seed}", seed, template)
+            paths = [source.path for source in scene.sources]
+            assert len(paths) == len(set(paths))
+
+
+def test_sampler_fails_when_pool_cannot_supply_unique_sources() -> None:
+    pool = SyntheticSourcePool(index_range=(0, 0))
+    sampler = SceneGraphSampler(pool, SceneSamplerConfig(stable_unique_source_ids=True))
+
+    with pytest.raises(ValueError, match="enough unique recordings"):
+        sampler.sample("too-small", 1, "complex_cocktail")

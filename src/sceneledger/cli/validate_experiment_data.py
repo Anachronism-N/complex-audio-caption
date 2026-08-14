@@ -13,6 +13,7 @@ from sceneledger.data.experiment_data import (
     build_split_contract,
     file_sha256,
     load_quality_profile,
+    scene_plan_sha256,
     write_references,
     write_split_contract,
 )
@@ -31,6 +32,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--test-manifest", required=True)
     parser.add_argument("--quality-config", required=True)
     parser.add_argument("--profile", default="release")
+    parser.add_argument(
+        "--scene-plan-preflight",
+        required=True,
+        help="passed scene_plan_preflight.json produced before rendering",
+    )
     parser.add_argument("--output-dir", required=True)
     parser.add_argument("--seed", type=int, default=20260808)
     args = parser.parse_args(argv)
@@ -44,6 +50,16 @@ def main(argv: list[str] | None = None) -> int:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     profile, config_hash = load_quality_profile(args.quality_config, args.profile)
+    preflight_path = Path(args.scene_plan_preflight).resolve()
+    preflight = json.loads(preflight_path.read_text(encoding="utf-8"))
+    if (
+        preflight.get("schema_version") != "sceneledger-data-preflight-v1"
+        or preflight.get("pass") is not True
+        or preflight.get("failed_checks")
+    ):
+        raise ValueError("scene-plan preflight is missing, unsupported, or failed")
+    if preflight.get("quality_config_sha256") != config_hash:
+        raise ValueError("scene-plan preflight used a different quality config")
     contract = build_split_contract(
         train_manifest=manifests["train"],
         val_manifest=manifests["val"],
@@ -52,6 +68,18 @@ def main(argv: list[str] | None = None) -> int:
     )
     contract_path = output_dir / "split_contract.json"
     write_split_contract(contract_path, contract)
+
+    from sceneledger.data.manifests import read_manifest
+
+    for split in SPLIT_NAMES:
+        fold = preflight.get("folds", {}).get(split)
+        if not isinstance(fold, dict) or fold.get("pass") is not True:
+            raise ValueError(f"scene-plan preflight for {split} is missing or failed")
+        entries = read_manifest(manifests[split])
+        if scene_plan_sha256([entry.scene for entry in entries]) != fold.get(
+            "scene_plan_sha256"
+        ):
+            raise ValueError(f"rendered {split} scenes differ from preflight plan")
 
     quality_reports: dict[str, dict] = {}
     references: dict[str, dict] = {}
@@ -96,6 +124,11 @@ def main(argv: list[str] | None = None) -> int:
         "split_contract_sha256": file_sha256(contract_path),
         "split_contract_pass": contract["pass"],
         "split_failed_checks": contract["failed_checks"],
+        "scene_plan_preflight": {
+            "path": str(preflight_path),
+            "sha256": file_sha256(preflight_path),
+            "pass": True,
+        },
         "quality_reports": quality_reports,
         "references": references,
         "failed_checks": [

@@ -1,6 +1,6 @@
 # Complex Audio Caption / SceneLedger
 
-面向真实复杂声景的统一、细粒度、带时间戳音频描述研究方案（调研冻结日期：2026-08-08）。
+面向真实复杂声景的统一、细粒度、带时间戳音频描述研究方案（调研冻结日期：2026-08-12）。
 
 ## 一句话结论
 
@@ -54,6 +54,15 @@
 - [真实音频混合 v3b Review 反馈](docs/18_real_mix_v3b_review_feedback.md)
 - [真实音频混合 v4 Review 反馈](docs/19_real_mix_v4_review_feedback.md)
 - [真实音频混合 v5 Review 反馈](docs/20_real_mix_v5_review_feedback.md)
+- [下一步实验：B3-complex-v2 数据锚点生成与验收](docs/22_next_experiment_b3_complex_v2_data_anchor.md)
+- [SwanTale 对 SceneLedger 的启示与下一阶段实验](docs/23_swantale_lessons_and_next_stage.md)
+- [可靠基线评测门禁：原始解析证据与制品绑定](docs/24_reliable_baseline_evaluation_gate.md)
+- [下一步实验：真实单源 Catalog 锚点](docs/25_real_source_catalog_experiment.md)
+- [下一步实验：ESC-50 真实音频零样本锚点](docs/26_esc50_real_audio_anchor.md)
+- [下一步实验：可追溯的 LibriSpeech + ESC-50 证据闭环](docs/27_real_speech_sfx_evidence_pilot.md)
+- [v3/v3b 审计与下一步 active-RMS 数据门禁](docs/28_v3b_audit_and_active_rms_gate.md)
+- [下一步实验：FSD50K/MUSDB18 音源扩充与跨库均衡协议](docs/29_expanded_source_bank_protocol.md)
+- [音源银行冻结方案：数据选择、许可/监督门禁与逐阶段实验指引](docs/30_source_bank_selection_and_execution.md)
 - [机器可读实验矩阵](configs/experiment_matrix.yaml)
 - [机器可读开发阶段](configs/pipeline_stages.yaml)
 - [规范化事件账本 JSON Schema](schemas/sceneledger.schema.json)

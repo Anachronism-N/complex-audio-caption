@@ -2,6 +2,8 @@
 
 > 调研冻结日期：2026-08-08 | 实验执行：2026-08-09 ~ 2026-08-11 | 底座：MOSS-Audio-4B-Instruct
 
+> **历史结果审计说明（2026-08-12）**：旧 `*_metrics.json` 的 `strict_format_success_rate` 由已解析 Ledger 默认推断，不能作为格式指标；应以对应 `*_infer_report.json` 的逐样本 parser 状态为准。已确认的例子包括 `b3_dpo_metrics.json=100%`，但对应 inference report 仅为 `9.8%`。表内 event/time/hallucination/omission 指标不依赖这个默认值，但整套结果仍来自旧 synthetic placeholder 数据，只是探索性证据，不满足论文主实验的数据门禁。新实验必须遵循 [可靠基线评测门禁](24_reliable_baseline_evaluation_gate.md)。
+
 ## 1. 主表
 
 | 实验 | event-F1 | precision | recall | SegF1@100ms | onset-MAE | offset-MAE | halluc | omit | format% | 数据 | 步数 |

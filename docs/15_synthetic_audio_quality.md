@@ -175,3 +175,9 @@ Suggest mixing parameters for each source:
 - 数据量：5k → 10k-50k
 - 复杂度：增加并发源数、增加事件密度、增加重叠率
 - 多样性：简单/中等/复杂三档比例约 2:5:3
+
+### 工程落实与验收补充
+
+仅在 sampler 中定义复杂模板不会改变数据分布；模板必须进入正式三折配置的采样权重。当前 `b3_complex_v2_{train,val,test}.yaml` 已接入三个模板，并由 scene-plan preflight 按实际 source count 检查分层，不根据模板名推断复杂度。
+
+Ducking 不再由 renderer 内部临时随机决定。`ducking_enabled` 与 `ducking_depth_db` 是可回放、会进入 scene-plan 哈希的条件；衰减直接施加到保存的 music/ambience stems，并在衰减后重新计算 activity 与 Ledger。因此 stems 仍能精确相加得到 dry mixture，标签也对应模型实际听到的能量。

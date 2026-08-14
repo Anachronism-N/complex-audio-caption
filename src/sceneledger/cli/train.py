@@ -176,12 +176,20 @@ def main(argv: list[str] | None = None) -> int:
 
     split_contract = cfg.get("data", {}).get("split_contract_path")
     data_gate_summary = cfg.get("data", {}).get("data_gate_summary_path")
+    human_audit_summary = cfg.get("data", {}).get("human_audit_summary_path")
+    require_human_audit = cfg.get("data", {}).get("require_human_audit", False)
     expected_split = cfg.get("data", {}).get("expected_split")
     pre_split = cfg.get("data", {}).get("pre_split", False)
+    data_gate = None
+    human_audit = None
     if pre_split and (not split_contract or not data_gate_summary):
         raise ValueError(
             "data.pre_split=true requires data.split_contract_path and "
             "data.data_gate_summary_path"
+        )
+    if require_human_audit and not human_audit_summary:
+        raise ValueError(
+            "data.require_human_audit=true requires data.human_audit_summary_path"
         )
     if split_contract:
         if expected_split != "train":
@@ -191,10 +199,16 @@ def main(argv: list[str] | None = None) -> int:
             require_split_manifest,
         )
 
-        require_experiment_data_summary(data_gate_summary, split_contract)
+        data_gate = require_experiment_data_summary(data_gate_summary, split_contract)
         require_split_manifest(
             split_contract, expected_split, cfg["data"]["manifest_path"]
         )
+        if require_human_audit:
+            from sceneledger.data.human_audit import require_human_audit_summary
+
+            human_audit = require_human_audit_summary(
+                human_audit_summary, expected_dataset_id=data_gate["dataset_id"]
+            )
 
     print("[train] loading model ...", file=sys.stderr, flush=True)
     model, processor, dtype = _load_model_and_processor(cfg)
@@ -355,7 +369,22 @@ def main(argv: list[str] | None = None) -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
     model.save_pretrained(out_dir / "lora")
     processor.tokenizer.save_pretrained(out_dir / "lora")
-    cfg_out = {"config_path": str(args.config), "steps": step, "train_samples": len(train_entries)}
+    cfg_out = {
+        "config_path": str(args.config),
+        "steps": step,
+        "train_samples": len(train_entries),
+    }
+    if data_gate is not None:
+        cfg_out["experiment_contract"] = {
+            "dataset_id": data_gate["dataset_id"],
+            "split": expected_split,
+            "split_contract_path": str(Path(split_contract).resolve()),
+            "data_gate_summary_path": str(Path(data_gate_summary).resolve()),
+            "human_audit_summary_path": (
+                str(Path(human_audit_summary).resolve()) if human_audit else None
+            ),
+            "human_audit_id": human_audit.get("audit_id") if human_audit else None,
+        }
     (out_dir / "train_config.json").write_text(json.dumps(cfg_out, indent=2), encoding="utf-8")
     print(f"[train] saved LoRA checkpoint to {out_dir / 'lora'}", file=sys.stderr, flush=True)
     print(f"[train] done in {time.time()-t0:.0f}s", file=sys.stderr, flush=True)

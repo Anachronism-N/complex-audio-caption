@@ -75,6 +75,8 @@ python -m sceneledger.cli.audit_mixtures \
 - 三个 fold 的 canonical references；
 - `experiment_data_summary.json`。
 
+在此之前，`sceneledger.cli.preflight_data` 只采样 scene graph、不渲染 WAV，验证三折复杂度目标并冻结 `scene_plan_sha256`。最终 data summary 必须绑定通过的 `scene_plan_preflight.json`，且 manifest 中的 scene plan 哈希必须完全一致。
+
 release profile 的初始硬阈值为：
 
 | 检查 | 阈值 |
@@ -86,6 +88,11 @@ release profile 的初始硬阈值为：
 | sparse template 比例 | ≤ 5% |
 | 重复事件少于两个 SFX spans | 0% |
 | 多说话人重叠率低于 10% 的比例 | ≤ 10% |
+| 场景内重复底层 source path 比例 | 0% |
+| 平均 source count | ≥ 3.4 |
+| simple / medium / complex 比例 | 15–30% / 40–60% / 20–40% |
+| 三个新增复杂模板各自比例 | ≥ 8% |
+| complex 样本低 overlap 比例 | ≤ 20% |
 | 重复 source ID | 0% |
 
 这些是首版工程验收阈值，不是 TAC 论文中的既定阈值。任何阈值调整必须新增 profile 名称，不能覆盖已有 profile 后重跑。
@@ -237,11 +244,12 @@ python -m sceneledger.cli.evaluate \
   --split-contract data/derived/b3_complex_v2/gate/split_contract.json \
   --data-gate-summary data/derived/b3_complex_v2/gate/experiment_data_summary.json \
   --expected-split test \
+  --inference-report reports/b3_valid_v2_infer_report.json \
   --output reports/b3_valid_v2_metrics.json \
   --pretty
 ```
 
-当 split contract 生效时，`--limit` 被禁止；预测或 reference 只要缺少、增加或重复一个 sample ID，评测都会直接失败。
+当 split contract 生效时，`--limit` 被禁止，且推理和评测都强制保存/读取 inference report。预测、reference 或 inference report 只要缺少、增加、重复一个 sample ID，或者 prediction 的 SHA-256、dataset ID、split 任一不匹配，评测都会直接失败。格式成功率只来自逐样本原始输出解析状态；不能因为 tolerant parser 产出了一个空 Ledger 就默认成功。
 
 ## 9. 明确的停止条件
 

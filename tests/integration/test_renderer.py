@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 import numpy as np
@@ -65,6 +64,43 @@ def test_stems_sum_to_dry_mixture(pool, sampler):
     assert np.array_equal(dry, out.dry_mixture)
 
 
+def test_master_clipping_guard_scales_persisted_stems_consistently(pool, sampler):
+    scene = _scene(sampler, seed=17, template="speech_music_sfx")
+    for source in scene.sources:
+        source.gain_db = 40.0
+    out = render_scene(scene, pool)
+    reconstructed = np.zeros_like(out.dry_mixture)
+    for rendered_source in out.stems:
+        reconstructed += rendered_source.stem
+    assert np.array_equal(reconstructed, out.dry_mixture)
+    assert float(np.max(np.abs(out.mixture))) <= 0.99 + 1e-6
+
+
+def test_ducking_is_explicit_replayable_and_applied_to_saved_stems(pool, sampler):
+    scene = _scene(sampler, seed=77, template="speech_over_music")
+    scene.conditions.ducking_enabled = True
+    scene.conditions.ducking_depth_db = 4.0
+    ducked = render_scene(scene, pool)
+
+    no_duck_scene = scene_from_dict(scene.to_manifest_dict())
+    no_duck_scene.conditions.ducking_enabled = False
+    no_duck_scene.conditions.ducking_depth_db = None
+    unducked = render_scene(no_duck_scene, pool)
+
+    ducked_music = next(rs.stem for rs in ducked.stems if rs.placed.kind == "music")
+    unducked_music = next(rs.stem for rs in unducked.stems if rs.placed.kind == "music")
+    assert np.any(ducked_music != unducked_music)
+    assert np.mean(np.abs(ducked_music)) < np.mean(np.abs(unducked_music))
+
+    reconstructed = np.zeros_like(ducked.dry_mixture)
+    for rendered_source in ducked.stems:
+        reconstructed += rendered_source.stem
+    assert np.array_equal(reconstructed, ducked.dry_mixture)
+
+    replay = render_scene(scene_from_dict(scene.to_manifest_dict()), pool)
+    assert replay.mixture_hash() == ducked.mixture_hash()
+
+
 def test_mixture_length_matches_duration(pool, sampler):
     scene = _scene(sampler)
     out = render_scene(scene, pool)
@@ -91,6 +127,16 @@ def test_target_ledger_is_schema_valid(pool, sampler):
         for e in out.target_ledger.events:
             assert e.track_id in track_ids
             assert e.spans  # non-empty
+
+
+def test_one_speech_source_produces_one_multispan_verbatim_event(pool, sampler):
+    scene = sampler.sample("speech_spans", seed=42, template="speech_with_sfx")
+    speech_source = next(source for source in scene.sources if source.kind == "speech")
+    out = render_scene(scene, pool)
+    speech_events = [event for event in out.target_ledger.events if event.type == "speech"]
+    assert len(speech_events) == 1
+    assert speech_events[0].text == speech_source.text
+    assert speech_events[0].verbatim is False
 
 
 def test_repeated_event_produces_multispan_sfx(pool, sampler):

@@ -14,6 +14,7 @@ profiles:
       long_silence_sec: 5.0
       max_long_silence_fraction: 0.20
       max_duplicate_source_id_fraction: 0.0
+      max_duplicate_source_path_fraction: 0.0
     sparse_templates:
       names: [isolated_sfx]
       max_fraction: 0.10
@@ -25,6 +26,19 @@ profiles:
       template: overlapping_speakers
       min_overlap_ratio: 0.05
       max_violation_fraction: 0.20
+    complexity:
+      simple_max_sources: 2
+      complex_min_sources: 5
+      min_mean_source_count: 3.20
+      simple_fraction_range: [0.10, 0.35]
+      medium_fraction_range: [0.30, 0.65]
+      complex_fraction_range: [0.15, 0.45]
+      min_complex_overlap_ratio: 0.10
+      max_low_overlap_complex_fraction: 0.35
+      required_templates:
+        complex_cocktail: 0.04
+        rich_band: 0.04
+        multi_event_dense: 0.04
 
   release:
     global:
@@ -36,6 +50,7 @@ profiles:
       long_silence_sec: 5.0
       max_long_silence_fraction: 0.10
       max_duplicate_source_id_fraction: 0.0
+      max_duplicate_source_path_fraction: 0.0
     sparse_templates:
       names: [isolated_sfx]
       max_fraction: 0.05
@@ -47,3 +62,17 @@ profiles:
       template: overlapping_speakers
       min_overlap_ratio: 0.10
       max_violation_fraction: 0.10
+    complexity:
+      # Bands use actual source count, not template names.
+      simple_max_sources: 2
+      complex_min_sources: 5
+      min_mean_source_count: 3.40
+      simple_fraction_range: [0.15, 0.30]
+      medium_fraction_range: [0.40, 0.60]
+      complex_fraction_range: [0.20, 0.40]
+      min_complex_overlap_ratio: 0.15
+      max_low_overlap_complex_fraction: 0.20
+      required_templates:
+        complex_cocktail: 0.08
+        rich_band: 0.08
+        multi_event_dense: 0.08
