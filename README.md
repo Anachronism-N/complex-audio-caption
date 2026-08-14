@@ -53,6 +53,7 @@
 - [真实音频混合 v2 Review 反馈](docs/17_real_mix_v2_review_feedback.md)
 - [真实音频混合 v3b Review 反馈](docs/18_real_mix_v3b_review_feedback.md)
 - [真实音频混合 v4 Review 反馈](docs/19_real_mix_v4_review_feedback.md)
+- [真实音频混合 v5 Review 反馈](docs/20_real_mix_v5_review_feedback.md)
 - [机器可读实验矩阵](configs/experiment_matrix.yaml)
 - [机器可读开发阶段](configs/pipeline_stages.yaml)
 - [规范化事件账本 JSON Schema](schemas/sceneledger.schema.json)
