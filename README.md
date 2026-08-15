@@ -67,6 +67,7 @@
 - [Real-Complex 三折数据锚点与无泄漏 B3 实验](docs/33_real_complex_three_fold_anchor.md)
 - [v6 held-out 取证与论文结果认证门禁](docs/34_v6_heldout_forensics_and_result_certification.md)
 - [冻结 Test 上的盲法模型语义评审](docs/35_blinded_model_semantic_review.md)
+- [v6k 审计与训练前置授权门禁](docs/36_v6k_audit_and_training_preflight.md)
 - [机器可读实验矩阵](configs/experiment_matrix.yaml)
 - [机器可读开发阶段](configs/pipeline_stages.yaml)
 - [规范化事件账本 JSON Schema](schemas/sceneledger.schema.json)
@@ -87,4 +88,4 @@
 
 ## 当前复杂数据锚点
 
-旧 `real_mix_v6` 已被 manifest-only 复杂度门禁拒绝；其 3,000-step 报告还存在评测样本与训练集重叠，不能作为泛化结果。下一步固定为 source-disjoint 的 train/val/test 六源锚点，先在完整冻结 test 上运行 zero-shot，再训练并同集比较。服务器命令与 Go/No-Go 标准见 [Real-Complex 三折实验](docs/33_real_complex_three_fold_anchor.md)。recaption 暂时延期，当前只使用可溯源 transcript 和数据集类别标签。
+旧 `real_mix_v6` 已被 manifest-only 复杂度门禁拒绝；其 3,000-step 报告还存在评测样本与训练集重叠，不能作为泛化结果。新增的 1,000 条 `real_mix_v6_1k` 同样只有 2--3 个占位 source，缺少原始 identity、stem、hash、冻结三折和人工审核，默认训练入口会在加载模型前拒绝。下一步固定为 source-disjoint 的 train/val/test 六源锚点，先在完整冻结 test 上运行 zero-shot，再训练并同集比较。服务器命令与 Go/No-Go 标准见 [Real-Complex 三折实验](docs/33_real_complex_three_fold_anchor.md)，v6k 的确定性审计见 [训练前置授权门禁](docs/36_v6k_audit_and_training_preflight.md)。recaption 暂时延期，当前只使用可溯源 transcript 和数据集类别标签。

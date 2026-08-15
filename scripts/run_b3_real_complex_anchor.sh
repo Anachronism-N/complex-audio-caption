@@ -25,6 +25,13 @@ export PYTHONPATH="${repo_root}/src${PYTHONPATH:+:${PYTHONPATH}}"
   --steps "${steps}" \
   --output "${runtime_config}"
 
+# Reject invalid data before either zero-shot inference or training can reserve
+# a GPU.  The trainer repeats the same check immediately before model loading.
+"${python_bin}" -m sceneledger.cli.train_preflight \
+  --config "${runtime_config}" \
+  --repo-root "${repo_root}" \
+  --output "${gate}/training_preflight.json"
+
 run_frozen_test() {
   local arm="$1"
   shift
@@ -61,7 +68,9 @@ run_frozen_test() {
 # real, same-test-set baseline instead of comparing against legacy v6.
 run_frozen_test zero_shot
 
-"${python_bin}" -m sceneledger.cli.train --config "${runtime_config}"
+"${python_bin}" -m sceneledger.cli.train \
+  --config "${runtime_config}" \
+  --preflight-report "${gate}/training_preflight.json"
 run_frozen_test b3_tuned --lora-path "${model_output}/lora"
 
 "${python_bin}" -m sceneledger.cli.audit_result \

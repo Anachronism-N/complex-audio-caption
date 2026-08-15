@@ -192,6 +192,11 @@ bash scripts/run_b3_real_complex_anchor.sh "$EXP_ROOT" "$MOSS_WEIGHTS" 1000
    `$EXP_ROOT/evaluation/b3_tuned/validity_audit.json`；认证失败时以非零退出。
 7. 认证通过后生成 60 条 zero-shot vs tuned 随机盲法 A/B 人工语义评审任务。
 
+zero-shot 占用 GPU 之前会先生成 `$EXP_ROOT/gate/training_preflight.json`，训练入口还会
+再次执行同一检查。只有冻结 train manifest、split contract、完整 data gate、human
+audit、source identity、mixture hash 和 stem 证据全部一致时才授权训练；详细说明见
+`docs/36_v6k_audit_and_training_preflight.md`。
+
 推理没有 `--limit`，test ID 必须与 contract 完全一致。任何前 50 条评测、
 train manifest 推理或修改 references 的结果都不会通过入口校验。
 此外，只有 `validity_audit.json` 的 `status=certified_generalization` 才能作为

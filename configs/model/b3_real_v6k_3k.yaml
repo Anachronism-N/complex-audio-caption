@@ -1,3 +1,5 @@
+# DIAGNOSTIC ONLY: fails the default training preflight (no source identity,
+# explicit split contract, waveform/stem hashes, data gate, or human audit).
 # B3-slot-aware on 1000 real-audio mixtures (v6k), 3000 steps.
 model:
   path: /tmp/moss_weights

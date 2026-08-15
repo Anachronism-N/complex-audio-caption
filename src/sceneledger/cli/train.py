@@ -167,9 +167,43 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--config", required=True)
     parser.add_argument("--smoke-test", action="store_true", help="1 step, no save")
     parser.add_argument("--max-steps", type=int, default=None, help="override config steps")
+    parser.add_argument(
+        "--allow-exploratory-uncontracted",
+        action="store_true",
+        help="allow legacy uncontracted data; result is permanently non-publication",
+    )
+    parser.add_argument(
+        "--preflight-report",
+        default=None,
+        help="write the CPU training authorization report before loading the model",
+    )
     args = parser.parse_args(argv)
 
     cfg = _load_config(args.config)
+    from sceneledger.data.training_preflight import (
+        audit_training_config,
+        write_training_preflight,
+    )
+
+    training_preflight = audit_training_config(
+        args.config,
+        repo_root=Path.cwd(),
+        allow_exploratory_uncontracted=args.allow_exploratory_uncontracted,
+    )
+    if args.preflight_report:
+        write_training_preflight(args.preflight_report, training_preflight)
+    print(
+        f"[train-preflight] status={training_preflight['status']} "
+        f"publication_eligible={training_preflight['publication_eligible']}",
+        file=sys.stderr,
+        flush=True,
+    )
+    if training_preflight["authorized_to_train"] is not True:
+        raise ValueError(
+            "training preflight rejected this config; use a passed frozen train/data/human "
+            "contract. For deliberate legacy diagnostics only, pass "
+            "--allow-exploratory-uncontracted."
+        )
     _set_seed(cfg["train"]["seed"])
     tcfg = cfg["train"]
     steps = args.max_steps or tcfg["steps"]
@@ -373,6 +407,12 @@ def main(argv: list[str] | None = None) -> int:
         "config_path": str(args.config),
         "steps": step,
         "train_samples": len(train_entries),
+        "training_preflight": {
+            "preflight_id": training_preflight["preflight_id"],
+            "status": training_preflight["status"],
+            "publication_eligible": training_preflight["publication_eligible"],
+            "publication_blockers": training_preflight["publication_blockers"],
+        },
     }
     if data_gate is not None:
         cfg_out["experiment_contract"] = {

@@ -1,0 +1,169 @@
+{
+  "schema_version": "sceneledger-training-preflight-v1",
+  "preflight_id": "1de724377972088bcde89a40f337ebfbf28a43a6e31bf8ab4a5bae497083b628",
+  "pass": false,
+  "authorized_to_train": false,
+  "publication_eligible": false,
+  "status": "rejected_uncontracted_or_invalid",
+  "dataset_id": null,
+  "config": {
+    "path": "configs/model/b3_real_v6k_3k.yaml",
+    "sha256": "be42b763b490936a13dfa070f869c8e1f8adf154156e6eeb1cf428904085f1ac"
+  },
+  "manifest": {
+    "path": "data/derived/real_mix_v6_1k/manifest_compat.jsonl",
+    "sha256": "efc2c77159a96e0181704f5573359137a5d92dbd878107ff68524f58549b33a5",
+    "n_samples": 1000,
+    "n_actual_training_samples": 702,
+    "n_internal_validation_samples": 298
+  },
+  "split_diagnostics": {
+    "actual_training_template_counts": {
+      "coffee_shop": 152,
+      "park_afternoon": 148,
+      "speech_with_music": 116,
+      "speech_with_sfx": 144,
+      "street_traffic": 142
+    },
+    "internal_validation_template_counts": {
+      "concert_outdoor": 148,
+      "restaurant_busy": 150
+    }
+  },
+  "source_diagnostics": {
+    "n_sources": 2740,
+    "n_source_groups": 0,
+    "n_unique_paths": 4,
+    "unique_paths_preview": [
+      "real:ambience",
+      "real:music",
+      "real:sfx",
+      "real:speech"
+    ],
+    "n_placeholder_sources": 2740,
+    "placeholder_examples": [
+      "rv6k_0001:S1:real:speech",
+      "rv6k_0001:S2:real:sfx",
+      "rv6k_0002:S1:real:ambience",
+      "rv6k_0002:S2:real:sfx",
+      "rv6k_0002:S3:real:sfx",
+      "rv6k_0003:S1:real:speech",
+      "rv6k_0003:S2:real:music",
+      "rv6k_0004:S1:real:music",
+      "rv6k_0004:S2:real:sfx",
+      "rv6k_0004:S3:real:sfx",
+      "rv6k_0005:S1:real:ambience",
+      "rv6k_0005:S2:real:sfx",
+      "rv6k_0005:S3:real:music",
+      "rv6k_0006:S1:real:ambience",
+      "rv6k_0006:S2:real:sfx",
+      "rv6k_0006:S3:real:ambience",
+      "rv6k_0007:S1:real:ambience",
+      "rv6k_0007:S2:real:sfx",
+      "rv6k_0007:S3:real:ambience",
+      "rv6k_0008:S1:real:speech"
+    ],
+    "n_nonempty_mixture_hashes": 0,
+    "n_nonempty_stem_maps": 0,
+    "n_complete_waveform_hashes": 0,
+    "n_complete_stem_evidence": 0
+  },
+  "publication_blockers": [
+    "no_valid_frozen_training_contract",
+    "raw_source_identity_not_auditable",
+    "mixture_hashes_incomplete",
+    "stem_evidence_incomplete",
+    "temporary_in_trainer_split"
+  ],
+  "contract_artifacts": {},
+  "checks": [
+    {
+      "name": "manifest_nonempty",
+      "pass": true,
+      "detail": 1000
+    },
+    {
+      "name": "training_membership_nonempty",
+      "pass": true,
+      "detail": 702
+    },
+    {
+      "name": "sample_ids_well_formed",
+      "pass": true,
+      "detail": {
+        "n_samples": 1000,
+        "n_empty": 0,
+        "n_unique": 1000
+      }
+    },
+    {
+      "name": "raw_source_identity_auditable",
+      "pass": false,
+      "detail": {
+        "n_placeholder_sources": 2740,
+        "examples": [
+          "rv6k_0001:S1:real:speech",
+          "rv6k_0001:S2:real:sfx",
+          "rv6k_0002:S1:real:ambience",
+          "rv6k_0002:S2:real:sfx",
+          "rv6k_0002:S3:real:sfx",
+          "rv6k_0003:S1:real:speech",
+          "rv6k_0003:S2:real:music",
+          "rv6k_0004:S1:real:music",
+          "rv6k_0004:S2:real:sfx",
+          "rv6k_0004:S3:real:sfx",
+          "rv6k_0005:S1:real:ambience",
+          "rv6k_0005:S2:real:sfx",
+          "rv6k_0005:S3:real:music",
+          "rv6k_0006:S1:real:ambience",
+          "rv6k_0006:S2:real:sfx",
+          "rv6k_0006:S3:real:ambience",
+          "rv6k_0007:S1:real:ambience",
+          "rv6k_0007:S2:real:sfx",
+          "rv6k_0007:S3:real:ambience",
+          "rv6k_0008:S1:real:speech"
+        ]
+      }
+    },
+    {
+      "name": "mixture_hashes_complete",
+      "pass": false,
+      "detail": "0/1000"
+    },
+    {
+      "name": "stem_evidence_complete",
+      "pass": false,
+      "detail": "0/1000"
+    },
+    {
+      "name": "frozen_training_contract_valid",
+      "pass": false,
+      "detail": {
+        "missing": [
+          "pre_split",
+          "expected_split_train",
+          "split_contract_path",
+          "data_gate_summary_path",
+          "require_human_audit",
+          "human_audit_summary_path"
+        ],
+        "partial_contract": false
+      }
+    },
+    {
+      "name": "training_authorized",
+      "pass": false,
+      "detail": {
+        "allow_exploratory_uncontracted": false,
+        "status": "rejected_uncontracted_or_invalid"
+      }
+    }
+  ],
+  "failed_checks": [
+    "raw_source_identity_auditable",
+    "mixture_hashes_complete",
+    "stem_evidence_complete",
+    "frozen_training_contract_valid",
+    "training_authorized"
+  ]
+}
