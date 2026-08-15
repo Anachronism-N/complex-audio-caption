@@ -1,0 +1,252 @@
+{
+  "schema_version": "sceneledger-evaluation-validity-v1",
+  "pass": false,
+  "status": "invalid_generalization_claim",
+  "claim_scope": "diagnostic_only",
+  "dataset_id": null,
+  "failed_checks": [
+    "metrics_parser_evidence_identical",
+    "complete_evaluation_manifest_coverage",
+    "train_eval_sample_ids_disjoint",
+    "raw_source_identity_auditable",
+    "train_eval_raw_sources_disjoint",
+    "current_semantic_metric_schema_valid",
+    "frozen_experiment_contract_valid"
+  ],
+  "artifacts": {
+    "train_config": {
+      "path": "configs/model/b3_real_v6k_3k.yaml",
+      "sha256": "be42b763b490936a13dfa070f869c8e1f8adf154156e6eeb1cf428904085f1ac"
+    },
+    "train_manifest": {
+      "path": "data/derived/real_mix_v6_1k/manifest_compat.jsonl",
+      "sha256": "efc2c77159a96e0181704f5573359137a5d92dbd878107ff68524f58549b33a5"
+    },
+    "evaluation_manifest": {
+      "path": "data/derived/real_mix_v6_1k/manifest_compat.jsonl",
+      "sha256": "efc2c77159a96e0181704f5573359137a5d92dbd878107ff68524f58549b33a5"
+    },
+    "metrics": {
+      "path": "reports/b3_real_v6k_3k_heldout_metrics.json",
+      "sha256": "51b7f15207da1312ba1ada0c82d3f0f8ade0a1e66427cfabf4847746a926b61e"
+    },
+    "inference_report": {
+      "path": "reports/b3_real_v6k_3k_heldout_infer_report.json",
+      "sha256": "7e3f246063b977bdcee24bf04b5c5b57aaaf1f4d133069f6ce0db6a66ecd6756"
+    }
+  },
+  "counts": {
+    "train_manifest": 1000,
+    "actual_training": 702,
+    "evaluation_manifest": 1000,
+    "reported_evaluation": 100,
+    "reported_seen_during_training": 64,
+    "reported_unseen_by_sample_id": 36
+  },
+  "checks": [
+    {
+      "name": "training_membership_nonempty",
+      "pass": true,
+      "detail": 702
+    },
+    {
+      "name": "evaluation_manifest_ids_unique",
+      "pass": true,
+      "detail": 0
+    },
+    {
+      "name": "metrics_ids_well_formed",
+      "pass": true,
+      "detail": {
+        "errors": [],
+        "declared": 100,
+        "observed": 100
+      }
+    },
+    {
+      "name": "inference_ids_well_formed",
+      "pass": true,
+      "detail": {
+        "errors": [],
+        "declared": 100,
+        "observed": 100
+      }
+    },
+    {
+      "name": "metrics_inference_ids_identical",
+      "pass": true,
+      "detail": {
+        "metrics_only": [],
+        "inference_only": [],
+        "same_order": true
+      }
+    },
+    {
+      "name": "metrics_parser_evidence_identical",
+      "pass": false,
+      "detail": {
+        "metrics_rate": 1.0,
+        "inference_rate": 0.98,
+        "mismatched_sample_ids": [
+          "rv6k_0970",
+          "rv6k_0983"
+        ]
+      }
+    },
+    {
+      "name": "complete_evaluation_manifest_coverage",
+      "pass": false,
+      "detail": {
+        "missing_from_reports": [
+          "rv6k_0001",
+          "rv6k_0002",
+          "rv6k_0003",
+          "rv6k_0004",
+          "rv6k_0005",
+          "rv6k_0006",
+          "rv6k_0007",
+          "rv6k_0008",
+          "rv6k_0009",
+          "rv6k_0010",
+          "rv6k_0011",
+          "rv6k_0012",
+          "rv6k_0013",
+          "rv6k_0014",
+          "rv6k_0015",
+          "rv6k_0016",
+          "rv6k_0017",
+          "rv6k_0018",
+          "rv6k_0019",
+          "rv6k_0020"
+        ],
+        "unknown_report_ids": [],
+        "n_manifest": 1000,
+        "n_reported": 100
+      }
+    },
+    {
+      "name": "train_eval_sample_ids_disjoint",
+      "pass": false,
+      "detail": {
+        "count": 64,
+        "examples": [
+          "rv6k_0901",
+          "rv6k_0903",
+          "rv6k_0904",
+          "rv6k_0905",
+          "rv6k_0907",
+          "rv6k_0909",
+          "rv6k_0913",
+          "rv6k_0914",
+          "rv6k_0915",
+          "rv6k_0916",
+          "rv6k_0917",
+          "rv6k_0920",
+          "rv6k_0923",
+          "rv6k_0925",
+          "rv6k_0926",
+          "rv6k_0930",
+          "rv6k_0931",
+          "rv6k_0932",
+          "rv6k_0933",
+          "rv6k_0935"
+        ]
+      }
+    },
+    {
+      "name": "raw_source_identity_auditable",
+      "pass": false,
+      "detail": {
+        "count": 2126,
+        "examples": [
+          "rv6k_0003:S1:real:speech",
+          "rv6k_0003:S2:real:music",
+          "rv6k_0008:S1:real:speech",
+          "rv6k_0008:S2:real:music",
+          "rv6k_0015:S1:real:speech",
+          "rv6k_0015:S2:real:music",
+          "rv6k_0026:S1:real:speech",
+          "rv6k_0026:S2:real:music",
+          "rv6k_0028:S1:real:speech",
+          "rv6k_0028:S2:real:music",
+          "rv6k_0034:S1:real:speech",
+          "rv6k_0034:S2:real:music",
+          "rv6k_0041:S1:real:speech",
+          "rv6k_0041:S2:real:music",
+          "rv6k_0042:S1:real:speech",
+          "rv6k_0042:S2:real:music",
+          "rv6k_0049:S1:real:speech",
+          "rv6k_0049:S2:real:music",
+          "rv6k_0055:S1:real:speech",
+          "rv6k_0055:S2:real:music"
+        ]
+      }
+    },
+    {
+      "name": "train_eval_raw_sources_disjoint",
+      "pass": false,
+      "detail": {
+        "count": 4,
+        "examples": [
+          "path:real:ambience",
+          "path:real:music",
+          "path:real:sfx",
+          "path:real:speech"
+        ]
+      }
+    },
+    {
+      "name": "current_semantic_metric_schema_valid",
+      "pass": false,
+      "detail": "unsupported metrics schema: None; expected 'sceneledger-metrics-v2'"
+    },
+    {
+      "name": "frozen_experiment_contract_valid",
+      "pass": false,
+      "detail": "--split-contract and --data-gate-summary are both required"
+    }
+  ],
+  "metric_subgroups": {
+    "seen_during_training": {
+      "n_samples": 64,
+      "mean_event_precision": 0.989583,
+      "mean_event_recall": 0.989583,
+      "mean_event_f1": 0.989583,
+      "mean_caption_token_f1": null,
+      "mean_seg_f1_100ms": 0.969983,
+      "mean_onset_mae": 0.226562,
+      "mean_offset_mae": 0.226562,
+      "mean_tolerance_acc_010": 0.638021,
+      "mean_source_count_mae": 1.140625,
+      "mean_pointer_accuracy": 0.361979,
+      "total_hallucination": 2,
+      "total_omission": 2
+    },
+    "unseen_by_sample_id": {
+      "n_samples": 36,
+      "mean_event_precision": 0.990741,
+      "mean_event_recall": 0.935185,
+      "mean_event_f1": 0.935185,
+      "mean_caption_token_f1": null,
+      "mean_seg_f1_100ms": 0.895046,
+      "mean_onset_mae": 0.324537,
+      "mean_offset_mae": 0.245833,
+      "mean_tolerance_acc_010": 0.62963,
+      "mean_source_count_mae": 1.138889,
+      "mean_pointer_accuracy": 0.300926,
+      "total_hallucination": 1,
+      "total_omission": 7
+    }
+  },
+  "headline_metrics": {
+    "event_f1": 0.97,
+    "caption_token_f1": null,
+    "seg_f1_100ms": 0.943006,
+    "tolerance_acc_010": 0.635,
+    "source_count_mae": 1.14,
+    "pointer_accuracy": 0.34,
+    "hallucination": 3,
+    "omission": 9
+  },
+  "interpretation": "Only a passing report supports a held-out generalization claim. The unseen-by-sample-ID subgroup is diagnostic when source identities are not auditable; it is not a source-disjoint test result."
+}

@@ -17,6 +17,7 @@ from pathlib import Path
 
 from sceneledger.data.experiment_data import file_sha256
 from sceneledger.eval.metrics import (
+    METRICS_SCHEMA_VERSION,
     CorpusMetrics,
     evaluate_corpus,
     load_inference_report,
@@ -137,7 +138,7 @@ def main(argv: list[str] | None = None) -> int:
         args.reference,
         inference_report=inference_payload,
     )
-    payload = corpus.to_dict()
+    payload = {"schema_version": METRICS_SCHEMA_VERSION, **corpus.to_dict()}
     if args.inference_report:
         payload["inference_evidence"] = {
             "path": str(Path(args.inference_report).resolve()),
@@ -169,9 +170,11 @@ def main(argv: list[str] | None = None) -> int:
         print(
             f"[sceneledger] {corpus.n_samples} samples | "
             f"event-F1={corpus.macro_event_f1:.3f} | "
+            f"caption-token-F1={corpus.macro_caption_token_f1:.3f} | "
             f"SegF1@100ms={corpus.macro_seg_f1_100ms:.3f} | "
             f"strict-format={format_rate} | "
             f"onset-MAE={corpus.mean_onset_mae:.3f}s | "
+            f"pointer={corpus.mean_pointer_accuracy:.3f} | "
             f"halluc={corpus.total_hallucination} omit={corpus.total_omission} | "
             f"-> {out}",
             file=sys.stderr,

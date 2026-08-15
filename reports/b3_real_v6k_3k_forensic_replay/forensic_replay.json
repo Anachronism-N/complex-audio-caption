@@ -1,0 +1,232 @@
+{
+  "schema_version": "sceneledger-forensic-replay-v1",
+  "paper_eligible": false,
+  "claim_scope": "diagnostic_only",
+  "publication_blockers": [
+    "posthoc_report_subset_was_not_a_frozen_test_manifest",
+    "forensic_replay_does_not_establish_source_disjointness",
+    "missing_source_identity_cannot_be_recovered_from_raw_text",
+    "reported_samples_were_seen_during_training"
+  ],
+  "artifacts": {
+    "train_config": {
+      "path": "configs/model/b3_real_v6k_3k.yaml",
+      "sha256": "be42b763b490936a13dfa070f869c8e1f8adf154156e6eeb1cf428904085f1ac"
+    },
+    "train_manifest": {
+      "path": "data/derived/real_mix_v6_1k/manifest_compat.jsonl",
+      "sha256": "efc2c77159a96e0181704f5573359137a5d92dbd878107ff68524f58549b33a5"
+    },
+    "evaluation_source_manifest": {
+      "path": "data/derived/real_mix_v6_1k/manifest_compat.jsonl",
+      "sha256": "efc2c77159a96e0181704f5573359137a5d92dbd878107ff68524f58549b33a5"
+    },
+    "inference_report": {
+      "path": "reports/b3_real_v6k_3k_heldout_infer_report.json",
+      "sha256": "7e3f246063b977bdcee24bf04b5c5b57aaaf1f4d133069f6ce0db6a66ecd6756"
+    },
+    "original_metrics": {
+      "path": "reports/b3_real_v6k_3k_heldout_metrics.json",
+      "sha256": "51b7f15207da1312ba1ada0c82d3f0f8ade0a1e66427cfabf4847746a926b61e"
+    }
+  },
+  "counts": {
+    "reported": 100,
+    "seen_during_training": 64,
+    "unseen_by_sample_id": 36,
+    "unauditable_reported_sources": 280
+  },
+  "parser_replay": {
+    "n_status_disagreements": 0,
+    "disagreements": [],
+    "original_strict_format_success_rate": 0.98,
+    "current_strict_format_success_rate": 0.98
+  },
+  "original_headline_metrics": {
+    "n_samples": 100,
+    "strict_format_success_rate": 1.0,
+    "macro_event_precision": 0.99,
+    "macro_event_recall": 0.97,
+    "macro_event_f1": 0.97,
+    "macro_caption_token_f1": null,
+    "macro_seg_f1_100ms": 0.943006,
+    "mean_onset_mae": 0.261833,
+    "mean_offset_mae": 0.2335,
+    "macro_tolerance_acc_010": 0.635,
+    "total_hallucination": 3,
+    "total_omission": 9,
+    "mean_source_count_mae": 1.14,
+    "mean_pointer_accuracy": 0.34
+  },
+  "replayed_headline_metrics": {
+    "n_samples": 100,
+    "strict_format_success_rate": 0.98,
+    "macro_event_precision": 0.99,
+    "macro_event_recall": 0.97,
+    "macro_event_f1": 0.97,
+    "macro_caption_token_f1": 0.163873,
+    "macro_seg_f1_100ms": 0.943006,
+    "mean_onset_mae": 0.261833,
+    "mean_offset_mae": 0.2335,
+    "macro_tolerance_acc_010": 0.635,
+    "total_hallucination": 3,
+    "total_omission": 9,
+    "mean_source_count_mae": 1.14,
+    "mean_pointer_accuracy": 0.34
+  },
+  "subgroups": {
+    "seen_during_training": {
+      "n_samples": 64,
+      "strict_format_success_rate": 1.0,
+      "macro_event_precision": 0.989583,
+      "macro_event_recall": 0.989583,
+      "macro_event_f1": 0.989583,
+      "macro_caption_token_f1": 0.179072,
+      "macro_seg_f1_100ms": 0.969983,
+      "mean_onset_mae": 0.226562,
+      "mean_offset_mae": 0.226562,
+      "macro_tolerance_acc_010": 0.638021,
+      "total_hallucination": 2,
+      "total_omission": 2,
+      "mean_source_count_mae": 1.140625,
+      "mean_pointer_accuracy": 0.361979
+    },
+    "unseen_by_sample_id": {
+      "n_samples": 36,
+      "strict_format_success_rate": 0.944444,
+      "macro_event_precision": 0.990741,
+      "macro_event_recall": 0.935185,
+      "macro_event_f1": 0.935185,
+      "macro_caption_token_f1": 0.136852,
+      "macro_seg_f1_100ms": 0.895046,
+      "mean_onset_mae": 0.324537,
+      "mean_offset_mae": 0.245833,
+      "macro_tolerance_acc_010": 0.62963,
+      "total_hallucination": 1,
+      "total_omission": 7,
+      "mean_source_count_mae": 1.138889,
+      "mean_pointer_accuracy": 0.300926
+    }
+  },
+  "sample_ids": {
+    "seen_during_training": [
+      "rv6k_0901",
+      "rv6k_0903",
+      "rv6k_0904",
+      "rv6k_0905",
+      "rv6k_0907",
+      "rv6k_0909",
+      "rv6k_0913",
+      "rv6k_0914",
+      "rv6k_0915",
+      "rv6k_0916",
+      "rv6k_0917",
+      "rv6k_0920",
+      "rv6k_0923",
+      "rv6k_0925",
+      "rv6k_0926",
+      "rv6k_0930",
+      "rv6k_0931",
+      "rv6k_0932",
+      "rv6k_0933",
+      "rv6k_0935",
+      "rv6k_0936",
+      "rv6k_0937",
+      "rv6k_0943",
+      "rv6k_0944",
+      "rv6k_0946",
+      "rv6k_0947",
+      "rv6k_0948",
+      "rv6k_0949",
+      "rv6k_0950",
+      "rv6k_0952",
+      "rv6k_0953",
+      "rv6k_0956",
+      "rv6k_0957",
+      "rv6k_0958",
+      "rv6k_0959",
+      "rv6k_0960",
+      "rv6k_0961",
+      "rv6k_0962",
+      "rv6k_0963",
+      "rv6k_0964",
+      "rv6k_0965",
+      "rv6k_0966",
+      "rv6k_0967",
+      "rv6k_0968",
+      "rv6k_0969",
+      "rv6k_0971",
+      "rv6k_0973",
+      "rv6k_0975",
+      "rv6k_0976",
+      "rv6k_0977",
+      "rv6k_0978",
+      "rv6k_0979",
+      "rv6k_0980",
+      "rv6k_0981",
+      "rv6k_0982",
+      "rv6k_0985",
+      "rv6k_0986",
+      "rv6k_0987",
+      "rv6k_0990",
+      "rv6k_0993",
+      "rv6k_0994",
+      "rv6k_0995",
+      "rv6k_0997",
+      "rv6k_0999"
+    ],
+    "unseen_by_sample_id": [
+      "rv6k_0902",
+      "rv6k_0906",
+      "rv6k_0908",
+      "rv6k_0910",
+      "rv6k_0911",
+      "rv6k_0912",
+      "rv6k_0918",
+      "rv6k_0919",
+      "rv6k_0921",
+      "rv6k_0922",
+      "rv6k_0924",
+      "rv6k_0927",
+      "rv6k_0928",
+      "rv6k_0929",
+      "rv6k_0934",
+      "rv6k_0938",
+      "rv6k_0939",
+      "rv6k_0940",
+      "rv6k_0941",
+      "rv6k_0942",
+      "rv6k_0945",
+      "rv6k_0951",
+      "rv6k_0954",
+      "rv6k_0955",
+      "rv6k_0970",
+      "rv6k_0972",
+      "rv6k_0974",
+      "rv6k_0983",
+      "rv6k_0984",
+      "rv6k_0988",
+      "rv6k_0989",
+      "rv6k_0991",
+      "rv6k_0992",
+      "rv6k_0996",
+      "rv6k_0998",
+      "rv6k_1000"
+    ]
+  },
+  "interpretation": "Replayed metrics recover current parser and caption diagnostics only. They cannot retroactively certify a post-hoc or source-opaque split.",
+  "replayed_artifacts": {
+    "predictions": {
+      "path": "predictions.replayed.jsonl",
+      "sha256": "72ffac511e79c429713afeb65e5b4e1760b9844e880011fcd82d98dd7e99611b"
+    },
+    "posthoc_references": {
+      "path": "references.posthoc_subset.jsonl",
+      "sha256": "03da2583abc7460ba65be88d8ae24b78be73b6a658b89cf2897b9977e51ed42c"
+    },
+    "metrics": {
+      "path": "metrics.replayed.json",
+      "sha256": "3523690ef2d65581f97101f9ff60eab01d8f0be601e5e544e558f7bbeb059694"
+    }
+  }
+}

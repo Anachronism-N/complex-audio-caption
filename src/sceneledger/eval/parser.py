@@ -147,7 +147,6 @@ def parse_model_output(
 
     # 2. tolerant regex scan
     recovered: list[RecoveredEvent] = []
-    rejected: list[str] = []
 
     for m in _TAG_RE.finditer(text):
         tag = m.group("tag").lower()
@@ -211,6 +210,30 @@ def parse_model_output(
         events=events,
     )
     return ledger, report
+
+
+def parse_caption_output(
+    text: str, sample_id: str, duration_sec: float = 30.0
+) -> tuple[Ledger, ParseReport]:
+    """Parse either an atomic timestamp caption or the XML-like Ledger form.
+
+    Online inference and offline forensic replay share this dispatch so parser
+    changes cannot silently produce two incompatible metric pipelines.
+    """
+    from sceneledger.models.target_formatter import atomic_to_ledger
+
+    try:
+        ledger = atomic_to_ledger(text, sample_id, duration_sec)
+        if ledger.events:
+            return ledger, ParseReport(
+                sample_id=sample_id,
+                ok=True,
+                events_recovered=len(ledger.events),
+                strict_format_success=True,
+            )
+    except (TypeError, ValueError):
+        pass
+    return parse_model_output(text, sample_id=sample_id, duration_sec=duration_sec)
 
 
 def _try_strict(text: str, sample_id: str, duration_sec: float) -> Ledger:
@@ -294,4 +317,9 @@ def _union_spans(spans: list[Span]) -> list[Span]:
     return merged
 
 
-__all__ = ["ParseReport", "RecoveredEvent", "parse_model_output"]
+__all__ = [
+    "ParseReport",
+    "RecoveredEvent",
+    "parse_caption_output",
+    "parse_model_output",
+]

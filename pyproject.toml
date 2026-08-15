@@ -37,6 +37,7 @@ data = [
 sceneledger-evaluate = "sceneledger.cli.evaluate:main"
 sceneledger-audit-result = "sceneledger.cli.audit_result:main"
 sceneledger-model-review = "sceneledger.cli.model_review:main"
+sceneledger-forensic-replay = "sceneledger.cli.forensic_replay:main"
 sceneledger-train-preflight = "sceneledger.cli.train_preflight:main"
 sceneledger-audit-mixtures = "sceneledger.cli.audit_mixtures:main"
 sceneledger-audit-complexity = "sceneledger.cli.audit_complexity:main"

@@ -33,6 +33,121 @@ from sceneledger.eval.temporal import (
     tolerance_accuracy,
 )
 
+METRICS_SCHEMA_VERSION = "sceneledger-metrics-v2"
+
+
+_MEAN_FIELDS = {
+    "macro_event_precision": "event_precision",
+    "macro_event_recall": "event_recall",
+    "macro_event_f1": "event_f1",
+    "macro_caption_token_f1": "caption_token_f1",
+    "macro_seg_f1_100ms": "seg_f1_100ms",
+    "mean_onset_mae": "onset_mae",
+    "mean_offset_mae": "offset_mae",
+    "mean_onset_p90": "onset_p90",
+    "mean_offset_p90": "offset_p90",
+    "macro_tolerance_acc_010": "tolerance_acc_010",
+    "macro_tolerance_acc_025": "tolerance_acc_025",
+    "macro_tolerance_acc_050": "tolerance_acc_050",
+    "macro_tolerance_acc_100": "tolerance_acc_100",
+    "mean_source_count_mae": "source_count_mae",
+    "mean_pointer_accuracy": "pointer_accuracy",
+}
+_SUM_FIELDS = {
+    "total_hallucination": "hallucination",
+    "total_omission": "omission",
+}
+
+
+def _require_number(payload: dict, field: str, artifact: str) -> float:
+    value = payload.get(field)
+    if not isinstance(value, (int, float)) or isinstance(value, bool):
+        raise ValueError(f"{artifact}.{field} is missing or not numeric")
+    return float(value)
+
+
+def validate_metrics_artifact(payload: dict) -> dict:
+    """Validate a current, internally consistent paper-metric artifact.
+
+    Historical metric JSON files remain readable by diagnostic tools, but they
+    cannot certify a paper claim: several omit caption semantics or infer raw
+    format success from an already parsed Ledger.  This validator is therefore
+    deliberately versioned and fail-closed.
+    """
+    if not isinstance(payload, dict):
+        raise ValueError("metrics artifact must be a JSON object")
+    if payload.get("schema_version") != METRICS_SCHEMA_VERSION:
+        raise ValueError(
+            "unsupported metrics schema: "
+            f"{payload.get('schema_version')!r}; expected {METRICS_SCHEMA_VERSION!r}"
+        )
+    rows = payload.get("samples")
+    if not isinstance(rows, list) or not rows:
+        raise ValueError("metrics.samples must be a nonempty list")
+    if payload.get("n_samples") != len(rows):
+        raise ValueError("metrics.n_samples does not match metrics.samples")
+
+    sample_ids: list[str] = []
+    for index, row in enumerate(rows):
+        if not isinstance(row, dict):
+            raise ValueError(f"metrics.samples[{index}] is not an object")
+        sample_id = row.get("sample_id")
+        if not isinstance(sample_id, str) or not sample_id:
+            raise ValueError(f"metrics.samples[{index}].sample_id is invalid")
+        sample_ids.append(sample_id)
+        for metric_field in (*_MEAN_FIELDS.values(), *_SUM_FIELDS.values()):
+            _require_number(row, metric_field, f"metrics.samples[{index}]")
+        if not isinstance(row.get("strict_format_success"), bool):
+            raise ValueError(
+                f"metrics.samples[{index}].strict_format_success is not boolean"
+            )
+    if len(set(sample_ids)) != len(sample_ids):
+        raise ValueError("metrics.samples contains duplicate sample IDs")
+    if payload.get("format_status_complete") is not True:
+        raise ValueError("metrics does not contain complete raw parser evidence")
+    if payload.get("n_format_status_known") != len(rows):
+        raise ValueError("metrics.n_format_status_known is inconsistent")
+    if payload.get("n_format_status_missing") != 0:
+        raise ValueError("metrics.n_format_status_missing must be zero")
+
+    tolerance = 1e-6
+    for corpus_field, sample_field in _MEAN_FIELDS.items():
+        observed = _require_number(payload, corpus_field, "metrics")
+        expected = round(
+            sum(float(row[sample_field]) for row in rows) / len(rows), 6
+        )
+        if abs(observed - expected) > tolerance:
+            raise ValueError(
+                f"metrics.{corpus_field} is inconsistent with sample rows: "
+                f"{observed} != {expected}"
+            )
+    for corpus_field, sample_field in _SUM_FIELDS.items():
+        observed = _require_number(payload, corpus_field, "metrics")
+        expected = sum(float(row[sample_field]) for row in rows)
+        if abs(observed - expected) > tolerance:
+            raise ValueError(
+                f"metrics.{corpus_field} is inconsistent with sample rows: "
+                f"{observed} != {expected}"
+            )
+    expected_format_rate = round(
+        sum(bool(row["strict_format_success"]) for row in rows) / len(rows), 6
+    )
+    observed_format_rate = _require_number(
+        payload, "strict_format_success_rate", "metrics"
+    )
+    if abs(observed_format_rate - expected_format_rate) > tolerance:
+        raise ValueError(
+            "metrics.strict_format_success_rate is inconsistent with sample rows"
+        )
+    return {
+        "schema_version": METRICS_SCHEMA_VERSION,
+        "n_samples": len(rows),
+        "sample_ids": sample_ids,
+        "caption_metric": "macro_caption_token_f1",
+        "aggregate_consistent": True,
+        "format_evidence_complete": True,
+    }
+
 
 @dataclass
 class SampleMetrics:
@@ -450,9 +565,11 @@ def evaluate_corpus(
 
 __all__ = [
     "CorpusMetrics",
+    "METRICS_SCHEMA_VERSION",
     "SampleMetrics",
     "aggregate",
     "evaluate_corpus",
     "evaluate_sample",
     "load_inference_report",
+    "validate_metrics_artifact",
 ]

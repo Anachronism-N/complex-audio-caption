@@ -48,6 +48,9 @@
    metrics/inference 的 `dataset_id` 和 prediction hash 绑定；
 6. 自动分别输出 seen/unseen 子集指标，防止训练样本的完美分数掩盖真正未见
    样本的退化。
+7. 要求 metrics 与 inference report 的逐样本原始 parser 状态完全一致；
+8. 要求 `sceneledger-metrics-v2`，并从逐样本行重算 aggregate，缺少 caption
+   语义指标的 legacy metrics 只能用于诊断。
 
 只有 `status=certified_generalization` 才能汇入论文主表。缺合同、只评前 N 条、
 source identity 不可审计或任一 overlap 都得到
@@ -101,6 +104,9 @@ $EXP_ROOT/evaluation/b3_tuned/validity_audit.json
 若认证失败，脚本会停止，`comparison.json` 只能用于排错。认证通过后仍必须同时
 查看 event-F1、caption token-F1、100 ms tolerance、source-count、pointer、
 hallucination 和 omission；不能再次只汇报 event-F1。
+
+1,000 条 v6k 的后续高分取证及 CPU-only forensic replay 见
+`docs/37_v6k_result_forensics_and_next_experiment.md`。
 
 ## 4. 本轮需要执行者做什么
 

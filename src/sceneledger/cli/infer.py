@@ -26,14 +26,14 @@ from pathlib import Path
 from sceneledger.data.experiment_data import file_sha256
 from sceneledger.data.manifests import read_manifest
 from sceneledger.data.schema import Ledger
-from sceneledger.eval.parser import ParseReport, parse_model_output
+from sceneledger.eval.parser import parse_caption_output
 from sceneledger.models.moss_adapter import (
     MockMossAdapter,
     MockMossAdapterConfig,
     MossAdapter,
     MossAdapterConfig,
 )
-from sceneledger.models.target_formatter import atomic_to_ledger, canonical_prompt
+from sceneledger.models.target_formatter import canonical_prompt
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -134,7 +134,7 @@ def main(argv: list[str] | None = None) -> int:
                 raw_text = adapter.infer(audio_path, prompt, sample_id=sid, duration=duration)
 
             # parse the (atomic-token or free-form) output into a Ledger
-            pred_ledger, report = _parse_output(raw_text, sid, duration)
+            pred_ledger, report = parse_caption_output(raw_text, sid, duration)
             f.write(json.dumps(pred_ledger.model_dump(mode="json"), ensure_ascii=False) + "\n")
             reports.append(
                 {
@@ -195,25 +195,5 @@ def main(argv: list[str] | None = None) -> int:
         file=sys.stderr,
     )
     return 0
-
-
-def _parse_output(raw_text: str, sample_id: str, duration: float) -> tuple[Ledger, ParseReport]:
-    """Parse model output: try atomic-token first, fall back to tolerant XML parser."""
-    # atomic-token path (B2/B0 with time markers)
-    try:
-        ledger = atomic_to_ledger(raw_text, sample_id, duration)
-        if ledger.events:
-            report = ParseReport(
-                sample_id=sample_id, ok=True, events_recovered=len(ledger.events),
-                strict_format_success=True,
-            )
-            return ledger, report
-    except Exception:
-        pass
-    # tolerant XML / free-form path
-    ledger, report = parse_model_output(raw_text, sample_id=sample_id, duration_sec=duration)
-    return ledger, report
-
-
 if __name__ == "__main__":
     raise SystemExit(main())

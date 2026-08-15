@@ -24,6 +24,7 @@ from sceneledger.data.experiment_data import (
 )
 from sceneledger.data.human_audit import require_human_audit_summary
 from sceneledger.data.manifests import ManifestEntry, read_manifest
+from sceneledger.eval.metrics import validate_metrics_artifact
 
 
 def _sample_id(entry: ManifestEntry) -> str:
@@ -226,6 +227,38 @@ def audit_evaluation_result(
             },
         ),
         _check(
+            "metrics_parser_evidence_identical",
+            all(
+                isinstance(metric_row, dict)
+                and isinstance(inference_row, dict)
+                and metric_row.get("strict_format_success")
+                == inference_row.get("strict_format_success")
+                for metric_row, inference_row in zip(
+                    metrics.get("samples", []),
+                    inference.get("samples", []),
+                    strict=False,
+                )
+            )
+            and metrics.get("strict_format_success_rate")
+            == inference.get("strict_format_success_rate"),
+            {
+                "metrics_rate": metrics.get("strict_format_success_rate"),
+                "inference_rate": inference.get("strict_format_success_rate"),
+                "mismatched_sample_ids": [
+                    str(metric_row.get("sample_id", ""))
+                    for metric_row, inference_row in zip(
+                        metrics.get("samples", []),
+                        inference.get("samples", []),
+                        strict=False,
+                    )
+                    if isinstance(metric_row, dict)
+                    and isinstance(inference_row, dict)
+                    and metric_row.get("strict_format_success")
+                    != inference_row.get("strict_format_success")
+                ][:20],
+            },
+        ),
+        _check(
             "complete_evaluation_manifest_coverage",
             reported_ids == eval_manifest_id_set,
             {
@@ -251,6 +284,20 @@ def audit_evaluation_result(
             {"count": len(source_overlap), "examples": source_overlap[:20]},
         ),
     ]
+
+    metric_schema_error: str | None = None
+    metric_schema_summary: dict[str, Any] = {}
+    try:
+        metric_schema_summary = validate_metrics_artifact(metrics)
+    except (TypeError, ValueError) as exc:
+        metric_schema_error = str(exc)
+    checks.append(
+        _check(
+            "current_semantic_metric_schema_valid",
+            metric_schema_error is None,
+            metric_schema_error or metric_schema_summary,
+        )
+    )
 
     contract_error: str | None = None
     contract = None
@@ -331,6 +378,7 @@ def audit_evaluation_result(
         "schema_version": "sceneledger-evaluation-validity-v1",
         "pass": not failed,
         "status": "certified_generalization" if not failed else "invalid_generalization_claim",
+        "claim_scope": "paper_eligible" if not failed else "diagnostic_only",
         "dataset_id": contract.get("dataset_id") if contract_error is None else None,
         "failed_checks": failed,
         "artifacts": {
@@ -368,6 +416,16 @@ def audit_evaluation_result(
         "metric_subgroups": {
             "seen_during_training": _metric_summary(seen_rows),
             "unseen_by_sample_id": _metric_summary(unseen_rows),
+        },
+        "headline_metrics": {
+            "event_f1": metrics.get("macro_event_f1"),
+            "caption_token_f1": metrics.get("macro_caption_token_f1"),
+            "seg_f1_100ms": metrics.get("macro_seg_f1_100ms"),
+            "tolerance_acc_010": metrics.get("macro_tolerance_acc_010"),
+            "source_count_mae": metrics.get("mean_source_count_mae"),
+            "pointer_accuracy": metrics.get("mean_pointer_accuracy"),
+            "hallucination": metrics.get("total_hallucination"),
+            "omission": metrics.get("total_omission"),
         },
         "interpretation": (
             "Only a passing report supports a held-out generalization claim. "

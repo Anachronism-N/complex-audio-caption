@@ -9,7 +9,12 @@ from fixtures.factory import ev, ledger, t, tr
 
 from sceneledger.cli.evaluate import main as evaluate_main
 from sceneledger.data.experiment_data import file_sha256
-from sceneledger.eval.metrics import evaluate_corpus, load_inference_report
+from sceneledger.eval.metrics import (
+    METRICS_SCHEMA_VERSION,
+    evaluate_corpus,
+    load_inference_report,
+    validate_metrics_artifact,
+)
 
 
 def _fixture():
@@ -84,6 +89,47 @@ def test_caption_metric_exposes_semantic_error_hidden_by_event_f1() -> None:
     assert result.macro_caption_token_f1 == 0.0
     assert result.samples[0]["caption_token_f1"] == 0.0
     assert result.per_type["sfx"]["caption_token_f1"] == 0.0
+
+
+def test_current_metrics_schema_requires_semantics_and_recomputable_aggregates() -> None:
+    reference = _fixture()
+    report = {
+        "n_samples": 1,
+        "strict_format_success_rate": 1.0,
+        "samples": [
+            {
+                "sample_id": reference.sample_id,
+                "strict_format_success": True,
+                "warnings": [],
+            }
+        ],
+    }
+    corpus = evaluate_corpus(
+        {reference.sample_id: reference.model_copy(deep=True)},
+        {reference.sample_id: reference},
+        inference_report=report,
+    )
+    payload = {"schema_version": METRICS_SCHEMA_VERSION, **corpus.to_dict()}
+
+    summary = validate_metrics_artifact(payload)
+
+    assert summary["aggregate_consistent"] is True
+    assert summary["caption_metric"] == "macro_caption_token_f1"
+
+    payload["macro_caption_token_f1"] = 0.5
+    with pytest.raises(ValueError, match="macro_caption_token_f1 is inconsistent"):
+        validate_metrics_artifact(payload)
+
+
+def test_legacy_metric_without_caption_schema_is_not_paper_valid() -> None:
+    with pytest.raises(ValueError, match="unsupported metrics schema"):
+        validate_metrics_artifact(
+            {
+                "n_samples": 1,
+                "macro_event_f1": 1.0,
+                "samples": [{"sample_id": "sample-1", "event_f1": 1.0}],
+            }
+        )
 
 
 def test_inference_report_rejects_duplicate_ids(tmp_path) -> None:
