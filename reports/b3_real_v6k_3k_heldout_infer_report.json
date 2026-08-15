@@ -1,0 +1,914 @@
+{
+  "backend": "moss",
+  "n_samples": 100,
+  "n_ok": 98,
+  "strict_format_success_rate": 0.98,
+  "mean_events_recovered": 2.74,
+  "total_events_rejected": 6,
+  "samples": [
+    {
+      "sample_id": "rv6k_0901",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_001|>A man sighs deeply in a quiet, empty room with hard walls…<|t_046|></speech></slot><slot><music><|t_018|>A solo violin performance unfolds with expressive phrasing and dynamic variation, set…<|t_089|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0902",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_005|>A high-pressure water spray from a shower head fills a small, tiled…<|t_055|></sfx></slot><slot><music><|t_020|>A high-energy rock performance unfolds with a male vocalist delivering aggressive, shouted…<|t_091|></music></slot><slot><sfx><|t_024|>A loud, reverberant crash of a heavy metal object, likely a pot…<|t_074|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0903",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_004|>A small dog barks rapidly and energetically in a quiet indoor space…<|t_054|></sfx></slot><slot><sfx><|t_013|>A low-frequency mechanical hum from an industrial fan persists throughout the recording,…<|t_063|></sfx></slot><slot><sfx><|t_035|>A dense, rhythmic chorus of crickets fills the audio, creating a continuous…<|t_085|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0904",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_038|>A quiet indoor space is suddenly filled with the sharp, continuous rattling…<|t_088|></sfx></slot><slot><speech><|t_045|>A male speaker shouts aggressively in a large, empty space, his voice…<|t_103|></speech></slot>"
+    },
+    {
+      "sample_id": "rv6k_0905",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_012|>A high-energy Latin jazz performance unfolds with a full ensemble, featuring a…<|t_100|></music></slot><slot><speech><|t_046|>A male voice speaks a single Korean phrase in a calm, deliberate…<|t_098|></speech></slot>"
+    },
+    {
+      "sample_id": "rv6k_0906",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_004|>A high-energy rock performance unfolds with distorted electric guitar riffs, a driving…<|t_098|></music></slot><slot><sfx><|t_008|>A sharp, high-pitched metallic clinking sound occurs in a quiet indoor environment,…<|t_058|></sfx></slot><slot><sfx><|t_035|>A powerful waterfall dominates the soundscape with a continuous, thunderous rush of…<|t_085|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0907",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_004|>A cat meows twice in a quiet indoor space, with clear, high-pitched…<|t_054|></sfx></slot><slot><sfx><|t_034|>A deep, continuous rumble of rushing water fills the entire audio, creating…<|t_084|></sfx></slot><slot><sfx><|t_035|>A dense, layered chorus of crickets and katydids fills the audio with…<|t_085|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0908",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_003|>A quiet indoor space with a steady, low hum from a refrigerator…<|t_053|></sfx></slot><slot><sfx><|t_011|>A person walks purposefully across a hard floor in an empty, acoustically…<|t_061|></sfx></slot><slot><sfx><|t_012|>A large diesel engine, likely from a truck or bus, is idling…<|t_062|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0909",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_032|>A sudden, violent glass shatter occurs in a quiet indoor environment, producing…<|t_082|></sfx></slot><slot><speech><|t_044|>A male voice speaks a single Korean phrase in a clear, deliberate…<|t_102|></speech></slot>"
+    },
+    {
+      "sample_id": "rv6k_0910",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_003|>A train tootles along, its horn blaring with a long, low wail…<|t_043|></sfx></slot><slot><sfx><|t_005|>A quiet indoor space with hard surfaces, like a kitchen or office,…<|t_055|></sfx></slot><slot><music><|t_017|>A high-energy jazz-funk instrumental unfolds with a tight rhythm section driving a…<|t_080|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0911",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_011|>A short, 8-second instrumental piece in the style of late-19th-century Romantic-era classical…<|t_087|></music></slot><slot><sfx><|t_012|>A small electric motor powers up in a quiet indoor setting, emitting…<|t_062|></sfx></slot><slot><sfx><|t_015|>A small electric motor powers up in a quiet indoor setting, emitting…<|t_065|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0912",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_025|>A burst of applause from a large audience fills a spacious indoor…<|t_075|></sfx></slot><slot><sfx><|t_055|>A loud, high-pitched scream from a young child abruptly ends with a…<|t_105|></sfx></slot><slot><music><|t_056|>A short, 10-second orchestral excerpt from the \"Main Title\" of the 1977…<|t_115|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0913",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_007|>A quiet indoor space with a faint high-frequency hiss and a steady…<|t_057|></sfx></slot><slot><sfx><|t_015|>A sharp, high-pitched metallic click occurs at the very beginning of the…<|t_065|></sfx></slot><slot><music><|t_030|>A solo tenor saxophone performance unfolds with energetic improvisation, supported by a…<|t_091|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0914",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_004|>A solo violin performance unfolds with expressive phrasing and dynamic variation, set…<|t_098|></music></slot><slot><speech><|t_005|>A man sighs deeply, then speaks a short phrase, all while a…<|t_054|></speech></slot>"
+    },
+    {
+      "sample_id": "rv6k_0915",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_023|>A male voice speaks a single Korean phrase in a large, acoustically…<|t_078|></speech></slot><slot><sfx><|t_039|>A quiet indoor space is suddenly disrupted by a sharp, forceful door…<|t_089|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0916",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_003|>A serene outdoor garden soundscape, dominated by a continuous and melodic bird…<|t_053|></sfx></slot><slot><sfx><|t_005|>A small dog barks rapidly and energetically in a quiet indoor space…<|t_055|></sfx></slot><slot><sfx><|t_005|>A small dog barks rapidly and energetically in a quiet indoor space…<|t_055|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0917",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_011|>A small dog barks rapidly and energetically in a quiet indoor space…<|t_061|></sfx></slot><slot><sfx><|t_034|>A sudden, deafening wave crashes onto a rocky shoreline, producing a powerful…<|t_084|></sfx></slot><slot><sfx><|t_034|>A small dog barks rapidly and energetically in a quiet indoor space…<|t_084|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0918",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_016|>A high-energy instrumental rock and roll track from the 1950s or early…<|t_094|></music></slot><slot><sfx><|t_033|>A small dog barks rapidly in a quiet indoor space, producing sharp,…<|t_083|></sfx></slot><slot><sfx><|t_040|>A serene outdoor garden scene is filled with the continuous, high-pitched chirping…<|t_090|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0919",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_003|>A lively, fast-paced instrumental piece in the style of 1930s–40s swing jazz,…<|t_097|></music></slot><slot><sfx><|t_027|>A woman laughs in a room with some echo, while a steady…<|t_077|></sfx></slot><slot><sfx><|t_030|>A low-frequency rumble from a passing vehicle briefly dominates the otherwise quiet…<|t_080|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0920",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_011|>A high-energy funk-soul track from the late 1960s or early 1970s, featuring…<|t_087|></music></slot><slot><speech><|t_039|>A young child's high-pitched, rapid-fire shout cuts through a noisy, reverberant indoor…<|t_079|></speech></slot>"
+    },
+    {
+      "sample_id": "rv6k_0921",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_006|>A man's loud, high-pitched laughter fills a quiet indoor space, ending abruptly…<|t_056|></sfx></slot><slot><music><|t_024|>A smooth jazz quartet performs with a tenor saxophone leading a melodic…<|t_088|></music></slot><slot><sfx><|t_030|>A quiet room with a steady low hum from an appliance is…<|t_080|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0922",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_009|>A solo violin plays a slow, expressive melody with rich vibrato and…<|t_105|></music></slot><slot><sfx><|t_018|>A low, continuous mechanical hum fills the space, steady and unchanging, with…<|t_068|></sfx></slot><slot><sfx><|t_054|>A large audience is heard clapping and cheering in a spacious indoor…<|t_104|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0923",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_042|>A high-pitched, rhythmic metallic clinking from a coffee grinder fills the space…<|t_092|></sfx></slot><slot><sfx><|t_045|>A loud, distorted electronic siren blares continuously, emitting a high-pitched wail with…<|t_095|></sfx></slot><slot><sfx><|t_055|>A high-pitched, rhythmic electronic siren with a distinct \"yelp\" pattern, typical of…<|t_105|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0924",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_056|>A large, highly animated crowd is captured in a short, intense burst…<|t_106|></sfx></slot><slot><music><|t_060|>A high-energy funk-soul track from the late 1960s or early 1970s, featuring…<|t_118|></music></slot><slot><sfx><|t_060|>A large, reverberant indoor space hosts a continuous, rhythmic metallic rattling of…<|t_110|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0925",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_002|>A low, continuous drone from an industrial machine fills the space, creating…<|t_052|></sfx></slot><slot><sfx><|t_018|>A sharp, high-pitched metallic click from a lighter's flint wheel striking against…<|t_068|></sfx></slot><slot><music><|t_028|>A solo horn plays a slow, sustained note with rich resonance and…<|t_095|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0926",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_007|>A heavy door is closed and locked in a quiet indoor space…<|t_057|></sfx></slot><slot><sfx><|t_030|>A loud, rushing water sound fills the audio, creating a strong and…<|t_080|></sfx></slot><slot><sfx><|t_035|>A car horn blasts twice in quick succession, cutting through the ambient…<|t_085|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0927",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_015|>A man clears his throat in a quiet, acoustically dry indoor space…<|t_065|></sfx></slot><slot><music><|t_025|>A solo tenor saxophone performance unfolds with a bright, reedy tone and…<|t_105|></music></slot><slot><sfx><|t_037|>A large diesel engine idles steadily, producing a continuous, low-frequency rumble with…<|t_087|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0928",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_005|>A deep, resonant rumble from a train moving along tracks fills the…<|t_055|></sfx></slot><slot><sfx><|t_049|>A young woman laughs in a small, quiet room with a faint…<|t_099|></sfx></slot><slot><music><|t_052|>A solo violin plays a slow, melancholic melody in a reverberant indoor…<|t_109|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0929",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_014|>A high-energy, 9.5-second instrumental excerpt from a 1960s–70s jazz-funk or soul-jazz…<|t_103|></music></slot><slot><sfx><|t_017|>A quiet indoor space with hard surfaces, likely a kitchen, where the…<|t_067|></sfx></slot><slot><sfx><|t_029|>A sharp, high-pitched metallic click occurs at the start of the recording,…<|t_079|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0930",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_019|>A small dog barks rapidly and energetically in a quiet indoor space…<|t_069|></sfx></slot><slot><sfx><|t_021|>A low, continuous mechanical hum fills the space, steady and unchanging, with…<|t_071|></sfx></slot><slot><sfx><|t_031|>A high-pitched, continuous electronic tone sounds in a quiet indoor environment, maintaining…<|t_081|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0931",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_016|>A quiet indoor space with a faint, steady hum from an unseen…<|t_066|></sfx></slot><slot><sfx><|t_032|>A high-pitched, mournful howl from a dog echoes through a quiet, spacious…<|t_082|></sfx></slot><slot><music><|t_038|>A tenor saxophone plays a smooth, lyrical melody with a warm, mellow…<|t_117|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0932",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_006|>A cinematic orchestral score unfolds with sweeping strings and bold brass, building…<|t_061|></speech></slot><slot><sfx><|t_029|>A large diesel engine idles steadily, producing a continuous, low-frequency rumble with…<|t_079|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0933",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_006|>A high-pitched, sustained metallic screech from train brakes dominates the entire audio,…<|t_056|></sfx></slot><slot><sfx><|t_019|>A heavy, rhythmic knocking sound, resembling a steady heartbeat, is heard in…<|t_059|></sfx></slot><slot><music><|t_021|>A solo tenor saxophone performance unfolds with a warm, reedy tone, delivering…<|t_084|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0934",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_008|>A solo violin plays a melancholic and expressive melody in a classical…<|t_117|></music></slot><slot><sfx><|t_027|>A high-pitched, intense hiss from a pressurized steam source fills the entire…<|t_077|></sfx></slot><slot><sfx><|t_049|>A low, guttural growl emerges from a large, non-human entity, conveying sustained…<|t_099|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0935",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_022|>A male voice speaks a single Korean phrase with calm authority, set…<|t_066|></speech></slot><slot><music><|t_027|>A solo piano performance unfolds with a melancholic and introspective atmosphere, characterized…<|t_089|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0936",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_004|>A low, continuous mechanical hum fills the space, steady and unchanging, with…<|t_054|></sfx></slot><slot><sfx><|t_020|>A small dog barks rapidly and energetically in a quiet indoor space…<|t_060|></sfx></slot><slot><sfx><|t_021|>A high-pressure water spray from a shower head fills a tiled bathroom…<|t_071|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0937",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_011|>A high-energy instrumental rock and roll performance from the 1950s or early…<|t_084|></music></slot><slot><sfx><|t_012|>A young child's high-pitched, excited shout of \"¡Vamos!\" is abruptly cut off…<|t_062|></sfx></slot><slot><sfx><|t_014|>A lively, fast-paced instrumental piece in the style of 1930s–40s swing jazz,…<|t_064|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0938",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_003|>A burst of enthusiastic applause from a large audience fills a spacious…<|t_053|></sfx></slot><slot><sfx><|t_004|>A small, high-revving two-stroke engine, likely from a dirt bike or go-kart,…<|t_054|></sfx></slot><slot><music><|t_023|>A solo piano performance unfolds with a melancholic and introspective melody, supported…<|t_111|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0939",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_008|>A high-pitched, sharp hiss from a pressurized aerosol can dominates the audio,…<|t_058|></sfx></slot><slot><sfx><|t_018|>A low, guttural growl emerges from a large dog, maintaining a steady…<|t_068|></sfx></slot><slot><music><|t_022|>A woman sings a gentle, melodic phrase with a clear and bright…<|t_095|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0940",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_026|>A quiet indoor space with a steady, low hum from an appliance…<|t_076|></sfx></slot><slot><sfx><|t_039|>A sudden, deafening roar of rushing water fills the entire duration, creating…<|t_089|></sfx></slot><slot><music><|t_051|>A solo piano performance unfolds with a melancholic and introspective melody, supported…<|t_116|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0941",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_001|>A powerful, low-frequency rumble from a train moving along tracks, accompanied by…<|t_051|></sfx></slot><slot><music><|t_030|>A solo clarinet performance unfolds with a bright, reedy tone and agile…<|t_110|></music></slot><slot><sfx><|t_058|>A young child laughs with unrestrained joy, producing a series of high-pitched,…<|t_108|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0942",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_001|>A high-pressure water spray from a shower head fills the space with…<|t_051|></sfx></slot><slot><sfx><|t_021|>A large audience in a spacious concert hall erupts into sustained, energetic…<|t_071|></sfx></slot><slot><music><|t_051|>A solo violin plays a slow, melancholic melody in a reverberant concert…<|t_108|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0943",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_007|>A male speaker shouts aggressively in a large, empty indoor space, his…<|t_064|></speech></slot><slot><sfx><|t_053|>A set of keys is dropped onto a hard surface, producing a…<|t_103|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0944",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_009|>A quiet indoor space with minimal background noise hosts a sequence of…<|t_059|></sfx></slot><slot><sfx><|t_039|>A quiet indoor environment with minimal background noise hosts a sequence of…<|t_089|></sfx></slot><slot><music><|t_044|>A soulful blues-rock song with a male vocalist, backed by a full…<|t_097|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0945",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_013|>A small dog barks rapidly and energetically in a quiet indoor space,…<|t_063|></sfx></slot><slot><sfx><|t_021|>A low, continuous drone from an industrial machine fills a large, empty…<|t_071|></sfx></slot><slot><music><|t_040|>A serene and ethereal instrumental piece featuring a delicate music box melody…<|t_096|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0946",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_005|>A man sighs deeply in a large, empty space, the sound lingering…<|t_049|></speech></slot><slot><sfx><|t_029|>A quiet indoor space is suddenly filled with the sharp, continuous rattling…<|t_079|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0947",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_005|>A high-pitched, piercing screech from a distressed cat unfolds in a quiet…<|t_055|></sfx></slot><slot><sfx><|t_017|>A deep, resonant rumble from a large diesel engine idling in an…<|t_067|></sfx></slot><slot><sfx><|t_029|>A small dog barks rapidly and energetically in a quiet indoor space,…<|t_079|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0948",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_008|>A 9-second high-fidelity excerpt of Louis Prima’s 1956 instrumental track \"Hot to…<|t_100|></music></slot><slot><speech><|t_037|>A male voice speaks a single Korean phrase in a quiet, acoustically…<|t_084|></speech></slot>"
+    },
+    {
+      "sample_id": "rv6k_0949",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_032|>A deep, resonant train horn blasts through a vast, open industrial landscape,…<|t_082|></sfx></slot><slot><sfx><|t_038|>A dense, rhythmic chorus of crickets fills the audio, creating a continuous…<|t_088|></sfx></slot><slot><sfx><|t_042|>A small dog barks rapidly and energetically in a quiet indoor space…<|t_092|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0950",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><speech><|t_022|>A young child's high-pitched, excited voice is heard speaking rapidly in Spanish,…<|t_052|></speech></slot><slot><sfx><|t_052|>A sudden, deafening explosion erupts in a confined space, immediately followed by…<|t_102|></sfx></slot><slot><music><|t_053|>A solo violin performance unfolds with expressive phrasing and dynamic variation, set…<|t_111|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0951",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_001|>A woman's high-pitched, breathy laughter unfolds in a series of staccato bursts,…<|t_051|></sfx></slot><slot><music><|t_012|>A 9-second cinematic orchestral piece in the style of mid-20th-century Hollywood film…<|t_098|></music></slot><slot><sfx><|t_033|>A quiet indoor space with hard surfaces hosts a continuous, rhythmic metallic…<|t_083|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0952",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_001|>A solo violin performs a continuous, melancholic melody in a reverberant acoustic…<|t_100|></music></slot><slot><speech><|t_029|>A male voice speaks a single Korean phrase in a quiet, intimate…<|t_079|></speech></slot>"
+    },
+    {
+      "sample_id": "rv6k_0953",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_022|>A person walks steadily across a large, empty indoor space with hard…<|t_072|></sfx></slot><slot><sfx><|t_044|>A loud car horn blasts twice in quick succession, cutting through the…<|t_094|></sfx></slot><slot><sfx><|t_047|>A quiet, acoustically dry environment is dominated by a steady, low-frequency hum…<|t_087|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0954",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_014|>A solo violin plays a slow, expressive melody with rich vibrato and…<|t_090|></music></slot><slot><sfx><|t_022|>A large audience is heard clapping and cheering in a spacious indoor…<|t_072|></sfx></slot><slot><sfx><|t_027|>A high-pitched, piercing scream from a young child abruptly cuts through a…<|t_077|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0955",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_039|>A quiet indoor space with a steady, low hum from an appliance…<|t_089|></sfx></slot><slot><music><|t_044|>A tenor saxophone solo unfolds with expressive phrasing, supported by a rhythm…<|t_108|></music></slot><slot><sfx><|t_054|>A heavy door is slowly closed and latched in a quiet, enclosed…<|t_104|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0956",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_002|>A person is running up a flight of stairs in a building…<|t_052|></sfx></slot><slot><sfx><|t_027|>A high-pitched, piercing wail from a baby fills the space, cutting through…<|t_077|></sfx></slot><slot><sfx><|t_030|>A loud, distorted electronic siren blares continuously, emitting a high-pitched, wailing tone…<|t_070|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0957",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_038|>A male voice speaks a single Korean phrase with calm authority, set…<|t_092|></speech></slot><slot><music><|t_051|>A solo violin plays a slow, melancholic melody in a quiet indoor…<|t_108|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0958",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_000|>A large diesel engine idling in an industrial setting, producing a continuous…<|t_050|></sfx></slot><slot><sfx><|t_031|>A young child's high-pitched, excited voice exclaims \"Look at the big…<|t_051|></sfx></slot><slot><music><|t_034|>A man sings a few lines of a song while playing guitar…<|t_118|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0959",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_007|>A high-energy French pop-rock track from the late 1960s or early…<|t_093|></music></slot><slot><sfx><|t_011|>A quiet indoor space with minimal ambient noise hosts a brief, isolated…<|t_061|></sfx></slot><slot><sfx><|t_011|>A lively Latin jazz ensemble performs with energetic brass, piano, bass, and…<|t_061|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0960",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_035|>A large diesel engine idling in a confined industrial space produces a…<|t_085|></sfx></slot><slot><sfx><|t_045|>A lively, fast-paced instrumental piece in the style of 1930s–40s American swing…<|t_085|></sfx></slot><slot><music><|t_051|>A 10-second excerpt of the \"Meet the Flintstones\" theme song, performed by…<|t_113|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0961",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_016|>A male voice speaks a single Korean phrase with calm authority, set…<|t_063|></speech></slot><slot><sfx><|t_045|>A quiet indoor space is suddenly broken by a single, sharp glass…<|t_095|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0962",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_007|>A young child's high-pitched, excited voice exclaims '¡Vamos!' in Spanish, set against…<|t_057|></sfx></slot><slot><sfx><|t_012|>A large diesel engine idles steadily, producing a continuous low-frequency rumble with…<|t_052|></sfx></slot><slot><music><|t_025|>A short, intense orchestral piece opens with a sudden, loud chord from…<|t_091|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0963",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_015|>A small dog barks rapidly and energetically in a quiet indoor space…<|t_065|></sfx></slot><slot><sfx><|t_029|>A low-frequency rumble from a passing vehicle briefly masks the continuous high-pitched…<|t_079|></sfx></slot><slot><sfx><|t_034|>A dense, rhythmic chorus of crickets fills the audio with continuous, high-pitched…<|t_084|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0964",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_019|>A sudden, intense burst of high-pitched, chaotic clinking from multiple metal objects…<|t_069|></sfx></slot><slot><sfx><|t_039|>A loud, distorted electronic alarm blares continuously in a reverberant indoor space,…<|t_079|></sfx></slot><slot><music><|t_041|>A soulful, expressive male vocal performance unfolds over a richly textured instrumental…<|t_091|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0965",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_016|>A male voice speaks a single word in Korean, saying \"Thank you,\"…<|t_063|></speech></slot><slot><sfx><|t_037|>A quiet indoor space with hard surfaces, like a kitchen or office,…<|t_087|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0966",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_022|>A person walks across a surface of dry leaves and twigs in…<|t_072|></sfx></slot><slot><sfx><|t_028|>A high-pitched, intense mechanical scream from a car engine rapidly revving to…<|t_078|></sfx></slot><slot><sfx><|t_034|>A loud, sustained electronic alarm blares continuously, emitting a high-pitched, piercing tone…<|t_084|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0967",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_038|>A high-pitched, rhythmic cricket chirp persists throughout the recording, maintaining a steady…<|t_088|></sfx></slot><slot><sfx><|t_044|>A small dog barks rapidly and energetically in a quiet indoor space…<|t_094|></sfx></slot><slot><sfx><|t_045|>A low-frequency, continuous rumble from a large vehicle engine dominates the entire…<|t_095|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0968",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_009|>A high-pitched, rhythmic cricket chirp persists throughout the recording, maintaining a steady…<|t_059|></sfx></slot><slot><sfx><|t_019|>A low-frequency mechanical hum from an industrial fan fills the space, creating…<|t_059|></sfx></slot><slot><sfx><|t_039|>A small dog barks rapidly and energetically in a quiet indoor space,…<|t_089|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0969",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_015|>A burst of rapid, evenly spaced keystrokes from a manual typewriter fills…<|t_065|></sfx></slot><slot><sfx><|t_035|>A piercing, high-pitched siren wails continuously through a reverberant urban canyon, its…<|t_085|></sfx></slot><slot><sfx><|t_037|>A quiet indoor space is suddenly broken by a sharp, high-pitched snap…<|t_087|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0970",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 3,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx><|t_008|>A woman's loud, high-pitched laughter fills the space, full of joy and…<|t_058|></sfx></slot><slot><sfx><|t_043|>A train moves along railway tracks, producing a continuous rhythmic clatter of…<|t_093|></sfx></slot><slot><music><|t_044|>A solo clarinet performance unfolds with a bright, reedy tone and agile…<|t_106|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0971",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_028|>A high-pitched, sustained screech from train brakes dominates the audio, set against…<|t_068|></sfx></slot><slot><sfx><|t_040|>A sudden, deafening roar of rushing water fills the entire audio, creating…<|t_050|></sfx></slot><slot><sfx><|t_041|>A person walks across a hard floor in a quiet indoor space,…<|t_091|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0972",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_003|>A solo piano performance unfolds with a melancholic and introspective character, set…<|t_114|></music></slot><slot><sfx><|t_025|>A deep, continuous low-frequency rumble from a train moving on tracks fills…<|t_075|></sfx></slot><slot><sfx><|t_050|>A young woman laughs in a small, quiet room with a faint…<|t_100|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0973",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_008|>A cat meows three times in a quiet indoor space with noticeable…<|t_058|></sfx></slot><slot><sfx><|t_010|>A quiet indoor space with a steady, low hum from an appliance…<|t_060|></sfx></slot><slot><sfx><|t_042|>A serene outdoor environment is filled with the continuous, melodic chirping of…<|t_092|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0974",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_017|>A sharp, high-pitched snap from a plastic lighter is followed by a…<|t_067|></sfx></slot><slot><music><|t_021|>A dramatic and emotionally charged orchestral piece unfolds with sweeping strings, bold…<|t_100|></music></slot><slot><sfx><|t_039|>A high-pitched, rhythmic cricket chirp persists steadily in a quiet outdoor nighttime…<|t_089|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0975",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_015|>A male voice speaks a single Korean phrase with emotional weight, set…<|t_072|></speech></slot><slot><sfx><|t_025|>A set of keys is dropped onto a hard surface, producing a…<|t_075|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0976",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_007|>A low-frequency mechanical drone from an industrial source persists throughout the recording,…<|t_057|></sfx></slot><slot><sfx><|t_017|>A cat meows once in a quiet indoor space, with a clear,…<|t_067|></sfx></slot><slot><sfx><|t_039|>A quiet indoor space is filled with the steady, rhythmic ticking of…<|t_089|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0977",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_000|>A person walks steadily across a hard surface in an empty, enclosed…<|t_050|></sfx></slot><slot><sfx><|t_017|>A low, sustained drone from a pipe organ fills a vast, reverberant…<|t_067|></sfx></slot><slot><sfx><|t_030|>A high-pitched, sustained electronic alarm blares continuously, emitting a piercing and unrelenting…<|t_070|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0978",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_002|>A small dog barks rapidly in a quiet indoor space, producing sharp,…<|t_052|></sfx></slot><slot><sfx><|t_010|>A quiet, high-fidelity field recording captures the ambient soundscape of a natural…<|t_060|></sfx></slot><slot><sfx><|t_032|>A deep, resonant rumble from a large vehicle's engine persists throughout the…<|t_082|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0979",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_009|>A small dog barks twice in a quiet indoor space with noticeable…<|t_059|></sfx></slot><slot><sfx><|t_036|>A low-frequency mechanical hum from an HVAC system persists throughout the recording,…<|t_086|></sfx></slot><slot><sfx><|t_041|>A tranquil outdoor scene unfolds with a richly layered dawn chorus of…<|t_091|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0980",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_007|>A cat meows twice in a quiet indoor space, with clear, high-pitched…<|t_057|></sfx></slot><slot><sfx><|t_039|>A serene outdoor environment is filled with the continuous, rhythmic chirping of…<|t_089|></sfx></slot><slot><sfx><|t_041|>A low-frequency rumble from a passing vehicle dominates the audio, accompanied by…<|t_091|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0981",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_000|>A burst of loud, chaotic laughter from multiple people fills a reverberant…<|t_050|></sfx></slot><slot><music><|t_014|>A woman sings a gentle, melancholic song accompanied by the warm, rhythmic…<|t_081|></music></slot><slot><sfx><|t_021|>A quiet indoor space with a steady, low hum from an appliance…<|t_071|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0982",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_012|>A male speaker shouts aggressively into a microphone in a large, reverberant…<|t_069|></speech></slot><slot><music><|t_041|>A male vocalist sings softly with an acoustic guitar, creating a calm…<|t_115|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0983",
+      "ok": false,
+      "strict_format_success": false,
+      "events_recovered": 0,
+      "events_rejected": 3,
+      "warnings": [
+        "strict parse failed: junk after document element: line 1, column 8"
+      ],
+      "raw_text": "<n>3</n><slot><sfx><|t_003|>A man coughs twice in a quiet indoor space with noticeable reverberation…<|t_053|></sfx></slot><slot><sfx><|t_012|>A small, fast-flowing stream in a natural outdoor setting produces a continuous…<|t_062|></sfx></slot><slot><music><|t_027|>A short, intense orchestral piece opens with a dramatic swell of strings…<|t_088|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0984",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_026|>A sudden, forceful rush of water dominates the audio, creating a dense…<|t_076|></sfx></slot><slot><music><|t_032|>A high-energy funk-soul track from the late 1960s or early 1970s, featuring…<|t_089|></music></slot><slot><sfx><|t_036|>A lively indoor social gathering unfolds with continuous upbeat music and overlapping…<|t_076|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0985",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_035|>A male vocalist sings a melodic phrase with emotional intensity, supported by…<|t_112|></music></slot><slot><speech><|t_050|>A male voice speaks a single Korean phrase in a quiet, acoustically…<|t_107|></speech></slot>"
+    },
+    {
+      "sample_id": "rv6k_0986",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_014|>A piercing, high-pitched electronic siren blares continuously, emitting a rapid oscillation between…<|t_064|></sfx></slot><slot><sfx><|t_030|>A person walks steadily across a hard floor in a quiet indoor…<|t_080|></sfx></slot><slot><sfx><|t_062|>A car horn blasts sharply in an otherwise silent urban street environment,…<|t_112|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0987",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_023|>A set of keys is dropped onto a hard surface, producing a…<|t_073|></sfx></slot><slot><sfx><|t_047|>A large diesel engine, likely from a truck or bus, is idling…<|t_087|></sfx></slot><slot><sfx><|t_048|>A high-pitched, distorted electronic siren blares continuously, emitting a wailing tone with…<|t_088|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0988",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_022|>A young woman's sharp, high-pitched gasp—breathy, strained, and abruptly cut off—captures a…<|t_072|></sfx></slot><slot><sfx><|t_032|>A loud, distorted electronic siren blares continuously, emitting a high-pitched wail with…<|t_082|></sfx></slot><slot><music><|t_034|>A short, intense orchestral piece opens with a dramatic swell of strings…<|t_094|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0989",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_011|>A solo violin plays a slow, melancholic melody in a reverberant concert…<|t_118|></music></slot><slot><sfx><|t_039|>A high-pitched, continuous hiss from a steam radiator fills the space, maintaining…<|t_089|></sfx></slot><slot><sfx><|t_050|>A young child laughs with unrestrained joy in a quiet indoor setting,…<|t_100|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0990",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_029|>A loud, high-pitched train horn blasts continuously, dominating the soundscape with a…<|t_079|></sfx></slot><slot><sfx><|t_034|>A high-pitched, sustained wail from a police siren cuts through the urban…<|t_074|></sfx></slot><slot><sfx><|t_056|>A person is running up a flight of stairs in a building,…<|t_106|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0991",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_032|>A small dog barks rapidly and energetically in a quiet indoor space,…<|t_082|></sfx></slot><slot><sfx><|t_035|>A lively, fast-paced instrumental piece in the style of 1930s–40s American cartoon…<|t_075|></sfx></slot><slot><music><|t_041|>A dramatic orchestral composition unfolds with sweeping strings and bold brass, creating…<|t_115|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0992",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_001|>A high-pitched, loud, and continuous mechanical whirring sound, produced by a power…<|t_051|></sfx></slot><slot><sfx><|t_005|>A sharp, high-pitched metallic click initiates the audio, immediately followed by a…<|t_055|></sfx></slot><slot><music><|t_021|>A smooth jazz quartet performs with a walking bass line, light drum…<|t_080|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0993",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_014|>A smooth jazz quartet performs with a walking bass line, crisp ride…<|t_111|></music></slot><slot><sfx><|t_020|>A burst of loud, chaotic laughter from multiple people fills a reverberant…<|t_070|></sfx></slot><slot><sfx><|t_040|>A quiet indoor kitchen scene features a steady low-frequency hum from a…<|t_090|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0994",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_011|>A serene outdoor environment, likely a garden or park, is filled with…<|t_061|></sfx></slot><slot><sfx><|t_029|>A high-pitched, sharp meow from a cat is heard, followed by a…<|t_079|></sfx></slot><slot><sfx><|t_035|>A low-frequency, continuous mechanical hum from an industrial machine fills the space,…<|t_085|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0995",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_015|>A large diesel engine, likely from a truck or bus, is idling…<|t_065|></sfx></slot><slot><sfx><|t_031|>A young child is heard crying in a small, quiet room with…<|t_071|></sfx></slot><slot><sfx><|t_041|>A high-pitched, rhythmic chirping from crickets fills the audio, creating a steady…<|t_091|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0996",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_016|>A solo acoustic performance unfolds with a fingerpicked guitar establishing a warm,…<|t_095|></music></slot><slot><sfx><|t_020|>A large diesel engine idles steadily, producing a continuous low-frequency rumble with…<|t_070|></sfx></slot><slot><sfx><|t_024|>A young man with a Southern drawl sings a line from a…<|t_064|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_0997",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_009|>A sudden, sharp glass shatter occurs in a quiet indoor environment, breaking…<|t_059|></sfx></slot><slot><speech><|t_027|>A male voice speaks a single Korean phrase with emotional weight, set…<|t_067|></speech></slot>"
+    },
+    {
+      "sample_id": "rv6k_0998",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_008|>A sudden, violent thunderclap erupts in an open outdoor environment, producing a…<|t_058|></sfx></slot><slot><sfx><|t_018|>A low-frequency, rhythmic rumble of a moving train persists throughout, accompanied by…<|t_058|></sfx></slot><slot><music><|t_039|>A short, intense orchestral piece opens with a dramatic, high-pitched string motif…<|t_095|></music></slot>"
+    },
+    {
+      "sample_id": "rv6k_0999",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_002|>A dog barking<|t_052|></sfx></slot><slot><sfx><|t_006|>A low-frequency mechanical hum from an industrial machine fills a large, empty…<|t_056|></sfx></slot><slot><sfx><|t_041|>A serene outdoor night soundscape, dominated by a continuous, rhythmic chorus of…<|t_091|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv6k_1000",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_009|>A solo tenor saxophone performance unfolds with a smooth, lyrical melody, supported…<|t_111|></music></slot><slot><sfx><|t_025|>A quiet indoor space with hard surfaces hosts a sequence of precise…<|t_075|></sfx></slot><slot><sfx><|t_058|>A young child's high-pitched, frantic shouting occurs simultaneously with a loud, high-frequency…<|t_108|></sfx></slot>"
+    }
+  ]
+}
