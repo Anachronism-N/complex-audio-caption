@@ -8,6 +8,7 @@ retains enough provenance for leakage-safe splitting.
 
 from __future__ import annotations
 
+import hashlib
 import json
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -17,6 +18,14 @@ from typing import Any
 import yaml
 
 from sceneledger.data.manifests import ManifestEntry, read_manifest
+
+
+def _file_sha256(path: str | Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
 
 
 def _fraction(numerator: int, denominator: int) -> float:
@@ -266,7 +275,8 @@ def audit_manifest_complexity(
     return {
         "schema_version": "sceneledger.complexity_audit.v1",
         "profile": profile.get("description", "unnamed"),
-        "manifest_path": str(manifest_path),
+        "manifest_path": str(Path(manifest_path).resolve()),
+        "manifest_sha256": _file_sha256(manifest_path),
         "pass": all(check["pass"] for check in checks),
         "complex_definition": complex_definition,
         "simple_definition": simple_definition,

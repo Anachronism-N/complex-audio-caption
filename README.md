@@ -64,6 +64,7 @@
 - [下一步实验：FSD50K/MUSDB18 音源扩充与跨库均衡协议](docs/29_expanded_source_bank_protocol.md)
 - [音源银行冻结方案：数据选择、许可/监督门禁与逐阶段实验指引](docs/30_source_bank_selection_and_execution.md)
 - [20 小时数据扩充与 Rule/LLM 混音实验](docs/31_twenty_hour_data_and_recipe_experiment.md)
+- [Real-Complex 三折数据锚点与无泄漏 B3 实验](docs/33_real_complex_three_fold_anchor.md)
 - [机器可读实验矩阵](configs/experiment_matrix.yaml)
 - [机器可读开发阶段](configs/pipeline_stages.yaml)
 - [规范化事件账本 JSON Schema](schemas/sceneledger.schema.json)
@@ -84,4 +85,4 @@
 
 ## 当前复杂数据锚点
 
-旧 `real_mix_v6` 已被 manifest-only 复杂度门禁拒绝。下一步固定为 120 条“2 位说话人 + 1 条 ambience + 3 条 SFX”的六源 pilot；完整结论、服务器命令和 Go/No-Go 标准见 [复杂数据管线 v1](docs/32_complex_data_pipeline_v6_audit_and_next_run.md)。recaption 暂时延期，当前只使用可溯源 transcript 和数据集类别标签。
+旧 `real_mix_v6` 已被 manifest-only 复杂度门禁拒绝；其 3,000-step 报告还存在评测样本与训练集重叠，不能作为泛化结果。下一步固定为 source-disjoint 的 train/val/test 六源锚点，先在完整冻结 test 上运行 zero-shot，再训练并同集比较。服务器命令与 Go/No-Go 标准见 [Real-Complex 三折实验](docs/33_real_complex_three_fold_anchor.md)。recaption 暂时延期，当前只使用可溯源 transcript 和数据集类别标签。

@@ -7,6 +7,7 @@ from pathlib import Path
 import yaml
 
 from sceneledger.cli.render import sample_scene_plan
+from sceneledger.cli.scene_recipes import main as scene_recipes_main
 from sceneledger.data.scene_graph_sampler import SceneGraphSampler, SceneSamplerConfig
 from sceneledger.data.scene_recipes import (
     build_label_inventory,
@@ -21,7 +22,11 @@ from sceneledger.data.scene_recipes import (
     write_recipe_review,
     write_recipes,
 )
-from sceneledger.data.source_catalog import SourceRecord, write_source_catalog
+from sceneledger.data.source_catalog import (
+    SourceRecord,
+    file_sha256,
+    write_source_catalog,
+)
 
 
 def _record(source_id: str, kind: str, label: str | None) -> SourceRecord:
@@ -148,6 +153,38 @@ def test_recipe_review_must_be_complete_and_meet_pass_rate(tmp_path: Path) -> No
     assert accepted["pass"] is True
     assert accepted["pass_rate"] == 0.75
     assert rejected["pass"] is False
+
+    recipe_path = tmp_path / "recipes.jsonl"
+    report_path = tmp_path / "review_report.json"
+    write_recipes(recipe_path, recipes)
+    assert (
+        scene_recipes_main(
+            [
+                "validate-review",
+                "--recipes",
+                str(recipe_path),
+                "--review-csv",
+                str(review),
+                "--min-pass-rate",
+                "0.75",
+                "--output",
+                str(report_path),
+            ]
+        )
+        == 0
+    )
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+    assert report["recipe_plan_sha256"] == file_sha256(recipe_path)
+    assert report["review_csv_sha256"] == file_sha256(review)
+
+    rows[0]["labels_json"] = json.dumps({"sfx": ["invented_laser"]})
+    with review.open("w", encoding="utf-8-sig", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+    tampered = validate_recipe_review(review, recipes, min_pass_rate=0.75)
+    assert tampered["pass"] is False
+    assert tampered["immutable_mismatches"][0]["field"] == "labels_json"
 
 
 def test_llm_compile_injects_frozen_template_seed_and_rejects_hallucinated_labels(

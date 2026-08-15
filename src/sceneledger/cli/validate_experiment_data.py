@@ -7,6 +7,10 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
+from sceneledger.data.complexity_audit import (
+    audit_manifest_complexity,
+    load_complexity_profile,
+)
 from sceneledger.data.experiment_data import (
     SPLIT_NAMES,
     audit_mixture_distribution,
@@ -33,6 +37,20 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--quality-config", required=True)
     parser.add_argument("--profile", default="release")
     parser.add_argument(
+        "--complexity-config",
+        default=None,
+        help="optional complexity profile config; must be paired with --complexity-profile",
+    )
+    parser.add_argument("--complexity-profile", default=None)
+    parser.add_argument(
+        "--recipe-review-dir",
+        default=None,
+        help=(
+            "optional directory containing passed train/val/test_recipe_review.json; "
+            "each report is bound to the rendered recipe plan hash"
+        ),
+    )
+    parser.add_argument(
         "--scene-plan-preflight",
         required=True,
         help="passed scene_plan_preflight.json produced before rendering",
@@ -40,6 +58,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output-dir", required=True)
     parser.add_argument("--seed", type=int, default=20260808)
     args = parser.parse_args(argv)
+    if bool(args.complexity_config) != bool(args.complexity_profile):
+        parser.error(
+            "--complexity-config and --complexity-profile must be provided together"
+        )
 
     manifests = {
         "train": Path(args.train_manifest).resolve(),
@@ -81,8 +103,49 @@ def main(argv: list[str] | None = None) -> int:
         ):
             raise ValueError(f"rendered {split} scenes differ from preflight plan")
 
+    recipe_review_reports: dict[str, dict] = {}
+    if args.recipe_review_dir:
+        review_dir = Path(args.recipe_review_dir).resolve()
+        for split in SPLIT_NAMES:
+            review_path = review_dir / f"{split}_recipe_review.json"
+            review = json.loads(review_path.read_text(encoding="utf-8"))
+            entries = read_manifest(manifests[split])
+            observed_plan_hashes = {
+                str(
+                    entry.scene.get("recipe_metadata", {}).get(
+                        "recipe_plan_sha256"
+                    )
+                    or ""
+                )
+                for entry in entries
+            }
+            observed_plan_hashes.discard("")
+            expected_hash = str(review.get("recipe_plan_sha256") or "")
+            review_pass = (
+                review.get("schema_version")
+                == "sceneledger.recipe_human_review.v1"
+                and review.get("pass") is True
+                and int(review.get("n_expected", -1)) == len(entries)
+                and observed_plan_hashes == {expected_hash}
+            )
+            recipe_review_reports[split] = {
+                "path": str(review_path),
+                "sha256": file_sha256(review_path),
+                "pass": review_pass,
+                "recipe_plan_sha256": expected_hash,
+                "observed_manifest_recipe_plan_sha256": sorted(
+                    observed_plan_hashes
+                ),
+            }
+
     quality_reports: dict[str, dict] = {}
+    complexity_reports: dict[str, dict] = {}
     references: dict[str, dict] = {}
+    complexity_profile = (
+        load_complexity_profile(args.complexity_config, args.complexity_profile)
+        if args.complexity_config
+        else None
+    )
     for split in SPLIT_NAMES:
         report = audit_mixture_distribution(
             manifests[split],
@@ -100,6 +163,25 @@ def main(argv: list[str] | None = None) -> int:
             "pass": report["pass"],
             "failed_checks": report["failed_checks"],
         }
+        if complexity_profile is not None:
+            complexity = audit_manifest_complexity(
+                manifests[split], complexity_profile
+            )
+            complexity_path = output_dir / f"{split}_complexity.json"
+            complexity_path.write_text(
+                json.dumps(complexity, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            complexity_reports[split] = {
+                "path": str(complexity_path),
+                "sha256": file_sha256(complexity_path),
+                "pass": complexity["pass"],
+                "failed_checks": [
+                    check["name"]
+                    for check in complexity["checks"]
+                    if not check["pass"]
+                ],
+            }
         reference_path = output_dir / f"{split}_references.jsonl"
         reference_count = write_references(manifests[split], reference_path)
         references[split] = {
@@ -108,8 +190,13 @@ def main(argv: list[str] | None = None) -> int:
             "n_samples": reference_count,
         }
 
-    passed = contract["pass"] is True and all(
-        report["pass"] is True for report in quality_reports.values()
+    passed = (
+        contract["pass"] is True
+        and all(report["pass"] is True for report in quality_reports.values())
+        and all(report["pass"] is True for report in complexity_reports.values())
+        and all(
+            report["pass"] is True for report in recipe_review_reports.values()
+        )
     )
     summary = {
         "schema_version": "sceneledger-experiment-data-gate-v1",
@@ -130,6 +217,17 @@ def main(argv: list[str] | None = None) -> int:
             "pass": True,
         },
         "quality_reports": quality_reports,
+        "complexity_profile": args.complexity_profile,
+        "complexity_config_path": (
+            str(Path(args.complexity_config).resolve())
+            if args.complexity_config
+            else None
+        ),
+        "complexity_config_sha256": (
+            file_sha256(args.complexity_config) if args.complexity_config else None
+        ),
+        "complexity_reports": complexity_reports,
+        "recipe_review_reports": recipe_review_reports,
         "references": references,
         "failed_checks": [
             *[f"split:{name}" for name in contract["failed_checks"]],
@@ -137,6 +235,16 @@ def main(argv: list[str] | None = None) -> int:
                 f"quality:{split}:{name}"
                 for split, report in quality_reports.items()
                 for name in report["failed_checks"]
+            ],
+            *[
+                f"complexity:{split}:{name}"
+                for split, report in complexity_reports.items()
+                for name in report["failed_checks"]
+            ],
+            *[
+                f"recipe_review:{split}"
+                for split, report in recipe_review_reports.items()
+                if not report["pass"]
             ],
         ],
     }

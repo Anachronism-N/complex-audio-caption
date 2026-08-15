@@ -260,7 +260,17 @@ def require_experiment_data_summary(
         raise ValueError("quality config changed after data gate was created")
 
     reports = payload.get("quality_reports", {})
+    complexity_reports = payload.get("complexity_reports", {})
+    recipe_review_reports = payload.get("recipe_review_reports", {})
     references = payload.get("references", {})
+    if complexity_reports:
+        complexity_config = Path(str(payload.get("complexity_config_path", "")))
+        if not complexity_config.is_file():
+            raise ValueError(f"complexity config missing: {complexity_config}")
+        if file_sha256(complexity_config) != payload.get(
+            "complexity_config_sha256"
+        ):
+            raise ValueError("complexity config changed after data gate was created")
     for split in SPLIT_NAMES:
         item = reports.get(split)
         if not isinstance(item, dict) or item.get("pass") is not True:
@@ -276,6 +286,33 @@ def require_experiment_data_summary(
             != contract["splits"][split]["manifest_sha256"]
         ):
             raise ValueError(f"quality report for {split} audits a different manifest")
+        if complexity_reports:
+            complexity_item = complexity_reports.get(split)
+            if (
+                not isinstance(complexity_item, dict)
+                or complexity_item.get("pass") is not True
+            ):
+                raise ValueError(
+                    f"complexity report for {split} is missing or failed"
+                )
+            complexity_path = Path(str(complexity_item.get("path", "")))
+            if (
+                not complexity_path.is_file()
+                or file_sha256(complexity_path) != complexity_item.get("sha256")
+            ):
+                raise ValueError(
+                    f"complexity report for {split} changed after data gate"
+                )
+            complexity = json.loads(complexity_path.read_text(encoding="utf-8"))
+            if complexity.get("pass") is not True:
+                raise ValueError(f"complexity report for {split} has not passed")
+            if (
+                complexity.get("manifest_sha256")
+                != contract["splits"][split]["manifest_sha256"]
+            ):
+                raise ValueError(
+                    f"complexity report for {split} audits a different manifest"
+                )
         preflight_fold = preflight_payload.get("folds", {}).get(split)
         if not isinstance(preflight_fold, dict) or preflight_fold.get("pass") is not True:
             raise ValueError(f"scene-plan preflight for {split} is missing or failed")
@@ -284,6 +321,37 @@ def require_experiment_data_summary(
             "scene_plan_sha256"
         ):
             raise ValueError(f"rendered {split} scenes differ from preflight plan")
+        if recipe_review_reports:
+            review_item = recipe_review_reports.get(split)
+            if not isinstance(review_item, dict) or review_item.get("pass") is not True:
+                raise ValueError(f"recipe review for {split} is missing or failed")
+            review_path = Path(str(review_item.get("path", "")))
+            if (
+                not review_path.is_file()
+                or file_sha256(review_path) != review_item.get("sha256")
+            ):
+                raise ValueError(f"recipe review for {split} changed after data gate")
+            review = json.loads(review_path.read_text(encoding="utf-8"))
+            if (
+                review.get("pass") is not True
+                or review.get("recipe_plan_sha256")
+                != review_item.get("recipe_plan_sha256")
+            ):
+                raise ValueError(f"recipe review for {split} has not passed")
+            manifest_recipe_hashes = {
+                str(
+                    entry.scene.get("recipe_metadata", {}).get(
+                        "recipe_plan_sha256"
+                    )
+                    or ""
+                )
+                for entry in manifest_entries
+            }
+            manifest_recipe_hashes.discard("")
+            if manifest_recipe_hashes != {review.get("recipe_plan_sha256")}:
+                raise ValueError(
+                    f"recipe review for {split} audits a different recipe plan"
+                )
         reference = references.get(split)
         if not isinstance(reference, dict):
             raise ValueError(f"frozen references for {split} are missing")

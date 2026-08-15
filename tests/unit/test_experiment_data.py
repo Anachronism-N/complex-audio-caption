@@ -243,6 +243,9 @@ def test_complete_data_gate_rechecks_quality_artifact_hashes(tmp_path: Path) -> 
     )
 
     reports = {}
+    complexity_config = tmp_path / "complexity.yaml"
+    complexity_config.write_text("profiles: {}\n", encoding="utf-8")
+    complexity_reports = {}
     references = {}
     for split in ("train", "val", "test"):
         report_path = tmp_path / f"{split}_quality.json"
@@ -259,6 +262,23 @@ def test_complete_data_gate_rechecks_quality_artifact_hashes(tmp_path: Path) -> 
         reports[split] = {
             "path": str(report_path),
             "sha256": file_sha256(report_path),
+            "pass": True,
+            "failed_checks": [],
+        }
+        complexity_path = tmp_path / f"{split}_complexity.json"
+        complexity_path.write_text(
+            json.dumps(
+                {
+                    "schema_version": "sceneledger.complexity_audit.v1",
+                    "pass": True,
+                    "manifest_sha256": contract["splits"][split]["manifest_sha256"],
+                }
+            ),
+            encoding="utf-8",
+        )
+        complexity_reports[split] = {
+            "path": str(complexity_path),
+            "sha256": file_sha256(complexity_path),
             "pass": True,
             "failed_checks": [],
         }
@@ -287,6 +307,9 @@ def test_complete_data_gate_rechecks_quality_artifact_hashes(tmp_path: Path) -> 
                     "pass": True,
                 },
                 "quality_reports": reports,
+                "complexity_config_path": str(complexity_config),
+                "complexity_config_sha256": file_sha256(complexity_config),
+                "complexity_reports": complexity_reports,
                 "references": references,
             }
         ),
@@ -296,6 +319,23 @@ def test_complete_data_gate_rechecks_quality_artifact_hashes(tmp_path: Path) -> 
 
     Path(reports["test"]["path"]).write_text("{}", encoding="utf-8")
     with pytest.raises(ValueError, match="changed after data gate"):
+        require_experiment_data_summary(summary_path, contract_path)
+
+    # Restore the quality artifact and prove complexity evidence is also bound.
+    quality_payload = {
+        "pass": True,
+        "failed_checks": [],
+        "manifest_sha256": contract["splits"]["test"]["manifest_sha256"],
+    }
+    Path(reports["test"]["path"]).write_text(
+        json.dumps(quality_payload), encoding="utf-8"
+    )
+    reports["test"]["sha256"] = file_sha256(reports["test"]["path"])
+    summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    summary["quality_reports"] = reports
+    summary_path.write_text(json.dumps(summary), encoding="utf-8")
+    Path(complexity_reports["test"]["path"]).write_text("{}", encoding="utf-8")
+    with pytest.raises(ValueError, match="complexity report.*changed"):
         require_experiment_data_summary(summary_path, contract_path)
 
 
@@ -444,31 +484,50 @@ def test_stem_audibility_gate_measures_persisted_audio(
 
 def test_validate_experiment_data_cli_builds_complete_gate(tmp_path: Path) -> None:
     manifests = {}
+    review_dir = tmp_path / "recipe_reviews"
+    review_dir.mkdir()
     for split in ("train", "val", "test"):
         manifest = tmp_path / f"{split}.jsonl"
+        recipe_hash = f"{split}-recipe-plan-hash"
+        entries = [
+            _entry(
+                f"{split}-complex",
+                [f"{split}-music.wav", f"{split}-sfx.wav"],
+            ),
+            _entry(
+                f"{split}-repeat",
+                [f"{split}-ambience.wav", f"{split}-repeat.wav"],
+                template="repeated_event",
+                event_spans=[[(0.0, 10.0)], [(1.0, 1.5), (5.0, 5.5)]],
+            ),
+            _entry(
+                f"{split}-overlap",
+                [f"{split}-speaker-a.wav", f"{split}-speaker-b.wav"],
+                template="overlapping_speakers",
+                event_spans=[[(0.5, 5.0)], [(1.0, 5.5)]],
+                track_spans=[[(0.5, 5.0)], [(1.0, 5.5)]],
+            ),
+        ]
+        for entry in entries:
+            entry.scene["recipe_metadata"] = {
+                "recipe_plan_sha256": recipe_hash
+            }
         write_manifest(
             manifest,
-            [
-                _entry(
-                    f"{split}-complex",
-                    [f"{split}-music.wav", f"{split}-sfx.wav"],
-                ),
-                _entry(
-                    f"{split}-repeat",
-                    [f"{split}-ambience.wav", f"{split}-repeat.wav"],
-                    template="repeated_event",
-                    event_spans=[[(0.0, 10.0)], [(1.0, 1.5), (5.0, 5.5)]],
-                ),
-                _entry(
-                    f"{split}-overlap",
-                    [f"{split}-speaker-a.wav", f"{split}-speaker-b.wav"],
-                    template="overlapping_speakers",
-                    event_spans=[[(0.5, 5.0)], [(1.0, 5.5)]],
-                    track_spans=[[(0.5, 5.0)], [(1.0, 5.5)]],
-                ),
-            ],
+            entries,
         )
         manifests[split] = manifest
+        (review_dir / f"{split}_recipe_review.json").write_text(
+            json.dumps(
+                {
+                    "schema_version": "sceneledger.recipe_human_review.v1",
+                    "pass": True,
+                    "n_expected": 3,
+                    "recipe_plan_sha256": recipe_hash,
+                }
+            ),
+            encoding="utf-8",
+        )
 
     quality_config = tmp_path / "quality.yaml"
     quality_config.write_text(
@@ -496,6 +555,8 @@ def test_validate_experiment_data_cli_builds_complete_gate(tmp_path: Path) -> No
                 "test",
                 "--scene-plan-preflight",
                 str(preflight_path),
+                "--recipe-review-dir",
+                str(review_dir),
                 "--output-dir",
                 str(output_dir),
             ]
@@ -591,6 +652,12 @@ def test_validate_experiment_data_cli_builds_complete_gate(tmp_path: Path) -> No
         metrics_payload["experiment_contract"]["inference_report_sha256"]
         == file_sha256(infer_report)
     )
+
+    (review_dir / "test_recipe_review.json").write_text("{}", encoding="utf-8")
+    with pytest.raises(ValueError, match="recipe review.*changed"):
+        require_experiment_data_summary(
+            summary_path, output_dir / "split_contract.json"
+        )
 
 
 def test_sampler_v2_creates_dense_template_primitives() -> None:

@@ -68,6 +68,24 @@ def test_format_metric_is_unavailable_without_raw_parser_evidence() -> None:
     assert result.n_format_status_missing == 1
 
 
+def test_caption_metric_exposes_semantic_error_hidden_by_event_f1() -> None:
+    reference = _fixture()
+    prediction = reference.model_copy(deep=True)
+    prediction.events[0].text = "a dog barking loudly"
+
+    result = evaluate_corpus(
+        {prediction.sample_id: prediction},
+        {reference.sample_id: reference},
+    )
+
+    # Type and timestamp are perfect, but the caption shares no token with
+    # the reference.  These must remain separate paper metrics.
+    assert result.macro_event_f1 == 1.0
+    assert result.macro_caption_token_f1 == 0.0
+    assert result.samples[0]["caption_token_f1"] == 0.0
+    assert result.per_type["sfx"]["caption_token_f1"] == 0.0
+
+
 def test_inference_report_rejects_duplicate_ids(tmp_path) -> None:
     report = tmp_path / "duplicate.json"
     row = {

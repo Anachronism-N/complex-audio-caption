@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from sceneledger.data.complexity_audit import audit_manifest_complexity
+from sceneledger.data.experiment_data import file_sha256
 from sceneledger.data.manifests import ManifestEntry, write_manifest
 
 
@@ -103,6 +104,8 @@ def test_complexity_audit_accepts_overlapping_provenance_complete_scenes(
     assert report["summary"]["complex_scene_fraction"] == 1.0
     assert report["summary"]["multi_voice_scene_fraction"] == 1.0
     assert report["summary"]["provenance_complete_fraction"] == 1.0
+    assert report["manifest_sha256"] == file_sha256(manifest)
+    assert report["manifest_path"] == str(manifest.resolve())
 
 
 def test_complexity_audit_rejects_simple_and_provenance_free_scenes(

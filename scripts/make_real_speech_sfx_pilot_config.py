@@ -23,24 +23,45 @@ def _passed_audit(
     required_test_kinds: set[str],
     minimum_test_per_kind: int,
 ) -> Path:
+    return _passed_split_audit(
+        path,
+        description,
+        required_split="test",
+        required_kinds=required_test_kinds,
+        minimum_per_kind=minimum_test_per_kind,
+    )
+
+
+def _passed_split_audit(
+    path: Path,
+    description: str,
+    *,
+    required_split: str,
+    required_kinds: set[str],
+    minimum_per_kind: int,
+) -> Path:
+    """Bind one prepared catalog fold to an audit that explicitly covered it."""
     resolved = _required_file(path, description)
     payload = json.loads(resolved.read_text(encoding="utf-8"))
     if payload.get("pass") is not True:
         raise ValueError(f"{description} has not passed: {resolved}")
-    if "test" not in set(payload.get("required_splits") or []):
+    if required_split not in set(payload.get("required_splits") or []):
         raise ValueError(
-            f"{description} was not validated with --required-split test: {resolved}"
+            f"{description} was not validated with --required-split "
+            f"{required_split}: {resolved}"
         )
-    test_counts = (payload.get("counts_by_split_kind") or {}).get("test") or {}
+    split_counts = (payload.get("counts_by_split_kind") or {}).get(
+        required_split
+    ) or {}
     insufficient = {
-        kind: int(test_counts.get(kind, 0))
-        for kind in sorted(required_test_kinds)
-        if int(test_counts.get(kind, 0)) < minimum_test_per_kind
+        kind: int(split_counts.get(kind, 0))
+        for kind in sorted(required_kinds)
+        if int(split_counts.get(kind, 0)) < minimum_per_kind
     }
     if insufficient:
         raise ValueError(
-            f"{description} has insufficient reviewed test sources: "
-            f"minimum={minimum_test_per_kind} observed={insufficient}"
+            f"{description} has insufficient reviewed {required_split} sources: "
+            f"minimum={minimum_per_kind} observed={insufficient}"
         )
     return resolved
 

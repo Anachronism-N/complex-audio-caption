@@ -17,12 +17,12 @@ from sceneledger.data.scene_recipes import (
 
 try:  # direct script execution adds scripts/, tests import the namespace package
     from scripts.make_real_speech_sfx_pilot_config import (
-        _passed_audit,
+        _passed_split_audit,
         _rms_ready_catalog,
     )
 except ModuleNotFoundError:  # pragma: no cover - exercised by server CLI usage
     from make_real_speech_sfx_pilot_config import (  # type: ignore[no-redef]
-        _passed_audit,
+        _passed_split_audit,
         _rms_ready_catalog,
     )
 
@@ -39,20 +39,24 @@ def _catalog_config(
     audio_root: Path,
     name: str,
     required_kinds: set[str],
+    split: str,
 ) -> dict[str, object]:
     prepared = Path(prepared_value).expanduser().resolve()
-    catalog = _rms_ready_catalog(prepared / "test.jsonl", f"{name} test catalog")
-    audit = _passed_audit(
+    catalog = _rms_ready_catalog(
+        prepared / f"{split}.jsonl", f"{name} {split} catalog"
+    )
+    audit = _passed_split_audit(
         prepared / "source_audit_report.json",
         f"{name} source audit",
-        required_test_kinds=required_kinds,
-        minimum_test_per_kind=10,
+        required_split=split,
+        required_kinds=required_kinds,
+        minimum_per_kind=10,
     )
     return {
         "catalog_path": str(catalog),
         "audio_root": str(audio_root),
         "audit_report_path": str(audit),
-        "expected_split": "test",
+        "expected_split": split,
         "sampling_weight": 1.0,
     }
 
@@ -67,6 +71,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--fsd50k-prepared", required=True)
     parser.add_argument("--sample-count", type=int, default=120)
     parser.add_argument("--seed-base", type=int, default=2026081500)
+    parser.add_argument("--split", choices=("train", "val", "test"), default="test")
     parser.add_argument("--output", required=True)
     args = parser.parse_args(argv)
     if args.sample_count < 120:
@@ -81,18 +86,21 @@ def main(argv: list[str] | None = None) -> int:
             libri_root,
             "LibriSpeech",
             {"speech"},
+            args.split,
         ),
         _catalog_config(
             args.esc50_prepared,
             esc_root,
             "ESC-50",
             {"sfx", "ambience"},
+            args.split,
         ),
         _catalog_config(
             args.fsd50k_prepared,
             fsd_root,
             "FSD50K",
             {"sfx", "ambience"},
+            args.split,
         ),
     ]
     output = Path(args.output).expanduser().resolve()
@@ -112,7 +120,7 @@ def main(argv: list[str] | None = None) -> int:
         count=args.sample_count,
         seed=args.seed_base,
         template_weights={"multi_speaker_ambient_events": 1.0},
-        recipe_prefix="complex_rule",
+        recipe_prefix=f"complex_{args.split}_rule",
         strategy="keyword",
     )
     write_inventory(inventory_path, inventory)
@@ -165,7 +173,7 @@ def main(argv: list[str] | None = None) -> int:
         },
         "render": {
             "sample_count": args.sample_count,
-            "scene_id_prefix": "complex_speech_sfx_test",
+            "scene_id_prefix": f"complex_speech_sfx_{args.split}",
             "recipe_plan_path": str(recipes_path),
             "recipe_inventory_path": str(inventory_path),
         },
@@ -186,6 +194,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"rule_recipes={recipes_path}")
     print(f"recipe_review={review_path}")
     print("source_audits=passed")
+    print(f"split={args.split}")
     print(
         "next=bash scripts/run_complex_speech_sfx_pilot.sh "
         f"{output} /new/output/directory"

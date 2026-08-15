@@ -592,8 +592,47 @@ def validate_recipe_review(
     reviewed: list[dict[str, object]] = []
     invalid_answers: list[dict[str, object]] = []
     rejected: list[dict[str, object]] = []
+    immutable_mismatches: list[dict[str, object]] = []
+    expected_by_id = {recipe.recipe_id: recipe for recipe in recipes}
     for row in rows:
         recipe_id = str(row.get("recipe_id") or "")
+        expected = expected_by_id.get(recipe_id)
+        if expected is not None:
+            scalar_fields = {
+                "proposal_source": expected.proposal_source,
+                "template": expected.template,
+                "context": expected.context,
+                "difficulty": expected.difficulty,
+                "rationale": expected.rationale,
+            }
+            for field, expected_value in scalar_fields.items():
+                observed_value = str(row.get(field) or "")
+                if observed_value != expected_value:
+                    immutable_mismatches.append(
+                        {
+                            "recipe_id": recipe_id,
+                            "field": field,
+                            "observed": observed_value,
+                            "expected": expected_value,
+                        }
+                    )
+            for field, expected_value in (
+                ("labels_json", expected.label_preferences_by_kind),
+                ("relations_json", expected.relations),
+            ):
+                try:
+                    observed_json = json.loads(str(row.get(field) or ""))
+                except json.JSONDecodeError:
+                    observed_json = None
+                if observed_json != expected_value:
+                    immutable_mismatches.append(
+                        {
+                            "recipe_id": recipe_id,
+                            "field": field,
+                            "observed": observed_json,
+                            "expected": expected_value,
+                        }
+                    )
         plausible = _answer(row.get("plausible_y_n"))
         compatible = _answer(row.get("label_compatible_y_n"))
         item = {
@@ -616,7 +655,16 @@ def validate_recipe_review(
         and not missing_ids
         and not extra_ids
         and not invalid_answers
+        and not immutable_mismatches
     )
+    recipe_set_sha256 = hashlib.sha256(
+        json.dumps(
+            [recipe.model_dump() for recipe in recipes],
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    ).hexdigest()
     return {
         "schema_version": "sceneledger.recipe_human_review.v1",
         "pass": structural_pass and pass_rate >= min_pass_rate,
@@ -626,10 +674,12 @@ def validate_recipe_review(
         "n_passed": passed_rows,
         "pass_rate": round(pass_rate, 6),
         "min_pass_rate": min_pass_rate,
+        "recipe_set_sha256": recipe_set_sha256,
         "duplicate_recipe_ids": duplicate_ids,
         "missing_recipe_ids": missing_ids,
         "extra_recipe_ids": extra_ids,
         "invalid_answers": invalid_answers[:50],
+        "immutable_mismatches": immutable_mismatches[:50],
         "rejected": rejected[:50],
     }
 

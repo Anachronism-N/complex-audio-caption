@@ -21,6 +21,7 @@ from sceneledger.data.scene_recipes import (
     write_recipe_review,
     write_recipes,
 )
+from sceneledger.data.source_catalog import file_sha256
 
 
 def _weight(value: str) -> tuple[str, float]:
@@ -175,6 +176,8 @@ def main(argv: list[str] | None = None) -> int:
             read_recipes(args.recipes),
             min_pass_rate=args.min_pass_rate,
         )
+        report["recipe_plan_sha256"] = file_sha256(args.recipes)
+        report["review_csv_sha256"] = file_sha256(args.review_csv)
         _write_report(args.output, report)
         return 0 if report["pass"] else 1
     if args.command == "compare":
