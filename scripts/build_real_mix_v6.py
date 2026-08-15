@@ -169,8 +169,8 @@ def main():
 
     print(f"Music: {len(MUSIC_SOURCES)}, Speech: {len(SPEECH_SOURCES)}, SFX cats: {len(cat_files)}", file=sys.stderr, flush=True)
 
-    n_mixtures = 200
-    out_dir = Path("/tmp/real_mix_v6")
+    n_mixtures = 1000
+    out_dir = Path("/tmp/real_mix_v6_1k")
     audio_dir = out_dir / "audio"
     audio_dir.mkdir(parents=True, exist_ok=True)
     rng = random.Random(20260814)
@@ -180,7 +180,7 @@ def main():
 
     for i in range(n_mixtures):
         scene = rng.choice(SCENE_TEMPLATES)
-        sid = f"rv6_{i+1:04d}"
+        sid = f"rv6k_{i+1:04d}"
         duration = rng.uniform(8.0, 12.0)
         n_clip = int(duration * sr)
         has_speech = any(s["type"] == "speech" for s in scene["sources"])
