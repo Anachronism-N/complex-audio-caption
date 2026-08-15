@@ -188,9 +188,13 @@ bash scripts/run_b3_real_complex_anchor.sh "$EXP_ROOT" "$MOSS_WEIGHTS" 1000
 3. 只使用 frozen train manifest 训练 1,000 个 micro-steps；
 4. 在同一个完整 test 上运行 B3 tuned；
 5. 输出 `$EXP_ROOT/evaluation/comparison.json`。
+6. 用训练配置、完整 test manifest、指标、推理报告及数据合同生成
+   `$EXP_ROOT/evaluation/b3_tuned/validity_audit.json`；认证失败时以非零退出。
 
 推理没有 `--limit`，test ID 必须与 contract 完全一致。任何前 50 条评测、
 train manifest 推理或修改 references 的结果都不会通过入口校验。
+此外，只有 `validity_audit.json` 的 `status=certified_generalization` 才能作为
+论文 held-out 结果；详细门禁见 `docs/34_v6_heldout_forensics_and_result_certification.md`。
 
 ## 7. 如何判断结果
 

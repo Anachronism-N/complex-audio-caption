@@ -64,16 +64,38 @@ run_frozen_test zero_shot
 "${python_bin}" -m sceneledger.cli.train --config "${runtime_config}"
 run_frozen_test b3_tuned --lora-path "${model_output}/lora"
 
+"${python_bin}" -m sceneledger.cli.audit_result \
+  --train-config "${runtime_config}" \
+  --eval-manifest "${experiment_root}/test/manifest.jsonl" \
+  --metrics "${eval_root}/b3_tuned/metrics.json" \
+  --inference-report "${eval_root}/b3_tuned/inference_report.json" \
+  --repo-root "${repo_root}" \
+  --split-contract "${gate}/split_contract.json" \
+  --data-gate-summary "${gate}/experiment_data_summary.json" \
+  --output "${eval_root}/b3_tuned/validity_audit.json" \
+  --require-pass
+
 "${python_bin}" - \
   "${eval_root}/zero_shot/metrics.json" \
   "${eval_root}/b3_tuned/metrics.json" \
+  "${eval_root}/b3_tuned/validity_audit.json" \
   "${eval_root}/comparison.json" <<'PY'
+import hashlib
 import json
 import pathlib
 import sys
 
 zero = json.loads(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"))
 tuned = json.loads(pathlib.Path(sys.argv[2]).read_text(encoding="utf-8"))
+validity_path = pathlib.Path(sys.argv[3])
+validity = json.loads(validity_path.read_text(encoding="utf-8"))
+if validity.get("status") != "certified_generalization" or validity.get("pass") is not True:
+    raise SystemExit("refusing to write comparison without passed result certification")
+dataset_id = validity.get("dataset_id")
+for arm, metrics in (("zero_shot", zero), ("b3_tuned", tuned)):
+    evidence = metrics.get("experiment_contract", {})
+    if evidence.get("dataset_id") != dataset_id or evidence.get("split") != "test":
+        raise SystemExit(f"{arm} metrics are not bound to the certified test dataset")
 keys = (
     "n_samples",
     "strict_format_success_rate",
@@ -88,6 +110,15 @@ keys = (
 )
 payload = {
     "schema_version": "sceneledger.anchor_comparison.v1",
+    "validity_audit": {
+        "path": str(validity_path.resolve()),
+        "sha256": hashlib.sha256(validity_path.read_bytes()).hexdigest(),
+        "status": validity["status"],
+    },
+    "metric_artifacts": {
+        "zero_shot_sha256": hashlib.sha256(pathlib.Path(sys.argv[1]).read_bytes()).hexdigest(),
+        "b3_tuned_sha256": hashlib.sha256(pathlib.Path(sys.argv[2]).read_bytes()).hexdigest(),
+    },
     "zero_shot": {key: zero.get(key) for key in keys},
     "b3_tuned": {key: tuned.get(key) for key in keys},
     "delta_tuned_minus_zero": {
@@ -100,7 +131,7 @@ payload = {
         for key in keys
     },
 }
-pathlib.Path(sys.argv[3]).write_text(json.dumps(payload, indent=2) + "\n")
+pathlib.Path(sys.argv[4]).write_text(json.dumps(payload, indent=2) + "\n")
 print(json.dumps(payload, indent=2))
 PY
 

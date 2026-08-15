@@ -1,0 +1,217 @@
+{
+  "schema_version": "sceneledger-evaluation-validity-v1",
+  "pass": false,
+  "status": "invalid_generalization_claim",
+  "dataset_id": null,
+  "failed_checks": [
+    "complete_evaluation_manifest_coverage",
+    "train_eval_sample_ids_disjoint",
+    "raw_source_identity_auditable",
+    "train_eval_raw_sources_disjoint",
+    "frozen_experiment_contract_valid"
+  ],
+  "artifacts": {
+    "train_config": {
+      "path": "configs/model/b3_real_v6_3k.yaml",
+      "sha256": "1fdd0b084f814c37a60006511fcdf0182cd41b6a911a18b4a7f0b689f94b94ce"
+    },
+    "train_manifest": {
+      "path": "data/derived/real_mix_v6/manifest_compat.jsonl",
+      "sha256": "8321c1a03d1e187592cf297e3b44910c4afcee48b81021c122a8b8ad1fcb06d7"
+    },
+    "evaluation_manifest": {
+      "path": "data/derived/real_mix_v6/manifest_compat.jsonl",
+      "sha256": "8321c1a03d1e187592cf297e3b44910c4afcee48b81021c122a8b8ad1fcb06d7"
+    },
+    "metrics": {
+      "path": "reports/b3_real_v6_3k_heldout_metrics.json",
+      "sha256": "3e42b853f7b44f62de091261e5af98c517f7cab83fd6cc7ccbc1c38d59b1c29e"
+    },
+    "inference_report": {
+      "path": "reports/b3_real_v6_3k_heldout_infer_report.json",
+      "sha256": "0628d4f9353cfd91001478b7a618714caaf483b05f61a1d0dda231be1b8f4ddb"
+    }
+  },
+  "counts": {
+    "train_manifest": 200,
+    "actual_training": 131,
+    "evaluation_manifest": 200,
+    "reported_evaluation": 20,
+    "reported_seen_during_training": 15,
+    "reported_unseen_by_sample_id": 5
+  },
+  "checks": [
+    {
+      "name": "training_membership_nonempty",
+      "pass": true,
+      "detail": 131
+    },
+    {
+      "name": "evaluation_manifest_ids_unique",
+      "pass": true,
+      "detail": 0
+    },
+    {
+      "name": "metrics_ids_well_formed",
+      "pass": true,
+      "detail": {
+        "errors": [],
+        "declared": 20,
+        "observed": 20
+      }
+    },
+    {
+      "name": "inference_ids_well_formed",
+      "pass": true,
+      "detail": {
+        "errors": [],
+        "declared": 20,
+        "observed": 20
+      }
+    },
+    {
+      "name": "metrics_inference_ids_identical",
+      "pass": true,
+      "detail": {
+        "metrics_only": [],
+        "inference_only": [],
+        "same_order": true
+      }
+    },
+    {
+      "name": "complete_evaluation_manifest_coverage",
+      "pass": false,
+      "detail": {
+        "missing_from_reports": [
+          "rv6_0001",
+          "rv6_0002",
+          "rv6_0003",
+          "rv6_0004",
+          "rv6_0005",
+          "rv6_0006",
+          "rv6_0007",
+          "rv6_0008",
+          "rv6_0009",
+          "rv6_0010",
+          "rv6_0011",
+          "rv6_0012",
+          "rv6_0013",
+          "rv6_0014",
+          "rv6_0015",
+          "rv6_0016",
+          "rv6_0017",
+          "rv6_0018",
+          "rv6_0019",
+          "rv6_0020"
+        ],
+        "unknown_report_ids": [],
+        "n_manifest": 200,
+        "n_reported": 20
+      }
+    },
+    {
+      "name": "train_eval_sample_ids_disjoint",
+      "pass": false,
+      "detail": {
+        "count": 15,
+        "examples": [
+          "rv6_0181",
+          "rv6_0182",
+          "rv6_0183",
+          "rv6_0184",
+          "rv6_0185",
+          "rv6_0186",
+          "rv6_0187",
+          "rv6_0188",
+          "rv6_0191",
+          "rv6_0192",
+          "rv6_0193",
+          "rv6_0194",
+          "rv6_0197",
+          "rv6_0198",
+          "rv6_0199"
+        ]
+      }
+    },
+    {
+      "name": "raw_source_identity_auditable",
+      "pass": false,
+      "detail": {
+        "count": 397,
+        "examples": [
+          "rv6_0003:S1:real:speech",
+          "rv6_0003:S2:real:music",
+          "rv6_0008:S1:real:speech",
+          "rv6_0008:S2:real:music",
+          "rv6_0015:S1:real:speech",
+          "rv6_0015:S2:real:music",
+          "rv6_0026:S1:real:speech",
+          "rv6_0026:S2:real:music",
+          "rv6_0028:S1:real:speech",
+          "rv6_0028:S2:real:music",
+          "rv6_0034:S1:real:speech",
+          "rv6_0034:S2:real:music",
+          "rv6_0041:S1:real:speech",
+          "rv6_0041:S2:real:music",
+          "rv6_0042:S1:real:speech",
+          "rv6_0042:S2:real:music",
+          "rv6_0049:S1:real:speech",
+          "rv6_0049:S2:real:music",
+          "rv6_0055:S1:real:speech",
+          "rv6_0055:S2:real:music"
+        ]
+      }
+    },
+    {
+      "name": "train_eval_raw_sources_disjoint",
+      "pass": false,
+      "detail": {
+        "count": 4,
+        "examples": [
+          "path:real:ambience",
+          "path:real:music",
+          "path:real:sfx",
+          "path:real:speech"
+        ]
+      }
+    },
+    {
+      "name": "frozen_experiment_contract_valid",
+      "pass": false,
+      "detail": "--split-contract and --data-gate-summary are both required"
+    }
+  ],
+  "metric_subgroups": {
+    "seen_during_training": {
+      "n_samples": 15,
+      "mean_event_precision": 1.0,
+      "mean_event_recall": 1.0,
+      "mean_event_f1": 1.0,
+      "mean_caption_token_f1": null,
+      "mean_seg_f1_100ms": 1.0,
+      "mean_onset_mae": 0.0,
+      "mean_offset_mae": 0.0,
+      "mean_tolerance_acc_010": 1.0,
+      "mean_source_count_mae": 1.0,
+      "mean_pointer_accuracy": 0.288889,
+      "total_hallucination": 0,
+      "total_omission": 0
+    },
+    "unseen_by_sample_id": {
+      "n_samples": 5,
+      "mean_event_precision": 0.866667,
+      "mean_event_recall": 0.866667,
+      "mean_event_f1": 0.866667,
+      "mean_caption_token_f1": null,
+      "mean_seg_f1_100ms": 0.860645,
+      "mean_onset_mae": 0.71,
+      "mean_offset_mae": 0.426667,
+      "mean_tolerance_acc_010": 0.366667,
+      "mean_source_count_mae": 0.8,
+      "mean_pointer_accuracy": 0.333333,
+      "total_hallucination": 2,
+      "total_omission": 2
+    }
+  },
+  "interpretation": "Only a passing report supports a held-out generalization claim. The unseen-by-sample-ID subgroup is diagnostic when source identities are not auditable; it is not a source-disjoint test result."
+}

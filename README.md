@@ -65,6 +65,7 @@
 - [音源银行冻结方案：数据选择、许可/监督门禁与逐阶段实验指引](docs/30_source_bank_selection_and_execution.md)
 - [20 小时数据扩充与 Rule/LLM 混音实验](docs/31_twenty_hour_data_and_recipe_experiment.md)
 - [Real-Complex 三折数据锚点与无泄漏 B3 实验](docs/33_real_complex_three_fold_anchor.md)
+- [v6 held-out 取证与论文结果认证门禁](docs/34_v6_heldout_forensics_and_result_certification.md)
 - [机器可读实验矩阵](configs/experiment_matrix.yaml)
 - [机器可读开发阶段](configs/pipeline_stages.yaml)
 - [规范化事件账本 JSON Schema](schemas/sceneledger.schema.json)
