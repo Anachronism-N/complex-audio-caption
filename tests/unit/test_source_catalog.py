@@ -349,6 +349,7 @@ def test_dense_multispeaker_template_has_six_sources_and_shared_room(
 ) -> None:
     specs = [
         ("speech_a", "speech", "speaker:a", 190.0, 2.0),
+        ("speech_a_followup", "speech", "speaker:a", 205.0, 1.5),
         ("speech_b", "speech", "speaker:b", 230.0, 2.0),
         ("ambience", "ambience", "ambience:one", 90.0, 3.0),
         ("sfx_a", "sfx", "event:a", 410.0, 0.4),
@@ -396,10 +397,17 @@ def test_dense_multispeaker_template_has_six_sources_and_shared_room(
     )
 
     assert Counter(source.kind for source in scene.sources) == Counter(
-        {"speech": 2, "ambience": 1, "sfx": 3}
+        {"speech": 3, "ambience": 1, "sfx": 3}
     )
-    assert len({source.path for source in scene.sources}) == 6
+    assert len({source.path for source in scene.sources}) == 7
     assert len({source.identity for source in scene.sources if source.kind == "speech"}) == 2
+    speaker_one = [
+        source
+        for source in scene.sources
+        if source.kind == "speech" and source.track_group == "speaker-1"
+    ]
+    assert len(speaker_one) == 2
+    assert len({source.source_group for source in speaker_one}) == 1
     assert len({source.rir_id for source in scene.sources}) == 1
     assert {source.t60_sec for source in scene.sources} == {0.3}
     sfx_onsets = sorted(

@@ -16,8 +16,9 @@
 4. 原指标的 event-F1 只主要检查事件类型和时间重合，不检查 caption 文本是否正确；
 5. 原 metrics 没有 `caption_token_f1`，且把 strict-format rate 写为 1.0，而原始
    inference report 实际是 0.98；
-6. source-count MAE 为 1.14、event-to-source pointer accuracy 只有 0.34，说明高
-   event-F1 没有同步转化为可靠的结构化声源解析。
+6. 原始 0.34 pointer 分数直接比较任意的 T1/T2 名称，不具备置换不变性；100 条输出
+   中 0 条显式生成 track ID，因此修复后的 PIT-pointer 按协议计为 0，不能把 parser
+   按 type 回填出的 track 当作模型学会了持续声源归属。
 
 本轮新增了两层 fail-closed 机制：一是论文结果必须使用
 `sceneledger-metrics-v2`；二是可对已提交的 raw generation 做 CPU-only forensic
@@ -42,15 +43,19 @@ replay，恢复缺失的语义指标、解析证据和真实训练成员分组�
 
 | 子集 | N | event-F1 | caption token-F1 | 100 ms Seg-F1 | onset MAE | format | source-count MAE | pointer acc. | omission |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 全部事后子集 | 100 | 0.970 | 0.164 | 0.943 | 0.262 s | 0.980 | 1.140 | 0.340 | 9 |
-| 实际训练见过 | 64 | 0.990 | 0.179 | 0.970 | 0.227 s | 1.000 | 1.141 | 0.362 | 2 |
-| sample-ID 未见 | 36 | 0.935 | 0.137 | 0.895 | 0.325 s | 0.944 | 1.139 | 0.301 | 7 |
+| 全部事后子集 | 100 | 0.970 | 0.164 | 0.943 | 0.262 s | 0.980 | 1.140 | 0.000 | 9 |
+| 实际训练见过 | 64 | 0.990 | 0.179 | 0.970 | 0.227 s | 1.000 | 1.141 | 0.000 | 2 |
+| sample-ID 未见 | 36 | 0.935 | 0.137 | 0.895 | 0.325 s | 0.944 | 1.139 | 0.000 | 7 |
 
 这里的 caption token-F1 是轻量、可确定性复算的词项重叠诊断，并不是完整语义指标；
 同义改写会使它偏低。因此不能把 0.164 直接解释为“语义正确率 16.4%”。但它足以
 证明原先的 0.970 没有评价 caption 内容：确有 event-F1 接近或等于 1.0、caption
 token-F1 却只有约 0.07--0.08 的样本。正式实验还必须加入冻结 test 上的盲法人工语义
 评审，不能仅依赖 token-F1。
+
+表中的 pointer 使用修复后的 permutation-invariant 指标。旧输出没有 `track="..."`，
+parser 只能按类型回填 track；`current_explicit_track_ids_complete_rate=0`。评测器因此把
+每条样本 pointer 计 0，而不是奖励不可归因的 fallback 分组。
 
 完整证据位于：
 
@@ -75,6 +80,8 @@ token-F1 却只有约 0.07--0.08 的样本。正式实验还必须加入冻结 t
 - 每条样本的 event、caption、100 ms segment、边界、source count、pointer、
   hallucination、omission 和 strict-format 指标；
 - 完整 raw parser status，不能从已经修复/解析后的 Ledger 倒推格式成功；
+- 显式 track 证据及 permutation-invariant pointer 指标，禁止把任意 track 名称的
+  exact-match 或按 type 回填的 track 当作模型输出；
 - `macro_caption_token_f1`，禁止只有 type+time 的 event-F1；
 - 可从逐样本行精确重算的所有 corpus aggregate。
 
@@ -118,7 +125,7 @@ sceneledger-forensic-replay \
 ## 4. 下一项实验是什么
 
 下一步不需要再训练 v6k，也不需要立刻增加 loss、agent 或 RL。唯一有判定力的实验仍是
-`docs/33_real_complex_three_fold_anchor.md` 的 120/120/120 六源三折锚点：
+`docs/33_real_complex_three_fold_anchor.md` 的 120/120/120 六 track、七 stem 三折锚点：
 
 ```text
 可追溯 source catalogs

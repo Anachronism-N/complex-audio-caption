@@ -55,6 +55,7 @@ class ParseReport:
     warnings: list[str] = field(default_factory=list)
     rejected_snippets: list[str] = field(default_factory=list)
     strict_format_success: bool = False
+    explicit_track_ids_complete: bool = False
 
     def add_warning(self, msg: str) -> None:
         self.warnings.append(msg)
@@ -136,6 +137,9 @@ def parse_model_output(
     try:
         ledger = _try_strict(text, sample_id, duration_sec)
         report.strict_format_success = True
+        report.explicit_track_ids_complete = bool(ledger.events) and all(
+            event.track_id is not None for event in ledger.events
+        )
         report.events_recovered = len(ledger.events)
         return ledger, report
     except (ET.ParseError, ValueError) as exc:
@@ -198,6 +202,9 @@ def parse_model_output(
     tracks = _infer_tracks(events, report, duration_sec)
 
     report.events_recovered = len(events)
+    report.explicit_track_ids_complete = bool(events) and all(
+        event.track_id is not None for event in events
+    )
     if report.events_rejected:
         report.ok = False
 
@@ -220,7 +227,10 @@ def parse_caption_output(
     Online inference and offline forensic replay share this dispatch so parser
     changes cannot silently produce two incompatible metric pipelines.
     """
-    from sceneledger.models.target_formatter import atomic_to_ledger
+    from sceneledger.models.target_formatter import (
+        atomic_to_ledger,
+        atomic_track_ids_complete,
+    )
 
     try:
         ledger = atomic_to_ledger(text, sample_id, duration_sec)
@@ -230,6 +240,7 @@ def parse_caption_output(
                 ok=True,
                 events_recovered=len(ledger.events),
                 strict_format_success=True,
+                explicit_track_ids_complete=atomic_track_ids_complete(text),
             )
     except (TypeError, ValueError):
         pass

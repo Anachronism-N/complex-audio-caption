@@ -2,18 +2,21 @@
 
 from __future__ import annotations
 
+from fixtures.factory import ev, ledger, t, tr
+
 from sceneledger.data.schema import Ledger
 from sceneledger.models.target_formatter import (
     T_TOKEN_COUNT,
     atomic_to_ledger,
+    atomic_track_ids_complete,
     canonical_prompt,
     format_atomic_caption,
+    format_slot_aware_caption,
     format_xml_caption,
     parse_atomic_caption,
     time_to_token,
     token_to_time,
 )
-from fixtures.factory import ev, ledger, t, tr
 
 
 def _sample_ledger() -> Ledger:
@@ -85,6 +88,37 @@ def test_atomic_to_ledger_schema_valid():
     assert len(back.events) == 3
 
 
+def test_track_aware_slots_preserve_distinct_same_type_sources():
+    original = ledger(
+        "two-speakers",
+        3.0,
+        tracks=[
+            tr("T1", "speech", [t(0.0, 1.0)]),
+            tr("T2", "speech", [t(1.5, 2.5)]),
+        ],
+        events=[
+            ev("E1", "speech", [t(0.0, 1.0)], text="hello", track_id="T1"),
+            ev("E2", "speech", [t(1.5, 2.5)], text="goodbye", track_id="T2"),
+        ],
+    )
+
+    caption = format_slot_aware_caption(original, style="detailed")
+    recovered = atomic_to_ledger(caption, original.sample_id, original.duration_sec)
+
+    assert '<speech track="T1">' in caption
+    assert '<speech track="T2">' in caption
+    assert atomic_track_ids_complete(caption) is True
+    assert [event.track_id for event in recovered.events] == ["T1", "T2"]
+    assert len(recovered.tracks) == 2
+
+    legacy_caption = format_atomic_caption(original, style="detailed")
+    legacy = atomic_to_ledger(
+        legacy_caption, original.sample_id, original.duration_sec
+    )
+    assert atomic_track_ids_complete(legacy_caption) is False
+    assert len(legacy.tracks) == 1
+
+
 def test_empty_scene_emits_empty_tag():
     lg = ledger("empty", 5.0)
     assert format_xml_caption(lg) == "<empty/>"
@@ -105,6 +139,13 @@ def test_canonical_prompt_includes_lyrics_toggle():
     assert "<lys>" not in no_ly
     assert "<lys>" in with_ly
     assert "style=brief" in no_ly
+
+
+def test_track_aware_prompt_defines_pointer_semantics():
+    prompt = canonical_prompt(track_aware=True)
+    assert 'track="T1"' in prompt
+    assert "same persistent source" in prompt
+    assert "different speakers" in prompt
 
 
 def test_token_count_matches_config():

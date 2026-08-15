@@ -2,6 +2,11 @@
 
 更新日期：2026-08-15
 
+> 历史版本说明：本文记录的是 2026-08-15 的六 source 初版。当前可执行锚点已经升级为
+> 七 stem、七 event、六 persistent track，并要求同一 speaker 跨两个时段复现；请以
+> `docs/33_real_complex_three_fold_anchor.md` 和 `docs/38_track_aware_anchor_and_temporal_evidence_gate.md`
+> 为准。
+
 ## 1. 结论先行
 
 当前不应继续解释 B3 的模型效果，也不应马上做 recaption。仓库中的 `real_mix_v6` 不满足复杂音频训练集的基本定义，必须先被替换为一个可审计的数据锚点。

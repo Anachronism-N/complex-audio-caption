@@ -77,6 +77,7 @@ def scene_from_dict(d: dict) -> Scene:
             gain_db=s["gain_db"],
             text=s["text"],
             identity=s.get("identity"),
+            track_group=s.get("track_group"),
             source_group=s.get("source_group"),
             leakage_groups=list(s.get("leakage_groups", [])),
             source_labels=list(s.get("source_labels", [])),

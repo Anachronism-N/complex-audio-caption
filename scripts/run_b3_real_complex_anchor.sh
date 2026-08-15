@@ -46,6 +46,7 @@ run_frozen_test() {
     --dtype bfloat16 \
     --greedy \
     --style detailed \
+    --track-aware \
     --split-contract "${gate}/split_contract.json" \
     --expected-split test \
     --data-gate-summary "${gate}/experiment_data_summary.json" \

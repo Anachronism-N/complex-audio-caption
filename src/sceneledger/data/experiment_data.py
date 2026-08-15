@@ -21,6 +21,7 @@ from pathlib import Path
 
 import yaml
 
+from sceneledger.data.activity import compute_activity
 from sceneledger.data.manifests import ManifestEntry, read_manifest
 from sceneledger.data.scene_graph_sampler import Scene
 from sceneledger.data.schema import Ledger
@@ -487,6 +488,18 @@ def _scene_statistics(entry: ManifestEntry) -> dict:
     trailing_silence = max(0.0, duration - previous)
     silences.append(trailing_silence)
     events = entry.target_ledger.get("events", [])
+    tracks = entry.target_ledger.get("tracks", [])
+    track_ids = {str(track.get("id", "")) for track in tracks}
+    events_by_track = Counter(
+        str(event.get("track_id"))
+        for event in events
+        if event.get("track_id") is not None
+    )
+    events_with_valid_track = sum(
+        event.get("track_id") is not None
+        and str(event.get("track_id")) in track_ids
+        for event in events
+    )
     source_ids = [str(source.get("source_id", "")) for source in entry.scene.get("sources", [])]
     source_paths = [
         str(source.get("path", "")) for source in entry.scene.get("sources", [])
@@ -509,6 +522,11 @@ def _scene_statistics(entry: ManifestEntry) -> dict:
         "event_count": len(events),
         "span_count": sum(len(event.get("spans", [])) for event in events),
         "source_count": len(entry.scene.get("sources", [])),
+        "track_count": len(tracks),
+        "multi_event_track_count": sum(
+            count >= 2 for count in events_by_track.values()
+        ),
+        "event_track_pointer_complete": events_with_valid_track == len(events),
         "active_ratio": active_duration / duration if duration > 0 else 0.0,
         "trailing_silence_sec": trailing_silence,
         "max_silence_sec": max(silences, default=duration),
@@ -732,6 +750,155 @@ def _stem_audibility_report(
         "by_kind": by_kind,
     }
     return metrics, errors, [*below_floor, *low_margin]
+
+
+def _stem_temporal_evidence_report(
+    entries: list[ManifestEntry], manifest_path: str | Path, config: dict
+) -> tuple[dict, list[dict], list[dict]]:
+    """Verify that Ledger spans are derived from persisted stem activity."""
+    import numpy as np
+
+    try:
+        import soundfile as sf
+    except ImportError as exc:  # pragma: no cover - optional data dependency
+        raise RuntimeError("stem temporal checks require soundfile") from exc
+
+    base = Path(manifest_path).resolve().parent
+    minimum_iou = float(config.get("min_span_iou", 0.98))
+    maximum_boundary_error = float(config.get("max_boundary_error_sec", 0.1))
+    rows: list[dict] = []
+    errors: list[dict] = []
+    violations: list[dict] = []
+
+    def _mask(spans: list[tuple[float, float]], duration: float, resolution: float):
+        size = max(1, int(round(duration / resolution)))
+        output = np.zeros(size, dtype=np.int8)
+        for start, end in spans:
+            lo = max(0, min(size, int(round(start / resolution))))
+            hi = max(lo, min(size, int(round(end / resolution))))
+            output[lo:hi] = 1
+        return output
+
+    for entry in entries:
+        sample_id = _sample_id(entry)
+        duration = float(entry.scene["duration"])
+        supervision = entry.scene.get("supervision") or {}
+        threshold = float(supervision.get("activity_threshold", 0.05))
+        resolution = float(supervision.get("resolution_s", 0.1))
+        merge_threshold = float(supervision.get("merge_threshold_s", 0.25))
+        events = entry.target_ledger.get("events", [])
+        for source in entry.scene.get("sources", []):
+            source_id = str(source.get("source_id", ""))
+            stem_value = entry.stem_paths.get(source_id)
+            if not stem_value:
+                errors.append(
+                    {
+                        "sample_id": sample_id,
+                        "source_id": source_id,
+                        "error": "missing persisted stem path",
+                    }
+                )
+                continue
+            stem_path = Path(stem_value)
+            resolved = (
+                stem_path.resolve()
+                if stem_path.is_absolute()
+                else (base / stem_path).resolve()
+            )
+            try:
+                resolved.relative_to(base)
+            except ValueError:
+                errors.append(
+                    {
+                        "sample_id": sample_id,
+                        "source_id": source_id,
+                        "error": "stem path escapes manifest root",
+                    }
+                )
+                continue
+            try:
+                waveform, sample_rate = sf.read(
+                    resolved, dtype="float32", always_2d=False
+                )
+            except Exception as exc:
+                errors.append(
+                    {
+                        "sample_id": sample_id,
+                        "source_id": source_id,
+                        "error": str(exc),
+                    }
+                )
+                continue
+            mono = np.asarray(waveform, dtype=np.float32)
+            if mono.ndim == 2:
+                mono = mono.mean(axis=1)
+            kind = str(source.get("kind", ""))
+            expected = compute_activity(
+                mono,
+                int(sample_rate),
+                activity_threshold=threshold,
+                resolution_sec=resolution,
+                merge_threshold_s=merge_threshold,
+                duration_sec=duration,
+                is_continuous=kind in {"music", "ambience"},
+            ).spans
+            actual = sorted(
+                (
+                    float(span["start_sec"]),
+                    float(span["end_sec"]),
+                )
+                for event in events
+                if (event.get("attributes") or {}).get("source_id") == source_id
+                for span in event.get("spans", [])
+            )
+            expected_mask = _mask(expected, duration, resolution)
+            actual_mask = _mask(actual, duration, resolution)
+            union = int(np.logical_or(expected_mask, actual_mask).sum())
+            intersection = int(np.logical_and(expected_mask, actual_mask).sum())
+            span_iou = intersection / union if union else 1.0
+            onset_error = (
+                abs(min(start for start, _end in expected) - min(start for start, _end in actual))
+                if expected and actual
+                else duration
+            )
+            offset_error = (
+                abs(max(end for _start, end in expected) - max(end for _start, end in actual))
+                if expected and actual
+                else duration
+            )
+            row = {
+                "sample_id": sample_id,
+                "source_id": source_id,
+                "kind": kind,
+                "span_iou": round(span_iou, 6),
+                "onset_error_sec": round(onset_error, 6),
+                "offset_error_sec": round(offset_error, 6),
+                "expected_spans": expected,
+                "ledger_spans": actual,
+            }
+            row["violation"] = (
+                not expected
+                or not actual
+                or span_iou < minimum_iou
+                or max(onset_error, offset_error) > maximum_boundary_error + 1e-9
+            )
+            rows.append(row)
+            if row["violation"]:
+                violations.append(row)
+
+    metrics = {
+        "n_sources": len(rows),
+        "n_violations": len(violations),
+        "violation_fraction": _fraction(len(violations), len(rows)),
+        "mean_span_iou": _mean(float(row["span_iou"]) for row in rows),
+        "max_onset_error_sec": max(
+            (float(row["onset_error_sec"]) for row in rows), default=0.0
+        ),
+        "max_offset_error_sec": max(
+            (float(row["offset_error_sec"]) for row in rows), default=0.0
+        ),
+    }
+    return metrics, errors, violations
 
 
 def _complexity_metrics_and_checks(rows: list[dict], config: dict) -> tuple[dict, list[dict]]:
@@ -1055,6 +1222,9 @@ def audit_mixture_distribution(
                     "event_count": 0,
                     "span_count": 0,
                     "source_count": len(entry.scene.get("sources", [])),
+                    "track_count": 0,
+                    "multi_event_track_count": 0,
+                    "event_track_pointer_complete": False,
                     "active_ratio": 0.0,
                     "trailing_silence_sec": float(entry.scene.get("duration", 0.0)),
                     "max_silence_sec": float(entry.scene.get("duration", 0.0)),
@@ -1094,6 +1264,36 @@ def audit_mixture_distribution(
     overlap_rows = [row for row in rows if row["template"] == overlap_name]
     min_overlap = float(overlap_cfg.get("min_overlap_ratio", 0.1))
     overlap_bad = sum(row["overlap_ratio"] < min_overlap for row in overlap_rows)
+
+    track_cfg = profile.get("track_supervision", {})
+    multi_event_track_scenes = sum(
+        row["multi_event_track_count"] > 0 for row in rows
+    )
+    pointer_complete_scenes = sum(
+        row["event_track_pointer_complete"] for row in rows
+    )
+    multi_event_track_scene_fraction = _fraction(
+        multi_event_track_scenes, total
+    )
+    pointer_complete_scene_fraction = _fraction(pointer_complete_scenes, total)
+    required_source_count = track_cfg.get("required_source_count")
+    required_event_count = track_cfg.get("required_event_count")
+    required_track_count = track_cfg.get("required_track_count")
+
+    def _structure_matches(row: dict) -> bool:
+        return (
+            (required_source_count is None or row["source_count"] == int(required_source_count))
+            and (required_event_count is None or row["event_count"] == int(required_event_count))
+            and (required_track_count is None or row["track_count"] == int(required_track_count))
+        )
+
+    structural_contract_enabled = any(
+        value is not None
+        for value in (required_source_count, required_event_count, required_track_count)
+    )
+    structure_match_scene_fraction = _fraction(
+        sum(_structure_matches(row) for row in rows), total
+    )
 
     complexity_metrics, complexity_checks = _complexity_metrics_and_checks(
         rows, profile.get("complexity", {})
@@ -1147,6 +1347,42 @@ def audit_mixture_distribution(
             ),
         ]
 
+    temporal_cfg = profile.get("temporal_evidence", {})
+    temporal_metrics: dict = {}
+    temporal_errors: list[dict] = []
+    temporal_violations: list[dict] = []
+    temporal_checks: list[dict] = []
+    if temporal_cfg:
+        (
+            temporal_metrics,
+            temporal_errors,
+            temporal_violations,
+        ) = _stem_temporal_evidence_report(entries, manifest_path, temporal_cfg)
+        temporal_checks = [
+            _check(
+                "all_temporal_evidence_stems_readable",
+                not temporal_errors,
+                temporal_errors[:50],
+            ),
+            _check(
+                "stem_ledger_temporal_violation_fraction",
+                temporal_metrics["violation_fraction"]
+                <= float(temporal_cfg.get("max_violation_fraction", 0.0)),
+                {
+                    "actual": temporal_metrics["violation_fraction"],
+                    "maximum": float(
+                        temporal_cfg.get("max_violation_fraction", 0.0)
+                    ),
+                    "minimum_span_iou": float(
+                        temporal_cfg.get("min_span_iou", 0.98)
+                    ),
+                    "maximum_boundary_error_sec": float(
+                        temporal_cfg.get("max_boundary_error_sec", 0.1)
+                    ),
+                },
+            ),
+        ]
+
     metrics = {
         "n_samples": total,
         "single_event_fraction": _fraction(single_count, total),
@@ -1161,17 +1397,62 @@ def audit_mixture_distribution(
         "repeated_event_violation_fraction": _fraction(repeated_bad, len(repeated_rows)),
         "overlap_violation_fraction": _fraction(overlap_bad, len(overlap_rows)),
         "mean_event_count": _mean(float(row["event_count"]) for row in rows),
+        "mean_track_count": _mean(float(row["track_count"]) for row in rows),
+        "multi_event_track_scene_fraction": multi_event_track_scene_fraction,
+        "event_track_pointer_complete_scene_fraction": (
+            pointer_complete_scene_fraction
+        ),
+        "track_structure_match_scene_fraction": structure_match_scene_fraction,
         "mean_active_ratio": _mean(float(row["active_ratio"]) for row in rows),
         "mean_trailing_silence_sec": _mean(
             float(row["trailing_silence_sec"]) for row in rows
         ),
         **complexity_metrics,
         "stem_audibility": stem_metrics,
+        "temporal_evidence": temporal_metrics,
     }
 
     checks = [
         _check("manifest_nonempty", total > 0, total),
         _check("all_ledgers_schema_valid", not ledger_errors, ledger_errors),
+        _check(
+            "event_track_pointer_complete_scene_fraction",
+            not track_cfg
+            or pointer_complete_scene_fraction
+            >= float(track_cfg.get("min_pointer_complete_scene_fraction", 1.0)),
+            {
+                "actual": pointer_complete_scene_fraction,
+                "minimum": float(
+                    track_cfg.get("min_pointer_complete_scene_fraction", 1.0)
+                ),
+            },
+        ),
+        _check(
+            "multi_event_track_scene_fraction",
+            not track_cfg
+            or multi_event_track_scene_fraction
+            >= float(track_cfg.get("min_multi_event_track_scene_fraction", 0.0)),
+            {
+                "actual": multi_event_track_scene_fraction,
+                "minimum": float(
+                    track_cfg.get("min_multi_event_track_scene_fraction", 0.0)
+                ),
+                "interpretation": (
+                    "pointer grouping is not identifiable when every track "
+                    "contains at most one event"
+                ),
+            },
+        ),
+        _check(
+            "track_structure_match_scene_fraction",
+            not structural_contract_enabled or structure_match_scene_fraction == 1.0,
+            {
+                "actual": structure_match_scene_fraction,
+                "required_source_count": required_source_count,
+                "required_event_count": required_event_count,
+                "required_track_count": required_track_count,
+            },
+        ),
         _check(
             "single_event_fraction",
             metrics["single_event_fraction"]
@@ -1183,6 +1464,7 @@ def audit_mixture_distribution(
         ),
         *complexity_checks,
         *stem_checks,
+        *temporal_checks,
         _check(
             "low_active_fraction",
             metrics["low_active_fraction"]
@@ -1307,6 +1589,10 @@ def audit_mixture_distribution(
             else "low_speech_competitor_margin"
         )
         stem_reasons[str(item.get("sample_id", ""))].add(reason)
+    for item in temporal_violations:
+        stem_reasons[str(item.get("sample_id", ""))].add(
+            "stem_ledger_temporal_mismatch"
+        )
     for row in rows:
         reasons: list[str] = []
         reasons.extend(sorted(stem_reasons.get(str(row["sample_id"]), set())))
@@ -1322,6 +1608,12 @@ def audit_mixture_distribution(
             reasons.append("duplicate_source_ids")
         if row["duplicate_source_paths"]:
             reasons.append("duplicate_source_paths")
+        if track_cfg and not row["event_track_pointer_complete"]:
+            reasons.append("missing_or_dangling_event_track_pointer")
+        if track_cfg and row["multi_event_track_count"] == 0:
+            reasons.append("pointer_grouping_not_identifiable")
+        if structural_contract_enabled and not _structure_matches(row):
+            reasons.append("track_structure_contract_mismatch")
         if row["template"] == repeated_name and row["max_sfx_spans"] < min_repeated_spans:
             reasons.append("repeated_event_has_too_few_spans")
         if row["template"] == overlap_name and row["overlap_ratio"] < min_overlap:
@@ -1352,6 +1644,7 @@ def audit_mixture_distribution(
         "failed_checks": [item["name"] for item in checks if item["pass"] is not True],
         "violation_samples": violation_samples,
         "stem_audibility_violations": stem_violations[:200],
+        "temporal_evidence_violations": temporal_violations[:200],
     }
 
 

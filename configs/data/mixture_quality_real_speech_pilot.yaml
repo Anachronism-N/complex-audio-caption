@@ -216,7 +216,8 @@ profiles:
       min_speech_overlap_measured_fraction: 0.80
 
   # First deliberately complex anchor: every scene has two distinct speakers,
-  # one continuous ambience bed and three independently timed SFX sources.
+  # three utterances (speaker S1 occurs twice on one persistent track), one
+  # continuous ambience bed and three independently timed SFX sources.
   # This profile requires both ESC-50 and FSD50K so one bank cannot masquerade
   # as source diversity.
   complex_speech_sfx:
@@ -243,6 +244,21 @@ profiles:
       template: overlapping_speakers
       min_overlap_ratio: 0.05
       max_violation_fraction: 1.0
+    track_supervision:
+      min_pointer_complete_scene_fraction: 1.0
+      required_source_count: 7
+      required_event_count: 7
+      required_track_count: 6
+      # Every anchor scene has two utterances from speaker S1 on one persistent
+      # track, so pointer grouping is learnable instead of a one-event/one-track
+      # tautology.
+      min_multi_event_track_scene_fraction: 1.0
+    temporal_evidence:
+      # Recompute activity from persisted PCM stems; placement metadata alone
+      # is not accepted as timestamp ground truth.
+      min_span_iou: 0.98
+      max_boundary_error_sec: 0.1
+      max_violation_fraction: 0.0
     complexity:
       simple_max_sources: 2
       complex_min_sources: 5

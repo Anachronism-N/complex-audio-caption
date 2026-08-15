@@ -17,6 +17,7 @@ from pathlib import Path
 
 from sceneledger.data.experiment_data import file_sha256
 from sceneledger.eval.metrics import (
+    INFERENCE_REPORT_SCHEMA_VERSION,
     METRICS_SCHEMA_VERSION,
     CorpusMetrics,
     evaluate_corpus,
@@ -116,9 +117,9 @@ def main(argv: list[str] | None = None) -> int:
                     "the two artifacts are from different or modified runs"
                 )
         if split_contract is not None:
-            if inference_payload.get("schema_version") != "sceneledger-inference-report-v1":
+            if inference_payload.get("schema_version") != INFERENCE_REPORT_SCHEMA_VERSION:
                 raise ValueError(
-                    "frozen-split evaluation requires a v1 inference report"
+                    "frozen-split evaluation requires a current inference report"
                 )
             if expected_prediction_hash is None:
                 raise ValueError(
@@ -174,7 +175,8 @@ def main(argv: list[str] | None = None) -> int:
             f"SegF1@100ms={corpus.macro_seg_f1_100ms:.3f} | "
             f"strict-format={format_rate} | "
             f"onset-MAE={corpus.mean_onset_mae:.3f}s | "
-            f"pointer={corpus.mean_pointer_accuracy:.3f} | "
+            f"pointer-PIT={corpus.mean_pointer_accuracy:.3f} "
+            f"(explicit={corpus.n_explicit_track_ids_complete}/{corpus.n_samples}) | "
             f"halluc={corpus.total_hallucination} omit={corpus.total_omission} | "
             f"-> {out}",
             file=sys.stderr,

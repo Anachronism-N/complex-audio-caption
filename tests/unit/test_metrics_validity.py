@@ -10,6 +10,7 @@ from fixtures.factory import ev, ledger, t, tr
 from sceneledger.cli.evaluate import main as evaluate_main
 from sceneledger.data.experiment_data import file_sha256
 from sceneledger.eval.metrics import (
+    INFERENCE_REPORT_SCHEMA_VERSION,
     METRICS_SCHEMA_VERSION,
     evaluate_corpus,
     load_inference_report,
@@ -97,11 +98,12 @@ def test_current_metrics_schema_requires_semantics_and_recomputable_aggregates()
         "n_samples": 1,
         "strict_format_success_rate": 1.0,
         "samples": [
-            {
-                "sample_id": reference.sample_id,
-                "strict_format_success": True,
-                "warnings": [],
-            }
+                {
+                    "sample_id": reference.sample_id,
+                    "strict_format_success": True,
+                    "explicit_track_ids_complete": True,
+                    "warnings": [],
+                }
         ],
     }
     corpus = evaluate_corpus(
@@ -119,6 +121,36 @@ def test_current_metrics_schema_requires_semantics_and_recomputable_aggregates()
     payload["macro_caption_token_f1"] = 0.5
     with pytest.raises(ValueError, match="macro_caption_token_f1 is inconsistent"):
         validate_metrics_artifact(payload)
+
+
+def test_missing_explicit_track_is_scored_zero_not_treated_as_missing_evidence() -> None:
+    reference = _fixture()
+    report = {
+        "schema_version": INFERENCE_REPORT_SCHEMA_VERSION,
+        "n_samples": 1,
+        "n_explicit_track_ids_complete": 0,
+        "explicit_track_ids_complete_rate": 0.0,
+        "samples": [
+            {
+                "sample_id": reference.sample_id,
+                "strict_format_success": True,
+                "explicit_track_ids_complete": False,
+                "warnings": [],
+            }
+        ],
+    }
+    corpus = evaluate_corpus(
+        {reference.sample_id: reference.model_copy(deep=True)},
+        {reference.sample_id: reference},
+        inference_report=report,
+    )
+    payload = {"schema_version": METRICS_SCHEMA_VERSION, **corpus.to_dict()}
+
+    assert corpus.mean_pointer_accuracy == 0.0
+    assert corpus.pointer_evidence_complete is True
+    assert corpus.n_explicit_track_ids_complete == 0
+    assert corpus.explicit_track_ids_complete_rate == 0.0
+    validate_metrics_artifact(payload)
 
 
 def test_legacy_metric_without_caption_schema_is_not_paper_valid() -> None:
@@ -195,16 +227,17 @@ def test_cli_rejects_prediction_modified_after_inference(tmp_path) -> None:
     report.write_text(
         json.dumps(
             {
-                "schema_version": "sceneledger-inference-report-v1",
+                "schema_version": INFERENCE_REPORT_SCHEMA_VERSION,
                 "n_samples": 1,
                 "strict_format_success_rate": 1.0,
                 "prediction_sha256": file_sha256(prediction),
                 "samples": [
-                    {
-                        "sample_id": reference.sample_id,
-                        "strict_format_success": True,
-                        "warnings": [],
-                    }
+                        {
+                            "sample_id": reference.sample_id,
+                            "strict_format_success": True,
+                            "explicit_track_ids_complete": True,
+                            "warnings": [],
+                        }
                 ],
             }
         ),

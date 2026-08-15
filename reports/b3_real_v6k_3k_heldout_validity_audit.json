@@ -6,6 +6,7 @@
   "dataset_id": null,
   "failed_checks": [
     "metrics_parser_evidence_identical",
+    "metrics_pointer_evidence_identical",
     "complete_evaluation_manifest_coverage",
     "train_eval_sample_ids_disjoint",
     "raw_source_identity_auditable",
@@ -91,6 +92,14 @@
           "rv6k_0970",
           "rv6k_0983"
         ]
+      }
+    },
+    {
+      "name": "metrics_pointer_evidence_identical",
+      "pass": false,
+      "detail": {
+        "metrics_complete": null,
+        "inference_complete_count": null
       }
     },
     {
@@ -245,6 +254,9 @@
     "tolerance_acc_010": 0.635,
     "source_count_mae": 1.14,
     "pointer_accuracy": 0.34,
+    "pointer_metric": null,
+    "pointer_evidence_complete": null,
+    "explicit_track_ids_complete_rate": null,
     "hallucination": 3,
     "omission": 9
   },

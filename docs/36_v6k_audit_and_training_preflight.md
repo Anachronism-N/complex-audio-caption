@@ -16,7 +16,8 @@
 - 旧训练器产生的 validation 不是预期的 100 条随机样本，而是 298 条完整模板组。
 
 新增训练前置授权门禁会在加载模型和占用 GPU 之前拒绝该配置。下一步实验仍是
-`docs/33_real_complex_three_fold_anchor.md` 中的六源、三折、人工审核 anchor；不是继续
+`docs/33_real_complex_three_fold_anchor.md` 中的七 stem/六 track、三折、人工审核
+anchor；不是继续
 扩大 v6k，也不是先调 loss 或训练步数。
 
 ## 2. 拉取内容的确定性审计
@@ -122,10 +123,11 @@ python -m sceneledger.cli.train \
 严格执行 `docs/33_real_complex_three_fold_anchor.md` 第 3–5 节：
 
 1. 准备并人工审核 LibriSpeech、ESC-50、FSD50K source catalog；
-2. 生成 train/val/test 各 120 条六源 scene specification；
+2. 生成 train/val/test 各 120 条七 stem、七 event、六 track scene specification；
 3. 100% 审核三折 rule recipe；
 4. 渲染 mixture 和 stems；
-5. 通过 replay、stem-sum、active-RMS、复杂度、source-disjoint contract；
+5. 通过 replay、stem-sum、active-RMS、复杂度、source-disjoint、multi-event-track
+   和 stem temporal evidence contract；
 6. 试听并完成 60 条冻结 test mixture audit；
 7. 运行 summary，得到 `human_audit_summary.json: pass=true`。
 

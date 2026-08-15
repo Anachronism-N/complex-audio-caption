@@ -7,7 +7,11 @@ import yaml
 
 import sceneledger.eval.result_validity as validity
 from sceneledger.data.manifests import ManifestEntry, write_manifest
-from sceneledger.eval.metrics import METRICS_SCHEMA_VERSION
+from sceneledger.eval.metrics import (
+    INFERENCE_REPORT_SCHEMA_VERSION,
+    METRICS_SCHEMA_VERSION,
+    POINTER_METRIC,
+)
 
 
 def _entry(sample_id: str, source_group: str) -> ManifestEntry:
@@ -80,6 +84,11 @@ def test_certifies_disjoint_complete_contracted_evaluation(
             "format_status_complete": True,
             "n_format_status_known": 1,
             "n_format_status_missing": 0,
+                "pointer_evidence_complete": True,
+                "n_pointer_evidence_complete": 1,
+                "n_explicit_track_ids_complete": 1,
+                "explicit_track_ids_complete_rate": 1.0,
+                "pointer_metric": POINTER_METRIC,
             "macro_event_precision": 0.5,
             "macro_event_recall": 0.5,
             "macro_event_f1": 0.5,
@@ -123,6 +132,7 @@ def test_certifies_disjoint_complete_contracted_evaluation(
                     "source_count_mae": 0.0,
                     "pointer_accuracy": 1.0,
                     "strict_format_success": True,
+                    "explicit_track_ids_complete": True,
                 }
             ],
         },
@@ -130,14 +140,18 @@ def test_certifies_disjoint_complete_contracted_evaluation(
     _write_json(
         inference_path,
         {
-            "schema_version": "sceneledger-inference-report-v1",
+            "schema_version": INFERENCE_REPORT_SCHEMA_VERSION,
             "dataset_id": "dataset-1",
             "expected_split": "test",
             "prediction_sha256": "bound",
             "n_samples": 1,
             "strict_format_success_rate": 1.0,
             "samples": [
-                {"sample_id": "test-1", "strict_format_success": True}
+                {
+                    "sample_id": "test-1",
+                    "strict_format_success": True,
+                    "explicit_track_ids_complete": True,
+                }
             ],
         },
     )

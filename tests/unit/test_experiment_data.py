@@ -404,6 +404,71 @@ def test_distribution_gate_accepts_complex_repeated_and_overlap_scenes(
     assert report["metrics"]["overlap_violation_fraction"] == 0.0
 
 
+def test_track_supervision_gate_requires_identifiable_event_grouping(
+    tmp_path: Path,
+) -> None:
+    entry = _entry(
+        "trackable",
+        ["speaker-a-1.wav", "speaker-a-2.wav"],
+        template="overlapping_speakers",
+        duration=3.0,
+        event_spans=[[(0.0, 1.0)], [(1.5, 2.5)]],
+        track_spans=[[(0.0, 1.0), (1.5, 2.5)], [(0.0, 0.1)]],
+        source_kinds=["speech", "speech"],
+    )
+    entry.target_ledger["events"][1]["track_id"] = "T1"
+    manifest = tmp_path / "trackable.jsonl"
+    write_manifest(manifest, [entry])
+    profile = {
+        "global": {
+            "min_active_ratio": 0.0,
+            "max_single_event_fraction": 1.0,
+            "max_low_active_fraction": 1.0,
+            "long_trailing_silence_sec": 99.0,
+            "max_long_trailing_silence_fraction": 1.0,
+            "long_silence_sec": 99.0,
+            "max_long_silence_fraction": 1.0,
+        },
+        "sparse_templates": {"names": [], "max_fraction": 1.0},
+        "repeated_event": {"required": False},
+        "overlapping_speakers": {
+            "required": False,
+            "min_overlap_ratio": 0.0,
+            "max_violation_fraction": 1.0,
+        },
+        "track_supervision": {
+            "min_pointer_complete_scene_fraction": 1.0,
+            "min_multi_event_track_scene_fraction": 1.0,
+            "required_source_count": 2,
+            "required_event_count": 2,
+            "required_track_count": 2,
+        },
+    }
+
+    passed = audit_mixture_distribution(
+        manifest, profile_name="trackable", profile=profile
+    )
+    assert passed["pass"] is True
+    assert passed["metrics"]["multi_event_track_scene_fraction"] == 1.0
+    assert passed["metrics"]["track_structure_match_scene_fraction"] == 1.0
+
+    profile["track_supervision"]["required_track_count"] = 3
+    wrong_structure = audit_mixture_distribution(
+        manifest, profile_name="trackable", profile=profile
+    )
+    assert wrong_structure["pass"] is False
+    assert "track_structure_match_scene_fraction" in wrong_structure["failed_checks"]
+    profile["track_supervision"]["required_track_count"] = 2
+
+    entry.target_ledger["events"][1]["track_id"] = "T2"
+    write_manifest(manifest, [entry])
+    failed = audit_mixture_distribution(
+        manifest, profile_name="trackable", profile=profile
+    )
+    assert failed["pass"] is False
+    assert "multi_event_track_scene_fraction" in failed["failed_checks"]
+
+
 @pytest.mark.parametrize(
     ("speech_amplitude", "sfx_amplitude", "expected_pass"),
     [(0.20, 0.04, True), (0.08, 0.20, False)],
@@ -480,6 +545,68 @@ def test_stem_audibility_gate_measures_persisted_audio(
     else:
         assert "speech_competitor_margin_violation_fraction" in report["failed_checks"]
         assert metrics["minimum_speech_competitor_margin_db"] < 3.0
+
+
+def test_temporal_evidence_gate_recomputes_spans_from_persisted_stem(
+    tmp_path: Path,
+) -> None:
+    sample_rate = 8000
+    waveform = np.zeros(sample_rate, dtype=np.float32)
+    time = np.arange(int(0.6 * sample_rate), dtype=np.float32) / sample_rate
+    waveform[int(0.2 * sample_rate) : int(0.8 * sample_rate)] = (
+        0.2 * np.sin(2 * np.pi * 330.0 * time)
+    )
+    stems_dir = tmp_path / "audio" / "stems"
+    stems_dir.mkdir(parents=True)
+    sf.write(stems_dir / "sfx.wav", waveform, sample_rate, subtype="PCM_16")
+    entry = _entry(
+        "temporal",
+        ["sfx.wav"],
+        duration=1.0,
+        event_spans=[[(0.2, 0.8)]],
+        track_spans=[[(0.2, 0.8)]],
+        source_kinds=["sfx"],
+    )
+    entry.sample_rate = sample_rate
+    entry.stem_paths = {"SRC01": "audio/stems/sfx.wav"}
+    entry.target_ledger["events"][0]["attributes"] = {"source_id": "SRC01"}
+    manifest = tmp_path / "manifest.jsonl"
+    write_manifest(manifest, [entry])
+    profile = {
+        "global": {
+            "min_active_ratio": 0.0,
+            "max_single_event_fraction": 1.0,
+            "max_low_active_fraction": 1.0,
+            "long_trailing_silence_sec": 99.0,
+            "max_long_trailing_silence_fraction": 1.0,
+            "long_silence_sec": 99.0,
+            "max_long_silence_fraction": 1.0,
+        },
+        "sparse_templates": {"names": [], "max_fraction": 1.0},
+        "repeated_event": {"required": False},
+        "overlapping_speakers": {"required": False},
+        "temporal_evidence": {
+            "min_span_iou": 0.98,
+            "max_boundary_error_sec": 0.1,
+            "max_violation_fraction": 0.0,
+        },
+    }
+
+    passed = audit_mixture_distribution(
+        manifest, profile_name="temporal", profile=profile
+    )
+    checks = {item["name"]: item["pass"] for item in passed["checks"]}
+    assert checks["stem_ledger_temporal_violation_fraction"] is True
+
+    entry.target_ledger["events"][0]["spans"] = [
+        {"start_sec": 0.0, "end_sec": 0.6}
+    ]
+    write_manifest(manifest, [entry])
+    failed = audit_mixture_distribution(
+        manifest, profile_name="temporal", profile=profile
+    )
+    assert "stem_ledger_temporal_violation_fraction" in failed["failed_checks"]
+    assert failed["metrics"]["temporal_evidence"]["n_violations"] == 1
 
 
 def test_validate_experiment_data_cli_builds_complete_gate(tmp_path: Path) -> None:

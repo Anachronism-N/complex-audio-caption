@@ -29,14 +29,19 @@ flowchart LR
     E --> O["metrics.json"]
 ```
 
-`inference_report.json` 使用 `sceneledger-inference-report-v1`，至少冻结：
+`inference_report.json` 使用 `sceneledger-inference-report-v2`，至少冻结：
 
 - 每个 `sample_id` 的 `strict_format_success` 和 parser warnings；
+- 每个 `sample_id` 是否为所有事件显式生成了 `track="..."`；
 - `prediction_path` 与 `prediction_sha256`；
 - `dataset_id` 与 `expected_split`（冻结 split 实验）；
-- 样本数、严格成功数和严格成功率。
+- 样本数、严格成功数/成功率及显式 track 证据数/完整率。
 
-评测器会重新计算逐样本成功率并校验 prediction SHA-256。推理后手工替换 prediction、混用另一轮 report、缺失样本或重复 ID 都会失败。
+评测器会重新计算逐样本成功率并校验 prediction SHA-256。正式结果还要求
+`pointer_metric=permutation_invariant_event_track_accuracy_v1`，并要求每条样本都有
+“是否完整生成显式 track ID”的 parser 状态。缺失 track 是合法的模型失败，该样本
+pointer 计 0；不能用 parser 按事件类型推断出的分组冒充 pointer 能力。
+推理后手工替换 prediction、混用另一轮 report、缺失样本或重复 ID 都会失败。
 
 ## 3. 正式 test 命令
 
@@ -51,6 +56,7 @@ python -m sceneledger.cli.infer \
   --lora-path outputs/b3_slot_aware_valid_v2/lora \
   --greedy \
   --include-lyrics \
+  --track-aware \
   --split-contract "$OUTPUT_ROOT/gate/split_contract.json" \
   --data-gate-summary "$OUTPUT_ROOT/gate/experiment_data_summary.json" \
   --expected-split test \
@@ -87,6 +93,7 @@ python -m sceneledger.cli.evaluate \
 
 - `strict_format_success_rate` 为 `null`；
 - `format_status_complete=false`；
+- `pointer_evidence_complete=false`，即并非每条样本都有显式 track 状态证据；
 - prediction/report 哈希不匹配；
 - report、reference 与 split contract 的 sample ID 不完全一致；
 - data gate 或 human audit 未通过；

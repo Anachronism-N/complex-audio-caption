@@ -108,6 +108,9 @@ class PlacedSource:
     # New manifests can request seamless background extension.  The default
     # remains False so old frozen manifests replay bit-for-bit.
     loop_to_scene: bool = False
+    # Scene-local persistent lane. Multiple utterance files from the same
+    # speaker can share one track without pretending they are one dry stem.
+    track_group: str | None = None
 
     def event_type(self) -> str:
         """Map source kind to event type tag (speech/lys/music/sfx)."""
@@ -177,6 +180,7 @@ def _source_dict(s: PlacedSource) -> dict:
         "gain_db": s.gain_db,
         "text": s.text,
         "identity": s.identity,
+        "track_group": s.track_group,
         "source_group": s.source_group,
         "leakage_groups": s.leakage_groups,
         "source_labels": s.source_labels,
@@ -1073,6 +1077,7 @@ class SceneGraphSampler:
             *,
             fg: bool,
             identity: str | None = None,
+            track_group: str | None = None,
             required_source_group: str | None = None,
             min_duration_sec: float | None = None,
             allow_crop: bool = False,
@@ -1183,7 +1188,10 @@ class SceneGraphSampler:
                         or candidate_metadata.get("source_group")
                         or candidate
                     )
-                    if voice_identity in selected_voice_identities:
+                    if (
+                        voice_identity in selected_voice_identities
+                        and required_source_group is None
+                    ):
                         continue
                     selected_voice_identities.add(voice_identity)
                 key = candidate
@@ -1304,6 +1312,7 @@ class SceneGraphSampler:
                 gain_db=round(gain, 3),
                 text=text,
                 identity=resolved_identity,
+                track_group=track_group,
                 source_group=(str(metadata["source_group"]) if metadata.get("source_group") else None),
                 leakage_groups=[str(item) for item in metadata.get("leakage_groups", [])],
                 source_labels=[str(item) for item in metadata.get("source_labels", [])],
@@ -1484,16 +1493,36 @@ class SceneGraphSampler:
             return sources
         if template == "multi_speaker_ambient_events":
             # Runnable with the current audited LibriSpeech + SFX/ambience
-            # banks: two overlapping utterances, a continuous bed, and three
-            # distinct foreground events distributed across the full scene.
+            # banks: two overlapping speakers, a later follow-up by speaker 1,
+            # a continuous bed, and three foreground events across the scene.
             ambience = _src("ambience", fg=False)
-            speakers = [
-                _src("speech", fg=True, identity="S1", min_duration_sec=1.5),
-                _src("speech", fg=True, identity="S2", min_duration_sec=1.5),
-            ]
+            first_speaker = _src(
+                "speech",
+                fg=True,
+                identity="S1",
+                track_group="speaker-1",
+                min_duration_sec=1.5,
+            )
+            second_speaker = _src(
+                "speech",
+                fg=True,
+                identity="S2",
+                track_group="speaker-2",
+                min_duration_sec=1.5,
+            )
+            first_speaker_followup = _src(
+                "speech",
+                fg=True,
+                identity="S1",
+                track_group="speaker-1",
+                required_source_group=first_speaker.source_group,
+                min_duration_sec=1.0,
+            )
+            speakers = [first_speaker, second_speaker, first_speaker_followup]
             effects = [_src("sfx", fg=True) for _ in range(3)]
             _schedule(speakers[0], duration * 0.08)
             _schedule(speakers[1], duration * 0.12)
+            _schedule(speakers[2], duration * 0.58)
             event_positions = (0.12, 0.42, 0.70)
             for index, effect in enumerate(effects):
                 _schedule(effect, duration * event_positions[index])

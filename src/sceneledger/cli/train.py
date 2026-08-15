@@ -300,6 +300,7 @@ def main(argv: list[str] | None = None) -> int:
     prompt_text = canonical_prompt(
         style=cfg["data"].get("style", "brief"),
         include_lyrics=cfg["data"].get("include_lyrics", False),
+        track_aware=cfg["data"].get("slot_aware", False),
     )
     audio_base = cfg["data"]["audio_base_dir"]
     sr = cfg["data"].get("sample_rate", MOSS_INPUT_SAMPLE_RATE)

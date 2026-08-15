@@ -5,6 +5,10 @@
   "format_status_complete": true,
   "n_format_status_known": 100,
   "n_format_status_missing": 0,
+  "pointer_evidence_complete": true,
+  "n_pointer_evidence_complete": 100,
+  "n_explicit_track_ids_complete": 0,
+  "explicit_track_ids_complete_rate": 0.0,
   "macro_event_precision": 0.99,
   "macro_event_recall": 0.97,
   "macro_event_f1": 0.97,
@@ -21,7 +25,8 @@
   "total_hallucination": 3,
   "total_omission": 9,
   "mean_source_count_mae": 1.14,
-  "mean_pointer_accuracy": 0.34,
+  "mean_pointer_accuracy": 0.0,
+  "pointer_metric": "permutation_invariant_event_track_accuracy_v1",
   "per_type": {
     "music": {
       "precision": 1.0,
@@ -63,7 +68,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 0.0,
-      "pointer_accuracy": 1.0,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.226817,
       "per_type": {
         "music": {
@@ -86,6 +91,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -108,7 +114,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 1.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.164018,
       "per_type": {
         "music": {
@@ -131,6 +137,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -153,7 +160,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.222995,
       "per_type": {
         "sfx": {
@@ -167,6 +174,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -212,6 +220,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -257,6 +266,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -279,7 +289,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 1.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.105336,
       "per_type": {
         "music": {
@@ -302,6 +312,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -324,7 +335,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.190619,
       "per_type": {
         "sfx": {
@@ -338,6 +349,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -360,7 +372,7 @@
       "hallucination": 1,
       "omission": 1,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.5,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.039316,
       "per_type": {
         "music": {
@@ -383,6 +395,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -428,6 +441,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -473,6 +487,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -495,7 +510,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 1.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.131728,
       "per_type": {
         "music": {
@@ -518,6 +533,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -540,7 +556,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 1.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.172487,
       "per_type": {
         "music": {
@@ -563,6 +579,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -608,6 +625,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -653,6 +671,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -675,7 +694,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 0.0,
-      "pointer_accuracy": 1.0,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.081585,
       "per_type": {
         "sfx": {
@@ -698,6 +717,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -720,7 +740,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.210702,
       "per_type": {
         "sfx": {
@@ -734,6 +754,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -756,7 +777,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.194989,
       "per_type": {
         "sfx": {
@@ -770,6 +791,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -792,7 +814,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 1.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.201475,
       "per_type": {
         "music": {
@@ -815,6 +837,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -837,7 +860,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 1.0,
-      "pointer_accuracy": 0.666667,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.17643,
       "per_type": {
         "music": {
@@ -860,6 +883,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -905,6 +929,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -950,6 +975,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -972,7 +998,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 1.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.162212,
       "per_type": {
         "music": {
@@ -995,6 +1021,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -1017,7 +1044,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.098859,
       "per_type": {
         "sfx": {
@@ -1031,6 +1058,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -1076,6 +1104,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -1121,6 +1150,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -1143,7 +1173,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.186469,
       "per_type": {
         "sfx": {
@@ -1157,6 +1187,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -1179,7 +1210,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 1.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.156545,
       "per_type": {
         "music": {
@@ -1202,6 +1233,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -1247,6 +1279,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -1269,7 +1302,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 1.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.186773,
       "per_type": {
         "music": {
@@ -1292,6 +1325,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -1314,7 +1348,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.23738,
       "per_type": {
         "sfx": {
@@ -1328,6 +1362,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -1373,6 +1408,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -1395,7 +1431,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 0.0,
-      "pointer_accuracy": 1.0,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.108885,
       "per_type": {
         "sfx": {
@@ -1418,6 +1454,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -1463,6 +1500,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -1485,7 +1523,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 1.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.102193,
       "per_type": {
         "music": {
@@ -1508,6 +1546,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -1530,7 +1569,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 0.0,
-      "pointer_accuracy": 1.0,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.314189,
       "per_type": {
         "music": {
@@ -1553,6 +1592,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -1575,7 +1615,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.108889,
       "per_type": {
         "sfx": {
@@ -1589,6 +1629,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -1611,7 +1652,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 1.0,
-      "pointer_accuracy": 0.666667,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.25,
       "per_type": {
         "music": {
@@ -1634,6 +1675,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -1679,6 +1721,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -1724,6 +1767,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -1746,7 +1790,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 1.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.145796,
       "per_type": {
         "music": {
@@ -1769,6 +1813,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -1814,6 +1859,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -1836,7 +1882,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 1.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.124461,
       "per_type": {
         "music": {
@@ -1859,6 +1905,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -1881,7 +1928,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 0.0,
-      "pointer_accuracy": 1.0,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.138889,
       "per_type": {
         "sfx": {
@@ -1904,6 +1951,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -1949,6 +1997,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -1994,6 +2043,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -2016,7 +2066,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 0.0,
-      "pointer_accuracy": 1.0,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.278571,
       "per_type": {
         "sfx": {
@@ -2039,6 +2089,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -2061,7 +2112,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.108879,
       "per_type": {
         "sfx": {
@@ -2075,6 +2126,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -2120,6 +2172,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -2142,7 +2195,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.084702,
       "per_type": {
         "sfx": {
@@ -2156,6 +2209,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -2178,7 +2232,7 @@
       "hallucination": 1,
       "omission": 1,
       "source_count_mae": 0.0,
-      "pointer_accuracy": 0.5,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.076253,
       "per_type": {
         "music": {
@@ -2210,6 +2264,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -2255,6 +2310,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -2300,6 +2356,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -2322,7 +2379,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.131757,
       "per_type": {
         "sfx": {
@@ -2336,6 +2393,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -2358,7 +2416,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 1.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.071248,
       "per_type": {
         "music": {
@@ -2381,6 +2439,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -2426,6 +2485,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -2448,7 +2508,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.159064,
       "per_type": {
         "sfx": {
@@ -2462,6 +2522,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -2484,7 +2545,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 0.0,
-      "pointer_accuracy": 1.0,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.081832,
       "per_type": {
         "music": {
@@ -2507,6 +2568,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -2552,6 +2614,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -2574,7 +2637,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 1.0,
-      "pointer_accuracy": 0.666667,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.163536,
       "per_type": {
         "music": {
@@ -2597,6 +2660,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -2642,6 +2706,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -2664,7 +2729,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 0.0,
-      "pointer_accuracy": 1.0,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.250794,
       "per_type": {
         "sfx": {
@@ -2687,6 +2752,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -2732,6 +2798,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -2754,7 +2821,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.166195,
       "per_type": {
         "sfx": {
@@ -2768,6 +2835,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -2813,6 +2881,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -2835,7 +2904,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 0.0,
-      "pointer_accuracy": 1.0,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.182186,
       "per_type": {
         "sfx": {
@@ -2858,6 +2927,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -2880,7 +2950,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.084449,
       "per_type": {
         "sfx": {
@@ -2894,6 +2964,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -2916,7 +2987,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.324925,
       "per_type": {
         "sfx": {
@@ -2930,6 +3001,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -2952,7 +3024,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.224278,
       "per_type": {
         "sfx": {
@@ -2966,6 +3038,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -2988,7 +3061,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.215432,
       "per_type": {
         "sfx": {
@@ -3002,6 +3075,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -3024,7 +3098,7 @@
       "hallucination": 0,
       "omission": 3,
       "source_count_mae": 3.0,
-      "pointer_accuracy": 1.0,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.0,
       "per_type": {
         "music": {
@@ -3047,6 +3121,7 @@
         }
       },
       "strict_format_success": false,
+      "explicit_track_ids_complete": false,
       "warnings": [
         "strict parse failed: junk after document element: line 1, column 8"
       ]
@@ -3085,6 +3160,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -3107,7 +3183,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 1.0,
-      "pointer_accuracy": 0.666667,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.187067,
       "per_type": {
         "music": {
@@ -3130,6 +3206,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -3152,7 +3229,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.164495,
       "per_type": {
         "sfx": {
@@ -3166,6 +3243,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -3211,6 +3289,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -3233,7 +3312,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 0.0,
-      "pointer_accuracy": 1.0,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.118056,
       "per_type": {
         "sfx": {
@@ -3256,6 +3335,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -3278,7 +3358,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.26943,
       "per_type": {
         "sfx": {
@@ -3292,6 +3372,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -3314,7 +3395,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.153704,
       "per_type": {
         "sfx": {
@@ -3328,6 +3409,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -3350,7 +3432,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.277819,
       "per_type": {
         "sfx": {
@@ -3364,6 +3446,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -3386,7 +3469,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.159485,
       "per_type": {
         "sfx": {
@@ -3400,6 +3483,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -3422,7 +3506,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.174689,
       "per_type": {
         "sfx": {
@@ -3436,6 +3520,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -3481,6 +3566,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -3503,7 +3589,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 0.0,
-      "pointer_accuracy": 1.0,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.187767,
       "per_type": {
         "music": {
@@ -3526,6 +3612,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -3548,7 +3635,7 @@
       "hallucination": 0,
       "omission": 3,
       "source_count_mae": 3.0,
-      "pointer_accuracy": 1.0,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.0,
       "per_type": {
         "music": {
@@ -3571,6 +3658,7 @@
         }
       },
       "strict_format_success": false,
+      "explicit_track_ids_complete": false,
       "warnings": [
         "strict parse failed: junk after document element: line 1, column 8"
       ]
@@ -3618,6 +3706,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -3663,6 +3752,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -3685,7 +3775,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.222204,
       "per_type": {
         "sfx": {
@@ -3699,6 +3789,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -3721,7 +3812,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.141952,
       "per_type": {
         "sfx": {
@@ -3735,6 +3826,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -3757,7 +3849,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 1.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.078203,
       "per_type": {
         "music": {
@@ -3780,6 +3872,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -3802,7 +3895,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 1.0,
-      "pointer_accuracy": 0.666667,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.135897,
       "per_type": {
         "music": {
@@ -3825,6 +3918,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -3847,7 +3941,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.159933,
       "per_type": {
         "sfx": {
@@ -3861,6 +3955,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -3883,7 +3978,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 1.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.208139,
       "per_type": {
         "music": {
@@ -3906,6 +4001,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -3928,7 +4024,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 1.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.154746,
       "per_type": {
         "music": {
@@ -3951,6 +4047,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -3973,7 +4070,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 1.0,
-      "pointer_accuracy": 0.666667,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.112564,
       "per_type": {
         "music": {
@@ -3996,6 +4093,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -4018,7 +4116,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.102609,
       "per_type": {
         "sfx": {
@@ -4032,6 +4130,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -4054,7 +4153,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.11857,
       "per_type": {
         "sfx": {
@@ -4068,6 +4167,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -4090,7 +4190,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 1.0,
-      "pointer_accuracy": 0.666667,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.124944,
       "per_type": {
         "music": {
@@ -4113,6 +4213,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -4158,6 +4259,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -4203,6 +4305,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -4225,7 +4328,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 2.0,
-      "pointer_accuracy": 0.333333,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.191209,
       "per_type": {
         "sfx": {
@@ -4239,6 +4342,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     },
     {
@@ -4261,7 +4365,7 @@
       "hallucination": 0,
       "omission": 0,
       "source_count_mae": 1.0,
-      "pointer_accuracy": 0.666667,
+      "pointer_accuracy": 0.0,
       "caption_token_f1": 0.101754,
       "per_type": {
         "music": {
@@ -4284,6 +4388,7 @@
         }
       },
       "strict_format_success": true,
+      "explicit_track_ids_complete": false,
       "warnings": []
     }
   ],

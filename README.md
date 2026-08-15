@@ -70,6 +70,7 @@
 - [v6k 审计与训练前置授权门禁](docs/36_v6k_audit_and_training_preflight.md)
 - [v6k “F1=0.970”结果复核、指标修复与下一实验](docs/37_v6k_result_forensics_and_next_experiment.md)
 - [v6k 典型样例 Review 反馈](docs/22_v6k_typical_review_feedback.md)
+- [显式 Track 锚点、PIT 指标与 Stem 时间证据门禁](docs/38_track_aware_anchor_and_temporal_evidence_gate.md)
 - [机器可读实验矩阵](configs/experiment_matrix.yaml)
 - [机器可读开发阶段](configs/pipeline_stages.yaml)
 - [规范化事件账本 JSON Schema](schemas/sceneledger.schema.json)
@@ -90,4 +91,4 @@
 
 ## 当前复杂数据锚点
 
-旧 `real_mix_v6` 已被 manifest-only 复杂度门禁拒绝；其 3,000-step 报告还存在评测样本与训练集重叠，不能作为泛化结果。新增的 1,000 条 `real_mix_v6_1k` 同样只有 2--3 个占位 source，缺少原始 identity、stem、hash、冻结三折和人工审核，默认训练入口会在加载模型前拒绝。远端报告的 v6k `event-F1=0.970` 中有 64/100 个样本被实际训练使用，且没有评价 caption 语义；CPU 离线复算得到 unseen-by-ID event-F1=0.935、caption token-F1=0.137，但因 source identity 不可审计仍只能用于诊断。下一步固定为 source-disjoint 的 train/val/test 六源锚点，先在完整冻结 test 上运行 zero-shot，再训练并同集比较。服务器命令与 Go/No-Go 标准见 [Real-Complex 三折实验](docs/33_real_complex_three_fold_anchor.md)，v6k 的完整结果取证见 [v6k 结果复核](docs/37_v6k_result_forensics_and_next_experiment.md)。recaption 暂时延期，当前只使用可溯源 transcript 和数据集类别标签。
+旧 `real_mix_v6` 已被 manifest-only 复杂度门禁拒绝；其 3,000-step 报告还存在评测样本与训练集重叠，不能作为泛化结果。新增的 1,000 条 `real_mix_v6_1k` 同样只有 2--3 个占位 source，缺少原始 identity、stem、hash、冻结三折和人工审核，默认训练入口会在加载模型前拒绝。远端报告的 v6k `event-F1=0.970` 中有 64/100 个样本被实际训练使用，且没有评价 caption 语义；CPU 离线复算得到 unseen-by-ID event-F1=0.935、caption token-F1=0.137。由于 0/100 输出含显式 track ID，修复后的正式 PIT-pointer 计为 0，而不再给 parser 按类型回填的 track 记分。下一步固定为 source-disjoint 的 train/val/test 六 track、七 stem 锚点：同一 speaker 在两个时段出现，模型必须显式输出可置换的 track ID；时间标签必须由持久化 stem 的短时活动重新验证。先在完整冻结 test 上运行 zero-shot，再训练并同集比较。服务器命令与 Go/No-Go 标准见 [Real-Complex 三折实验](docs/33_real_complex_three_fold_anchor.md)，本次 track/time 升级见 [显式 Track 与时间证据门禁](docs/38_track_aware_anchor_and_temporal_evidence_gate.md)。recaption 暂时延期，当前只使用可溯源 transcript 和数据集类别标签。

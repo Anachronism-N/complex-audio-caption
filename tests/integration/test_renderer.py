@@ -143,6 +143,51 @@ def test_one_speech_source_produces_one_multispan_verbatim_event(pool, sampler):
     assert speech_events[0].verbatim is False
 
 
+def test_persistent_track_groups_multiple_utterance_stems(pool):
+    scene = Scene(
+        scene_id="persistent-speaker",
+        seed=3,
+        duration=6.0,
+        template="overlapping_speakers",
+        sources=[
+            PlacedSource(
+                "SP01",
+                "speech",
+                "speech_001",
+                0.2,
+                0.0,
+                "first utterance",
+                identity="speaker-1",
+                track_group="speaker-1",
+            ),
+            PlacedSource(
+                "SP02",
+                "speech",
+                "speech_002",
+                3.0,
+                0.0,
+                "second utterance",
+                identity="speaker-1",
+                track_group="speaker-1",
+            ),
+        ],
+        sample_rate=pool.sample_rate,
+    )
+
+    output = render_scene(scene, pool)
+
+    assert len(output.stems) == 2
+    assert len(output.target_ledger.tracks) == 1
+    assert len(output.target_ledger.events) == 2
+    assert {event.track_id for event in output.target_ledger.events} == {"T1"}
+    assert output.target_ledger.tracks[0].attributes["track_group"] == "speaker-1"
+    restored = scene_from_dict(scene.to_manifest_dict())
+    assert [source.track_group for source in restored.sources] == [
+        "speaker-1",
+        "speaker-1",
+    ]
+
+
 def test_repeated_event_produces_multispan_sfx(pool, sampler):
     # force repeat by sampling the repeated_event template with a seed that yields repeat>1
     found_multispan = False

@@ -43,6 +43,11 @@ _HEADLINE_FIELDS = (
     "total_omission",
     "mean_source_count_mae",
     "mean_pointer_accuracy",
+    "pointer_metric",
+    "pointer_evidence_complete",
+    "n_pointer_evidence_complete",
+    "n_explicit_track_ids_complete",
+    "explicit_track_ids_complete_rate",
 )
 
 
@@ -146,6 +151,9 @@ def replay_raw_inference(
         current_statuses[sample_id] = {
             "sample_id": sample_id,
             "strict_format_success": parse_report.strict_format_success,
+            "explicit_track_ids_complete": (
+                parse_report.explicit_track_ids_complete
+            ),
             "warnings": list(parse_report.warnings),
         }
         original_status = original_statuses[sample_id]["strict_format_success"]
@@ -173,7 +181,7 @@ def replay_raw_inference(
             "manifest_sha256": file_sha256(eval_manifest_path),
         },
     }
-    validate_metrics_artifact(metrics_payload)
+    validate_metrics_artifact(metrics_payload, require_pointer_evidence=False)
 
     seen_ids = [sample_id for sample_id in ordered_ids if sample_id in actual_training_ids]
     unseen_ids = [
@@ -246,6 +254,14 @@ def replay_raw_inference(
             "current_strict_format_success_rate": current_inference[
                 "strict_format_success_rate"
             ],
+            "current_explicit_track_ids_complete_rate": round(
+                sum(
+                    bool(row["explicit_track_ids_complete"])
+                    for row in current_statuses.values()
+                )
+                / max(1, len(current_statuses)),
+                4,
+            ),
         },
         "original_headline_metrics": (
             _headline(original_metrics) if original_metrics is not None else None

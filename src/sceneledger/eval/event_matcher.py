@@ -7,7 +7,9 @@ balanced assignment problem with a cost that combines:
 * type agreement (hard gate: different types cannot match),
 * temporal IoU over span unions,
 * text similarity (token F1),
-* track pointer agreement (soft bonus).
+Track IDs are intentionally excluded from event assignment by default because
+``T1``/``T2`` labels are permutation arbitrary. Pointer quality is evaluated
+after event matching with a separate optimal track-label alignment.
 
 ``scipy.optimize.linear_sum_assignment`` gives the optimal one-to-one matching.
 Unmatched references are *omissions*; unmatched hypotheses are *hallucinations*
@@ -16,8 +18,8 @@ Unmatched references are *omissions*; unmatched hypotheses are *hallucinations*
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 import numpy as np
 from scipy.optimize import linear_sum_assignment
@@ -70,7 +72,7 @@ def match_events(
     tiou_threshold: float = 0.3,
     text_sim: TextSim = token_f1,
     text_weight: float = 0.3,
-    track_weight: float = 0.1,
+    track_weight: float = 0.0,
 ) -> list[EventMatch]:
     """Return the optimal one-to-one matching between ``refs`` and ``hyps``.
 
@@ -111,7 +113,7 @@ def match_events(
     matches: list[EventMatch] = []
     matched_ref: set[int] = set()
     matched_hyp: set[int] = set()
-    for i, j in zip(row_ind, col_ind):
+    for i, j in zip(row_ind, col_ind, strict=True):
         if i >= n or j >= m:
             continue  # padding row/col
         if cost[i, j] >= INF:
@@ -160,6 +162,43 @@ def match_events(
     return matches
 
 
+def permutation_invariant_pointer_accuracy(
+    matches: list[EventMatch], refs: list[Event], hyps: list[Event]
+) -> float:
+    """Score event-to-track grouping after optimal track-label alignment.
+
+    The score cannot compare raw ``T1`` labels: exchanging all hypothesis
+    labels must leave the result unchanged.  We build a reference-track by
+    hypothesis-track contingency table over matched events and use Hungarian
+    assignment to find the best one-to-one renaming. Events without a pointer
+    remain in the denominator and therefore count as incorrect.
+    """
+    pairs = matched_pairs(matches, refs, hyps)
+    if not pairs:
+        return 1.0 if not refs and not hyps else 0.0
+    ref_tracks = sorted(
+        {ref.track_id for ref, _hyp in pairs if ref.track_id is not None}
+    )
+    hyp_tracks = sorted(
+        {hyp.track_id for _ref, hyp in pairs if hyp.track_id is not None}
+    )
+    if not ref_tracks or not hyp_tracks:
+        return 0.0
+    ref_index = {track_id: index for index, track_id in enumerate(ref_tracks)}
+    hyp_index = {track_id: index for index, track_id in enumerate(hyp_tracks)}
+    counts = np.zeros((len(ref_tracks), len(hyp_tracks)), dtype=np.int64)
+    for ref, hyp in pairs:
+        if ref.track_id is None or hyp.track_id is None:
+            continue
+        counts[ref_index[ref.track_id], hyp_index[hyp.track_id]] += 1
+    row_ind, col_ind = linear_sum_assignment(-counts)
+    correct = int(counts[row_ind, col_ind].sum())
+    # Unmatched reference events are omitted pointers, not free exclusions.
+    # Hallucinated hypothesis events are reported separately by the event
+    # metrics, while every reference event remains in this denominator.
+    return correct / len(refs)
+
+
 def matched_pairs(
     matches: list[EventMatch], refs: list[Event], hyps: list[Event]
 ) -> list[tuple[Event, Event]]:
@@ -180,5 +219,6 @@ __all__ = [
     "TextSim",
     "match_events",
     "matched_pairs",
+    "permutation_invariant_pointer_accuracy",
     "token_f1",
 ]

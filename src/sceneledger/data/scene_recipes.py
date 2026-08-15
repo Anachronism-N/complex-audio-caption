@@ -34,7 +34,7 @@ TEMPLATE_KIND_COUNTS: dict[str, Counter[str]] = {
     "overlapping_speakers": Counter({"speech": 2}),
     "lyrics_over_music": Counter({"music": 1, "vocal": 1}),
     "multi_speaker_ambient_events": Counter(
-        {"speech": 2, "ambience": 1, "sfx": 3}
+        {"speech": 3, "ambience": 1, "sfx": 3}
     ),
 }
 ALLOWED_CONTEXTS = {

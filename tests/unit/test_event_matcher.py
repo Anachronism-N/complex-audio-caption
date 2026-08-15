@@ -4,8 +4,13 @@ from __future__ import annotations
 
 import random
 
-from sceneledger.eval.event_matcher import match_events, token_f1
 from fixtures.factory import ev, t
+
+from sceneledger.eval.event_matcher import (
+    match_events,
+    permutation_invariant_pointer_accuracy,
+    token_f1,
+)
 
 
 def _events():
@@ -80,3 +85,45 @@ def test_track_pointer_agreement_reported():
     matches = match_events(refs, hyps)
     m = next(x for x in matches if x.is_match)
     assert m.track_match is False
+
+
+def test_pointer_accuracy_is_invariant_to_track_label_permutation():
+    refs = [
+        ev("E1", "speech", [t(0.0, 1.0)], text="one", track_id="T1"),
+        ev("E2", "speech", [t(1.2, 2.0)], text="two", track_id="T1"),
+        ev("E3", "speech", [t(2.2, 3.0)], text="three", track_id="T2"),
+    ]
+    renamed = [event.model_copy(deep=True) for event in refs]
+    renamed[0].track_id = renamed[1].track_id = "T9"
+    renamed[2].track_id = "T8"
+    matches = match_events(refs, renamed)
+
+    assert permutation_invariant_pointer_accuracy(matches, refs, renamed) == 1.0
+
+
+def test_pointer_accuracy_penalizes_collapsed_tracks():
+    refs = [
+        ev("E1", "speech", [t(0.0, 1.0)], text="one", track_id="T1"),
+        ev("E2", "speech", [t(1.2, 2.0)], text="two", track_id="T1"),
+        ev("E3", "speech", [t(2.2, 3.0)], text="three", track_id="T2"),
+    ]
+    collapsed = [event.model_copy(deep=True) for event in refs]
+    for event in collapsed:
+        event.track_id = "T9"
+    matches = match_events(refs, collapsed)
+
+    assert round(
+        permutation_invariant_pointer_accuracy(matches, refs, collapsed), 6
+    ) == 0.666667
+
+
+def test_pointer_accuracy_counts_omitted_reference_event_as_incorrect():
+    refs = [
+        ev("E1", "speech", [t(0.0, 1.0)], text="one", track_id="T1"),
+        ev("E2", "speech", [t(2.0, 3.0)], text="two", track_id="T1"),
+    ]
+    hyps = [ev("E9", "speech", [t(0.0, 1.0)], text="one", track_id="T9")]
+
+    matches = match_events(refs, hyps)
+
+    assert permutation_invariant_pointer_accuracy(matches, refs, hyps) == 0.5

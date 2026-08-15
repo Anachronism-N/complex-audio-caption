@@ -18,6 +18,10 @@ from sceneledger.data.experiment_data import (
 )
 from sceneledger.data.manifests import read_manifest
 from sceneledger.data.schema import Ledger
+from sceneledger.eval.metrics import (
+    INFERENCE_REPORT_SCHEMA_VERSION,
+    load_inference_report,
+)
 
 REVIEW_SCHEMA_VERSION = "sceneledger-model-review-v1"
 
@@ -131,8 +135,9 @@ def _load_inference_report(
     expected_ids: set[str],
 ) -> dict[str, Any]:
     report = json.loads(Path(path).read_text(encoding="utf-8"))
-    if report.get("schema_version") != "sceneledger-inference-report-v1":
+    if report.get("schema_version") != INFERENCE_REPORT_SCHEMA_VERSION:
         raise ValueError(f"unsupported inference report: {path}")
+    load_inference_report(report)
     if report.get("dataset_id") != dataset_id or report.get("expected_split") != "test":
         raise ValueError(f"inference report is not bound to frozen test: {path}")
     if report.get("prediction_sha256") != file_sha256(prediction_path):

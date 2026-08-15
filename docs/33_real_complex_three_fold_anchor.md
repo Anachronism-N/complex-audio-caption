@@ -11,11 +11,13 @@
 本轮只回答一个更小但有效的问题：
 
 > 在 LibriSpeech、ESC-50、FSD50K 的原始 speaker/recording/uploader group
-> 严格三折隔离后，B3 在 120 条六源 train scene 上训练，能否在完整的
+> 严格三折隔离后，B3 在 120 条六 track、七 stem train scene 上训练，能否在完整的
 > 120 条冻结 test scene 上同时改善事件、caption、时间和 track 指标？
 
-这里的每条 scene 固定包含两个不同说话人、一条 ambience 和三条前中后
-分布的 SFX。默认 train/val/test 各 120 条。这不是论文最终规模，而是验证
+这里的每条 scene 固定包含两个不同说话人，其中 speaker-1 在两个时段各说一句，
+再加入一条 ambience 和三条前中后分布的 SFX。因此共有七个放置 stem、七个 event，
+但 speaker-1 的两个 event 必须指向同一 persistent track，总共只有六条 track。
+默认 train/val/test 各 120 条。这不是论文最终规模，而是验证
 数据、训练和评测契约的第一个无泄漏锚点；它通过后才能把 train 扩到 1k。
 
 ## 2. 新代码解决了哪些旧问题
@@ -192,6 +194,11 @@ bash scripts/run_b3_real_complex_anchor.sh "$EXP_ROOT" "$MOSS_WEIGHTS" 1000
    `$EXP_ROOT/evaluation/b3_tuned/validity_audit.json`；认证失败时以非零退出。
 7. 认证通过后生成 60 条 zero-shot vs tuned 随机盲法 A/B 人工语义评审任务。
 
+本轮 target 会显式输出 `track="Tn"`。模型可以任意交换 T1/T2 等名字，评测先用
+Hungarian matching 对齐 reference/prediction track，再计算 event-to-track accuracy。
+没有显式 track ID 的样本 pointer 计 0，但不使整轮实验失效；inference report 必须
+保留这一失败状态，禁止 parser 回填得分。
+
 zero-shot 占用 GPU 之前会先生成 `$EXP_ROOT/gate/training_preflight.json`，训练入口还会
 再次执行同一检查。只有冻结 train manifest、split contract、完整 data gate、human
 audit、source identity、mixture hash 和 stem 证据全部一致时才授权训练；详细说明见
@@ -214,8 +221,8 @@ train manifest 推理或修改 references 的结果都不会通过入口校验�
 | caption token-F1 | 与 source transcript/保守类别描述的词汇一致性 |
 | onset/offset MAE、±0.1s | 100 ms 网格是否真的对应边界精度 |
 | hallucination/omission | 是否以保守输出换取表面准确率 |
-| source-count MAE | 六个 source 是否被恢复 |
-| pointer accuracy | event 是否归属正确 track |
+| source-count MAE | 六个 persistent track 是否被恢复 |
+| pointer-PIT | track 名称置换对齐后，event 是否仍归属正确 persistent track |
 
 本轮模型 GO 不预注册某个绝对高分，而要求 tuned 相比 zero-shot 至少满足：
 
@@ -225,11 +232,25 @@ train manifest 推理或修改 references 的结果都不会通过入口校验�
 - pointer accuracy 上升；
 - 失败样本人工检查没有系统性说话人混淆或 SFX 语义替换。
 
-如果 event-F1 上升但 caption token-F1、source count 或 pointer 不改善，结论只能是
-“学会了六槽格式/时间模板”，不能声称复杂 caption 能力提升。只有这一锚点成立后，
+如果 event-F1 上升但 caption token-F1、source count 或 pointer-PIT 不改善，结论只能是
+“学会了七事件格式/时间模板”，不能声称复杂 caption 能力提升。只有这一锚点成立后，
 才把 train count 扩到 1,000，并保持 val/test、split contract 和人工 test 不变。
 
-## 8. 需要回传的文件
+## 8. 本次升级后的重建要求
+
+2026-08-16 之前生成的 specification、scene plan、manifest、stems 和 data contract
+不能复用。原因是旧 recipe 是“两句=两个 speaker track”，没有 speaker-1 的跨时段
+复现，也没有 full-ledger `source_id` 证据。请使用新的 `$RUN_ROOT` 从第 3 节开始重跑。
+
+新 data gate 在训练前额外验证：
+
+- 每个 event 都有 track pointer；
+- 100% 的复杂 scene 至少有一个 multi-event track，防止 one-event/one-track 的伪任务；
+- 每个 persisted PCM stem 都能读取；
+- 从 stem 短时能量重新计算的 activity span 与 ledger 标注 IoU 不低于 0.98；
+- onset/offset 误差均不超过 0.1 s，任何违反都会拒绝训练。
+
+## 9. 需要回传的文件
 
 不要上传受许可限制的原始音频。请回传：
 

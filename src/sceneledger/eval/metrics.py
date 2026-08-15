@@ -25,7 +25,12 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 from sceneledger.data.schema import Ledger
-from sceneledger.eval.event_matcher import EventMatch, match_events, matched_pairs
+from sceneledger.eval.event_matcher import (
+    EventMatch,
+    match_events,
+    matched_pairs,
+    permutation_invariant_pointer_accuracy,
+)
 from sceneledger.eval.temporal import (
     BoundaryErrors,
     boundary_mae,
@@ -34,6 +39,8 @@ from sceneledger.eval.temporal import (
 )
 
 METRICS_SCHEMA_VERSION = "sceneledger-metrics-v2"
+INFERENCE_REPORT_SCHEMA_VERSION = "sceneledger-inference-report-v2"
+POINTER_METRIC = "permutation_invariant_event_track_accuracy_v1"
 
 
 _MEAN_FIELDS = {
@@ -66,7 +73,9 @@ def _require_number(payload: dict, field: str, artifact: str) -> float:
     return float(value)
 
 
-def validate_metrics_artifact(payload: dict) -> dict:
+def validate_metrics_artifact(
+    payload: dict, *, require_pointer_evidence: bool = True
+) -> dict:
     """Validate a current, internally consistent paper-metric artifact.
 
     Historical metric JSON files remain readable by diagnostic tools, but they
@@ -86,6 +95,8 @@ def validate_metrics_artifact(payload: dict) -> dict:
         raise ValueError("metrics.samples must be a nonempty list")
     if payload.get("n_samples") != len(rows):
         raise ValueError("metrics.n_samples does not match metrics.samples")
+    if payload.get("pointer_metric") != POINTER_METRIC:
+        raise ValueError(f"metrics.pointer_metric must be {POINTER_METRIC!r}")
 
     sample_ids: list[str] = []
     for index, row in enumerate(rows):
@@ -101,6 +112,15 @@ def validate_metrics_artifact(payload: dict) -> dict:
             raise ValueError(
                 f"metrics.samples[{index}].strict_format_success is not boolean"
             )
+        pointer_status = row.get("explicit_track_ids_complete")
+        if pointer_status is not None and not isinstance(pointer_status, bool):
+            raise ValueError(
+                f"metrics.samples[{index}].explicit_track_ids_complete is invalid"
+            )
+        if require_pointer_evidence and not isinstance(pointer_status, bool):
+            raise ValueError(
+                f"metrics.samples[{index}] has no explicit-track parser status"
+            )
     if len(set(sample_ids)) != len(sample_ids):
         raise ValueError("metrics.samples contains duplicate sample IDs")
     if payload.get("format_status_complete") is not True:
@@ -109,6 +129,41 @@ def validate_metrics_artifact(payload: dict) -> dict:
         raise ValueError("metrics.n_format_status_known is inconsistent")
     if payload.get("n_format_status_missing") != 0:
         raise ValueError("metrics.n_format_status_missing must be zero")
+    expected_pointer_evidence_count = sum(
+        isinstance(row.get("explicit_track_ids_complete"), bool) for row in rows
+    )
+    if payload.get("n_pointer_evidence_complete") != expected_pointer_evidence_count:
+        raise ValueError("metrics.n_pointer_evidence_complete is inconsistent")
+    expected_pointer_complete = expected_pointer_evidence_count == len(rows)
+    if payload.get("pointer_evidence_complete") is not expected_pointer_complete:
+        raise ValueError("metrics.pointer_evidence_complete is inconsistent")
+    if require_pointer_evidence and not expected_pointer_complete:
+        raise ValueError(
+            "metrics does not contain explicit-track parser status for every sample"
+        )
+    expected_explicit_count = sum(
+        row.get("explicit_track_ids_complete") is True for row in rows
+    )
+    if payload.get("n_explicit_track_ids_complete") != expected_explicit_count:
+        raise ValueError("metrics.n_explicit_track_ids_complete is inconsistent")
+    expected_explicit_rate = (
+        round(expected_explicit_count / len(rows), 6)
+        if expected_pointer_complete
+        else None
+    )
+    if expected_explicit_rate is None:
+        if payload.get("explicit_track_ids_complete_rate") is not None:
+            raise ValueError(
+                "metrics.explicit_track_ids_complete_rate must be null when status is incomplete"
+            )
+    else:
+        observed_explicit_rate = _require_number(
+            payload, "explicit_track_ids_complete_rate", "metrics"
+        )
+        if abs(observed_explicit_rate - expected_explicit_rate) > 1e-6:
+            raise ValueError(
+                "metrics.explicit_track_ids_complete_rate is inconsistent"
+            )
 
     tolerance = 1e-6
     for corpus_field, sample_field in _MEAN_FIELDS.items():
@@ -146,6 +201,8 @@ def validate_metrics_artifact(payload: dict) -> dict:
         "caption_metric": "macro_caption_token_f1",
         "aggregate_consistent": True,
         "format_evidence_complete": True,
+        "pointer_evidence_complete": expected_pointer_complete,
+        "explicit_track_ids_complete_rate": expected_explicit_rate,
     }
 
 
@@ -176,6 +233,7 @@ class SampleMetrics:
     caption_token_f1: float = 0.0
     per_type: dict[str, dict[str, float]] = field(default_factory=dict)
     strict_format_success: bool | None = None
+    explicit_track_ids_complete: bool | None = None
     warnings: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict:
@@ -189,6 +247,10 @@ class CorpusMetrics:
     format_status_complete: bool
     n_format_status_known: int
     n_format_status_missing: int
+    pointer_evidence_complete: bool
+    n_pointer_evidence_complete: int
+    n_explicit_track_ids_complete: int
+    explicit_track_ids_complete_rate: float | None
     macro_event_precision: float
     macro_event_recall: float
     macro_event_f1: float
@@ -206,6 +268,7 @@ class CorpusMetrics:
     total_omission: int
     mean_source_count_mae: float
     mean_pointer_accuracy: float
+    pointer_metric: str = POINTER_METRIC
     per_type: dict[str, dict[str, float]] = field(default_factory=dict)
     samples: list[dict] = field(default_factory=list)
 
@@ -245,6 +308,7 @@ def evaluate_sample(
     ref: Ledger,
     hyp: Ledger,
     strict_format_success: bool | None = None,
+    explicit_track_ids_complete: bool | None = None,
     warnings: list[str] | None = None,
 ) -> SampleMetrics:
     matches = match_events(ref.events, hyp.events)
@@ -280,14 +344,16 @@ def evaluate_sample(
     hyp_count = len(hyp.tracks)
     source_count_mae = abs(ref_count - hyp_count)
 
-    # pointer accuracy: among matched pairs, fraction with agreeing track_id
-    pointer_matches = [m for m in matches if m.is_match]
-    if pointer_matches:
-        pointer_accuracy = sum(1 for m in pointer_matches if m.track_match) / len(
-            pointer_matches
-        )
-    else:
-        pointer_accuracy = 1.0
+    # The parser may create fallback tracks so the recovered Ledger remains
+    # schema-valid. Such inferred grouping is not a model prediction: a sample
+    # known to lack explicit track IDs receives zero pointer credit. ``None``
+    # retains diagnostic Ledger-to-Ledger evaluation, but cannot pass the
+    # formal pointer-evidence gate.
+    pointer_accuracy = (
+        permutation_invariant_pointer_accuracy(matches, ref.events, hyp.events)
+        if explicit_track_ids_complete is not False
+        else 0.0
+    )
 
     hallucination = sum(1 for m in matches if m.ref_id is None)
     omission = sum(1 for m in matches if m.hyp_id is None)
@@ -316,6 +382,7 @@ def evaluate_sample(
         pointer_accuracy=round(pointer_accuracy, 6),
         per_type=_per_type_breakdown(matches),
         strict_format_success=strict_format_success,
+        explicit_track_ids_complete=explicit_track_ids_complete,
         warnings=list(warnings or []),
     )
 
@@ -333,6 +400,10 @@ def aggregate(samples: list[SampleMetrics]) -> CorpusMetrics:
             format_status_complete=False,
             n_format_status_known=0,
             n_format_status_missing=0,
+            pointer_evidence_complete=False,
+            n_pointer_evidence_complete=0,
+            n_explicit_track_ids_complete=0,
+            explicit_track_ids_complete_rate=None,
             macro_event_precision=0.0,
             macro_event_recall=0.0,
             macro_event_f1=0.0,
@@ -364,6 +435,13 @@ def aggregate(samples: list[SampleMetrics]) -> CorpusMetrics:
 
     known_format = [s.strict_format_success for s in samples if s.strict_format_success is not None]
     format_complete = len(known_format) == n
+    known_pointer_status = [
+        sample.explicit_track_ids_complete
+        for sample in samples
+        if sample.explicit_track_ids_complete is not None
+    ]
+    n_explicit_track_ids_complete = sum(status is True for status in known_pointer_status)
+    pointer_status_complete = len(known_pointer_status) == n
 
     return CorpusMetrics(
         n_samples=n,
@@ -375,6 +453,14 @@ def aggregate(samples: list[SampleMetrics]) -> CorpusMetrics:
         format_status_complete=format_complete,
         n_format_status_known=len(known_format),
         n_format_status_missing=n - len(known_format),
+        pointer_evidence_complete=pointer_status_complete,
+        n_pointer_evidence_complete=len(known_pointer_status),
+        n_explicit_track_ids_complete=n_explicit_track_ids_complete,
+        explicit_track_ids_complete_rate=(
+            _macro([1.0 if status else 0.0 for status in known_pointer_status])
+            if pointer_status_complete
+            else None
+        ),
         macro_event_precision=_macro([s.event_precision for s in samples]),
         macro_event_recall=_macro([s.event_recall for s in samples]),
         macro_event_f1=_macro([s.event_f1 for s in samples]),
@@ -454,8 +540,23 @@ def load_inference_report(source: str | Path | dict) -> tuple[dict, dict[str, di
             isinstance(item, str) for item in warnings
         ):
             raise ValueError(f"inference report sample {sample_id} has invalid warnings")
+        raw_pointer_status = row.get("explicit_track_ids_complete")
+        if raw_pointer_status is not None and not isinstance(raw_pointer_status, bool):
+            raise ValueError(
+                f"inference report sample {sample_id} has invalid "
+                "explicit_track_ids_complete"
+            )
+        if (
+            payload.get("schema_version") == INFERENCE_REPORT_SCHEMA_VERSION
+            and not isinstance(raw_pointer_status, bool)
+        ):
+            raise ValueError(
+                f"inference report sample {sample_id} has no boolean "
+                "explicit_track_ids_complete"
+            )
         statuses[sample_id] = {
             "strict_format_success": status,
+            "explicit_track_ids_complete": raw_pointer_status,
             "warnings": list(warnings),
         }
 
@@ -480,6 +581,28 @@ def load_inference_report(source: str | Path | dict) -> tuple[dict, dict[str, di
     if reported_count is not None and reported_count != computed_count:
         raise ValueError(
             "inference report n_strict_format_success is inconsistent with its samples"
+        )
+    reported_pointer_count = payload.get("n_explicit_track_ids_complete")
+    computed_pointer_count = sum(
+        1 for row in statuses.values() if row["explicit_track_ids_complete"] is True
+    )
+    if (
+        reported_pointer_count is not None
+        and reported_pointer_count != computed_pointer_count
+    ):
+        raise ValueError(
+            "inference report n_explicit_track_ids_complete is inconsistent"
+        )
+    reported_pointer_rate = payload.get("explicit_track_ids_complete_rate")
+    computed_pointer_rate = round(
+        computed_pointer_count / max(1, len(statuses)), 4
+    )
+    if reported_pointer_rate is not None and (
+        not isinstance(reported_pointer_rate, (int, float))
+        or round(float(reported_pointer_rate), 4) != computed_pointer_rate
+    ):
+        raise ValueError(
+            "inference report explicit_track_ids_complete_rate is inconsistent"
         )
     return payload, statuses
 
@@ -547,6 +670,7 @@ def evaluate_corpus(
                 source_count_mae=float(len(ref.tracks)),
                 pointer_accuracy=0.0,
                 strict_format_success=False,
+                explicit_track_ids_complete=False,
                 warnings=["prediction missing"],
             )
         else:
@@ -557,6 +681,11 @@ def evaluate_corpus(
                 strict_format_success=(
                     evidence["strict_format_success"] if evidence is not None else None
                 ),
+                explicit_track_ids_complete=(
+                    evidence["explicit_track_ids_complete"]
+                    if evidence is not None
+                    else None
+                ),
                 warnings=evidence["warnings"] if evidence is not None else None,
             )
         samples.append(sm)
@@ -565,7 +694,9 @@ def evaluate_corpus(
 
 __all__ = [
     "CorpusMetrics",
+    "INFERENCE_REPORT_SCHEMA_VERSION",
     "METRICS_SCHEMA_VERSION",
+    "POINTER_METRIC",
     "SampleMetrics",
     "aggregate",
     "evaluate_corpus",

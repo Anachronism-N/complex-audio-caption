@@ -31,7 +31,7 @@ import numpy as np
 from sceneledger.data.schema import Event, Ledger, Span
 from sceneledger.models.target_formatter import (
     format_atomic_caption,
-    canonical_prompt,
+    format_slot_aware_caption,
 )
 
 
@@ -107,7 +107,7 @@ class MossAdapter:
         self._torch = torch
 
     @staticmethod
-    def _load_audio_native(path: str, sample_rate: int) -> "np.ndarray":
+    def _load_audio_native(path: str, sample_rate: int) -> np.ndarray:
         """Load audio as 1D float32 numpy array at ``sample_rate`` (mono).
 
         Uses soundfile + scipy resample to avoid torchaudio's torchcodec
@@ -196,7 +196,9 @@ class MockMossAdapter:
             "Use infer_from_ledger() for the mock adapter (it needs the target)."
         )
 
-    def infer_from_ledger(self, ledger: Ledger, sample_id: str) -> str:
+    def infer_from_ledger(
+        self, ledger: Ledger, sample_id: str, *, track_aware: bool = False
+    ) -> str:
         rng = self._rng(sample_id)
         cfg = self.config
         events = sorted(
@@ -251,7 +253,8 @@ class MockMossAdapter:
             tracks=ledger.tracks,
             events=out_events,
         )
-        return format_atomic_caption(mock_ledger, style="brief")
+        formatter = format_slot_aware_caption if track_aware else format_atomic_caption
+        return formatter(mock_ledger, style="brief")
 
     @staticmethod
     def _perturb_spans(

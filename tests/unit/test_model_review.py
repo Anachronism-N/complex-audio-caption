@@ -9,6 +9,7 @@ import pytest
 import sceneledger.eval.model_review as review
 from sceneledger.data.experiment_data import file_sha256
 from sceneledger.data.manifests import ManifestEntry, write_manifest
+from sceneledger.eval.metrics import INFERENCE_REPORT_SCHEMA_VERSION
 
 
 def _ledger(sample_id: str, text: str) -> dict:
@@ -102,12 +103,19 @@ def test_blinded_review_round_trip_and_tamper_rejection(
         _write_json(
             path,
             {
-                "schema_version": "sceneledger-inference-report-v1",
+                "schema_version": INFERENCE_REPORT_SCHEMA_VERSION,
                 "dataset_id": "dataset-1",
                 "expected_split": "test",
                 "prediction_sha256": file_sha256(predictions),
                 "n_samples": 4,
-                "samples": [{"sample_id": sample_id} for sample_id in sample_ids],
+                    "samples": [
+                        {
+                            "sample_id": sample_id,
+                            "strict_format_success": True,
+                            "explicit_track_ids_complete": True,
+                        }
+                        for sample_id in sample_ids
+                    ],
             },
         )
     validity = tmp_path / "validity.json"

@@ -40,7 +40,8 @@
     "n_status_disagreements": 0,
     "disagreements": [],
     "original_strict_format_success_rate": 0.98,
-    "current_strict_format_success_rate": 0.98
+    "current_strict_format_success_rate": 0.98,
+    "current_explicit_track_ids_complete_rate": 0.0
   },
   "original_headline_metrics": {
     "n_samples": 100,
@@ -56,7 +57,12 @@
     "total_hallucination": 3,
     "total_omission": 9,
     "mean_source_count_mae": 1.14,
-    "mean_pointer_accuracy": 0.34
+    "mean_pointer_accuracy": 0.34,
+    "pointer_metric": null,
+    "pointer_evidence_complete": null,
+    "n_pointer_evidence_complete": null,
+    "n_explicit_track_ids_complete": null,
+    "explicit_track_ids_complete_rate": null
   },
   "replayed_headline_metrics": {
     "n_samples": 100,
@@ -72,7 +78,12 @@
     "total_hallucination": 3,
     "total_omission": 9,
     "mean_source_count_mae": 1.14,
-    "mean_pointer_accuracy": 0.34
+    "mean_pointer_accuracy": 0.0,
+    "pointer_metric": "permutation_invariant_event_track_accuracy_v1",
+    "pointer_evidence_complete": true,
+    "n_pointer_evidence_complete": 100,
+    "n_explicit_track_ids_complete": 0,
+    "explicit_track_ids_complete_rate": 0.0
   },
   "subgroups": {
     "seen_during_training": {
@@ -89,7 +100,12 @@
       "total_hallucination": 2,
       "total_omission": 2,
       "mean_source_count_mae": 1.140625,
-      "mean_pointer_accuracy": 0.361979
+      "mean_pointer_accuracy": 0.0,
+      "pointer_metric": "permutation_invariant_event_track_accuracy_v1",
+      "pointer_evidence_complete": true,
+      "n_pointer_evidence_complete": 64,
+      "n_explicit_track_ids_complete": 0,
+      "explicit_track_ids_complete_rate": 0.0
     },
     "unseen_by_sample_id": {
       "n_samples": 36,
@@ -105,7 +121,12 @@
       "total_hallucination": 1,
       "total_omission": 7,
       "mean_source_count_mae": 1.138889,
-      "mean_pointer_accuracy": 0.300926
+      "mean_pointer_accuracy": 0.0,
+      "pointer_metric": "permutation_invariant_event_track_accuracy_v1",
+      "pointer_evidence_complete": true,
+      "n_pointer_evidence_complete": 36,
+      "n_explicit_track_ids_complete": 0,
+      "explicit_track_ids_complete_rate": 0.0
     }
   },
   "sample_ids": {
@@ -218,7 +239,7 @@
   "replayed_artifacts": {
     "predictions": {
       "path": "predictions.replayed.jsonl",
-      "sha256": "72ffac511e79c429713afeb65e5b4e1760b9844e880011fcd82d98dd7e99611b"
+      "sha256": "2f5506dd0acb1312bfb887824f3c7d59fd0c57aa33f3f62c7c96a85b2b27a9c0"
     },
     "posthoc_references": {
       "path": "references.posthoc_subset.jsonl",
@@ -226,7 +247,7 @@
     },
     "metrics": {
       "path": "metrics.replayed.json",
-      "sha256": "3523690ef2d65581f97101f9ff60eab01d8f0be601e5e544e558f7bbeb059694"
+      "sha256": "744de3a5186c8ae1f53472a357135a6bc142233005e23e0cc5b0fd39e7eb28ec"
     }
   }
 }

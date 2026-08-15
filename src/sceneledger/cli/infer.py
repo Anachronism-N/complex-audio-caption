@@ -26,6 +26,7 @@ from pathlib import Path
 from sceneledger.data.experiment_data import file_sha256
 from sceneledger.data.manifests import read_manifest
 from sceneledger.data.schema import Ledger
+from sceneledger.eval.metrics import INFERENCE_REPORT_SCHEMA_VERSION
 from sceneledger.eval.parser import parse_caption_output
 from sceneledger.models.moss_adapter import (
     MockMossAdapter,
@@ -56,6 +57,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--style", default="brief")
     parser.add_argument("--include-lyrics", action="store_true")
+    parser.add_argument(
+        "--track-aware",
+        action="store_true",
+        help="request explicit reusable track IDs for every generated event",
+    )
     parser.add_argument(
         "--split-contract",
         default=None,
@@ -125,11 +131,17 @@ def main(argv: list[str] | None = None) -> int:
             sid = entry.scene["scene_id"]
             duration = float(entry.scene["duration"])
             audio_path = str(Path(args.audio_base) / entry.mixture_path)
-            prompt = canonical_prompt(style=args.style, include_lyrics=args.include_lyrics)
+            prompt = canonical_prompt(
+                style=args.style,
+                include_lyrics=args.include_lyrics,
+                track_aware=args.track_aware,
+            )
 
             if args.backend == "mock":
                 target_ledger = Ledger.model_validate(entry.target_ledger)
-                raw_text = adapter.infer_from_ledger(target_ledger, sid)
+                raw_text = adapter.infer_from_ledger(
+                    target_ledger, sid, track_aware=args.track_aware
+                )
             else:
                 raw_text = adapter.infer(audio_path, prompt, sample_id=sid, duration=duration)
 
@@ -141,6 +153,9 @@ def main(argv: list[str] | None = None) -> int:
                     "sample_id": sid,
                     "ok": report.ok,
                     "strict_format_success": report.strict_format_success,
+                    "explicit_track_ids_complete": (
+                        report.explicit_track_ids_complete
+                    ),
                     "events_recovered": report.events_recovered,
                     "events_rejected": report.events_rejected,
                     "warnings": report.warnings[:5],
@@ -160,11 +175,19 @@ def main(argv: list[str] | None = None) -> int:
         rp = Path(args.report)
         rp.parent.mkdir(parents=True, exist_ok=True)
         summary = {
-            "schema_version": "sceneledger-inference-report-v1",
+            "schema_version": INFERENCE_REPORT_SCHEMA_VERSION,
             "backend": args.backend,
             "n_samples": len(entries),
             "n_ok": n_ok,
             "n_strict_format_success": n_strict,
+            "n_explicit_track_ids_complete": sum(
+                bool(row["explicit_track_ids_complete"]) for row in reports
+            ),
+            "explicit_track_ids_complete_rate": round(
+                sum(bool(row["explicit_track_ids_complete"]) for row in reports)
+                / max(1, len(reports)),
+                4,
+            ),
             "strict_format_success_rate": round(
                 n_strict / max(1, len(reports)), 4
             ),

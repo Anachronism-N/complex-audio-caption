@@ -259,6 +259,26 @@ def audit_evaluation_result(
             },
         ),
         _check(
+            "metrics_pointer_evidence_identical",
+            all(
+                isinstance(metric_row, dict)
+                and isinstance(inference_row, dict)
+                and metric_row.get("explicit_track_ids_complete")
+                == inference_row.get("explicit_track_ids_complete", False)
+                for metric_row, inference_row in zip(
+                    metrics.get("samples", []),
+                    inference.get("samples", []),
+                    strict=False,
+                )
+            ),
+            {
+                "metrics_complete": metrics.get("pointer_evidence_complete"),
+                "inference_complete_count": inference.get(
+                    "n_explicit_track_ids_complete"
+                ),
+            },
+        ),
+        _check(
             "complete_evaluation_manifest_coverage",
             reported_ids == eval_manifest_id_set,
             {
@@ -424,6 +444,13 @@ def audit_evaluation_result(
             "tolerance_acc_010": metrics.get("macro_tolerance_acc_010"),
             "source_count_mae": metrics.get("mean_source_count_mae"),
             "pointer_accuracy": metrics.get("mean_pointer_accuracy"),
+            "pointer_metric": metrics.get("pointer_metric"),
+            "pointer_evidence_complete": metrics.get(
+                "pointer_evidence_complete"
+            ),
+            "explicit_track_ids_complete_rate": metrics.get(
+                "explicit_track_ids_complete_rate"
+            ),
             "hallucination": metrics.get("total_hallucination"),
             "omission": metrics.get("total_omission"),
         },

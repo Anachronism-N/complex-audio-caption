@@ -10,7 +10,7 @@
 - 描述中的声音、说话人属性和声学环境是否真的可听见；
 - 模型是否遗漏了被遮蔽但仍可辨认的事件；
 - 模型是否写出了音频不支持的情感、场所、乐器或动作；
-- tuned 模型是真的理解更好，还是只学会输出六槽格式和时间模板。
+- tuned 模型是真的理解更好，还是只学会输出七事件格式和时间模板。
 
 远端 `3a1731a` 新增的 20 条 review 包不能回答这些问题。其 20 条中有 15 条
 被训练使用，所谓 GT 是 `model_prediction`，reviewer 同时看到 GT 和模型名称，
@@ -29,9 +29,10 @@ zero-shot 和 B3-tuned 做随机盲法 A/B 听审。这是模型实验的语义�
 2. zero-shot 和 tuned predictions 都完整覆盖冻结 test，不能使用 `--limit`；
 3. 两份 inference report 的 dataset ID、test split、sample IDs 和 prediction
    hash 均匹配；
-4. tuned 的 `validity_audit.json` 为 `certified_generalization`，并绑定同一份
+4. 两份 inference report 都是 v2，且每条样本都有显式 track 完整性的 parser 状态；
+5. tuned 的 `validity_audit.json` 为 `certified_generalization`，并绑定同一份
    tuned inference report；
-5. 被抽中的 mixture 音频实际存在。
+6. 被抽中的 mixture 音频实际存在。
 
 任务按 template round-robin 分层抽样，默认 60 条。对每条样本用冻结 seed
 随机交换 A/B；CSV 不暴露 arm，映射只在 `.key.json` 中。候选保存完整结构化

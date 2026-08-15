@@ -289,6 +289,7 @@ def _build_events_for_source(
                 text=src.text,
                 verbatim=src.text_is_verbatim,
                 confidence=_semantic_confidence(src),
+                attributes={"source_id": src.source_id},
             )
         )
         return events
@@ -307,6 +308,7 @@ def _build_events_for_source(
                     text=src.text,
                     verbatim=src.text_is_verbatim,
                     confidence=_semantic_confidence(src),
+                    attributes={"source_id": src.source_id},
                 )
             )
         return events
@@ -321,6 +323,7 @@ def _build_events_for_source(
                 spans=span_objs,
                 text=src.text,
                 confidence=_semantic_confidence(src),
+                attributes={"source_id": src.source_id},
             )
         )
         return events
@@ -334,6 +337,7 @@ def _build_events_for_source(
             spans=span_objs,
             text=src.text,
             confidence=_semantic_confidence(src),
+            attributes={"source_id": src.source_id},
         )
     )
     return events
@@ -344,21 +348,51 @@ def _build_ledger(scene: Scene, rendered: list[RenderedSource]) -> Ledger:
     tracks: list[Track] = []
     events: list[Event] = []
 
-    # tracks first (T1.. in source order)
+    # Tracks first (T1.. in first-source order). Multiple dry utterance stems
+    # may share a scene-local persistent track, e.g. two utterances from the
+    # same speaker. Stems remain separate for evidence/audibility auditing.
     track_id_by_src: dict[str, str] = {}
-    for i, rs in enumerate(rendered):
-        tid = f"T{i + 1}"
-        track_id_by_src[rs.placed.source_id] = tid
-        spans = [
-            Span(start_sec=s, end_sec=e) for s, e in rs.activity.spans
-        ] or [Span(start_sec=0.0, end_sec=min(0.1, scene.duration))]
+    grouped: dict[tuple[str, str], list[RenderedSource]] = {}
+    for rs in rendered:
+        group_key = (
+            (f"persistent:{rs.placed.kind}", rs.placed.track_group)
+            if rs.placed.track_group is not None
+            else ("source", rs.placed.source_id)
+        )
+        grouped.setdefault(group_key, []).append(rs)
+
+    for index, (group_key, members) in enumerate(grouped.items()):
+        tid = f"T{index + 1}"
+        for member in members:
+            track_id_by_src[member.placed.source_id] = tid
+        raw_spans = sorted(
+            [span for member in members for span in member.activity.spans]
+        )
+        merged_spans: list[tuple[float, float]] = []
+        for start, end in raw_spans:
+            if merged_spans and start <= merged_spans[-1][1] + 1e-9:
+                merged_spans[-1] = (
+                    merged_spans[-1][0],
+                    max(merged_spans[-1][1], end),
+                )
+            else:
+                merged_spans.append((start, end))
+        spans = [Span(start_sec=s, end_sec=e) for s, e in merged_spans] or [
+            Span(start_sec=0.0, end_sec=min(0.1, scene.duration))
+        ]
+        first = members[0].placed
         tracks.append(
             Track(
                 id=tid,
-                kind=rs.placed.kind,  # type: ignore[arg-type]
-                identity=rs.placed.identity,
+                kind=first.kind,  # type: ignore[arg-type]
+                identity=first.identity,
                 spans=spans,
                 confidence=0.95,
+                attributes=(
+                    {"track_group": group_key[1]}
+                    if group_key[0].startswith("persistent:")
+                    else {}
+                ),
             )
         )
 
