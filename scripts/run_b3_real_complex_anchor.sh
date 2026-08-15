@@ -135,4 +135,20 @@ pathlib.Path(sys.argv[4]).write_text(json.dumps(payload, indent=2) + "\n")
 print(json.dumps(payload, indent=2))
 PY
 
+"${python_bin}" -m sceneledger.cli.model_review prepare \
+  --manifest "${experiment_root}/test/manifest.jsonl" \
+  --audio-base "${experiment_root}/test" \
+  --zero-predictions "${eval_root}/zero_shot/predictions.jsonl" \
+  --zero-inference-report "${eval_root}/zero_shot/inference_report.json" \
+  --tuned-predictions "${eval_root}/b3_tuned/predictions.jsonl" \
+  --tuned-inference-report "${eval_root}/b3_tuned/inference_report.json" \
+  --validity-audit "${eval_root}/b3_tuned/validity_audit.json" \
+  --split-contract "${gate}/split_contract.json" \
+  --data-gate-summary "${gate}/experiment_data_summary.json" \
+  --sample-count 60 \
+  --output-csv "${eval_root}/human_model_review.csv" \
+  --output-metadata "${eval_root}/human_model_review.metadata.json" \
+  --output-key "${eval_root}/human_model_review.key.json"
+
 echo "FROZEN TEST COMPARISON COMPLETE: ${eval_root}/comparison.json"
+echo "BLINDED MODEL REVIEW READY: ${eval_root}/human_model_review.csv"

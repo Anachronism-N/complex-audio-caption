@@ -36,6 +36,7 @@ data = [
 [project.scripts]
 sceneledger-evaluate = "sceneledger.cli.evaluate:main"
 sceneledger-audit-result = "sceneledger.cli.audit_result:main"
+sceneledger-model-review = "sceneledger.cli.model_review:main"
 sceneledger-audit-mixtures = "sceneledger.cli.audit_mixtures:main"
 sceneledger-audit-complexity = "sceneledger.cli.audit_complexity:main"
 sceneledger-validate-experiment-data = "sceneledger.cli.validate_experiment_data:main"

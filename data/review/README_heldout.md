@@ -1,57 +1,51 @@
-# Held-out Review 指南
+# real_mix_v6 Review 包：仅供历史诊断
 
-## 目标
-对比模型预测与 GT（人工标注），验证模型在**未训练过的真实音频**上的表现。
+## 重要更正
 
-## 数据位置
+这个 review 包**不是 held-out 泛化评测**，不能用于验证模型在“未训练真实音频”
+上的表现：
 
-| 文件 | 说明 |
-|---|---|
-| `data/derived/real_mix_v6/heldout_review.csv` | 20 条 held-out clip 的 GT vs 预测对比表 |
-| `/tmp/real_mix_v6/audio/rv6_0181.wav` ~ `rv6_0200.wav` | 音频文件 |
+- `rv6_0181`--`rv6_0200` 中有 15 条实际被训练器使用；
+- 15 条训练样本的 event-F1=1.000、onset MAE=0；
+- 仅 5 条 sample-ID 未见，其 event-F1=0.867、onset MAE=0.710 s；
+- manifest 将原始声源替换为 `real:speech`、`real:sfx` 等占位符，所以连这
+  5 条也不能证明 source-disjoint；
+- 所谓 GT 的 provenance 是 `model_prediction`，不是人工标注。
 
-## Review 结果预览
+机器审计见 `reports/b3_real_v6_3k_heldout_validity_audit.json`，完整说明见
+`docs/34_v6_heldout_forensics_and_result_certification.md`。
 
-**20/20 事件数完全匹配**（gt_n_events == pred_n_events）！
+原 CSV 已重命名为：
 
-## CSV 列说明
+```text
+data/derived/real_mix_v6/heldout_review_diagnostic_invalid.csv
+```
 
-| 列 | 说明 |
-|---|---|
-| clip_id | 音频文件名 |
-| audio_path | 音频路径 |
-| duration | 时长 |
-| scene_name | 场景模板 |
-| gt_n_events | GT 事件数 |
-| gt_events | GT 事件列表（类型 [时间] 文本） |
-| pred_n_events | 模型预测事件数 |
-| pred_events | 模型预测事件列表 |
-| pred_format_ok | 格式是否成功 |
-| match | correct/halluc/omit/mixed |
-| errors | 正确/幻觉/遗漏计数 |
-| notes | **人工填写** |
+它只可用于检查旧 v6 的音频/pseudo-label 质量，不能汇入论文指标或模型对比。
+旧 `scripts/gen_heldout_review.py` 现在会直接退出，防止再次生成错误结论。
 
-## Review 步骤
+## 正确的模型人工评审
 
-1. 打开 `heldout_review.csv`（Excel/Sheets）
-2. 逐条听 `/tmp/real_mix_v6/audio/rv6_0181.wav` ~ `rv6_0200.wav`
-3. 对比：
-   - **GT 事件**：你听到的声音是否与 GT 描述匹配？
-   - **预测事件**：模型预测是否与实际听到的声音匹配？
-   - **时间精度**：预测的 onset/offset 是否大致准确？
-4. 填写 `notes`：记录任何错误模式
+Real-Complex 三折实验通过数据、人工听审和结果认证后，
+`scripts/run_b3_real_complex_anchor.sh` 会自动生成：
 
-## 重点关注
+```text
+$EXP_ROOT/evaluation/human_model_review.csv
+$EXP_ROOT/evaluation/human_model_review.metadata.json
+$EXP_ROOT/evaluation/human_model_review.key.json
+```
 
-1. **事件数 100% 匹配**——模型能正确计数
-2. **时间精度**——预测时间是否在 0.1-0.2s 范围内？
-3. **文本质量**——预测描述是否准确？
-4. **幻觉/遗漏**——虽然事件数匹配，但具体事件是否对齐？
+reviewer 只能打开 CSV 和音频，不应打开 key。候选 A/B 已随机交换，分别对
+语义支持度、完整性、时间对齐、source attribution、幻觉和遗漏评分。
+填写完毕后运行：
 
-## 统计摘要
+```bash
+sceneledger-model-review summarize \
+  --review-csv "$EXP_ROOT/evaluation/human_model_review.csv" \
+  --metadata "$EXP_ROOT/evaluation/human_model_review.metadata.json" \
+  --key "$EXP_ROOT/evaluation/human_model_review.key.json" \
+  --output "$EXP_ROOT/evaluation/human_model_review.summary.json"
+```
 
-- Held-out F1: 0.967
-- 格式成功率: 100%
-- 幻觉: 2
-- 遗漏: 2
-- Per-type F1: music=1.0, sfx=0.948, speech=0.875
+summary 会在校验任务哈希后才揭盲，分别报告 zero-shot/B3 的平均评分、幻觉与
+遗漏总数、配对差值、偏好胜负和 sign-test p 值。
