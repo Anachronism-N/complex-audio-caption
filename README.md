@@ -69,6 +69,7 @@
 - [冻结 Test 上的盲法模型语义评审](docs/35_blinded_model_semantic_review.md)
 - [v6k 审计与训练前置授权门禁](docs/36_v6k_audit_and_training_preflight.md)
 - [v6k “F1=0.970”结果复核、指标修复与下一实验](docs/37_v6k_result_forensics_and_next_experiment.md)
+- [v6k 典型样例 Review 反馈](docs/22_v6k_typical_review_feedback.md)
 - [机器可读实验矩阵](configs/experiment_matrix.yaml)
 - [机器可读开发阶段](configs/pipeline_stages.yaml)
 - [规范化事件账本 JSON Schema](schemas/sceneledger.schema.json)
