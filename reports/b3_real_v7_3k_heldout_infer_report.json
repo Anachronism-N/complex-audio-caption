@@ -1,0 +1,910 @@
+{
+  "backend": "moss",
+  "n_samples": 100,
+  "n_ok": 100,
+  "strict_format_success_rate": 1.0,
+  "mean_events_recovered": 2.73,
+  "total_events_rejected": 0,
+  "samples": [
+    {
+      "sample_id": "rv7_0901",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_007|>A large diesel engine operates continuously within a confined industrial space, producing…<|t_057|></sfx></slot><slot><sfx><|t_044|>A sharp, high-pitched metallic squeal erupts suddenly, sustained and intense, with a…<|t_094|></sfx></slot><slot><music><|t_045|>A high-energy jazz ensemble performs in a professional studio setting, captured with…<|t_096|></music></slot>"
+    },
+    {
+      "sample_id": "rv7_0902",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_017|>A high-pitched, continuous insect chorus fills the audio, composed of rapid, rhythmic…<|t_067|></sfx></slot><slot><sfx><|t_034|>A small dog emits sharp, high-pitched barks in a quiet indoor space…<|t_084|></sfx></slot><slot><sfx><|t_049|>A high-pitched, metallic squeal from a playground swing set dominates the audio,…<|t_065|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0903",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_028|>A deep, continuous low-frequency rumble fills the space from the start, resonating…<|t_078|></sfx></slot><slot><sfx><|t_045|>A man emits a loud, high-pitched, and sharply articulated laugh at the…<|t_075|></sfx></slot><slot><music><|t_050|>A string ensemble performs a continuous classical piece in a reverberant concert…<|t_112|></music></slot>"
+    },
+    {
+      "sample_id": "rv7_0904",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_011|>A high-pitched, rhythmic metallic scraping sound dominates the audio, produced by a…<|t_061|></sfx></slot><slot><sfx><|t_056|>A high-pressure steam release from an espresso machine's steam wand fills the…<|t_106|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0905",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_008|>A high-pitched electronic siren emits a continuous, oscillating wail with rapid pitch…<|t_058|></sfx></slot><slot><sfx><|t_015|>A high-pitched electronic siren emits a continuous, oscillating wail with rapid pitch…<|t_058|></sfx></slot><slot><sfx><|t_027|>A sharp, high-pitched metallic squeal begins abruptly, produced by a metal-on-metal…<|t_057|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0906",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_005|>A full symphony orchestra performs a dramatic, high-energy excerpt in a large…<|t_093|></music></slot><slot><sfx><|t_022|>A sharp, high-pitched metallic click occurs at the beginning of the recording,…<|t_025|></sfx></slot><slot><sfx><|t_033|>A large crowd is heard clapping vigorously in a spacious indoor environment,…<|t_083|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0907",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_027|>A sharp, high-pitched metallic clink occurs at 0.20 seconds, produced by keys…<|t_072|></speech></slot><slot><music><|t_036|>A male vocalist performs a continuous, unaccompanied phrase in a reverberant indoor…<|t_089|></music></slot>"
+    },
+    {
+      "sample_id": "rv7_0908",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_004|>A high-pitched electronic alarm tone begins at 0.00 seconds and continues without…<|t_054|></sfx></slot><slot><sfx><|t_013|>A large crowd is heard clapping in a spacious indoor environment, producing…<|t_063|></sfx></slot><slot><sfx><|t_014|>A high-energy electronic music track plays continuously, featuring a driving four-on-the-floor…<|t_064|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0909",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_008|>A low-frequency hum from a refrigerator compressor runs continuously throughout the recording,…<|t_058|></sfx></slot><slot><sfx><|t_010|>A young child emits a sharp, high-pitched sneeze at 0.20 seconds, marked…<|t_043|></sfx></slot><slot><sfx><|t_015|>A mechanical clock emits 10 distinct, evenly spaced ticks over a 5-second…<|t_060|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0910",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_008|>A high-performance motorcycle engine is heard revving aggressively in a quiet, open…<|t_058|></sfx></slot><slot><sfx><|t_021|>A high-pitched, metallic whirring sound begins abruptly, produced by a handheld electric…<|t_055|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0911",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_012|>A sharp, forceful exhalation occurs at the beginning of the recording, captured…<|t_063|></speech></slot><slot><music><|t_037|>A solo violin performs a continuous, melancholic melody in a quiet indoor…<|t_112|></music></slot>"
+    },
+    {
+      "sample_id": "rv7_0912",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_054|>A male voice, amplified and slightly distorted by a PA system, cuts…<|t_105|></speech></slot><slot><sfx><|t_055|>A large crowd fills a spacious indoor environment, their collective presence marked…<|t_105|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0913",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_006|>A high-performance motorcycle engine is heard revving aggressively in a quiet, open…<|t_056|></sfx></slot><slot><sfx><|t_020|>A sharp, high-pitched metallic clink occurs at the beginning of the recording,…<|t_036|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0914",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><speech><|t_018|>A cinematic orchestral score unfolds with a full symphony orchestra, establishing a…<|t_063|></speech></slot><slot><sfx><|t_026|>A large industrial machine operates continuously within a spacious, acoustically reflective environment,…<|t_076|></sfx></slot><slot><sfx><|t_027|>A large, high-pressure water jet is fired in a single, uninterrupted burst,…<|t_077|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0915",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_022|>A high-pressure steam release from an espresso machine dominates the audio, producing…<|t_072|></sfx></slot><slot><sfx><|t_023|>A sharp, high-pitched metallic squeal erupts at the start, sustained and intense,…<|t_073|></sfx></slot><slot><sfx><|t_029|>A small dog emits a single, sharp bark at the beginning of…<|t_038|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0916",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_004|>A high-pitched electronic siren emits a continuous, oscillating wail with rapid pitch…<|t_054|></sfx></slot><slot><sfx><|t_008|>A loud, high-pitched car horn blasts from the left side of the…<|t_053|></sfx></slot><slot><sfx><|t_028|>A heavy door slams shut with a sharp, forceful impact, producing a…<|t_078|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0917",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_025|>A high-pitched electronic alarm emits a continuous, rapid beeping pattern at approximately…<|t_070|></sfx></slot><slot><sfx><|t_029|>A low-frequency hum from a refrigerator compressor runs continuously in the background,…<|t_079|></sfx></slot><slot><sfx><|t_045|>A sharp, high-pitched metallic clink occurs at the start of the recording,…<|t_053|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0918",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_049|>A powerful waterfall dominates the entire recording, producing a continuous and intense…<|t_099|></sfx></slot><slot><sfx><|t_050|>A large diesel engine, likely from a truck or bus, runs at…<|t_099|></sfx></slot><slot><sfx><|t_059|>A high-pressure water spray is emitted continuously from a nozzle, producing a…<|t_100|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0919",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_005|>A sharp, high-pitched metallic click occurs at the beginning of the recording,…<|t_010|></sfx></slot><slot><sfx><|t_019|>A sharp, high-pitched cough occurs at the beginning of the recording, lasting…<|t_043|></sfx></slot><slot><music><|t_034|>A high-energy rock performance unfolds with a full band playing in a…<|t_085|></music></slot>"
+    },
+    {
+      "sample_id": "rv7_0920",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_021|>A full string section performs a slow, expressive orchestral passage in a…<|t_083|></music></slot><slot><speech><|t_028|>A male voice emits a single, low-pitched, breathy grunt—guttural and brief—suggesting physical…<|t_070|></speech></slot>"
+    },
+    {
+      "sample_id": "rv7_0921",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_016|>A sharp, high-pitched metallic click occurs at 0.20 seconds, produced by a…<|t_058|></sfx></slot><slot><sfx><|t_025|>A sharp, high-pitched metallic click occurs at 0.20 seconds, produced by a…<|t_071|></sfx></slot><slot><sfx><|t_026|>A sharp, high-pitched metallic click occurs at 0.20 seconds, produced by a…<|t_070|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0922",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_011|>A sharp, high-pitched cough occurs at the beginning of the recording, produced…<|t_020|></sfx></slot><slot><sfx><|t_020|>A high-pressure water spray is emitted continuously from a nozzle, producing a…<|t_070|></sfx></slot><slot><music><|t_029|>A solo violin performs a continuous, melancholic melody in a quiet indoor…<|t_085|></music></slot>"
+    },
+    {
+      "sample_id": "rv7_0923",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_007|>A solo violin performs a continuous, melancholic melody in a quiet indoor…<|t_112|></music></slot><slot><speech><|t_016|>A full symphony orchestra performs a dramatic, cinematic piece in a large…<|t_073|></speech></slot>"
+    },
+    {
+      "sample_id": "rv7_0924",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_009|>A male opera singer performs a dramatic aria in a large, acoustically…<|t_118|></music></slot><slot><sfx><|t_010|>A large, acoustically reflective indoor space—consistent with a concert hall or theater—hosts…<|t_060|></sfx></slot><slot><sfx><|t_043|>A large, acoustically reflective indoor space—consistent with a concert hall or theater—hosts…<|t_093|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0925",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_004|>A sharp, high-pitched metallic click occurs at the beginning of the recording,…<|t_031|></sfx></slot><slot><sfx><|t_015|>A sharp, high-pitched metallic click occurs at the beginning of the recording,…<|t_060|></sfx></slot><slot><sfx><|t_049|>A series of seven sharp, high-pitched metallic clicks occurs in a quiet…<|t_091|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0926",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_005|>A sharp, high-pitched metallic click occurs at 0.20 seconds, produced by a…<|t_051|></sfx></slot><slot><sfx><|t_019|>A sharp, forceful cough erupts at the start of the recording, captured…<|t_047|></sfx></slot><slot><sfx><|t_030|>A sharp, high-pitched metallic click occurs at 0.20 seconds, produced by a…<|t_054|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0927",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_003|>A high-pitched electronic alarm emits four distinct beeps in a quiet indoor…<|t_028|></sfx></slot><slot><sfx><|t_028|>A sudden, intense burst of sound fills the audio, dominated by a…<|t_078|></sfx></slot><slot><sfx><|t_029|>A sharp, high-pitched metallic click occurs at the beginning of the recording,…<|t_030|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0928",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_008|>A high-pitched, melodic bird call begins at 0.20 seconds, consisting of a…<|t_058|></sfx></slot><slot><sfx><|t_015|>A deep, continuous low-frequency rumble fills the space from the start, produced…<|t_065|></sfx></slot><slot><sfx><|t_048|>A high-performance sports car engine revs aggressively in a quiet, open outdoor…<|t_098|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0929",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_028|>A deep, continuous mechanical rumble fills the space from the start, produced…<|t_078|></sfx></slot><slot><sfx><|t_044|>A high-pitched electronic tone begins at 0.00 seconds and continues without interruption…<|t_094|></sfx></slot><slot><sfx><|t_044|>A powerful, sustained blast from a maritime foghorn dominates the audio, beginning…<|t_094|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0930",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_025|>A high-pressure steam release occurs in a quiet, acoustically isolated environment, producing…<|t_075|></sfx></slot><slot><sfx><|t_040|>A sharp, high-pitched metallic squeal erupts at the start of the recording,…<|t_067|></sfx></slot><slot><music><|t_041|>A solo violin performs a slow, expressive melody in a minor key,…<|t_116|></music></slot>"
+    },
+    {
+      "sample_id": "rv7_0931",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_014|>A high-pressure steam release occurs in a quiet, acoustically isolated environment, producing…<|t_064|></sfx></slot><slot><sfx><|t_044|>A high-performance motorcycle engine is heard revving aggressively in a quiet, open…<|t_094|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0932",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_023|>A deep, resonant dog bark erupts at the start of the recording,…<|t_053|></sfx></slot><slot><sfx><|t_038|>A high-pitched, metallic screech erupts at the start of the recording, produced…<|t_088|></sfx></slot><slot><sfx><|t_047|>A sharp, high-pitched metallic click occurs at the beginning of the recording,…<|t_050|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0933",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_013|>A sharp, high-pitched metallic clink occurs at the beginning of the recording,…<|t_020|></sfx></slot><slot><speech><|t_021|>A sharp, high-pitched metallic clink occurs at the beginning of the recording,…<|t_063|></speech></slot>"
+    },
+    {
+      "sample_id": "rv7_0934",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_007|>A high-pitched electronic siren emits a continuous, oscillating wail with a smooth,…<|t_057|></sfx></slot><slot><sfx><|t_020|>A large diesel engine idles steadily in an enclosed industrial space, producing…<|t_070|></sfx></slot><slot><sfx><|t_030|>A large diesel engine idles steadily in an enclosed industrial space, producing…<|t_080|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0935",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_042|>A deep, resonant train horn blast begins at 0.20 seconds, producing a…<|t_092|></sfx></slot><slot><sfx><|t_059|>A high-pitched, continuous insect chorus fills the audio, composed of rapid, rhythmic…<|t_109|></sfx></slot><slot><sfx><|t_068|>A small dog emits a rapid sequence of high-pitched, staccato barks in…<|t_109|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0936",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_007|>A cinematic orchestral score unfolds with layered strings and brass, establishing a…<|t_049|></speech></slot><slot><music><|t_033|>A tenor saxophone performs a continuous, improvisational solo in a jazz style,…<|t_085|></music></slot>"
+    },
+    {
+      "sample_id": "rv7_0937",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_030|>A heavy downpour strikes a hard surface, producing a continuous and intense…<|t_080|></sfx></slot><slot><sfx><|t_031|>A deep, resonant thunderclap erupts at the start of the recording, marked…<|t_081|></sfx></slot><slot><sfx><|t_051|>A deep, resonant thud occurs at the start of the recording, produced…<|t_056|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0938",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_000|>A deep, continuous low-frequency rumble fills the space from the start, produced…<|t_050|></sfx></slot><slot><sfx><|t_031|>A powerful, low-frequency blast from a train horn dominates the audio, beginning…<|t_053|></sfx></slot><slot><sfx><|t_060|>A high-fidelity stereo recording captures a tranquil outdoor environment, likely a temperate…<|t_084|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0939",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_017|>A sharp, high-pitched metallic click occurs at the beginning, brief and isolated,…<|t_055|></speech></slot><slot><music><|t_019|>A clean electric guitar plays a steady, syncopated chord progression in a…<|t_088|></music></slot>"
+    },
+    {
+      "sample_id": "rv7_0940",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_002|>A deep, continuous low-frequency rumble fills the audio, produced by a large…<|t_052|></sfx></slot><slot><sfx><|t_058|>A high-pitched insect chorus, likely from crickets or katydids, forms a continuous…<|t_100|></sfx></slot><slot><sfx><|t_059|>A deep, resonant cow moo begins at 0.00 seconds, lasting 4.50 seconds…<|t_102|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0941",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_025|>A deep, resonant cow moo begins at 0.20 seconds, filling the space…<|t_038|></sfx></slot><slot><sfx><|t_044|>A high-pitched, metallic squeal from a train's steel wheels on rails dominates…<|t_094|></sfx></slot><slot><sfx><|t_045|>A high-pitched, metallic bird call occurs at 0.20 seconds, lasting 0.60 seconds…<|t_090|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0942",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_013|>A young adult woman emits a bright, high-pitched laugh with a breathy…<|t_040|></sfx></slot><slot><sfx><|t_015|>A large diesel engine operates continuously within an enclosed industrial space, producing…<|t_065|></sfx></slot><slot><music><|t_032|>A solo violin performs a continuous, energetic passage in a classical style,…<|t_107|></music></slot>"
+    },
+    {
+      "sample_id": "rv7_0943",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_020|>A sharp, high-pitched knock occurs at 0.20 seconds, produced by a single…<|t_025|></sfx></slot><slot><sfx><|t_050|>A deep, resonant foghorn blast begins at 0.00 seconds, filling the space…<|t_100|></sfx></slot><slot><sfx><|t_050|>A high-pitched, metallic screech from train brakes dominates the audio, beginning abruptly…<|t_100|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0944",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_014|>A woman emits a brief, high-pitched laugh at the start of the…<|t_026|></sfx></slot><slot><music><|t_022|>A lively instrumental piece unfolds with a bright, reedy accordion carrying the…<|t_110|></music></slot><slot><sfx><|t_054|>A small dog barks rapidly in a quiet indoor space, producing sharp,…<|t_100|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0945",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_015|>A full string orchestra performs a continuous, high-energy passage in a large…<|t_089|></music></slot><slot><sfx><|t_035|>A young adult woman emits a bright, high-pitched laugh with a breathy…<|t_073|></sfx></slot><slot><sfx><|t_039|>A powerful waterfall dominates the audio, producing a continuous, thunderous roar with…<|t_089|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0946",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_010|>A large group of people is clapping in a spacious indoor environment,…<|t_060|></sfx></slot><slot><sfx><|t_021|>A high-pressure water spray erupts suddenly, producing a loud, continuous hiss with…<|t_071|></sfx></slot><slot><sfx><|t_052|>A high-pitched electronic tone begins at 0.00 seconds and continues without interruption…<|t_115|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0947",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_027|>A tenor saxophone plays a slow, expressive melody in a quiet indoor…<|t_100|></music></slot><slot><speech><|t_044|>A male voice, speaking with a clear British accent, delivers the phrase…<|t_094|></speech></slot>"
+    },
+    {
+      "sample_id": "rv7_0948",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_009|>A deep, resonant cow moo begins at the start of the recording,…<|t_059|></sfx></slot><slot><sfx><|t_015|>A low-frequency mechanical hum from a refrigerator compressor runs continuously throughout the…<|t_065|></sfx></slot><slot><sfx><|t_021|>A low, muffled male voice speaks a single phrase—“I don’t know what…<|t_061|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0949",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_010|>A high-energy jazz ensemble performs continuously in a reverberant indoor space, likely…<|t_096|></music></slot><slot><sfx><|t_011|>A high-pressure steam release from an espresso machine dominates the audio, producing…<|t_061|></sfx></slot><slot><sfx><|t_035|>A large, energetic crowd fills a spacious indoor venue, their collective presence…<|t_085|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0950",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_028|>A high-pitched, metallic scraping sound begins abruptly, produced by a metal file…<|t_078|></sfx></slot><slot><sfx><|t_053|>A high-pitched, continuous mechanical whir dominates the audio, produced by a small…<|t_103|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0951",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_006|>A high-pitched electronic alarm emits a continuous, rapid beeping pattern at approximately…<|t_051|></sfx></slot><slot><sfx><|t_050|>A high-performance motorcycle engine is heard revving aggressively in a quiet, open…<|t_100|></sfx></slot><slot><sfx><|t_050|>A sharp, high-pitched metallic screech erupts at the start of the recording,…<|t_099|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0952",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_004|>A low-frequency mechanical hum from a refrigerator compressor runs continuously throughout the…<|t_054|></sfx></slot><slot><sfx><|t_011|>A sharp, high-pitched metallic clink occurs at the beginning of the recording,…<|t_018|></sfx></slot><slot><sfx><|t_023|>A high-pitched electronic alarm tone begins at 0.20 seconds and continues without…<|t_073|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0953",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_007|>A deep, resonant train horn blast begins at the start of the…<|t_057|></sfx></slot><slot><sfx><|t_035|>A young adult female emits a series of high-pitched, breathy giggles in…<|t_085|></sfx></slot><slot><music><|t_038|>A lively jazz ensemble performs in a dry, acoustically controlled studio environment,…<|t_113|></music></slot>"
+    },
+    {
+      "sample_id": "rv7_0954",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_031|>A high-pitched electronic beep sounds at 1.500 seconds, lasting 0.200 seconds with…<|t_071|></sfx></slot><slot><sfx><|t_032|>A high-pitched, metallic screech erupts at the start of the recording, produced…<|t_082|></sfx></slot><slot><sfx><|t_033|>A high-pitched, metallic screech erupts at the start of the recording, produced…<|t_083|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0955",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_021|>A synthesized orchestral score opens the audio, establishing a cinematic atmosphere with…<|t_068|></speech></slot><slot><sfx><|t_035|>A sharp, high-pitched metallic clink occurs at the beginning of the recording,…<|t_037|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0956",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_018|>A set of keys is being shaken vigorously in a quiet indoor…<|t_068|></sfx></slot><slot><sfx><|t_027|>A set of keys is being shaken vigorously in a quiet indoor…<|t_076|></sfx></slot><slot><sfx><|t_043|>A sharp, forceful cough occurs at the beginning of the recording, lasting…<|t_049|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0957",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_007|>A deep, continuous low-frequency rumble fills the entire duration of the audio,…<|t_057|></sfx></slot><slot><sfx><|t_021|>A small dog emits a series of sharp, high-pitched barks in a…<|t_069|></sfx></slot><slot><sfx><|t_048|>A high-pitched, rhythmic insect chorus fills the audio, composed of rapid, evenly…<|t_098|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0958",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_025|>A medium-to-large dog emits a series of sharp, high-pitched barks in a…<|t_053|></sfx></slot><slot><sfx><|t_029|>A sharp, high-pitched metallic screech erupts at the start of the recording,…<|t_079|></sfx></slot><slot><music><|t_035|>A smooth jazz instrumental unfolds with a warm, resonant piano playing flowing…<|t_099|></music></slot>"
+    },
+    {
+      "sample_id": "rv7_0959",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_005|>A sharp, high-pitched metallic clink occurs at the beginning of the recording,…<|t_015|></sfx></slot><slot><speech><|t_019|>A male voice, speaking with a clear North American accent, delivers the…<|t_067|></speech></slot>"
+    },
+    {
+      "sample_id": "rv7_0960",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_026|>A high-pressure water spray from a handheld showerhead fills the acoustic space…<|t_076|></sfx></slot><slot><sfx><|t_027|>A sharp, high-pitched metallic rattling begins at the start of the recording,…<|t_037|></sfx></slot><slot><sfx><|t_030|>A sharp, high-pitched metallic click occurs at the beginning of the recording,…<|t_034|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0961",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_009|>A sharp, high-pitched metallic click occurs at the beginning of the recording,…<|t_059|></sfx></slot><slot><sfx><|t_021|>A high-performance motorcycle engine is heard revving aggressively in an open outdoor…<|t_071|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0962",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_032|>A low, sustained synthesizer drone begins at the start, filling the space…<|t_076|></speech></slot><slot><music><|t_036|>A solo violin performs a slow, melancholic melody in a quiet indoor…<|t_088|></music></slot>"
+    },
+    {
+      "sample_id": "rv7_0963",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_006|>A tenor saxophone plays a smooth, lyrical melody with a warm, breathy…<|t_109|></music></slot><slot><sfx><|t_034|>A woman emits a brief, high-pitched laugh at the start of the…<|t_046|></sfx></slot><slot><sfx><|t_050|>A sharp, high-pitched metallic clink occurs at the beginning of the recording,…<|t_054|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0964",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_006|>A high-pitched electronic siren emits a continuous, oscillating wail with rapid pitch…<|t_033|></sfx></slot><slot><sfx><|t_050|>A powerful waterfall dominates the entire audio, producing a continuous, thunderous roar…<|t_100|></sfx></slot><slot><sfx><|t_069|>A sharp, high-pitched car horn blast occurs at 0.20 seconds, lasting 0.44…<|t_094|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0965",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_020|>A powerful explosion occurs at the start of the recording, producing a…<|t_047|></sfx></slot><slot><sfx><|t_023|>A deep, continuous low-frequency rumble fills the entire duration of the audio,…<|t_073|></sfx></slot><slot><sfx><|t_030|>A powerful ocean wave crashes onto the shore with a deep, resonant…<|t_080|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0966",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_002|>A woman emits a loud, high-pitched, and rhythmically structured laugh that begins…<|t_051|></sfx></slot><slot><sfx><|t_051|>A deep, continuous mechanical rumble fills the space from the start, produced…<|t_101|></sfx></slot><slot><music><|t_052|>A solo saxophone performs a continuous, improvisational jazz melody in a quiet…<|t_102|></music></slot>"
+    },
+    {
+      "sample_id": "rv7_0967",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_004|>A smooth jazz instrumental unfolds with a warm, resonant saxophone delivering a…<|t_113|></music></slot><slot><sfx><|t_055|>A small dog emits a series of sharp, high-pitched barks in a…<|t_097|></sfx></slot><slot><sfx><|t_056|>A group of people is heard laughing in a large, reverberant indoor…<|t_106|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0968",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_010|>A sharp, high-pitched metallic clink occurs at the beginning of the recording,…<|t_014|></sfx></slot><slot><sfx><|t_023|>A large diesel engine idles steadily in an enclosed industrial space, producing…<|t_073|></sfx></slot><slot><sfx><|t_024|>A small dog emits a series of sharp, high-pitched barks in a…<|t_074|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0969",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_016|>A male voice, close to the microphone and slightly to the left,…<|t_058|></speech></slot><slot><sfx><|t_020|>A sharp, high-pitched metallic click occurs at the beginning of the recording,…<|t_022|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0970",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_020|>A male voice, clear and resonant with a General American accent, speaks…<|t_061|></speech></slot><slot><music><|t_023|>A full symphony orchestra performs a dramatic, high-energy passage in a large…<|t_085|></music></slot>"
+    },
+    {
+      "sample_id": "rv7_0971",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_004|>A deep, resonant rumble emerges at the start, low in frequency and…<|t_054|></sfx></slot><slot><sfx><|t_014|>A deep, resonant thud occurs at the beginning of the recording, produced…<|t_064|></sfx></slot><slot><sfx><|t_015|>A high-pressure water spray erupts at the start of the recording, producing…<|t_065|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0972",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><music><|t_020|>A solo acoustic guitar plays a continuous, gently fingerpicked melody in a…<|t_080|></music></slot><slot><speech><|t_028|>A low, continuous mechanical hum fills the space from the start, steady…<|t_067|></speech></slot>"
+    },
+    {
+      "sample_id": "rv7_0973",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_003|>A sharp, high-pitched metallic click occurs at the beginning of the recording,…<|t_049|></sfx></slot><slot><sfx><|t_032|>A sharp, forceful cough occurs at the beginning of the recording, lasting…<|t_044|></sfx></slot><slot><sfx><|t_049|>A quiet indoor environment is marked by a continuous, low-level room tone…<|t_083|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0974",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_012|>A solo acoustic guitar plays a continuous, rhythmic chord progression in a…<|t_097|></music></slot><slot><sfx><|t_038|>A sharp, high-pitched metallic clink occurs at the beginning of the recording,…<|t_040|></sfx></slot><slot><sfx><|t_039|>A high-performance motorcycle engine is heard revving aggressively in an open outdoor…<|t_089|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0975",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_003|>A sharp, high-pitched knock occurs at 0.20 seconds, produced by a single…<|t_013|></sfx></slot><slot><sfx><|t_017|>A high-pitched electronic alarm emits five rapid beeps at 1.00 seconds, each…<|t_062|></sfx></slot><slot><sfx><|t_047|>A large diesel engine idles steadily in a quiet, open outdoor environment,…<|t_097|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0976",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_019|>A sharp, high-pitched metallic clink occurs at 0.20 seconds, produced by keys…<|t_041|></sfx></slot><slot><speech><|t_065|>A sharp, high-pitched metallic clink occurs at 0.20 seconds, produced by keys…<|t_115|></speech></slot>"
+    },
+    {
+      "sample_id": "rv7_0977",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_019|>A live jazz ensemble performs in a reverberant club setting, captured with…<|t_081|></music></slot><slot><sfx><|t_028|>A small dog emits a series of sharp, high-pitched barks in a…<|t_060|></sfx></slot><slot><sfx><|t_031|>A sharp, high-pitched metallic click occurs at the beginning of the recording,…<|t_038|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0978",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_033|>A mechanical keyboard is actively used in a quiet indoor setting, producing…<|t_081|></sfx></slot><slot><sfx><|t_044|>A sharp, high-pitched metallic clink occurs at the beginning of the recording,…<|t_086|></sfx></slot><slot><sfx><|t_063|>A sharp, high-pitched metallic clink occurs at the beginning of the recording,…<|t_066|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0979",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_011|>A mechanical clock emits six distinct ticking sounds at regular intervals, each…<|t_060|></sfx></slot><slot><sfx><|t_049|>A sharp, high-pitched metallic clink occurs at 0.20 seconds, produced by keys…<|t_077|></sfx></slot><slot><sfx><|t_050|>A sharp, high-pitched metallic clink occurs at 0.20 seconds, produced by keys…<|t_054|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0980",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_008|>A loud, high-pitched electronic siren dominates the audio, producing a continuous and…<|t_058|></sfx></slot><slot><sfx><|t_015|>A sharp, high-pitched metallic squeal erupts at the start, lasting about 1.5…<|t_045|></sfx></slot><slot><sfx><|t_039|>A sharp, high-pitched metallic click occurs at the beginning of the recording,…<|t_063|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0981",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_016|>A large diesel engine idles steadily within an enclosed industrial space, producing…<|t_066|></sfx></slot><slot><sfx><|t_025|>A sharp, high-pitched metallic clink occurs at the beginning of the recording,…<|t_031|></sfx></slot><slot><sfx><|t_036|>A small dog emits a series of sharp, high-pitched barks in a…<|t_081|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0982",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_009|>A sharp, high-pitched metallic click occurs at 0.20 seconds, produced by a…<|t_050|></sfx></slot><slot><sfx><|t_021|>A sharp, forceful cough occurs at the beginning of the recording, lasting…<|t_026|></sfx></slot><slot><sfx><|t_029|>A quiet indoor environment is marked by a continuous, low-level room tone…<|t_079|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0983",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_005|>A sharp, high-pitched knock occurs at 0.20 seconds, produced by a single…<|t_015|></sfx></slot><slot><speech><|t_010|>A sharp, high-pitched metallic click occurs at the beginning of the recording,…<|t_058|></speech></slot>"
+    },
+    {
+      "sample_id": "rv7_0984",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_052|>A high-performance motorcycle engine is heard revving aggressively in a quiet, open…<|t_102|></sfx></slot><slot><sfx><|t_053|>A high-performance motorcycle engine is heard revving aggressively in a quiet, open…<|t_103|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0985",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_047|>A high-performance motorcycle engine is heard revving aggressively in a quiet, open…<|t_097|></sfx></slot><slot><sfx><|t_055|>A high-pitched, rhythmic metallic scraping sound occurs in a quiet indoor environment,…<|t_105|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0986",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_010|>A sharp, high-pitched metallic clink occurs at the beginning of the recording,…<|t_015|></sfx></slot><slot><sfx><|t_017|>A low-frequency mechanical hum from a refrigerator compressor fills the acoustic space…<|t_067|></sfx></slot><slot><sfx><|t_032|>A small dog emits a series of sharp, high-pitched barks in a…<|t_078|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0987",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_018|>A large diesel engine idles steadily in an enclosed industrial space, producing…<|t_068|></sfx></slot><slot><sfx><|t_038|>A young adult male emits a sharp, high-pitched cough with a sudden…<|t_047|></sfx></slot><slot><sfx><|t_046|>A series of five distinct mechanical clicks occurs in a quiet indoor…<|t_089|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0988",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_018|>A sharp, high-pitched metallic click occurs at the beginning of the recording,…<|t_026|></sfx></slot><slot><sfx><|t_019|>A sharp, high-pitched metallic click occurs at the beginning of the recording,…<|t_025|></sfx></slot><slot><sfx><|t_027|>A mechanical clock emits a steady, rhythmic ticking sound throughout the recording,…<|t_067|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0989",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_000|>A set of keys is shaken vigorously in a quiet indoor space,…<|t_050|></sfx></slot><slot><sfx><|t_017|>A sharp, high-pitched metallic clink occurs at the beginning of the recording,…<|t_050|></sfx></slot><slot><sfx><|t_017|>A sharp, high-pitched metallic clink occurs at the beginning of the recording,…<|t_050|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0990",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_018|>A solo acoustic guitar plays a continuous, rhythmic chord progression in a…<|t_112|></music></slot><slot><sfx><|t_058|>A large vehicle, likely a truck or bus, moves steadily from left…<|t_108|></sfx></slot><slot><sfx><|t_060|>A large vehicle, likely a truck or bus, moves steadily from left…<|t_110|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0991",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><sfx><|t_019|>A sharp, high-pitched knock occurs at 0.20 seconds, produced by a single…<|t_068|></sfx></slot><slot><speech><|t_023|>A male voice, speaking with a clear North American accent, delivers the…<|t_065|></speech></slot>"
+    },
+    {
+      "sample_id": "rv7_0992",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 2,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>2</n><slot><speech><|t_011|>A low, continuous crowd murmur fills the space from the start, dense…<|t_054|></speech></slot><slot><music><|t_022|>A live jazz ensemble performs in a reverberant club setting, captured with…<|t_084|></music></slot>"
+    },
+    {
+      "sample_id": "rv7_0993",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_011|>A person walks steadily across a hard-surfaced floor in a quiet indoor…<|t_061|></sfx></slot><slot><sfx><|t_021|>A deep, resonant foghorn blast begins at 0.00 seconds, filling the space…<|t_071|></sfx></slot><slot><sfx><|t_053|>A sharp, high-pitched car horn honk occurs at 0.20 seconds, lasting approximately…<|t_061|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0994",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_005|>A small dog emits a single, sharp bark at 0.20 seconds into…<|t_008|></sfx></slot><slot><music><|t_054|>A male vocalist performs a continuous, unaccompanied song in a quiet indoor…<|t_118|></music></slot><slot><sfx><|t_063|>A sharp, high-pitched metallic clink occurs at 0.20 seconds, produced by keys…<|t_065|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0995",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_021|>A series of sharp, high-pitched metallic clicks occurs in a quiet indoor…<|t_068|></sfx></slot><slot><sfx><|t_044|>A sharp, high-pitched cough occurs at the beginning of the recording, lasting…<|t_048|></sfx></slot><slot><sfx><|t_050|>A quiet indoor environment with minimal background noise and slight reverberation suggests…<|t_093|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0996",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_010|>A high-pitched, synthetic siren tone dominates the audio, beginning at 0.00 seconds…<|t_050|></sfx></slot><slot><sfx><|t_040|>A large diesel engine idles steadily in a spacious, acoustically reflective environment,…<|t_089|></sfx></slot><slot><sfx><|t_041|>A person walks steadily across a hard-surfaced floor in a quiet indoor…<|t_089|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0997",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_023|>A sharp, high-pitched car horn blast occurs at 0.20 seconds, lasting approximately…<|t_073|></sfx></slot><slot><sfx><|t_031|>A low-frequency engine rumble begins at the start of the recording, establishing…<|t_081|></sfx></slot><slot><sfx><|t_046|>A person walks steadily across a hard-surfaced floor in a quiet indoor…<|t_078|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0998",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_012|>A small dog barks sharply in a quiet indoor space, producing a…<|t_050|></sfx></slot><slot><sfx><|t_025|>A high-pitched, continuous insect chorus fills the audio, composed of rapid, overlapping…<|t_075|></sfx></slot><slot><sfx><|t_049|>A deep, continuous low-frequency rumble fills the audio, produced by a large…<|t_099|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_0999",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><sfx><|t_012|>A small dog emits a rapid sequence of high-pitched, staccato barks in…<|t_061|></sfx></slot><slot><sfx><|t_016|>A sharp, high-pitched metallic click occurs at the beginning of the recording,…<|t_023|></sfx></slot><slot><sfx><|t_021|>A low-frequency mechanical hum from a refrigerator compressor fills the acoustic space…<|t_071|></sfx></slot>"
+    },
+    {
+      "sample_id": "rv7_1000",
+      "ok": true,
+      "strict_format_success": true,
+      "events_recovered": 3,
+      "events_rejected": 0,
+      "warnings": [],
+      "raw_text": "<n>3</n><slot><music><|t_007|>A high-energy jazz ensemble performs in a professional studio setting, producing a…<|t_086|></music></slot><slot><sfx><|t_011|>A sharp, high-pitched metallic clink occurs at the beginning of the recording,…<|t_027|></sfx></slot><slot><sfx><|t_023|>A sharp, high-pitched sneeze occurs at the beginning of the recording, lasting…<|t_028|></sfx></slot>"
+    }
+  ]
+}

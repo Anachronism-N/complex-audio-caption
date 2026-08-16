@@ -297,9 +297,12 @@ def main():
 
             # FIX S: Compute actual RMS activity spans (not placement onset)
             activity_spans = compute_rms_activity(wav, sr, threshold=0.005)
-            # Use first span as onset/offset
+            # Use first span as onset/offset, ensure non-empty
             actual_onset = onset + activity_spans[0][0]
             actual_offset = min(duration, onset + activity_spans[-1][1])
+            # Ensure offset > onset (fix validation error)
+            if actual_offset <= actual_onset:
+                actual_offset = min(duration, actual_onset + 0.1)
 
             source_wavs.append({"wav": wav, "onset": onset, "type": src_type})
             if src_type == "speech":
