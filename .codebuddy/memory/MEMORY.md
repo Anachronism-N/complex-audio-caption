@@ -101,6 +101,22 @@
 - **两套数据流水线未打通的真实后果**：真实数据走 `scripts/` 那套，因此包内三道 gate（重放 hash / stems 求和 / ledger 校验）**全部被绕过**。
 - 待拍板 6 项：一个月是业务还是论文里程碑；是否承诺 verbatim speech/lyrics；**v7 的 F1 下降是否被接受为预期结果**；"0.1s"口径是否统一改为"100ms 网格+不确定性"；人工标注 pilot 人力来源；query/slot 解码器是否继续投算力。
 
+### 下载工程铁律（2026-08-17 实测）
+
+- **star-proxy.oa.com:3128 代理速度极慢**（Zenodo 18 KB/s、OpenSLR 6 KB/s）→ 只用于连通性，**不用于传大文件**。
+- **hf-mirror.com 不走代理达 6-8 MB/s**（比代理快 400-500 倍）→ 国内**首选 hf-mirror 直连**，不挂代理。
+- `huggingface-cli download` 在 hub 1.17.0 已改名 `hf download`；且 `hf download` 拉整个大 dataset 会**长期阻塞不写文件也不输出**。大数据集改用 `wget -c` 循环拉 parquet 分片（`hf-mirror.com/datasets/<repo>/resolve/main/<path>`）+ `xargs -P 4` 并发。
+- **官方仓库 gated 时的替代**：LibriSpeech 用 `k2-fsa/LibriSpeech`（官方 tar.gz 全套）；MUSDB18-HQ 官方 `salu133445/musdb18` 401 → 用 `danjacobellis/musdb18HQ`(41 parquet 分片) 或 `roro128/musdb18-hq-flac`(24 分片 train/test/valid)。
+- **danjacobellis/musdb18HQ 是 parquet+flac，不是 Zenodo 原版 `Track/{mixture,vocals,drums,bass,other}.wav` 目录结构**。若流水线要原始 wav 目录需 datasets 加载后 export。
+
+### 已就位数据集（2026-08-17）
+`/apdcephfs_fsgm3/share_303700817/yikaihuang/dataset/caption/`：
+- `librispeech/dev-clean.tar.gz` 337,926,286 B（与 OpenSLR content-length 一致）
+- `librispeech/train-clean-100.tar.gz` 6,387,309,499 B（同上）
+- `musdb18hq_parquet/data/train-{00000..00040}-of-00041.parquet` 41 分片 / 32.10 GB / 0 失败
+
+---
+
 ## 长期警惕
 
 - **自我验证闭环**：伪标签、底座、评价若都是 MOSS 家族 → 分数好看但无意义。必须引入结构不同的验证信号（ASR 对齐 / FLAM / 重构误差 / 反事实差分）。
