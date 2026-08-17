@@ -110,10 +110,12 @@
 - **danjacobellis/musdb18HQ 是 parquet+flac，不是 Zenodo 原版 `Track/{mixture,vocals,drums,bass,other}.wav` 目录结构**。若流水线要原始 wav 目录需 datasets 加载后 export。
 
 ### 已就位数据集（2026-08-17）
-`/apdcephfs_fsgm3/share_303700817/yikaihuang/dataset/caption/`：
-- `librispeech/dev-clean.tar.gz` 337,926,286 B（与 OpenSLR content-length 一致）
-- `librispeech/train-clean-100.tar.gz` 6,387,309,499 B（同上）
-- `musdb18hq_parquet/data/train-{00000..00040}-of-00041.parquet` 41 分片 / 32.10 GB / 0 失败
+`/apdcephfs_fsgm3/share_303700817/yikaihuang/dataset/caption/`（LibriSpeech + MUSDB18-HQ 已解压至官方目录结构，可直接接入 `FileSourcePool`）：
+- **LibriSpeech**：`librispeech/LibriSpeech/{dev-clean,train-clean-100}/<speaker>/<chapter>/*.flac + *.trans.txt` + `{SPEAKERS,CHAPTERS,BOOKS,LICENSE,README}.TXT` —— **与 OpenSLR SLR12 完全一致**（40+251 speakers、2703+28539 flac、97+585 trans）。
+- **MUSDB18-HQ 官方 150 首完整（100 train + 50 test）**：`musdb18hq/{train,test}/<Artist - Title>/{mixture,vocals,drums,bass,other}.wav`，全部 44.1 kHz stereo PCM_16 WAV / 30 GB / 750 wav。train 来自 `danjacobellis/musdb18HQ`(WAV parquet 直存)、test 来自 `roro128/musdb18-hq-flac`(FLAC parquet 解码转 WAV)。与 Zenodo `musdb18hq.zip` 音频比特层面等价。
+- 中间 parquet 保留：`musdb18hq_parquet/data/*.parquet`(41 shard/32 GB) + `musdb18hq_test_parquet/data/*.parquet`(8 shard/4 GB)。
+- 导出脚本保留：`export_musdb18_to_official_layout.py`(train) / `export_musdb18_test_to_official_layout.py`(test)。
+- tar.gz 原包也保留：`librispeech/{dev-clean,train-clean-100}.tar.gz`（6.3 GB）。
 
 ---
 
