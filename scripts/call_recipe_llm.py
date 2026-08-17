@@ -8,6 +8,7 @@ resumed safely.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import time
@@ -26,6 +27,16 @@ def _read_jsonl(path: Path) -> list[dict[str, object]]:
             raise ValueError(f"JSONL row is not an object: {path}:{line_no}")
         rows.append(payload)
     return rows
+
+
+def _task_sha256(task: dict[str, object]) -> str:
+    declared = task.get("task_sha256")
+    if declared:
+        return str(declared)
+    encoded = json.dumps(
+        task, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
 
 
 def _request(
@@ -116,7 +127,16 @@ def main(argv: list[str] | None = None) -> int:
                     )
                     handle.write(
                         json.dumps(
-                            {"task_id": task_id, "response": content},
+                            {
+                                "task_id": task_id,
+                                "response": content,
+                                "request_metadata": {
+                                    "model": args.model,
+                                    "temperature": args.temperature,
+                                    "json_mode": args.json_mode,
+                                    "task_sha256": _task_sha256(task),
+                                },
+                            },
                             ensure_ascii=False,
                             sort_keys=True,
                         )

@@ -71,6 +71,8 @@
 - [v6k “F1=0.970”结果复核、指标修复与下一实验](docs/37_v6k_result_forensics_and_next_experiment.md)
 - [v6k 典型样例 Review 反馈](docs/22_v6k_typical_review_feedback.md)
 - [显式 Track 锚点、PIT 指标与 Stem 时间证据门禁](docs/38_track_aware_anchor_and_temporal_evidence_gate.md)
+- [LLM 选择具体音源与 0.1 秒时间规划实验](docs/39_llm_source_and_timeline_planner.md)
+- [v8 结果复核与 LLM 混音规划配对盲听](docs/40_v8_forensics_and_paired_llm_mix_review.md)
 - [机器可读实验矩阵](configs/experiment_matrix.yaml)
 - [机器可读开发阶段](configs/pipeline_stages.yaml)
 - [规范化事件账本 JSON Schema](schemas/sceneledger.schema.json)

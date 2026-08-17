@@ -10,8 +10,11 @@ from sceneledger.data.scene_recipes import (
     build_label_inventory,
     compare_recipe_sets,
     compile_llm_responses,
+    compile_llm_source_timeline_responses,
+    export_llm_source_timeline_tasks,
     export_llm_tasks,
     generate_rule_recipes,
+    generate_rule_source_timeline_recipes,
     read_inventory,
     read_recipes,
     recipe_summary,
@@ -84,6 +87,26 @@ def main(argv: list[str] | None = None) -> int:
     tasks_parser.add_argument("--max-labels-per-kind", type=int, default=120)
     tasks_parser.add_argument("--output", required=True)
 
+    source_timeline_tasks_parser = subparsers.add_parser("llm-source-timeline-tasks")
+    source_timeline_tasks_parser.add_argument("--inventory", required=True)
+    source_timeline_tasks_parser.add_argument("--count", type=int, required=True)
+    source_timeline_tasks_parser.add_argument("--seed", type=int, default=20260814)
+    source_timeline_tasks_parser.add_argument(
+        "--template-weight", action="append", type=_weight, default=[]
+    )
+    source_timeline_tasks_parser.add_argument("--candidates-per-slot", type=int, default=12)
+    source_timeline_tasks_parser.add_argument("--scene-duration-sec", type=float, default=12.0)
+    source_timeline_tasks_parser.add_argument("--output", required=True)
+
+    source_timeline_rules_parser = subparsers.add_parser("rule-source-timeline")
+    source_timeline_rules_parser.add_argument("--tasks", required=True)
+    source_timeline_rules_parser.add_argument("--inventory", required=True)
+    source_timeline_rules_parser.add_argument(
+        "--strategy", choices=("keyword", "uniform"), default="keyword"
+    )
+    source_timeline_rules_parser.add_argument("--output", required=True)
+    source_timeline_rules_parser.add_argument("--report", default=None)
+
     compile_parser = subparsers.add_parser("compile-llm")
     compile_parser.add_argument("--tasks", required=True)
     compile_parser.add_argument("--responses", required=True)
@@ -91,6 +114,16 @@ def main(argv: list[str] | None = None) -> int:
     compile_parser.add_argument("--inventory", required=True)
     compile_parser.add_argument("--output", required=True)
     compile_parser.add_argument("--report", default=None)
+
+    source_timeline_compile_parser = subparsers.add_parser(
+        "compile-llm-source-timeline"
+    )
+    source_timeline_compile_parser.add_argument("--tasks", required=True)
+    source_timeline_compile_parser.add_argument("--responses", required=True)
+    source_timeline_compile_parser.add_argument("--model-name", required=True)
+    source_timeline_compile_parser.add_argument("--inventory", required=True)
+    source_timeline_compile_parser.add_argument("--output", required=True)
+    source_timeline_compile_parser.add_argument("--report", default=None)
 
     validate_parser = subparsers.add_parser("validate")
     validate_parser.add_argument("--recipes", required=True)
@@ -147,11 +180,45 @@ def main(argv: list[str] | None = None) -> int:
         )
         print(args.output)
         return 0
+    if args.command == "llm-source-timeline-tasks":
+        inventory = read_inventory(args.inventory)
+        export_llm_source_timeline_tasks(
+            inventory,
+            count=args.count,
+            seed=args.seed,
+            template_weights=_weights(args.template_weight),
+            output_path=args.output,
+            candidates_per_slot=args.candidates_per_slot,
+            scene_duration_sec=args.scene_duration_sec,
+        )
+        print(args.output)
+        return 0
+    if args.command == "rule-source-timeline":
+        inventory = read_inventory(args.inventory)
+        recipes = generate_rule_source_timeline_recipes(
+            args.tasks,
+            inventory=inventory,
+            output_path=args.output,
+            strategy=args.strategy,
+        )
+        _write_report(args.report, validate_recipes(recipes, inventory))
+        return 0
     if args.command == "compile-llm":
         inventory = read_inventory(args.inventory)
         recipes = compile_llm_responses(
             args.tasks,
             args.responses,
+            output_path=args.output,
+            model_name=args.model_name,
+        )
+        _write_report(args.report, validate_recipes(recipes, inventory))
+        return 0
+    if args.command == "compile-llm-source-timeline":
+        inventory = read_inventory(args.inventory)
+        recipes = compile_llm_source_timeline_responses(
+            args.tasks,
+            args.responses,
+            inventory=inventory,
             output_path=args.output,
             model_name=args.model_name,
         )

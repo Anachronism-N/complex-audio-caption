@@ -510,6 +510,8 @@ class CatalogSourcePool:
         self._verify_audio(key)
         record = self._records[key]
         return {
+            "catalog_source_id": record.source_id,
+            "source_kind": record.kind,
             "text": record.caption,
             "identity": record.identity,
             "source_group": record.source_group,
@@ -1021,20 +1023,47 @@ class SceneGraphSampler:
         template: TemplateID,
         *,
         label_preferences_by_kind: dict[str, list[str]] | None = None,
+        source_plan: list[dict[str, object]] | None = None,
+        duration_sec: float | None = None,
         recipe_metadata: dict[str, object] | None = None,
     ) -> Scene:
         rng = random.Random(seed)
         cfg = self.config
         duration_range = cfg.template_duration_ranges.get(template, cfg.duration_range)
-        duration = round(rng.uniform(*duration_range) / TIME_RESOLUTION_SEC) * TIME_RESOLUTION_SEC
-        duration = round(duration, 6)
+        if duration_sec is None:
+            duration = (
+                round(rng.uniform(*duration_range) / TIME_RESOLUTION_SEC)
+                * TIME_RESOLUTION_SEC
+            )
+            duration = round(duration, 6)
+        else:
+            duration = round(float(duration_sec), 6)
+            if abs(duration / TIME_RESOLUTION_SEC - round(duration / TIME_RESOLUTION_SEC)) > 1e-6:
+                raise ValueError("planned scene duration must lie on the 0.1-second grid")
+            if not float(duration_range[0]) <= duration <= float(duration_range[1]):
+                raise ValueError(
+                    f"planned scene duration {duration} is outside configured range "
+                    f"{duration_range} for template={template!r}"
+                )
+
+        source_plan_by_slot: dict[str, dict[str, object]] = {}
+        for raw in source_plan or []:
+            if not isinstance(raw, dict):
+                raise ValueError("source_plan rows must be mappings")
+            slot_id = str(raw.get("slot_id") or "")
+            if not slot_id or slot_id in source_plan_by_slot:
+                raise ValueError(f"source_plan has missing or duplicate slot_id: {slot_id!r}")
+            source_plan_by_slot[slot_id] = dict(raw)
 
         sources = self._place_sources(
             template,
             duration,
             rng,
             label_preferences_by_kind=label_preferences_by_kind,
+            source_plan_by_slot=source_plan_by_slot,
         )
+        if source_plan_by_slot:
+            self._apply_source_timeline_plan(sources, source_plan_by_slot, duration)
         if rng.random() < cfg.shared_room_probability:
             shared_t60 = round(rng.uniform(*cfg.t60_range), 3)
             shared_room = f"shared_room_{rng.randint(1, 32):02d}"
@@ -1062,6 +1091,7 @@ class SceneGraphSampler:
         rng: random.Random,
         *,
         label_preferences_by_kind: dict[str, list[str]] | None = None,
+        source_plan_by_slot: dict[str, dict[str, object]] | None = None,
     ) -> list[PlacedSource]:
         cfg = self.config
         fg_gain = rng.uniform(*cfg.gain_db_range)
@@ -1086,6 +1116,16 @@ class SceneGraphSampler:
             source_serial += 1
             occurrence = kind_occurrences[kind]
             kind_occurrences[kind] += 1
+            slot_id = f"{kind}_{occurrence + 1}"
+            planned = (source_plan_by_slot or {}).get(slot_id)
+            planned_source_id = (
+                str(planned.get("catalog_source_id") or "") if planned else ""
+            )
+            if planned and str(planned.get("kind") or "") != kind:
+                raise ValueError(
+                    f"planned source kind mismatch for {slot_id}: "
+                    f"{planned.get('kind')!r} != {kind!r}"
+                )
             preferences = (label_preferences_by_kind or {}).get(kind, [])
             preferred_label = preferences[occurrence] if occurrence < len(preferences) else None
             key = ""
@@ -1094,7 +1134,9 @@ class SceneGraphSampler:
             label_candidates_fn = getattr(self.pool, "candidates_for_label", None)
             group_candidates_fn = getattr(self.pool, "candidates_for_group", None)
             keys_fn = getattr(self.pool, "keys", None)
-            if required_source_group and callable(group_candidates_fn):
+            if planned_source_id:
+                candidates = [planned_source_id]
+            elif required_source_group and callable(group_candidates_fn):
                 candidates = list(
                     group_candidates_fn(
                         kind,
@@ -1141,7 +1183,22 @@ class SceneGraphSampler:
                 if candidate in selected_paths:
                     continue
                 metadata_fn = getattr(self.pool, "metadata", None)
-                candidate_metadata = metadata_fn(candidate) if callable(metadata_fn) else {}
+                try:
+                    candidate_metadata = metadata_fn(candidate) if callable(metadata_fn) else {}
+                except (KeyError, ValueError) as exc:
+                    if planned_source_id:
+                        raise ValueError(
+                            f"planned catalog source is not available for {slot_id}: {candidate}"
+                        ) from exc
+                    continue
+                source_kind = candidate_metadata.get("source_kind")
+                if source_kind is not None and str(source_kind) != kind:
+                    if planned_source_id:
+                        raise ValueError(
+                            f"planned catalog source kind mismatch for {slot_id}: "
+                            f"{candidate} is {source_kind!r}, expected {kind!r}"
+                        )
+                    continue
                 candidate_labels = [
                     str(item) for item in candidate_metadata.get("source_labels", [])
                 ]
@@ -1337,6 +1394,10 @@ class SceneGraphSampler:
                 and kind in ("music", "ambience"),
             )
 
+        # Exact source selection is resolved inside ``_src``. Timeline values
+        # are applied only after template-specific scheduling so the bounded
+        # LLM plan is the final authority rather than being silently overwritten.
+
         def _schedule(source: PlacedSource, target_onset: float) -> None:
             latest = max(
                 0.0,
@@ -1528,6 +1589,55 @@ class SceneGraphSampler:
                 _schedule(effect, duration * event_positions[index])
             return [ambience, *speakers, *effects]
         raise ValueError(f"unknown template {template!r}")
+
+    @staticmethod
+    def _apply_source_timeline_plan(
+        sources: list[PlacedSource],
+        source_plan_by_slot: dict[str, dict[str, object]],
+        duration: float,
+    ) -> None:
+        occurrences: Counter[str] = Counter()
+        observed_slots: set[str] = set()
+        for source in sources:
+            occurrence = occurrences[source.kind]
+            occurrences[source.kind] += 1
+            slot_id = f"{source.kind}_{occurrence + 1}"
+            observed_slots.add(slot_id)
+            planned = source_plan_by_slot.get(slot_id)
+            if planned is None:
+                raise ValueError(f"source timeline plan is missing slot {slot_id}")
+            planned_source_id = str(planned.get("catalog_source_id") or "")
+            if source.path != planned_source_id:
+                raise ValueError(
+                    f"rendered source does not match plan for {slot_id}: "
+                    f"{source.path!r} != {planned_source_id!r}"
+                )
+            onset = float(planned.get("onset_sec", -1.0))
+            if onset < 0.0 or abs(
+                onset / TIME_RESOLUTION_SEC - round(onset / TIME_RESOLUTION_SEC)
+            ) > 1e-6:
+                raise ValueError(
+                    f"planned onset for {slot_id} must be non-negative and on the "
+                    f"{TIME_RESOLUTION_SEC}s grid"
+                )
+            effective_duration = source.crop_duration_sec or source.source_duration_sec
+            if (
+                source.kind not in ("music", "ambience")
+                and effective_duration is not None
+                and onset + float(effective_duration) > duration + 1e-6
+            ):
+                raise ValueError(
+                    f"planned source exceeds scene for {slot_id}: onset={onset} "
+                    f"duration={effective_duration} scene={duration}"
+                )
+            if onset >= duration:
+                raise ValueError(
+                    f"planned onset for {slot_id} is outside scene: {onset} >= {duration}"
+                )
+            source.onset = round(onset, 6)
+        extra_slots = sorted(set(source_plan_by_slot) - observed_slots)
+        if extra_slots:
+            raise ValueError(f"source timeline plan has unused slots: {extra_slots}")
 
     def _sample_conditions(
         self, rng: random.Random, sources: list[PlacedSource]

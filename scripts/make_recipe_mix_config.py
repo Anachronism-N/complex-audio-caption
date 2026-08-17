@@ -8,6 +8,7 @@ from pathlib import Path
 import yaml
 
 from sceneledger.data.scene_recipes import read_inventory, read_recipes, validate_recipes
+from sceneledger.data.source_catalog import file_sha256
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -24,9 +25,30 @@ def main(argv: list[str] | None = None) -> int:
     inventory_path = Path(args.inventory).expanduser().resolve()
     config = yaml.safe_load(base_config.read_text(encoding="utf-8"))
     recipes = read_recipes(recipe_path)
-    validate_recipes(recipes, read_inventory(inventory_path))
+    inventory = read_inventory(inventory_path)
+    validate_recipes(recipes, inventory)
     if config.get("pool", {}).get("kind") not in {"catalog", "catalog_set"}:
         raise ValueError("recipe mix config must inherit an audited catalog pool")
+    if any(recipe.source_plan for recipe in recipes):
+        pool = config["pool"]
+        raw_catalog_paths = (
+            [pool.get("catalog_path")]
+            if pool.get("kind") == "catalog"
+            else [item.get("catalog_path") for item in pool.get("catalogs", [])]
+        )
+        catalog_paths = []
+        for raw_path in raw_catalog_paths:
+            if not raw_path:
+                raise ValueError("source-timeline recipe pool has a missing catalog_path")
+            path = Path(str(raw_path)).expanduser().resolve()
+            catalog_paths.append(path)
+        pool_hashes = sorted(file_sha256(path) for path in catalog_paths)
+        inventory_hashes = sorted(artifact.sha256 for artifact in inventory.catalogs)
+        if pool_hashes != inventory_hashes:
+            raise ValueError(
+                "source-timeline inventory catalogs do not exactly match the renderer pool: "
+                f"inventory={inventory_hashes} pool={pool_hashes}"
+            )
     render = config.setdefault("render", {})
     render["sample_count"] = len(recipes)
     render["scene_id_prefix"] = args.scene_id_prefix

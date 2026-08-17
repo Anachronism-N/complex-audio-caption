@@ -237,6 +237,8 @@ def sample_scene_plan(config_path: str, limit: int | None = None) -> list[Scene]
                 seed=recipe.seed,
                 template=recipe.template,  # type: ignore[arg-type]
                 label_preferences_by_kind=recipe.label_preferences_by_kind,
+                source_plan=[item.model_dump() for item in recipe.source_plan],
+                duration_sec=recipe.scene_duration_sec,
                 recipe_metadata={
                     "recipe_id": recipe.recipe_id,
                     "proposal_source": recipe.proposal_source,
@@ -245,6 +247,9 @@ def sample_scene_plan(config_path: str, limit: int | None = None) -> list[Scene]
                     "relations": recipe.relations,
                     "rationale": recipe.rationale,
                     "label_preferences_by_kind": recipe.label_preferences_by_kind,
+                    "scene_duration_sec": recipe.scene_duration_sec,
+                    "source_plan": [item.model_dump() for item in recipe.source_plan],
+                    "proposal_metadata": recipe.proposal_metadata,
                     "recipe_plan_sha256": recipe_hash,
                     "recipe_inventory_sha256": inventory_hash,
                 },

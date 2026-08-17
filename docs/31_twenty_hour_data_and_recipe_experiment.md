@@ -2,6 +2,10 @@
 
 更新日期：2026-08-14
 
+> 更新：本文的 LLM arm 只选择类别标签。允许 LLM 从冻结候选中选择具体
+> 音频并规划 0.1 秒 onset 的新版实验见
+> `docs/39_llm_source_and_timeline_planner.md`；数据与 source-audit 前置门禁保持不变。
+
 ## 1. 本轮只回答两个问题
 
 20 小时不能同时证明数据、mixer、LLM、训练和模型架构都有效。本轮按顺序回答：

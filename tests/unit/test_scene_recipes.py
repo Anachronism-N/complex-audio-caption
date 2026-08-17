@@ -13,8 +13,11 @@ from sceneledger.data.scene_recipes import (
     build_label_inventory,
     compare_recipe_sets,
     compile_llm_responses,
+    compile_llm_source_timeline_responses,
+    export_llm_source_timeline_tasks,
     export_llm_tasks,
     generate_rule_recipes,
+    generate_rule_source_timeline_recipes,
     read_recipes,
     validate_recipe_review,
     validate_recipes,
@@ -40,6 +43,8 @@ def _record(source_id: str, kind: str, label: str | None) -> SourceRecord:
         dataset="fixture",
         license="CC0-1.0",
         annotation_origin="dataset",
+        duration_sec=1.0,
+        file_sha256=f"fixture:{source_id}",
         split="test",
     )
 
@@ -50,6 +55,7 @@ def _inventory(tmp_path: Path):
         catalog,
         [
             _record("speech1", "speech", None),
+            _record("speech2", "speech", None),
             _record("sfx1", "sfx", "car_horn"),
             _record("sfx2", "sfx", "door_wood_knock"),
             _record("amb1", "ambience", "rain"),
@@ -329,3 +335,259 @@ def test_recipe_comparison_requires_matched_seed_and_template_schedule(tmp_path:
     assert compare_recipe_sets(left, right)["pass"] is True
     right[0] = right[0].model_copy(update={"seed": 1000})
     assert compare_recipe_sets(left, right)["pass"] is False
+
+
+def test_source_timeline_tasks_freeze_exact_candidates_and_build_rule_arm(
+    tmp_path: Path,
+) -> None:
+    inventory = _inventory(tmp_path)
+    tasks = tmp_path / "source_timeline_tasks.jsonl"
+    export_llm_source_timeline_tasks(
+        inventory,
+        count=2,
+        seed=21,
+        template_weights={"speech_with_sfx": 1.0},
+        output_path=tasks,
+        candidates_per_slot=2,
+        scene_duration_sec=4.0,
+    )
+    task_rows = [json.loads(line) for line in tasks.read_text(encoding="utf-8").splitlines()]
+
+    assert len(task_rows) == 2
+    assert task_rows[0]["required_slots"] == [
+        {"slot_id": "speech_1", "kind": "speech"},
+        {"slot_id": "sfx_1", "kind": "sfx"},
+    ]
+    assert len(task_rows[0]["allowed_sources_by_slot"]["speech_1"]) == 2
+    assert len(task_rows[0]["task_sha256"]) == 64
+
+    rule_path = tmp_path / "rule_source_timeline.jsonl"
+    recipes = generate_rule_source_timeline_recipes(
+        tasks,
+        inventory=inventory,
+        output_path=rule_path,
+        strategy="keyword",
+    )
+
+    assert all(recipe.schema_version == "sceneledger.scene_recipe.v2" for recipe in recipes)
+    assert all(recipe.scene_duration_sec == 4.0 for recipe in recipes)
+    assert all(len(recipe.source_plan) == 2 for recipe in recipes)
+    assert all(recipe.proposal_metadata["task_sha256"] for recipe in recipes)
+    assert validate_recipes(recipes, inventory)["pass"] is True
+
+
+def test_llm_source_timeline_compile_accepts_allowlist_and_rejects_invention(
+    tmp_path: Path,
+) -> None:
+    inventory = _inventory(tmp_path)
+    tasks = tmp_path / "source_timeline_tasks.jsonl"
+    export_llm_source_timeline_tasks(
+        inventory,
+        count=1,
+        seed=8,
+        template_weights={"speech_with_sfx": 1.0},
+        output_path=tasks,
+        candidates_per_slot=2,
+        scene_duration_sec=4.0,
+    )
+    task = json.loads(tasks.read_text(encoding="utf-8"))
+    speech = task["allowed_sources_by_slot"]["speech_1"][0]
+    sfx = task["allowed_sources_by_slot"]["sfx_1"][0]
+    response = {
+        "context": "street",
+        "difficulty": "medium",
+        "source_plan": [
+            {
+                "slot_id": "speech_1",
+                "kind": "speech",
+                "catalog_source_id": speech["catalog_source_id"],
+                "onset_sec": 0.2,
+            },
+            {
+                "slot_id": "sfx_1",
+                "kind": "sfx",
+                "catalog_source_id": sfx["catalog_source_id"],
+                "onset_sec": 1.1,
+            },
+        ],
+        "relations": ["overlap"],
+        "rationale": "The selected speech and foreground effect form a plausible timed scene.",
+    }
+    responses = tmp_path / "source_timeline_responses.jsonl"
+    responses.write_text(
+        json.dumps(
+            {
+                "task_id": task["task_id"],
+                "response": response,
+                "request_metadata": {
+                    "model": "fixture",
+                    "temperature": 0.2,
+                    "json_mode": True,
+                    "task_sha256": task["task_sha256"],
+                },
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    output = tmp_path / "llm_source_timeline.jsonl"
+
+    recipes = compile_llm_source_timeline_responses(
+        tasks,
+        responses,
+        inventory=inventory,
+        output_path=output,
+        model_name="fixture",
+    )
+
+    assert recipes[0].source_plan[0].catalog_source_id == speech["catalog_source_id"]
+    assert recipes[0].source_plan[1].onset_sec == 1.1
+    assert recipes[0].proposal_metadata["request"]["temperature"] == 0.2
+
+    response["source_plan"][1]["catalog_source_id"] = "invented_audio"
+    responses.write_text(
+        json.dumps(
+            {
+                "task_id": task["task_id"],
+                "response": response,
+                "request_metadata": {
+                    "model": "fixture",
+                    "temperature": 0.2,
+                    "json_mode": True,
+                    "task_sha256": task["task_sha256"],
+                },
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    try:
+        compile_llm_source_timeline_responses(
+            tasks,
+            responses,
+            inventory=inventory,
+            output_path=output,
+            model_name="fixture",
+        )
+    except ValueError as exc:
+        assert "outside the frozen slate" in str(exc)
+    else:
+        raise AssertionError("invented catalog source was accepted")
+
+    response["source_plan"][1]["catalog_source_id"] = sfx["catalog_source_id"]
+    response["source_plan"][1]["onset_sec"] = round(
+        float(sfx["max_onset_sec"]) + 0.1, 1
+    )
+    responses.write_text(
+        json.dumps(
+            {
+                "task_id": task["task_id"],
+                "response": response,
+                "request_metadata": {
+                    "model": "fixture",
+                    "temperature": 0.2,
+                    "json_mode": True,
+                    "task_sha256": task["task_sha256"],
+                },
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    try:
+        compile_llm_source_timeline_responses(
+            tasks,
+            responses,
+            inventory=inventory,
+            output_path=output,
+            model_name="fixture",
+        )
+    except ValueError as exc:
+        assert "onset exceeds candidate limit" in str(exc)
+    else:
+        raise AssertionError("out-of-range onset was accepted")
+
+    response["source_plan"][1]["onset_sec"] = 1.1
+    responses.write_text(
+        json.dumps(
+            {
+                "task_id": task["task_id"],
+                "response": response,
+                "request_metadata": {
+                    "model": "fixture",
+                    "temperature": 0.2,
+                    "json_mode": True,
+                    "task_sha256": "0" * 64,
+                },
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    try:
+        compile_llm_source_timeline_responses(
+            tasks,
+            responses,
+            inventory=inventory,
+            output_path=output,
+            model_name="fixture",
+        )
+    except ValueError as exc:
+        assert "response task hash mismatch" in str(exc)
+    else:
+        raise AssertionError("response bound to another task was accepted")
+
+
+def test_sampler_obeys_exact_source_and_timeline_after_template_scheduling() -> None:
+    class Pool:
+        def candidates(self, kind, rng, max_duration=None):
+            del rng, max_duration
+            return {
+                "speech": ["speech_a", "speech_b"],
+                "sfx": ["dog", "horn"],
+            }[kind]
+
+        def metadata(self, key):
+            return {
+                "source_kind": "speech" if key.startswith("speech") else "sfx",
+                "source_group": f"group:{key}",
+                "source_labels": {"dog": ["dog_bark"], "horn": ["car_horn"]}.get(
+                    key, []
+                ),
+                "source_duration_sec": 1.0,
+                "text": key,
+            }
+
+        def pick(self, kind, rng):
+            return rng.choice(self.candidates(kind, rng))
+
+    sampler = SceneGraphSampler(
+        Pool(), SceneSamplerConfig(duration_range=(4.0, 4.0), p_rir=0.0, p_echo=0.0)
+    )
+    scene = sampler.sample(
+        "planned",
+        4,
+        "speech_with_sfx",
+        duration_sec=4.0,
+        label_preferences_by_kind={"sfx": ["car_horn"]},
+        source_plan=[
+            {
+                "slot_id": "speech_1",
+                "kind": "speech",
+                "catalog_source_id": "speech_b",
+                "onset_sec": 2.0,
+            },
+            {
+                "slot_id": "sfx_1",
+                "kind": "sfx",
+                "catalog_source_id": "horn",
+                "onset_sec": 0.3,
+            },
+        ],
+    )
+
+    by_kind = {source.kind: source for source in scene.sources}
+    assert by_kind["speech"].path == "speech_b"
+    assert by_kind["speech"].onset == 2.0
+    assert by_kind["sfx"].path == "horn"
+    assert by_kind["sfx"].onset == 0.3
