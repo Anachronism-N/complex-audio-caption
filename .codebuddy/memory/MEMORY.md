@@ -21,7 +21,7 @@
 - pydantic 模型全部 `extra="forbid"`；Span/duration 在入口即量化到 0.1s 网格
 - 数据渲染 CLI：`python -m sceneledger.cli.render --config configs/data/X.yaml --output-dir ... [--validate]`
 - 防泄漏切分用 `group_split()`，按"源路径集合 sha1"分组，不按 clip 随机切
-- 文档编号体系：`docs/NN_*.md`，02=方案主体、03=数据与基准、04=实验路线、06=TAC 复现协议、07=pilot 执行计划、08=Track-Event、09=数据编辑与验证、11=开发计划、12=复现指南、13=结果汇总、15/16=合成音频质量问题、17-21=real_mix v2-v6 人工 review、22=v6k review、23=会议纪要对齐与关键研究问题
+- 文档编号体系：`docs/NN_*.md`，02=方案主体、03=数据与基准、04=实验路线、06=TAC 复现协议、07=pilot 执行计划、08=Track-Event、09=数据编辑与验证、11=开发计划、12=复现指南、13=结果汇总、15/16=合成音频质量问题、17-21=real_mix v2-v6 人工 review、22=v6k review、23=会议纪要对齐与关键研究问题、24=数据源盘点与扩充方案、25=开源数据集下载清单
 - `configs/pipeline_stages.yaml` 是机器可读的阶段定义（modules / artifacts / gates）
 
 ## 数据流水线（两套，未打通）
