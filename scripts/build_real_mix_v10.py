@@ -256,6 +256,7 @@ Rules: 2-4 sources, logically related, speech gain>sfx>music. Output ONLY JSON."
 
         if not scene_config.get("sources"):
             # Fallback: random scene WITH speech/music/vocal diversity
+            fb_duration = rng.uniform(8, 12)
             roles = ["speech", "music", "sfx", "sfx", "vocal", "sfx", "speech", "music"]
             n_src = rng.randint(2, 4)
             fb_sources = []
@@ -263,17 +264,17 @@ Rules: 2-4 sources, logically related, speech gain>sfx>music. Output ONLY JSON."
                 role = rng.choice(roles)
                 if role == "speech" and speech_sources:
                     fb_sources.append({"role":"speech","category":"english","gain_db":rng.uniform(0,6),
-                                       "onset_s":rng.uniform(0,duration-3),"duck_others":True})
+                                       "onset_s":rng.uniform(0,fb_duration-3),"duck_others":True})
                 elif role == "music" and music_sources:
                     fb_sources.append({"role":"music","category":"instrumental","gain_db":rng.uniform(-6,0),
-                                       "onset_s":rng.uniform(0,duration-3),"duck_others":False})
+                                       "onset_s":rng.uniform(0,fb_duration-3),"duck_others":False})
                 elif role == "vocal" and vocal_sources:
                     fb_sources.append({"role":"vocal","category":"singing","gain_db":rng.uniform(-3,3),
-                                       "onset_s":rng.uniform(0,duration-3),"duck_others":False})
+                                       "onset_s":rng.uniform(0,fb_duration-3),"duck_others":False})
                 else:
                     fb_sources.append({"role":"sfx","category":rng.choice(available_cats),
-                                       "gain_db":rng.uniform(-9,-3),"onset_s":rng.uniform(0,duration-3),"duck_others":False})
-            scene_config = {"scene_name":"random","description":"A mixed scene","duration_s":duration,"sources":fb_sources}
+                                       "gain_db":rng.uniform(-9,-3),"onset_s":rng.uniform(0,fb_duration-3),"duck_others":False})
+            scene_config = {"scene_name":"random","description":"A mixed scene","duration_s":fb_duration,"sources":fb_sources}
 
         duration = float(np.clip(float(scene_config.get("duration_s", 10.0)), 8.0, 12.0))
         n_clip = int(duration * sr)
